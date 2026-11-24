@@ -171,7 +171,7 @@
 //              also with every answer and tab open), section-air (SR-3: the air between two sections), one-section
 //              (SR-4: every block of <main> a section), one-heading (SR-5: one h2 a section), container-edges (SR-6:
 //              equal left and right margins), row-lines (SR-7: card rows on the
-//              container lines), split-pair (SR-8: splits top-aligned, text left, one right line), each FAIL
+//              container lines), split-pair (SR-8: splits top-aligned, text left, locally aligned columns), each FAIL
 //   motion     motion-layer, count-text, loop-cycle (the motion layer's marks: data-motion without motion.css, a count
 //              of no number, a year or a price, a card loop outside 2.5-4 s), hidden-content (text in view that stays
 //              hidden until a script reveals it: under reduced motion at the first width, and again with an
@@ -1930,7 +1930,7 @@ const checks = [
   { id: 'one-heading', sev: 'FAIL', what: 'SR-5: one h2 per section, none in the hero' },
   { id: 'container-edges', sev: 'FAIL', what: 'SR-6: one container, equal margins (64-120px, 16-24px on a phone), the page shell, nothing past its lines, one or two left lines, no sideways scroll, wide pictures edge to edge; a viewport meta tag' },
   { id: 'row-lines', sev: 'FAIL', what: 'SR-7: card rows on the container lines at one height, no sideways scroller or cut carousel, no cut row item, nothing past the right line' },
-  { id: 'split-pair', sev: 'FAIL', what: 'SR-8: splits top-aligned, text left, every right column on one line (k 5, 6 or 7; 6 on a place page), edge to edge' },
+  { id: 'split-pair', sev: 'FAIL', what: 'SR-8: splits top-aligned, text left, the right column on its local grid (k 5, 6 or 7; 6 on a place page unless declared), edge to edge' },
 ];
 const fixes = {
   'hero-screen': 'make the hero exactly one screen (height: 100svh) with its content between the nav and 24px above the fold',
@@ -1940,7 +1940,7 @@ const fixes = {
   'one-heading': 'give each section one h2, first in its .wrap, and the hero only its h1',
   'container-edges': 'put everything on one .wrap: the same margin left and right (64-120px, 16-24px on a phone), text on its left line or the one split line',
   'row-lines': "start a row's first item on the container's left line and end its last on the right line, all one height, nothing scrolling sideways",
-  'split-pair': 'top-align every split, text left and visual right, the right column on one shared line, edge to edge on the container',
+  'split-pair': 'top-align every split, text left and visual right, the right column on its own grid line, edge to edge on its container',
 };
 const summary = [
   '  screens    hero-screen (SR-1: the hero ends at the fold, 1px either way, its content between the nav and 24px above',
@@ -2219,6 +2219,17 @@ function measure(opt) {
   // a <picture> (the hero photos.mjs fetch prints: a phone <source> and one <img>) is one image: when the picture
   // stays in the flow and its img is the positioned one, the img's box and position stand for the picture
   const picImg = (p) => { if (TU(p) !== 'PICTURE' || /absolute|fixed/.test(cs(p).position)) return null; const i = p.querySelector(':scope > img'); return i && /absolute|fixed/.test(cs(i).position) ? i : null; };
+  // The place split assigns its picture the last seven tracks, outside the wrap.
+  function inPlacePicture(el) {
+    const frame = el.closest('.hero--place[data-form="split"] > .hero__bg');
+    if (!frame || W < 1024) return false;
+    const wrap = frame.parentElement.querySelector(':scope > .wrap');
+    if (!wrap) return false;
+    const bounds = innerBox(wrap), gap = parseFloat(cs(wrap).getPropertyValue('--gutter')) || 24;
+    const start = bounds.l + 5 * (bounds.r - bounds.l + gap) / 12;
+    const aligned = r => Math.abs(r.l - start) <= 2 && Math.abs(r.r - bounds.r) <= 2;
+    return aligned(rectOf(frame)) && aligned(rectOf(el));
+  }
   const layerOf = (el) => {
     if (layerMemo.has(el)) return layerMemo.get(el);
     let v = false, m = el;
@@ -2241,7 +2252,7 @@ function measure(opt) {
     const r = /^(clip|hidden)$/.test(st.overflowX) && /^(clip|hidden)$/.test(st.overflowY) ? inter(raw, secR(s)) : raw;
     if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('not img, picture, video or canvas');
     if (cs(k).position !== 'absolute') probs.push('position ' + cs(k).position + ', not absolute');
-    if (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1) probs.push('does not span the screen from 0 to ' + W + 'px');
+    if (!inPlacePicture(k0) && (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1)) probs.push('does not span the screen from 0 to ' + W + 'px');
     if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('runs outside the section box');
     if (cs(k).zIndex !== '0') probs.push('z-index ' + cs(k).zIndex + ', not 0');
     const ah = k.getAttribute('aria-hidden') === 'true';
@@ -2505,7 +2516,7 @@ function measure(opt) {
     const frame = window.lyRules.peek(hero.el);
     const b = hero.bottom - SY;
     const book = window.lyRules.booking(hero.el);
-    const fits = window.lyRules.isPeek(hero.el) ? !!frame && b >= H - 1 : (phone && book ? b >= H - 1 : Math.abs(b - H) <= 1);
+    const fits = window.lyRules.isPeek(hero.el) ? !!frame && b >= H - 1 : Math.abs(b - H) <= 1;
     // T1: the hero's bottom at scroll 0 within H +/- 1 (the crop sits between the fold and the hero's bottom)
     T.push(test('T1', fits ? 'PASS' : 'FAIL', fits ? [] : [off(hero.el, heroR, 'hero ends at ' + px(b) + 'px on a ' + H + 'px screen; a peek needs a visible product window', {at:0})]));
     // T2: nothing of the second section (its own box or any part of it) on the first screen, 1px allowed
@@ -2538,7 +2549,7 @@ function measure(opt) {
       const kids = [...hero.wrap.children].filter((k) => visible(k) && !/absolute|fixed/.test(cs(k).position) && ht(rectOf(k)) >= 2);
       if (kids.some((k) => k.classList.contains('hero-text'))) for (const k of kids) if (!k.classList.contains('hero-text')) strips.push(k);
     }
-    for (const k of phone ? [] : strips.filter(k => !k.matches('.hero-book') && ht(rectOf(k)) > 96)) off4.push(off(k,null,'a docked strip exceeds 96px', {at:0}));
+    for (const k of phone ? [] : strips.filter(k => !(book && k.contains(book)) && ht(rectOf(k)) > 96)) off4.push(off(k,null,'a docked strip exceeds 96px', {at:0}));
     T.push(test('T4', off4.length ? 'FAIL' : 'PASS', off4));
     // T5: every layer inside the hero's box
     const off5 = rendered.filter((it) => it.z === 0 && it.layer && (it.raw.t < hero.top - 1 || it.raw.b > hero.bottom + 1 || it.raw.l < hero.l - 1 || it.raw.r > hero.r + 1))
@@ -2851,7 +2862,7 @@ function measure(opt) {
           if (Math.abs(dx) > 2 && !/center|right|end/.test(cs(el).textAlign)) lOff.push(off(el, it.r, `${q(el)} starts ${px(Math.abs(dx))}px ${dx > 0 ? 'right' : 'left'} of the hero box's padding: the words in a box start on its inner left line, 2px either way`, { d: Math.abs(dx), ref: [lineX(innerBox(hb).l, it.r.t, it.r.b)] }));
         }
       }
-      if (el.closest('section[data-own], button, select, textarea, input, td, th, caption')) ex = 'component content';
+      if (el.closest('section[data-own], button, select, textarea, input, td, th, caption, .hero-book .field')) ex = 'component content';
       // "buttons, inline-block or flex links": a block link counts only when it is button-like (class or role, or its own fill or border)
       if (!ex) { const a = el.closest('a'); if (a && S[z].el.contains(a) && (/inline-block|flex|grid/.test(cs(a).display) || a.matches('.btn, .button, [role=button]') || boxed(a))) ex = 'button or inline-block / flex link'; }
       if (!ex) ex = rowExempt(el, z);
@@ -2922,7 +2933,7 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number' || it.layer || bleedPic(it.el, it.r)) continue;
       const el = it.el, z = it.z, c = C(z), cw = c.r - c.l;
-      if (el === S[z].wrap || el.closest('section[data-own]')) continue;
+      if (el === S[z].wrap || el.closest('section[data-own]') || inPlacePicture(el)) continue;
       // The text panel over a hero photograph has its own placement check above.
       // Its width follows the headline; the full-bleed visual is the photograph.
       if (z === 0 && heroH1 && el === heroBox(heroH1.el)) continue;
@@ -3001,7 +3012,7 @@ function measure(opt) {
     return T;
   });
 
-  // ---- SR-8 splits: one pair, text left, top-aligned (nested splits aside)
+  // ---- SR-8 splits: local column lines, text left, top-aligned (nested splits aside)
   run('SR-8', () => {
     const T = [];
     const top = splits.filter((s) => !s.nested);
@@ -3022,9 +3033,10 @@ function measure(opt) {
       return { t, at: cand.filter((c) => c.r.t <= t + 2) };
     };
     const span = (col) => { const bx = boxes.filter((b) => col.contains(b.el)); if (!bx.length) { const r = ownBox(col); return r ? { t: r.t, b: r.b } : null; } return { t: Math.min(...bx.map(topOf)), b: Math.max(...bx.map((b) => b.r.b)) }; };
-    let pairX = null;
     for (const sp of top) {
-      const c = C(sp.z), cw = c.r - c.l;
+      const c = innerBox(sp.G.el), cw = c.r - c.l;
+      const gutter = parseFloat(cs(sp.G.el).getPropertyValue('--gutter')) || 24;
+      const pitch = (cw + gutter) / 12;
       const L = sp.left.el, Rt = sp.right.el, lr = sp.left.r, rr = sp.right.r;
       const fL = firstBox(L), fR = firstBox(Rt);
       const tops = fL && fR ? Math.abs(fL.t - fR.t) : null;
@@ -3036,24 +3048,24 @@ function measure(opt) {
       const lt = lFirst.length ? Math.min(...lFirst.map((b) => b.r.t)) : null;
       const orient = lt != null && lFirst.some((b) => b.kind === 'text' && b.r.t <= lt + 2) ? 'text-left' : 'text-right';
       const declared = sp.G.el.matches('.grid') && [5,6,7].find(k=>L.classList.contains('span-'+k) && Rt.classList.contains('span-'+(12-k)));
-      const ks = (place ? [...new Set([6,...(declared?[declared]:[])])] : [5,6,7]).map((k) => ({ k, x: c.l + (k * (cw + 24)) / 12 }));
+      const ks = (place ? [...new Set([6,...(declared?[declared]:[])])] : [5,6,7]).map((k) => ({ k, x: c.l + k * pitch }));
       const kHit = ks.find((k) => Math.abs(rr.l - k.x) <= 2);
       const gr = rectOf(sp.G.el), cols = [box(lr), box(rr)];
       // T-mode: the tops of the two columns' first boxes agree within 8px (merged CK-33: a centred split FAILs)
       if (!(mode === 'top' || mode === 'both')) mOff.push(off(sp.G.el, gr, `the two columns of the split start ${px(tops)}px apart at the top${mode === 'centre' ? ' (centred on each other)' : ''}: a split's columns are top-aligned, 8px either way`, { d: tops ?? 0, ref: cols }));
       // T-orientation: text left on every split
       if (orient !== 'text-left' && !window.lyRules.mirrored(sp.G.el)) oOff.push(off(sp.G.el, gr, "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split", { ref: cols }));
-      // T-pair: one pair: the right column's x the same on every split (2px), on wrap.left + k*(w+24)/12 (k 5, 6 or 7;
-      // a place page 6), the left column ending at x - 24
+      // Compare both columns with their own grid and its spacing token.
       const probs = [];
-      const onDeclared = declared && kHit?.k===declared;
-      if (!onDeclared && pairX == null) pairX = rr.l;
-      else if (!onDeclared && Math.abs(rr.l - pairX) > 2) probs.push(`its right column starts at x ${px(rr.l - SX)}, the first split's at ${px(pairX - SX)}`);
       if (!kHit) probs.push(`its right column starts at x ${px(rr.l - SX)}, on none of the split lines ${ks.map((k) => `${px(k.x - SX)} (k=${k.k})`).join(', ')}`);
       // the left column ends 24px before the right one, or one column earlier on that column's end: the kit's splits set
       // their words on span-5 beside a visual on span-6 start-7 (heroes.json split and collage, the layout demos' sections)
-      else if (Math.abs(lr.r - (kHit.x - 24)) > 2 && Math.abs(lr.r - (kHit.x - 24 - (cw + 24) / 12)) > 2) probs.push(`its left column ends at ${px(lr.r - SX)}px, not 24px before the right one (${px(kHit.x - 24 - SX)}px) or a column before it (${px(kHit.x - 24 - (cw + 24) / 12 - SX)}px)`);
-      if (probs.length) pOff.push(off(sp.G.el, gr, `the split's columns are off the page's one pair of lines: ${probs.join('; ')}`, { d: Math.min(...ks.map((k) => Math.abs(rr.l - k.x))), ref: [lineX(kHit ? kHit.x : (pairX ?? rr.l), gr.t, gr.b)] }));
+      else if (![kHit.x - gutter, kHit.x - gutter - pitch].some(end => Math.abs(lr.r - end) <= 2))
+        probs.push(`its left column ends at x ${px(lr.r - SX)}; expected a ${gutter}px gutter or one empty track before the right column`);
+      if (probs.length) {
+        const nearest = ks.reduce((a, b) => Math.abs(a.x - rr.l) <= Math.abs(b.x - rr.l) ? a : b);
+        pOff.push(off(sp.G.el, gr, `the split is off its grid (${cs(sp.G.el).columnGap} gap, ${gutter}px token): ${probs.join('; ')}`, { d: Math.abs(nearest.x - rr.l), ref: [lineX(nearest.x, gr.t, gr.b)] }));
+      }
       // T-edges: the left item on wrap.left, the right item on wrap.right, 2px either way
       const ep = [];
       if (Math.abs(lr.l - c.l) > 2) ep.push(`its left column starts at ${px(lr.l - SX)}px, the container's left at ${px(c.l - SX)}px`);
@@ -3158,7 +3170,7 @@ const TEST_FIX = {
   'SR-7 T-right': "end it at the container's right line",
   'SR-8 T-mode': 'top-align both columns of the split (align-items: start)',
   'SR-8 T-orientation': 'put the text in the left column and the visual in the right, on every split',
-  'SR-8 T-pair': "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+  'SR-8 T-pair': "start the right column on a line of this grid (inner left + k x (inner width + gutter) / 12); end the left column one gutter or one track plus a gutter before it",
   'SR-8 T-edges': "run the split from the container's left line to its right line",
 };
 // a short name for each SR test, for the note that names a test left without a place among a check's 8
@@ -3176,7 +3188,7 @@ const TEST_NAME = {
   'SR-6 T6-right-edges': 'wide pictures and boxes off the container lines',
   'SR-7 T-rows': 'rows off the container lines', 'SR-7 T-overflow': 'sideways scrollers and cut carousels', 'SR-7 T-clipped-cards': 'cut row items',
   'SR-7 T-right': 'content past the right line',
-  'SR-8 T-mode': 'splits not top-aligned', 'SR-8 T-orientation': 'splits with the visual on the left', 'SR-8 T-pair': "splits off the page's one pair of lines",
+  'SR-8 T-mode': 'splits not top-aligned', 'SR-8 T-orientation': 'splits with the visual on the left', 'SR-8 T-pair': "splits off their own grid lines",
   'SR-8 T-edges': 'splits not edge to edge',
 };
 // the tests that read where a part sits on the screen: a part moving as it is read is told there as a WARN. A section's
@@ -7626,7 +7638,12 @@ function lib() {
         const [a, b] = kids.map((k) => k.getBoundingClientRect());
         if (Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) < 40 || a.width < gr.width * 0.2 || b.width < gr.width * 0.2) continue;
         const k2 = a.left < b.left ? kids[1] : kids[0], q2 = k2.getBoundingClientRect();
-        out.splits.push({ sec: i, secSel: secSel(i), x: Math.round(q2.left), id: idOf(k2), sel: sel(k2), text: label(k2), doc: doc(k2) });
+        const left = gr.left + parseFloat(c.borderLeftWidth) + parseFloat(c.paddingLeft);
+        const width = g.clientWidth - parseFloat(c.paddingLeft) - parseFloat(c.paddingRight);
+        const gutter = parseFloat(c.getPropertyValue('--gutter')) || 24;
+        const pitch = (width + gutter) / 12;
+        const expected = left + Math.round((q2.left - left) / pitch) * pitch;
+        out.splits.push({ sec: i, secSel: secSel(i), x: Math.round(q2.left), expected: Math.round(expected), id: idOf(k2), sel: sel(k2), text: label(k2), doc: doc(k2) });
         break;
       }
     });
@@ -8774,7 +8791,7 @@ function lib() {
         const pct = (v, room) => /%$/.test(v) ? parseFloat(v) / 100 * room : /^-?[\d.]+px$/.test(v) ? parseFloat(v) : v === 'left' || v === 'top' ? 0 : v === 'right' || v === 'bottom' ? room : 0.5 * room;
         let best = null;
         for (const e of hero.querySelectorAll('img, video, canvas')) {
-          if (e.closest('nav, header.nav, [data-ui], .ui[class*=ui-]')) continue;
+          if (e.closest('nav, header.nav, [data-ui], .ui[class*=ui-], [data-fx], [data-effect]')) continue;
           const r = e.getBoundingClientRect(); if (r.width < 120 || r.height < 90 || !shown(e, r)) continue;
           const c = CS(e), n = (p) => parseFloat(c[p]) || 0;
           const pl = n('paddingLeft') + n('borderLeftWidth'), pr = n('paddingRight') + n('borderRightWidth'), pt = n('paddingTop') + n('borderTopWidth'), pb = n('paddingBottom') + n('borderBottomWidth');
@@ -8795,6 +8812,12 @@ function lib() {
           const m = { el: e, how, w: R - L, h: B - T, left: L, top: T, boxW: r.width };
           if (!best || m.w > best.w) best = m;
         }
+        const composed = hero.querySelector('.hero__media [role="img"][aria-label], .hero__media [data-product]');
+        if (composed && (!best || composed.contains(best.el))) {
+          const r = composed.getBoundingClientRect();
+          if (r.width >= 120 && r.height >= 90 && shown(composed, r))
+            best = { el: composed, how: 'built view', w: r.width, h: r.height, left: r.left, top: r.top, boxW: r.width };
+        }
         if (best) {
           // the content width of the hero's container (a .wrap, a .container: its width less its padding); else 88% of the screen
           let content = 0;
@@ -8803,6 +8826,8 @@ function lib() {
             if (w >= vw * 0.5 && w <= vw + 1 && w > content) content = w;
           }
           if (!content) content = Math.round(vw * 0.88);
+          const slot = best.el.closest('.hero--split .hero__media, .hero-split > .hero-visual');
+          if (slot) content = slot.clientWidth;
           const bb = best.el.getBoundingClientRect();
           out.heroProduct = { tag: best.el.tagName.toLowerCase(), how: best.how, w: Math.round(best.w), h: Math.round(best.h), content: Math.round(content), frac: best.w / content, boxW: Math.round(best.boxW), id: idOf(best.el), sel: sel(best.el), text: label(best.el).slice(0, 40), doc: D({ left: best.left, top: best.top, width: best.w, height: best.h }), more: [D(bb, best.el)] };
         }
@@ -9256,7 +9281,7 @@ const placeAt = (text) => {
 };
 // words of one trade that name the same goods (a category in one of them counts in any)
 const KIN = [['ceramics', 'ceramic', 'pottery', 'potter', 'stoneware', 'porcelain', 'tableware'], ['coffee', 'espresso', 'roastery', 'roaster', 'cafe'], ['guesthouse', 'guest house', 'inn', 'b&b', 'bed and breakfast', 'lodge'], ['bakery', 'bakehouse', 'bread', 'sourdough'], ['bicycle', 'bike', 'bikes', 'cycle']];
-const SECTION_NOUNS = terms('features,feature,terms,conditions,privacy,legal,pricing,prices,price,plans,plan,faq,questions,contact,menu,seasons,season,rooms,room,getting here,directions,visit,hours,opening times,location,address,map,about,team,customers,integrations,works with,how it works,reviews,testimonials,booking,book,order,specs,specifications,download,security,support,help,docs,blog,news,changelog,careers,jobs,press,shop,store,delivery,shipping,returns,warranty,gallery,photos,events,history,process,steps,services,products,product,apps,api,partners,compare,comparison,examples,templates,resources');
+const SECTION_NOUNS = terms('fee,fees,building,buildings,terms,conditions,privacy,legal,pricing,prices,price,plans,plan,faq,questions,contact,menu,seasons,season,rooms,room,getting here,directions,visit,hours,opening times,location,address,map,about,team,customers,integrations,works with,how it works,reviews,testimonials,booking,book,order,specs,specifications,download,security,support,help,docs,blog,news,changelog,careers,jobs,press,shop,store,delivery,shipping,returns,warranty,gallery,photos,events,history,process,steps,services,products,product,apps,api,partners,compare,comparison,examples,templates,resources');
 const VERBS = new Set('book buy order pre-order preorder reserve try start get download compare see watch read find join subscribe sign contact add send configure request call email message visit plan check apply create open view copy shop schedule talk chat log register rent hire claim explore ask save pay upgrade choose pick enquire inquire donate install wishlist'.split(' '));
 const BANNED = new Set(['learn more', 'read more', 'view more', 'show more', 'discover', 'discover more', 'explore', 'explore more', 'more', 'mehr erfahren', 'weitere infos', 'click here', 'find out more', 'see more', 'begin', 'an example', 'details', 'more info', 'go']);
 function copyTerms(P) {
@@ -9316,14 +9341,14 @@ function copyChecks(P) {
   if (!spelledQuantity && !/\d/.test(P.heroText) && !holdsAny(P.heroText, T.place) && !platform && !(/^(gaming|game|games)$/.test(KIND) && GENRES.test(P.heroText)) && !placeAt(P.heroText)) f('copy-fact', 'FAIL', P.h1 || null, 'the first screen holds no number, price, date, place, platform or genre');
   // 3. every section heading names a thing (card titles are feature titles, read by the judge)
   const gloss = [...T.category, ...T.products, ...T.place, ...T.audience, ...T.names, ...SECTION_NOUNS, ...(T.brand ? [T.brand] : [])];
-  const bareAll = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && !holdsAny(h.full, gloss));
+  const bareAll = P.heads.filter((h) => (h.level === 2 || (h.level === 3 && !h.card)) && !h.foot && norm(h.full) && !/\d/.test(h.full) && (/^(?:overview|features)$/i.test(h.full.trim()) || !holdsAny(h.full, gloss)));
   // an h3 in a step or chapter list ("Baked in the morning", "Finished by hand") names a step of what the h2 names:
   // a WARN at most and never counted toward the FAIL, so good step headings are not flattened into noun labels
   const bare = bareAll.filter((h) => !h.step);
   for (const h of bareAll.filter((x) => x.step)) f('copy-headings', 'WARN', h, `the step heading "${h.full.slice(0, 60)}" names no product, part or place: fine for a step when the section's h2 names the product`);
   if (bare.length) {
     const sev = bare.length >= 2 && T.category.length ? 'FAIL' : 'WARN';
-    for (const h of bare) f('copy-headings', sev, h, `"${h.full.slice(0, 60)}" names no product, part, place or section${bare.length >= 2 ? ` (${bare.length} headings like it; at most one brand line per page)` : ' (the one brand line a page may have)'}`);
+    for (const h of bare) f('copy-headings', /^(?:overview|features)$/i.test(h.full.trim()) ? 'FAIL' : sev, h, `"${h.full.slice(0, 60)}" names no product, part, place or section${bare.length >= 2 ? ` (${bare.length} headings like it; at most one brand line per page)` : ' (the one brand line a page may have)'}`);
   }
   const bareCards = P.heads.filter((h) => h.level === 3 && h.card && !h.foot && norm(h.full) && !/[0-9]/.test(h.full) && !holdsAny(h.full, gloss) && !h.full.split(/[ ]+/).every((w) => /^[A-ZÀ-ÖØ-Þ]/.test(w)));
   if (bareCards.length >= 2 && T.category.length) for (const h of bareCards) f('copy-headings', 'WARN', h, `the card title "${h.full.slice(0, 50)}" names no product, part, place or section (${bareCards.length} card titles like it)`);
@@ -9416,10 +9441,8 @@ function auditFindings(A, first, later) {
     const same = A.nests.filter((y) => y.sec === x.sec && y !== x);
     push('nesting', 'FAIL', x, `${x.depth} boxes deep: ${x.chain.join(' > ')} (${x.why})${same.length ? `; ${same.length} more like it in this section` : ''}`, { more: same.slice(0, 4).map((y) => y.doc) });
   }
-  if (A.splits.length >= 3) {
-    const xs = []; for (const s of A.splits) { const c = xs.find((q) => Math.abs(q.x - s.x) <= 6); if (c) c.list.push(s); else xs.push({ x: s.x, list: [s] }); }
-    if (xs.length >= 3) { xs.sort((a, b) => a.x - b.x); push('col-edge', 'WARN', xs[0].list[0], `the second column starts at ${xs.length} places: ${xs.map((q) => `${q.x}px (${q.list.map((s) => s.secSel).join(', ')})`).join(', ')}`, { more: xs.slice(1).map((q) => q.list[0].doc) }); }
-  }
+  for (const s of A.splits) if (Math.abs(s.x - s.expected) > 2)
+    push('col-edge', 'WARN', s, `the second column starts at x ${s.x}px; the nearest line of its grid is ${s.expected}px`);
   for (const t of A.touch) push('proximity', 'WARN', t, `touches the picture or panel above it (${t.gap}px)`, { more: [t.ref] });
   for (const r of A.rows) push('proximity', 'WARN', r, `the rows sit ${r.gap}px apart, about as close as a picture to its own caption (${r.inner}px): a caption reads with the row below`, { fix: 'set the gap between rows at twice the gap between a picture and its caption or more' });
 }
@@ -9540,7 +9563,7 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
   // under 60% of the container's content width FAILs, 60-80% WARNs (at a desktop width: 1440 and 1024, where the stage is a wide box)
   if (vw >= 1000 && !heroBare && TYPE === 'product' && M.heroProduct && M.heroProduct.frac < 0.8) {
     const h = M.heroProduct, fail = h.frac < 0.6, pc = Math.round(h.frac * 100);
-    push('product-shown', fail ? 'FAIL' : 'WARN', h, `the hero's product is drawn ${h.w} x ${h.h}px, ${pc}% of the ${h.content}px content width at ${vw}px (its ${h.tag} is ${h.boxW}px wide${h.how === 'estimate' ? '; the product inside a live canvas is estimated from its frame' : ''}): a product page shows the product at 80% of the content width or more (under 60% FAILs)`, { more: h.more, fix: "make the product the hero: the picture across the full content width (a stage as wide as the container, the product filling it, not a rounded box with the product at its middle); a render's still cropped to the product (data-product-fill up to 1.2, a wide view such as side), or the client's photograph at full width" });
+    push('product-shown', fail ? 'FAIL' : 'WARN', h, `the hero's product is drawn ${h.w} x ${h.h}px, ${pc}% of the ${h.content}px available for the product at ${vw}px (its ${h.tag} is ${h.boxW}px wide${h.how === 'estimate' ? '; the product inside a live canvas is estimated from its frame' : ''}): a product page shows the product at 80% of the content width or more (under 60% FAILs)`, { more: h.more, fix: "show the product clearly across its assigned picture slot; a render's still cropped to the product (data-product-fill up to 1.2, a wide view such as side), or the client's photograph at full width" });
   }
   if (first && !heroBare && TYPE === 'product' && T && T.category && T.category.length) {
     // any word of the category names the product ("roasted coffee beans": coffee, beans), not only its last; a miss is a
@@ -10142,7 +10165,10 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     await tab.eval(`(${lib.toString()})()`);
     if (first) frame = await tab.eval(`(() => {
       const root = document.documentElement, style = getComputedStyle(root);
-      const hero = document.querySelector('main > .hero'), nav = document.querySelector('header.nav'), footer = document.querySelector('footer');
+      const hero = document.querySelector('main .hero, [role=main] .hero');
+      const nav = document.querySelector(':is(header,nav,[role=banner],[role=navigation]).nav, :is(header,[role=banner]) .nav');
+      const end = document.querySelector('footer,[role=contentinfo]');
+      const footer = end?.matches('.footer,[class*="footer--"]') ? end : end?.querySelector('.footer,[class*="footer--"]') || end;
       const close = footer?.querySelector('[class*="close--"],.close__form') || document.querySelector('main .close__form');
       const mark = nav?.querySelector('.nav__logo');
       const variant = (el,prefix) => [...(el?.classList || [])].find(c => c.startsWith(prefix))?.slice(prefix.length);

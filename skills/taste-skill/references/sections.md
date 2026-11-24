@@ -35,7 +35,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 | Projects, rooms or goods with facts | Case rows or an index with a fact line per item |
 | Two states | Toggle or divider |
 | Hours or a schedule | Day bar or week grid |
-| A stay or table to book | Booking bar on the hero, full form at the close |
+| A dated stay, table or class | Booking bar on the hero, full form at the close |
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A composition from `sections-library.md` |
 
@@ -46,7 +46,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 - **One idea per section,** one h2, one action at most besides the main one (a pair only in the
   hero, or where a product needs "compare" beside "buy"). A long section holds one list, table or
   form, or one idea in two groups, never two ideas.
-- **Main action.** Use the same words in the nav, hero, phone bar and wherever the visitor completes it. For orders put the controls early. For stays and tables dock the booking bar on the hero and keep the full form at the close.
+- **Main action.** Use the same words in the nav, hero, phone bar and wherever the visitor completes it. For orders put the controls early. For dated stays, tables and classes dock the booking bar on the hero and keep the full form at the close.
 - **Merge short blocks.** Put a quote, logo row or short FAQ with the section it belongs to. A text moment rides on an existing h2 or the close. Only the page's main claim may stand alone, once, in a thin statement section.
 - **Repeats:** a card layout (2x2, bento, three cards, split card, open tiles) at most twice a page;
   neighbours never share a layout; on software, product and service a calmer section (quote, prices,
@@ -71,7 +71,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 
 Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
 
-Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, grounds and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay or table gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
+Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, grounds and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
 - `grounds` lists a ground per section. `alternate` alternates page and tint from section two, with inverse for the strongest picture. `blocks` repeats page, page, tint and closes on inverse. `islands` sets an inverse island and a brand or tint island on the page ground. `calm` changes ground at the main picture and sometimes again at the close. Neighbours may share a ground. Keep non-tech heroes off bands.
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
@@ -109,7 +109,7 @@ Start with the material the brief gives. Use these routes to place it.
 - **Selling on the page:** place the order pad or configurator within the first three sections. A colour choice changes the photograph or recolours the drawing and updates the chosen variant and price. Keep the delivery and return facts at the close.
 - Give a spec, price or unit once where it helps the decision. Use actual figures for results. A supporting photograph shows the part named or the claimed use. Never fill a price list with prop photographs.
 
-**Service.** Name each service and its fee where applicable. Give each project a row with its work, name and a fact the visitor can use. Put a process with durations and deliverables on a rail. Follow with the people the brief names, supplied proof and the enquiry or booking. A visitor booking a stay or table starts at the hero bar and finishes in the full form at the close.
+**Service.** Name each service and its fee where applicable. When the brief asks to show work, give each project a case with its type, district, size and year. Mark invented facts with `data-assumed`. Show the client’s photograph or an identified reference interior of the right kind. A drawn plan can sit beside the photograph. Put a process with durations and deliverables on a rail. Follow with the people the brief names, supplied proof and the enquiry or booking. A service enquiry has one action leading to its form.
 
 ## 4. Place
 
@@ -130,7 +130,7 @@ Use the usable photographs for the parts they show. A full set may cover the vis
 
 ### The deal
 
-Use the frame and ground map from section 2. A place hero has a dealt form (`band`, `bleed`, `split` or `name`). Set the main action with `--action booking` or `--action order` where it applies.
+Use the frame and ground map from section 2. A place hero has a dealt form (`band`, `bleed`, `split` or `name`). Use `--action booking` with `--booking stay`, `table` or `class` for dated reservations. Goods use `--action order`.
 
 ### Photographs and type
 
@@ -150,13 +150,13 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
 - **Hero:** the place hero in its dealt form (`layout-v4.md` section 3). What, where and one fact: an
   h1 with the place's own voice, never the brief's category ("Bread out of the oven before the
   street wakes up", not "Bakery in Leith"; the kind and the street go in the sub-line), 48 characters at most; sub-line "Sourdough, rye and cardamom buns from 7:30,
-  Tuesday to Sunday." (80 at most). For a stay or table, the hero's booking button belongs to `.hero-book` (`layout-v4.md`).
+  Tuesday to Sunday." (80 at most). For a stay, table or class, the hero's booking button belongs to `.hero-book` (`layout-v4.md`).
 - **Visit** (`data-place="visit"`, `id="visit"`) near the top:
   put the address, routes and opening hours where visitors can find them. Give directions to a supplied street, an area link for a district, and a call link only for a supplied phone. Use a day bar, ruled week or a split with a shopfront view, according to the material. `[data-open-now]` requires supplied hours. Mark assumed hours `data-assumed` and leave them as text.
 - **Map** only when the brief gives the street: `fx-map` baked still (`effects-creative.md`) in the
   photograph's frame, the pin on the street line; never an embed, a contour or a dot pattern.
 - **The offer** opens with a head row: the h2 on the left line, one line, 40 characters at most
-  (32/40; 24/30 at 390); at its right, on its baseline, one 16px line and a link ("Full menu", "See
+  (40/50; 28/35 at 390); at its right, on its baseline, one 16px line and a link ("Full menu", "See
   all"); leave `--head-gap` to the content.
   - **Menu or prices.** Group the full list by what the visitor orders. Use `.rows`, with the name left, price right in tabular figures, and a description beneath when needed. Rows are at least 44px high. On a phone stack the groups. Leave prices in live text. A photograph may show the dish or service named. Keep a price list free of detail strips.
   - **Rooms.** Show the room types and which beds they hold. Include the rate, its season and how to book that room. Use whole rooms for the photographs. A row, index or simple list can carry the room facts when no suitable picture exists.
@@ -172,7 +172,7 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
   (384x288), a 1px hairline, a 13px label, the title at 20/28, one or two sentences at 16/26 with the
   lead time, where to collect and the price from, one text link with an arrow. A florist's events
   kind says what to send: date, venue, guests, budget.
-- **Booking.** For a stay or table use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).
+- **Booking.** For a stay, table or class use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).
 - **Close.** Follow the PLAN. A shop states delivery and returns here. Keep booking and newsletter forms distinct.
 - **Footer.** Use the dealt link layout. Keep one credits line. Include directions, delivery or check-in where useful and avoid repeating hours or forms.
 - **Phone bar** (`nav.actionbar`, required): the order or booking as one full-width button; without

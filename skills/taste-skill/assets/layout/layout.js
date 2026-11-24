@@ -270,10 +270,40 @@ function film(btn) {
 // An action pointing at a booking service keeps its native GET or POST.
 function bookingBar(bar) {
   const action = bar.getAttribute('action');
-  if (!action?.startsWith('#')) return;
-  const target = document.getElementById(action.slice(1));
+  const target = action?.startsWith('#') ? document.getElementById(action.slice(1)) : null;
   const form = target?.matches('form') ? target : target?.querySelector('form');
-  if (!form) return;
+  const hero = bar.closest('.hero');
+  if (!hero) return;
+  const label = bar.querySelector('button[type="submit"],input[type="submit"],button:not([type])');
+  const labelText = label?.textContent.trim() || label?.value || bar.getAttribute('aria-label') || 'Book';
+  if (!form) {
+    // An independent booking endpoint keeps its original form, fields and submission method.
+    // On phones the same form opens in a short band immediately below the hero.
+    if (bar.nextElementSibling?.matches('.hero-book-link')) return;
+    const home = document.createComment('hero booking form');
+    bar.before(home);
+    const band = document.createElement('details'), summary = document.createElement('summary');
+    band.className = 'booking-band';
+    summary.textContent = labelText;
+    band.append(summary);
+    const phone = matchMedia('(max-width: 639px)');
+    const placeForm = () => {
+      if (phone.matches) { hero.after(band); band.append(bar); }
+      else { home.after(bar); band.remove(); }
+    };
+    placeForm();
+    phone.addEventListener('change', placeForm);
+    return;
+  }
+  let link = [...hero.querySelectorAll('a[href]')].find(a => a.getAttribute('href') === action);
+  if (!link) {
+    link = document.createElement('a');
+    link.className = 'btn btn--primary hero-book-link';
+    link.href = action;
+    link.textContent = labelText;
+    bar.after(link);
+  }
+  bar.dataset.phoneLink = '';
   bar.addEventListener('submit', event => {
     event.preventDefault();
     for (const [name, value] of new FormData(bar)) {

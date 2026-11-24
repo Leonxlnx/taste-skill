@@ -278,8 +278,8 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 }
 @media (min-width: 1024px) {
   .hero--place[data-form="bleed"][data-box="none"][data-tone] .hero__text { background: transparent; padding: 0; }
-  .hero--place[data-form="bleed"][data-box="none"][data-tone="dark"] .hero__text { --ink: white; color: var(--ink); }
-  .hero--place[data-form="bleed"][data-box="none"][data-tone="light"] .hero__text { --ink: #111; color: var(--ink); }
+  .hero--place[data-form="bleed"][data-box="none"][data-tone="dark"] .hero__text { --ink: white; --heading-ink: currentColor; color: var(--ink); }
+  .hero--place[data-form="bleed"][data-box="none"][data-tone="light"] .hero__text { --ink: #111; --heading-ink: currentColor; color: var(--ink); }
   .hero--place[data-form="bleed"][data-box="none"] .btn--secondary { background: var(--p-bg); color: var(--p-ink); }
   main > .hero--place[data-form="split"] { display: block; padding-top: calc(var(--nav) + max(var(--hgap), var(--hero-clearance))); }
   main > .hero--place[data-form="split"] > .wrap { height: 100%; }
@@ -291,8 +291,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
     width: calc(min(100% - 2 * var(--gut), var(--container)) * 7 / 12 - var(--gutter) * 5 / 12);
   }
   :root .hero--place[data-form="split"] > .wrap > .hero-text { height: 100%; }
-  :root .hero--place[data-form="split"] .hero__text { display: flex; flex-direction: column; gap: var(--s-5); height: 100%; width: calc(100% * 5 / 12 - var(--gutter) * 7 / 12); }
-  :root .hero--place[data-form="split"] .hero__text > h1 { margin-bottom: auto; }
+  :root .hero--place[data-form="split"] .hero__text { display: flex; flex-direction: column; width: calc(100% * 5 / 12 - var(--gutter) * 7 / 12); }
 }
 :root .hero--place[data-form="name"] .hero__name {
   grid-column: 1 / -1; grid-row: 1; margin: 0 0 var(--s-6);
@@ -400,17 +399,18 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 /* 4. hero--editorial: the headline IS the picture. Three lines of big left-aligned type (128px at
       1440, 52 at 390) across the whole container, with one or two photographs set in the line as
       pills (.ly-pic, 0.8em tall, 1.9em wide), whole on the first frame (no opening, no settle: the
-      h1 never reflows after load, MO-62); the lead and the buttons dock to the foot under a
+      h1 never reflows after load, MO-62); the lead and the buttons follow the title under a
       hairline. No frame under it: the type fills the screen. */
-.hero--editorial .hero__in { justify-content: space-between; }
-.hero--editorial h1 { font-size: var(--ly-h1-mega); line-height: .98; letter-spacing: var(--display-tracking-xl, -0.04em); max-width: none; margin-block: auto; padding-block: var(--s-6); text-wrap: initial; }
-.hero--editorial .hero__foot { margin-top: 0; padding-top: var(--s-5); border-top: 1px solid var(--line); align-items: end; }
+.hero--editorial .hero__in { justify-content: center; }
+.hero--editorial h1 { font-size: var(--ly-h1-mega); line-height: .98; letter-spacing: var(--display-tracking-xl, -0.04em); max-width: none; margin-block: 0; text-wrap: initial; }
+.hero--editorial .hero__foot { margin-top: 0; padding-top: calc(var(--s-5) - 1px); border-top: 1px solid var(--line); align-items: end; }
 .ly-pic {
   display: inline-block; position: relative; overflow: hidden; vertical-align: -0.04em;
   height: .8em; width: var(--w, 1.9em); margin-inline: .04em; border-radius: 999px; background: var(--surface);
 }
 .ly-pic > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--ly-pos, 50% 50%); }
 .ly-pic--sq { border-radius: .16em; }
+@media (max-width: 1023px) { .hero--editorial .hero__foot { row-gap: var(--s-6); } }
 @media (max-width: 639px) { .ly-pic { --w: 1.5em; } .hero--editorial h1 { padding-block: var(--s-5); } }
 
 /* 5. hero--collage: text on span-5, a UI collage from column 7 out through the right viewport edge;
@@ -448,7 +448,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 .hero--word .hero__in { justify-content: center; }
 @media (min-width: 1024px) { .hero--word .hero__in { padding-top: var(--s-7); } }
 .hero--word h1 { font-size: var(--ly-h1-word); line-height: .92; max-width: none; }
-.hero--word .hero__foot { margin-top: var(--s-8); align-items: start; }
+.hero--word .hero__foot { margin-top: var(--s-5); align-items: start; }
 .hero--word .hero__foot .btn-row { margin-top: var(--s-6); }
 .hero--word .hero__facts { margin-top: var(--s-8); }
 /* facts as a column: one row each, the label left and the value right, hairlines between */
@@ -489,11 +489,11 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .hero__over > :first-child {
   justify-self: start; max-width: 600px; padding: var(--s-7); border-radius: var(--r-md);
   background: var(--p-inv-bg); color: var(--p-inv-ink);
-  --bg: var(--p-inv-bg); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted); --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink);
+  --heading-ink: currentColor; --bg: var(--p-inv-bg); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted); --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink);
   --line: color-mix(in oklab, var(--p-inv-ink) 14%, transparent); --line-strong: color-mix(in oklab, var(--p-inv-ink) 30%, transparent);
 }
 .hero__over h1 { max-width: 15ch; }
-.hero__over .hero__lead { color: var(--p-inv-ink); margin-top: var(--s-4); }
+.hero__over .hero__lead { color: var(--p-inv-ink); margin-top: var(--s-5); }
 .hero__over .btn-row { margin-top: var(--s-6); }
 .hero--film .ly-play { position: relative; left: auto; bottom: auto; }
 .hero--film .ly-play__label { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--p-inv-bg); color: var(--p-inv-ink); }
@@ -535,7 +535,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
       no piece covers a line of another piece's text */
 .hero--triptych .hero__grid > :first-child { align-self: center; }
 .hero--triptych h1 { font-size: var(--ly-h1-side); line-height: 1.04; }
-.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 30ch; margin-top: var(--s-4); }
+.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 30ch; margin-top: var(--s-5); }
 .hero--triptych .hero__cta { display: flex; justify-content: flex-end; }
 .hero--triptych .hero__cta .btn { height: 64px; padding-inline: var(--s-6); font-size: var(--t-lead); }
 /* 1024 to 1279: three columns get too narrow, so it becomes a split: the headline and the button on
@@ -544,7 +544,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
   .hero--triptych .hero__grid { grid-template-rows: 1fr auto 1fr; }
   .hero--triptych .hero__grid > :first-child { grid-column: 1 / span 4; grid-row: 1; align-self: end; }
   .hero--triptych .ly-collage { grid-column: 6 / span 7; grid-row: 1 / span 3; }
-  .hero--triptych .hero__cta { grid-column: 1 / span 4; grid-row: 2; justify-content: flex-start; margin-top: var(--s-6); }
+  .hero--triptych .hero__cta { grid-column: 1 / span 4; grid-row: 2; justify-content: flex-start; margin-top: var(--s-2); }
   .hero--triptych .hero__cta .btn { height: 56px; font-size: var(--t-body); }
 }
 .ly-collage { position: relative; height: 100%; min-height: 0; }
@@ -560,7 +560,8 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .ly-collage .ly-piece > img { width: 100%; height: 100%; object-fit: cover; max-width: none; }
 .ly-collage > button.loop-pause.loop-pause { right: calc(4% + 12px); bottom: calc(4% + 12px); }
 @media (max-width: 1023px) {
-  .hero--triptych .hero__cta { justify-content: stretch; } .hero--triptych .hero__cta .btn { width: 100%; height: 56px; }
+  .hero--triptych .hero__cta { order: 1; margin-top: var(--s-6); justify-content: stretch; }
+  .hero--triptych .ly-collage { order: 2; } .hero--triptych .hero__cta .btn { width: 100%; height: 56px; }
   .hero--triptych .hero__grid { display: flex; flex-direction: column; align-items: stretch; }
   .hero--triptych .hero__grid > :first-child { align-self: stretch; }
   .ly-collage { height: auto; flex: 1 1 0; min-height: 300px; margin-block: var(--s-6); }
@@ -581,6 +582,11 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .ly-mark { display: inline-block; width: .8em; height: .8em; vertical-align: -.06em; margin-inline: .06em; border-radius: 50%; background: var(--ink); position: relative; }
 .ly-mark::before, .ly-mark::after { content: ""; position: absolute; top: 27%; width: 13%; height: 42%; border-radius: 99px; background: var(--bg); transform: skewX(-12deg); }
 .ly-mark::before { left: 31%; } .ly-mark::after { left: 56%; }
+@media (min-width: 640px) and (max-width: 1199px) and (max-height: 800px) {
+  main > .hero--centred { --hgap: var(--s-5); }
+  .hero--centred .hero__c > .pill { display: none; }
+  .hero--centred h1 { max-width: none; font-size: clamp(40px, 4.5vw, 54px); }
+}
 @media (max-width: 639px) {
   .hero--centred .btn-row { width: 100%; }
   .hero--centred .hero__window:has(> .ly-piece) { padding: var(--s-4); }
@@ -633,13 +639,46 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
   main > .hero--place[data-form="split"]:has(.hero-book) > .wrap { display: grid; grid-template-rows: subgrid; grid-row: 1 / -1; }
   main > .hero--place[data-form="split"]:has(.hero-book) > .hero__bg { grid-row: 1 / 2; top: 0; height: 100%; }
 }
+.hero .hero-book-link { display: none; }
+.booking-band { padding: var(--s-3) var(--gut); background: var(--surface); }
+.booking-band > summary { display: list-item; min-height: 44px; align-content: center; cursor: pointer; }
+.booking-band > .hero-book { margin: var(--s-3) 0 0; }
 @media (max-width: 850px) {
   .hero-book { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 639px) {
-  main > .hero:has(> .wrap > .hero-book) > .wrap { grid-template-rows: auto auto; align-content: start; }
-  .hero-book { grid-template-columns: minmax(0, 1fr); }
+  main > .hero:has(.hero-book) > .wrap { display: block; }
+  .hero .hero-book[data-phone-link], .hero .hero-book:has(+ .hero-book-link) { display: none; }
+  .hero .hero-book-link { display: inline-flex; margin-top: var(--s-5); }
+  :root[data-type="service"] main > .hero--photo:has(.hero-book) { --photo: min(32svh, 70vw); }
 }
+
+@media (max-width: 639px) {
+  :root[data-type="product"] .hero--split .hero__grid:has(.hero-facts, .hero__facts) {
+    --product-media-height: clamp(260px, 41svh, 380px);
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: none; gap: var(--s-4) var(--gutter); align-items: start; align-content: start;
+  }
+  :root[data-type="product"] .hero--split .hero__text:has(.hero-facts, .hero__facts) { display: contents; }
+  :root[data-type="product"] .hero--split .hero__text:has(.hero-facts, .hero__facts) > * {
+    grid-column: 1 / -1; margin: 0;
+  }
+  :root[data-type="product"] .hero--split .hero__grid:has(.hero-facts, .hero__facts) > .hero__media {
+    grid-area: 2 / 1 / 3 / 8; width: 100%; min-height: 0; height: var(--product-media-height); margin: 0;
+  }
+  :root[data-type="product"] .hero--split.hero--peek .hero__grid:has(.hero-facts, .hero__facts) > .hero__media > [role="img"] {
+    --peek-height: calc(var(--product-media-height) / .68); zoom: .68;
+  }
+  :root[data-type="product"] .hero--split .hero__text > :is(.hero-facts, .hero__facts) {
+    grid-area: 2 / 8 / 3 / -1; align-self: center; display: grid; grid-template-columns: 1fr; gap: var(--s-4);
+    border: 0; padding: 0;
+  }
+  :root[data-type="product"] .hero--split .hero__text > :is(.hero-facts, .hero__facts) > div { grid-column: 1; }
+}
+
+:root .hero--place[data-form="split"] .hero__text { gap: 0; }
+:root .hero--place[data-form="split"] .hero__text > .hero__lead { margin-top: var(--s-5); }
+:root .hero--place[data-form="split"] .hero__text > .btn-row { margin-top: var(--s-6); }
 
 /* buttons keep the page's one hover (system.css, motion.css: the fill steps, the arrow moves 3px, the
    press sinks 1px; no shadow on a button, ST-105); a text link draws its underline from the left */

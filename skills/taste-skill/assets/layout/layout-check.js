@@ -71,10 +71,13 @@ window.lyRules = (() => {
     return words.querySelector('h1,h2,h3') && (picture.matches('img,svg,canvas,video') || picture.querySelector('img,svg,canvas,video')) && wr.left>=pr.right-2 ? words : null;
   }
   function booking(hero) {
-    const form=hero?.querySelector(':scope > .wrap > form.hero-book');
-    if (!form || form.querySelectorAll('input:not([type=hidden]),select').length < 2 || !form.querySelector('button,input[type=submit]')) return null;
-    const r=form.getBoundingClientRect(), h=hero.getBoundingClientRect();
-    return r.height>0 && r.bottom <= h.bottom+1 ? form : null;
+    const band = hero?.nextElementSibling?.matches('details.booking-band') ? hero.nextElementSibling : null;
+    const form = (band || hero)?.querySelector('.hero-book:is(form,[role="form"])');
+    if (!form || form.querySelectorAll('input:not([type=hidden]),select').length < 2 || !form.querySelector('button:not([type]),button[type=submit],input[type=submit]')) return null;
+    const visible = el => !!el?.getClientRects().length && getComputedStyle(el).visibility !== 'hidden' && !el.closest('[hidden],[inert]');
+    const link = form.nextElementSibling?.matches('.hero-book-link') ? form.nextElementSibling :
+      [...hero.querySelectorAll('a[href]')].find(a => a.getAttribute('href') === form.getAttribute('action') && visible(a));
+    return visible(form) || visible(link) || visible(band?.querySelector('summary')) ? form : null;
   }
   function holdsStage(section) {
     if (section.matches('.mo-cl__under') && section.parentElement?.matches('[data-moment="closing-lift"].is-live') &&
@@ -447,7 +450,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
     const frame = window.lyRules.peek(hero.el);
     if (window.lyRules.isPeek(hero.el) && !frame) add('hero-fold', name(hero.el), 'the window must show ' + (vw < 640 ? 300 : 420) + 'px on load and be at most 760px tall');
-    if (hero.r.bottom > vh + tol && !frame && !(vw < 640 && window.lyRules.booking(hero.el))) add('hero-fold', name(hero.el), 'ends past the fold at ' + Math.round(hero.r.bottom) + 'px');
+    if (hero.r.bottom > vh + tol && !frame) add('hero-fold', name(hero.el), 'ends past the fold at ' + Math.round(hero.r.bottom) + 'px');
     const next = info[1];
     if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),'the next section starts at ' + Math.round(next.r.top) + 'px, inside the first screen');
     if (next) {

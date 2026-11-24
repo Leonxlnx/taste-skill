@@ -41,7 +41,7 @@ still says what kind of business this is.
 | Projects, rooms or goods with facts | Case rows or an index with a fact line per item |
 | Two states | Toggle or divider |
 | Hours or a schedule | Day bar or week grid |
-| A stay or table to book | Booking bar on the hero, full form at the close |
+| A dated stay, table or class | Booking bar on the hero, full form at the close |
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A dealt composition (`sections-library.md`) |
 

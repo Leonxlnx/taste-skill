@@ -21,6 +21,15 @@ let derived = 0, low = Infinity, high = 0;
 for (const p of palettes) {
   const css = cli('scripts/start.mjs', 'css', '--page', 'software', '--palette', p.id, '--type', 'geist', '--force');
   const [, bg, surface] = css.match(/--p-bg: (#[0-9a-f]{6}); --p-surface: (#[0-9a-f]{6});/);
+  for (const name of ['ink','muted','inv-ink','inv-muted','accent-ink','action-ink','inv-accent-ink','inv-action-ink']) {
+    const value = css.match(new RegExp('--p-' + name + ': (#[0-9a-f]{6});'))[1];
+    assert(color.chroma(value) <= .021, p.id + ' --p-' + name + ' is too chromatic: ' + value);
+  }
+  const token = name => css.match(new RegExp('--p-' + name + ': (#[0-9a-f]{6});'))[1];
+  for (const [ground, text] of [['bg','ink'],['surface','ink'],['bg','muted'],['surface','muted'],['inv-bg','inv-ink'],['inv-surface','inv-ink'],['inv-bg','inv-muted'],['inv-surface','inv-muted'],['action','action-ink'],['inv-action','inv-action-ink']]) {
+    const minimum = ['ink','inv-ink'].includes(text) ? 7 : 4.5;
+    assert(color.contrast(token(ground), token(text)) >= minimum, p.id + ': ' + text + ' on ' + ground);
+  }
   const l = color.lab(bg)[0];
   const original = p.surface || color.mix(p.bg, p.ink, 0.05);
   const before = Math.abs(l - color.lab(original)[0]);

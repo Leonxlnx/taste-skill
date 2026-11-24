@@ -39,7 +39,7 @@ The first screen shows only the hero. The rest of the page grows to fit the whol
 ## 3. The hero
 
 - **The first screen.** The fixed nav, hero heading and main action fit at every width. A standard hero fills `100svh`. Nothing of the next section shows at load.
-- **Content.** The h1, lead and at most two buttons (one main action on a place). Use the client's subject for the picture. On a place or service taking stays or table bookings, dock `.hero-book` at the foot of the hero's wrap. Include dates or day, guests, room or time, the “from” price and the main button. Carry the choices to the full closing form.
+- **Content.** The h1, lead and at most two buttons (one main action on a place). Use the client's subject for the picture. For a place taking dated reservations for stays, tables or classes, dock `.hero-book` at the foot of the hero's wrap. Include dates or day, guests, room or time, the “from” price and the main button. Carry the choices to the full closing form.
 - **The h1** first, top at y 120 (96 on a phone), at most three lines at every width, never
   smaller than an h2 (28 to 60px on a phone). A notice line (one 14px line in the body face with a
   number, 4.5:1: changed hours, a delivery cut-off) sits 16px above it; never a bar above the header.
@@ -54,7 +54,7 @@ The first screen shows only the hero. The rest of the page grows to fit the whol
   (it narrows), never a fixed one. Shoot 820x1180 and 768x1024 and read the first screen's foot.
 - **Docked strip:** software and product may dock one row under the hero's content (real customer
   logos with permission, a rating line the brief gives, or three facts), at most 96px, still, hidden
-  on a phone unless it clears the action. A place or service booking uses the bar above.
+  on a phone unless it clears the action. A place taking dated reservations uses the bar above. On phones its single action links to the full form at the close. A standalone booking form keeps its native submission in a disclosure directly below the hero.
 - **Phone:** the text first; a photograph above it only when the whole hero ends by H - 24 - bar.
   Hero buttons stack at one width, unless both fit on one line.
 - **Allowed types:** a full-bleed still photograph, a product whole on a stage, an inset frame, a
@@ -109,14 +109,16 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 |---|---|---|
 | `band` | the photograph under the header down to the words, which end 64px above the fold (h1 on columns 1–8, the line and the button from the split line); nothing on the photograph | the photograph, then the words (as below) |
 | `bleed` | the photograph over the whole screen; the h1, the line and the button on a solid panel of the page ground (580 wide, 48 inside) in its lower left corner, `data-corner="end"` for the right one when the calm side is right | the photograph, then the words on the ground |
-| `split` | the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven, from 48px under the header to the hero's foot | as band |
+| `split` | the words on five columns (title, lead and action grouped at the top, with 24px and 32px gaps), the photograph on seven, from 48px under the header to the hero's foot | as band |
 | `name` | band, with the name or the street set large across the `.wrap` first in `.hero__text` (`<p class="hero__name">Henderson Street</p>`, up to 160px): the page's one type moment | the name at 44 to 72px |
 
 - At 1440 the photograph fills what the words leave. The place h1 uses the pairing’s display size, 56–72px at 1440 and 36–44px at 390. Longer titles take the smaller size. Keep it to two lines at 1440 and three on the phone, with the sub-line and one main action. Leave room for the booking bar when dealt.
 - A shop or bookshop may take a letterbox inside the column instead: 1200 x 504, 24px under the
   header (`--photo: 528px`).
-- On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 a booking form can use one column. Keep its date choices, price and button visible and reachable.
+- On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 show one link to the full booking form at the close. A service enquiry uses one enquiry action.
 - Show the room from the door, the counter in use, flowers in the shop, or the landscape the brief locates. See `photos.md` for choosing and cropping the picture. Keep the visit details high on the page.
+
+On a phone, a product or hardware split with offer facts places the picture and the price and dispatch facts side by side, directly after the h1. The lead and actions follow. Keep the identifying part of the product and its offer in the first screen.
 
 ## 4. Equal edges and the grid
 
@@ -169,7 +171,7 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
   light weight under 20px.
 - **Sizes** (1440/390): h1 72/38 (the hero; each hero's own token in `heroes.json`), h2 48/30, h3
   and quotes 28/24, lead and card titles 20/18, body 16/26, small 14, labels 13/500 in sentence
-  case, a stat 38/28 (`--t-stat`). Place h1 as above, h2 32/40 and 24/30, names 20/28 and
+  case, a stat 38/28 (`--t-stat`). Place h1 as above, h2 40/50 and 28/35, names 20/28 and
   18/26, sub-line 20/30 and 18/28, body 16/26, small 14/20, labels 13/16. Each level at least 1.3x
   the next from 1024 (1.2x below); nothing under 13px; lines at most 62 characters.
 - Display text of 40px or more outside a grid item counts as a heading; a statement set at h2 size

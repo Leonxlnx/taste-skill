@@ -32,13 +32,13 @@
       every pairing the kind can be dealt, with its exact Google Fonts link
   node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
       [--sections N] [--long] [--has photo,ui,film,object,setting,logo,art]
-      [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--last-section form]
+      [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form]
       [--tone warm|editorial|product|tech|playful] [--axis] [--history .taste-skill/history.json]
       Deal the frame and four prompts for the content. Sections include the hero and close (default 7).
       The plan has one moment, two with --long or at least seven sections. --carry names what the
       copy notes hold. With no flag only place, product and service assume photos. --has names actual
       assets, including product for a photograph of the client's own product, archive for a large set,
-      film for footage, route or site for those subjects. A booking docks a bar on a place or service hero.
+      film for footage, route or site for those subjects. For a dated place reservation pass --booking stay|table|class. Service enquiries use one action.
       The printed PLAN and the machine-readable plan.json beside the history describe the same page.
 
   --page, the SKILL.md kinds as start.mjs names them:
@@ -170,30 +170,42 @@ function readableMuted(muted, ink, grounds) {
 }
 function buttonInk(accent, ...cands) { return color.readable(accent, ...cands); }
 
+// Preserve the lightness and a trace of the hue on coloured grounds.
+function readingInk(c) {
+  const [l, chroma, hue] = color.lch(c);
+  return chroma <= 0.02 ? color.hex(c) : color.fromLch([l, 0.014, hue]);
+}
+
 function tokens(p, adjustSurface = true) {
-  const bg = color.hex(p.bg), ink = color.hex(p.ink);
+  const bg = color.hex(p.bg), ink = readingInk(p.ink);
   const supplied = color.hex(p.surface || color.mix(bg, ink, 0.05));
   const distance = Math.abs(color.lab(supplied)[0] - color.lab(bg)[0]);
   const derived = adjustSurface && (distance < 0.04 || distance > 0.09);
   const surface = derived ? color.lighten(bg, color.isDark(bg) ? 0.06 : -0.06) : supplied;
-  const muted = readableMuted(color.hex(p.muted || color.mix(ink, bg, 0.45)), ink, [bg, surface]);
+  const muted = readableMuted(readingInk(p.muted || color.mix(ink, bg, 0.45)), ink, [bg, surface]);
   const accent = color.hex(p.accent || ink);
-  const accentInk = color.contrast(accent, p.accentInk || bg) >= 4.5 ? color.hex(p.accentInk || bg) : buttonInk(accent, '#ffffff', '#111111', ink, bg);
+  const preferred = readingInk(p.accentInk || bg);
+  const accentInk = color.contrast(accent, preferred) >= 4.5 ? preferred : buttonInk(accent, '#ffffff', '#111111');
   // the one inverse band: a dark field of the palette when there is one, else the ink
   const dark = color.isDark(bg);
   const field = (p.fields || []).map(f => f.bg).find(c => dark ? !color.isDark(c) : color.lab(c)[0] < 0.4);
   const invBg = color.hex(field || ink);
-  const invInk = color.contrast(invBg, bg) >= 7 ? bg : color.readable(invBg, '#ffffff', '#111111');
-  const invSurface = color.mix(invBg, invInk, 0.07);
-  const invMuted = readableMuted(color.mix(invInk, invBg, 0.38), invInk, [invBg, invSurface]);
+  const neutralGround = readingInk(bg);
+  const inverseTint = color.mix(invBg, neutralGround, 0.07);
+  const invInk = [invBg, inverseTint].every(g => color.contrast(g, neutralGround) >= 7) ? neutralGround : color.readable(invBg, '#ffffff', '#111111');
+  const tint = color.mix(invBg, invInk, 0.07);
+  const invSurface = color.contrast(tint, invInk) >= 7 ? tint : color.lighten(invBg, color.isDark(invInk) ? 0.04 : -0.04);
+  const invMuted = readableMuted(readingInk(color.mix(invInk, invBg, 0.38)), invInk, [invBg, invSurface]);
   const invAccent = color.contrast(accent, invBg) >= 3 && (color.chroma(invBg) < 0.03 || color.hueDistance(accent, invBg) > 20) ? accent : invInk;
-  const invAccentInk = invAccent === accent ? accentInk : invBg;
+  const inverseLabel = readingInk(invBg);
+  const invAccentInk = invAccent === accent ? accentInk : buttonInk(invAccent, inverseLabel, '#ffffff', '#111111');
   // buttons and links: the accent when it stands out from the ground, else the ink
   const action = color.contrast(accent, bg) >= 2.2 ? accent : ink;
-  const actionInk = action === accent ? accentInk : bg;
+  const actionInk = action === accent ? accentInk : buttonInk(action, neutralGround, '#ffffff', '#111111');
   const invAction = color.contrast(invAccent, invBg) >= 2.2 ? invAccent : invInk;
-  const invActionInk = invAction === invAccent ? invAccentInk : invBg;
-  return { bg, surface, derived, ink, muted, accent, accentInk, action, actionInk, invBg, invSurface, invInk, invMuted, invAccent, invAccentInk, invAction, invActionInk };
+  const invActionInk = invAction === invAccent ? invAccentInk : buttonInk(invAction, inverseLabel, '#ffffff', '#111111');
+  const headingInk = p.headingInk && [bg, surface].every(g => color.contrast(p.headingInk, g) >= 3) ? p.headingInk : null;
+  return { bg, surface, derived, ink, headingInk, muted, accent, accentInk, action, actionInk, invBg, invSurface, invInk, invMuted, invAccent, invAccentInk, invAction, invActionInk };
 }
 
 // ---------------------------------------------------------------- type
@@ -339,7 +351,7 @@ function block(tk, ty, radius) {
 <!-- <html lang="en" data-radius="${radius}">; keep this <style> after the links: layout.css resets --ly-scale -->
 <style>
 :root {
-  --p-bg: ${tk.bg}; --p-surface: ${tk.surface}; --p-ink: ${tk.ink}; --p-muted: ${tk.muted};
+  --p-bg: ${tk.bg}; --p-surface: ${tk.surface}; --p-ink: ${tk.ink}; --p-muted: ${tk.muted};${tk.headingInk ? ` --p-heading-ink: ${tk.headingInk};` : ''}
   --p-accent: ${tk.accent}; --p-accent-ink: ${tk.accentInk}; --p-action: ${tk.action}; --p-action-ink: ${tk.actionInk};
   --p-inv-bg: ${tk.invBg}; --p-inv-surface: ${tk.invSurface}; --p-inv-ink: ${tk.invInk}; --p-inv-muted: ${tk.invMuted};
   --p-inv-accent: ${tk.invAccent}; --p-inv-accent-ink: ${tk.invAccentInk}; --p-inv-action: ${tk.invAction}; --p-inv-action-ink: ${tk.invActionInk};
@@ -432,8 +444,10 @@ const ONCE_A_PAGE = ['bleed-panel', 'mirrored'];
 const sectionsArg = opt('sections', 7);
 const sections = Number(sectionsArg);
 const action = opt('action');
+const bookingSubject = opt('booking');
 if (['plan', 'deal'].includes(cmd)) {
   if (sectionsArg === true || !Number.isSafeInteger(sections) || sections < 1) { console.error('start: --sections needs a positive integer'); process.exit(2); }
+  if (bookingSubject !== undefined && !['stay', 'table', 'class'].includes(bookingSubject)) { console.error('start: --booking needs stay, table or class'); process.exit(2); }
   if (action !== undefined && !['booking', 'order', 'trial', 'visit', 'contact'].includes(action)) { console.error('start: --action needs booking, order, trial, visit or contact'); process.exit(2); }
 }
 
@@ -508,7 +522,7 @@ function dealLayout(h) {
       out.compositions.feature = [a, b];
       lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
     } else {
-      const booking = action === 'booking' && (k === 'place' || k === 'service');
+      const booking = action === 'booking' && k === 'place' && !!bookingSubject;
       const options = sec === 'form' && booking ? 'close-form' : COMPS[sec];
       const v = dealt(pick(`${k}:${sec}`, options, 2, used));
       out.compositions[sec] = v;
@@ -613,7 +627,7 @@ if (cmd === 'deal') {
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
   const { hero, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
     '--type', pageType, '--kind', page, '--has', has, '--history', path.join(dir, 'layout-history.json'),
-    ...(action ? ['--action', action] : []), ...(opt('no-record') ? ['--no-record'] : []),
+    ...(action ? ['--action', action] : []), ...(bookingSubject ? ['--booking', bookingSubject] : []), ...(opt('no-record') ? ['--no-record'] : []),
   ]);
   const ownFormClose = opt('last-section') === 'form';
   const reserveClose = ownFormClose || layout.close === 'close-form';
@@ -753,5 +767,5 @@ if (cmd === 'deal') {
     writeHistory(histFile, h);
   }
 } else {
-  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--last-section form] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
+  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
 }

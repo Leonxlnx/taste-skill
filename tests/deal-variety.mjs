@@ -65,8 +65,9 @@ for (const kind of kindsToRun) {
     const carry = materials === undefined ? (quiet ? ['photos'] : []) : materials.split(',').filter(Boolean);
     const assets = (i % 4 === 3 ? 'photo,art,ui,film,archive,product,route,logo,object' : hasByKind[kind]).split(',');
     const action = i % 3 === 0 && ['place', 'service'].includes(kind) ? 'booking' : kind === 'product' && i % 3 === 0 ? 'order' : 'contact';
+    const booking = ['stay', 'table', 'class', null][i % 4];
     const args = [path.join(root, 'scripts/start.mjs'), 'plan', '--page', kind, '--has', assets.join(','),
-      '--action', action, '--sections', String(sections), '--seed', kind + '-' + i, '--no-recent',
+      '--action', action, ...(action === 'booking' && booking ? ['--booking', booking] : []), '--sections', String(sections), '--seed', kind + '-' + i, '--no-recent',
       ...(materials === undefined ? [] : ['--carry', materials]), ...(long ? ['--long'] : [])];
     const result = spawnSync(process.execPath, args, { cwd, encoding: 'utf8', windowsHide: true, timeout: 60000 });
     assert.equal(result.status, 0, kind + '/' + i + ': ' + (result.error || result.stderr));
@@ -125,7 +126,7 @@ for (const kind of kindsToRun) {
     if (quiet) assert.equal(p.effect, null);
     if (p.hero === 'film') assert(assets.includes('film'));
     if (['product', 'tech'].includes(kind) && !assets.includes('photo') && !assets.includes('art')) assert.notEqual(p.hero, 'product');
-    assert.equal(p.heroBook, action === 'booking');
+    assert.equal(p.heroBook, kind === 'place' && action === 'booking' && !!booking);
     if (p.heroBook) assert.equal(p.close, 'close-form');
     if (p.hero === 'centred' && assets.includes('ui')) assert.equal(p.heroPeek, true);
     if (p.heroPeek) assert(assets.includes('ui') && printed.includes('class hero--peek'));

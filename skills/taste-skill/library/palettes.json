@@ -49,8 +49,8 @@
   ],
   "bg": "#f7f9fa",
   "surface": "#e3e5e6",
-  "ink": "#1f3038",
-  "muted": "#5d6b72",
+  "ink": "#262f33",
+  "muted": "#616a6f",
   "accent": "#0d7480",
   "accentInk": "#ffffff",
   "note": "Cool white and one paler blue-grey step hold everything, with type in dark slate instead of black. Teal appears once per screen at most, as the primary button or one small detail beside the product photograph.",
@@ -153,10 +153,10 @@
   ],
   "bg": "#ffffff",
   "surface": "#ebebeb",
-  "ink": "#1f2b4d",
-  "muted": "#6a7186",
+  "ink": "#2a2d34",
+  "muted": "#6e717a",
   "accent": "#f7941d",
-  "accentInk": "#1f2b4d",
+  "accentInk": "#2a2d34",
   "fields": [
    {
     "bg": "#05070a",
@@ -164,14 +164,15 @@
    },
    {
     "bg": "#e3e1dc",
-    "ink": "#1f2b4d"
+    "ink": "#2a2d34"
    }
   ],
-  "note": "Pure white pages with navy type sit between full-bleed photographs, opening on near-black and closing on a warm grey footer. Tangerine is one small tab or button, never larger than a thumbnail.",
+  "note": "White surfaces carry dark reading text. Navy headings and an orange tab identify the active section.",
   "seenIn": [
    "aww-white-desert",
    "aww-realevate"
-  ]
+  ],
+  "headingInk": "#1f2b4d"
  },
  {
   "id": "three-stones",
@@ -282,8 +283,8 @@
   ],
   "bg": "#e5e1d8",
   "surface": "#d1cdc5",
-  "ink": "#2a1d17",
-  "muted": "#6b5b51",
+  "ink": "#261e1b",
+  "muted": "#655d57",
   "accent": "#456f3a",
   "accentInk": "#ffffff",
   "fields": [
@@ -339,7 +340,7 @@
   "bg": "#0a0d14",
   "surface": "#131824",
   "ink": "#e9edf3",
-  "muted": "#8891a1",
+  "muted": "#8c9199",
   "accent": "#5ab9fc",
   "accentInk": "#0a0d14",
   "note": "Blue-black ground and slate panels with silver-white text fill the page; no section changes colour. A sky blue marks the buttons and the links, nothing else.",
@@ -419,7 +420,7 @@
   "ink": "#ffffff",
   "muted": "#9aa39a",
   "accent": "#c6f19d",
-  "accentInk": "#0f1f10",
+  "accentInk": "#171c17",
   "fields": [
    {
     "bg": "#000000",
@@ -427,7 +428,7 @@
    },
    {
     "bg": "#ffffff",
-    "ink": "#0f1f10"
+    "ink": "#171c17"
    }
   ],
   "note": "Forest green, black and white sections alternate, with forest green holding the most; photographs stay in moss greens and stone browns. Pale lime sits on small squares only, such as arrow buttons and the closing wordmark.",
@@ -580,7 +581,7 @@
    },
    {
     "bg": "#ffffff",
-    "ink": "#101421"
+    "ink": "#12141b"
    }
   ],
   "note": "Near-black and plum at the top and bottom bracket a white middle with navy-black text. Hot pink is reserved for primary buttons, bars in charts and map markers; it never fills a section.",
@@ -669,7 +670,7 @@
   "bg": "#eef0f3",
   "surface": "#dadcdf",
   "ink": "#0b0c0e",
-  "muted": "#5d6470",
+  "muted": "#5f646c",
   "accent": "#1f2de6",
   "accentInk": "#ffffff",
   "fields": [
@@ -699,14 +700,14 @@
   ],
   "bg": "#f7f7f7",
   "surface": "#e3e3e3",
-  "ink": "#0d2a1c",
+  "ink": "#1e2621",
   "muted": "#5f6b64",
   "accent": "#f6e016",
-  "accentInk": "#0d2a1c",
+  "accentInk": "#1e2621",
   "fields": [
    {
     "bg": "#f6e016",
-    "ink": "#0d2a1c"
+    "ink": "#1e2621"
    }
   ],
   "note": "Off-white ground with all type in a near-black bottle green instead of black. Yellow is the only saturated note: the button or one small object on most screens, and one later section that turns fully yellow.",
@@ -730,8 +731,8 @@
   ],
   "bg": "#f7f9f8",
   "surface": "#e3e5e4",
-  "ink": "#06525c",
-  "muted": "#2f737d",
+  "ink": "#404b4c",
+  "muted": "#5f6a6c",
   "accent": "#06525c",
   "accentInk": "#f7f9f8",
   "fields": [
@@ -740,10 +741,11 @@
     "ink": "#f7f9f8"
    }
   ],
-  "note": "Cool white paper and a single teal used for every word, shape and button, with no black anywhere. The accent is that same teal filled solid, for the button and for one inverted band with paper-coloured type.",
+  "note": "Teal headings and actions sit on pale paper. A dark neutral carries paragraphs and labels.",
   "seenIn": [
    "opl-le-petit-bleu"
-  ]
+  ],
+  "headingInk": "#06525c"
  },
  {
   "id": "navy-pink",
@@ -758,14 +760,15 @@
   ],
   "bg": "#1a2039",
   "surface": "#282f49",
-  "ink": "#f9a3c0",
-  "muted": "#b9879c",
+  "ink": "#c9bdc0",
+  "muted": "#9f9499",
   "accent": "#f9a3c0",
-  "accentInk": "#1a2039",
-  "note": "One navy field runs the entire page. Pink does everything else, from the name and headings to body text, and fills one solid button.",
+  "accentInk": "#1f2229",
+  "note": "Navy grounds keep the page dark. Pink headings and controls sit alongside pale reading text.",
   "seenIn": [
    "aww-trevor-noah"
-  ]
+  ],
+  "headingInk": "#f9a3c0"
  },
  {
   "id": "blush-aubergine",
@@ -781,21 +784,22 @@
   ],
   "bg": "#edccbe",
   "surface": "#d9b9ab",
-  "ink": "#351a2b",
-  "muted": "#6c4857",
+  "ink": "#2a2226",
+  "muted": "#5b5155",
   "accent": "#351a2b",
-  "accentInk": "#edccbe",
+  "accentInk": "#ddd1cd",
   "fields": [
    {
     "bg": "#351a2b",
-    "ink": "#edccbe"
+    "ink": "#ddd1cd"
    }
   ],
-  "note": "Blush pink and dark aubergine alternate as full fields and serve as each other's text colour, in roughly equal shares. There is no third colour: the button is a solid block of whichever of the two is not the ground.",
+  "note": "Blush and aubergine grounds alternate. Dark aubergine headings identify cases on blush, with neutral text on both grounds.",
   "seenIn": [
    "aww-house-of-honey-1",
    "opl-sarah-matt-wedding"
-  ]
+  ],
+  "headingInk": "#351a2b"
  },
  {
   "id": "cobalt-on-sand",
@@ -813,14 +817,15 @@
   ],
   "bg": "#e6dbc7",
   "surface": "#d2c8b4",
-  "ink": "#062b8a",
-  "muted": "#3a5aa8",
+  "ink": "#343840",
+  "muted": "#5b5f67",
   "accent": "#062b8a",
-  "accentInk": "#e6dbc7",
-  "note": "Sand paper and one cobalt do everything: text, drawings and solid shapes are all the same blue. The button is a cobalt block with sand-coloured type, and no black or second hue is used.",
+  "accentInk": "#e1dcd2",
+  "note": "Sand paper carries dark reading text. Cobalt headings, drawings and controls identify the project.",
   "seenIn": [
    "aww-illoca"
-  ]
+  ],
+  "headingInk": "#062b8a"
  },
  {
   "id": "oxblood-grey",
@@ -837,8 +842,8 @@
   ],
   "bg": "#e2e2e2",
   "surface": "#cecece",
-  "ink": "#7d0c14",
-  "muted": "#7a4a4e",
+  "ink": "#433938",
+  "muted": "#615757",
   "accent": "#7d0c14",
   "accentInk": "#e2e2e2",
   "fields": [
@@ -847,10 +852,11 @@
     "ink": "#e2e2e2"
    }
   ],
-  "note": "Deep red text on grey paper holds most of the page, then pale grey text on a solid red field takes one long section and the footer. Photographs are chosen calm and low in colour so nothing breaks the pair (in full colour where the pictures carry the colour; greyscale only where section 0 deals black-and-white), and the button is a solid red block.",
+  "note": "Grey paper and charcoal text carry the cases. Oxblood marks the headings, selected controls and main action.",
   "seenIn": [
    "opl-belgrade-architecture"
-  ]
+  ],
+  "headingInk": "#7d0c14"
  },
  {
   "id": "olive-on-bone",
@@ -869,8 +875,8 @@
   ],
   "bg": "#ecebe7",
   "surface": "#d8d7d3",
-  "ink": "#38450f",
-  "muted": "#5d683a",
+  "ink": "#3d4038",
+  "muted": "#61635b",
   "accent": "#38450f",
   "accentInk": "#ecebe7",
   "fields": [
@@ -879,10 +885,11 @@
     "ink": "#ecebe7"
    }
   ],
-  "note": "A bone page with every word, large or small, in one olive green; the footer inverts to a solid olive field with bone text. Photography supplies all other colour, and the button is the same olive, filled.",
+  "note": "Bone paper carries neutral text, with olive headings and controls. The footer can use the olive field.",
   "seenIn": [
    "aww-tengile-malamala-collection"
-  ]
+  ],
+  "headingInk": "#38450f"
  },
  {
   "id": "burgundy-bubblegum",
@@ -896,14 +903,15 @@
   ],
   "bg": "#3d0012",
   "surface": "#4d0519",
-  "ink": "#ff99d3",
-  "muted": "#c77aa0",
+  "ink": "#c6bcc1",
+  "muted": "#9d9397",
   "accent": "#ff99d3",
-  "accentInk": "#3d0012",
-  "note": "Deep burgundy is the ground for the whole page and bubblegum pink sets every word on it. The button and the active state of a control are solid pink with burgundy type; product photographs supply any other colour.",
+  "accentInk": "#231a1b",
+  "note": "Burgundy carries pale reading text. Pink headings, buttons and selected states share one accent.",
   "seenIn": [
    "opl-madie"
-  ]
+  ],
+  "headingInk": "#ff99d3"
  },
  {
   "id": "bottle-green-gold",
@@ -918,14 +926,15 @@
   ],
   "bg": "#133621",
   "surface": "#1a4429",
-  "ink": "#f4d96c",
-  "muted": "#b3a55e",
+  "ink": "#dcdacf",
+  "muted": "#a6a49b",
   "accent": "#f4d96c",
-  "accentInk": "#133621",
-  "note": "Bottle green covers the page and warm gold sets all the type, with panels one step lighter than the ground. The button is solid gold with green text, and photographs are kept dark and warm so the pair is not disturbed.",
+  "accentInk": "#29302b",
+  "note": "Bottle green surrounds light reading text. Gold is reserved for headings and active controls.",
   "seenIn": [
    "aww-lacoste-ace-breaker"
-  ]
+  ],
+  "headingInk": "#f4d96c"
  },
  {
   "id": "cobalt-field",
@@ -962,7 +971,7 @@
   "bg": "#e1ac10",
   "surface": "#cd9d0f",
   "ink": "#0b0b0b",
-  "muted": "#4d3d0a",
+  "muted": "#423f37",
   "accent": "#24338f",
   "accentInk": "#ffffff",
   "note": "One warm mustard field for the whole page with black ink only. Royal blue is the single interruption, kept to a sliver along one edge or one small button.",
@@ -983,16 +992,16 @@
   "bg": "#9c1220",
   "surface": "#830115",
   "ink": "#ffffff",
-  "muted": "#f0b9bd",
+  "muted": "#d2c6c7",
   "accent": "#ffd9dc",
-  "accentInk": "#9c1220",
+  "accentInk": "#5b5150",
   "fields": [
    {
     "bg": "#2a2a2a",
     "ink": "#ffffff"
    }
   ],
-  "note": "A deep red field bookends or fills the page, with white type and pale pink secondary lines; work shown in between sits on flat charcoal so it keeps its own colours. The button is a pale pink block with red type.",
+  "note": "Deep red frames work on flat charcoal. White headings and neutral secondary text stay legible across both.",
   "seenIn": [
    "opl-marina-rachello",
    "opl-belgrade-architecture"
@@ -1011,13 +1020,13 @@
   "bg": "#ff87ab",
   "surface": "#ea7498",
   "ink": "#0a0a0a",
-  "muted": "#6b1f3a",
+  "muted": "#463c3e",
   "accent": "#def915",
   "accentInk": "#0a0a0a",
   "fields": [
    {
     "bg": "#0a0a0a",
-    "ink": "#ff87ab"
+    "ink": "#bbafb2"
    }
   ],
   "note": "A flat bubblegum pink field with black type from top to bottom. Fluorescent lime is the action colour only: the menu button, one highlighter swipe behind a word and the main button.",
@@ -1038,25 +1047,26 @@
   ],
   "bg": "#6bb4ee",
   "surface": "#82c7ff",
-  "ink": "#0e1822",
-  "muted": "#1b3d5c",
+  "ink": "#12181d",
+  "muted": "#353b42",
   "accent": "#ff5a1f",
-  "accentInk": "#0e1822",
+  "accentInk": "#12181d",
   "fields": [
    {
     "bg": "#ffffff",
-    "ink": "#0e1822"
+    "ink": "#12181d"
    },
    {
     "bg": "#0e1822",
     "ink": "#ffffff"
    }
   ],
-  "note": "Sky blue sits behind everything, white cards lie on top of it, and navy handles all text and the footer. Orange is for buttons and one highlighted word, so orange against blue is the single clash on the page.",
+  "note": "Sky blue and white carry dark reading text. Orange marks the action.",
   "seenIn": [
    "opl-ohhmydesign",
    "opl-anidachi"
-  ]
+  ],
+  "headingInk": "#0e1822"
  },
  {
   "id": "orange-field-black",
@@ -1071,14 +1081,14 @@
   ],
   "bg": "#ff7a1f",
   "surface": "#ff9c67",
-  "ink": "#050f16",
-  "muted": "#5a2306",
+  "ink": "#080f13",
+  "muted": "#3d3430",
   "accent": "#050f16",
-  "accentInk": "#ff7a1f",
+  "accentInk": "#aea39e",
   "fields": [
    {
     "bg": "#ffffff",
-    "ink": "#050f16"
+    "ink": "#080f13"
    }
   ],
   "note": "Hot orange is the page: one flat field with blue-black type, flipping at a hard horizontal seam to a white section when the content needs a rest. The button is a solid block of the same blue-black with orange text, and every other colour comes from the objects shown.",
@@ -1100,18 +1110,18 @@
   ],
   "bg": "#472913",
   "surface": "#55321a",
-  "ink": "#e4e0cf",
-  "muted": "#b39f84",
+  "ink": "#e2e0d6",
+  "muted": "#a8a199",
   "accent": "#525e1b",
-  "accentInk": "#e4e0cf",
+  "accentInk": "#e2e0d6",
   "fields": [
    {
     "bg": "#c79a3e",
-    "ink": "#2b170a"
+    "ink": "#221b17"
    },
    {
     "bg": "#525e1b",
-    "ink": "#e4e0cf"
+    "ink": "#e2e0d6"
    }
   ],
   "note": "Tobacco brown fills the page with bone type, and photographs stay in browns and ochre. One olive block holds the main text or the button, and a single ochre band may break the brown once.",
@@ -1294,7 +1304,7 @@
   "bg": "#ffd249",
   "surface": "#ebbe2e",
   "ink": "#0a0a0a",
-  "muted": "#5e4a0a",
+  "muted": "#504c44",
   "accent": "#f53fd6",
   "accentInk": "#0a0a0a",
   "fields": [
@@ -1337,7 +1347,7 @@
   "bg": "#ff8126",
   "surface": "#ffa26b",
   "ink": "#111111",
-  "muted": "#5c2a05",
+  "muted": "#403834",
   "accent": "#de194b",
   "accentInk": "#ffffff",
   "fields": [
@@ -1376,8 +1386,8 @@
   ],
   "bg": "#e2dccf",
   "surface": "#cec9bc",
-  "ink": "#2a1110",
-  "muted": "#6b524c",
+  "ink": "#201716",
+  "muted": "#605654",
   "accent": "#4a6f84",
   "accentInk": "#ffffff",
   "fields": [
@@ -1391,7 +1401,7 @@
    },
    {
     "bg": "#e0a912",
-    "ink": "#2a1110"
+    "ink": "#201716"
    },
    {
     "bg": "#4a6f84",
@@ -1399,7 +1409,7 @@
    },
    {
     "bg": "#e2dccf",
-    "ink": "#2a1110"
+    "ink": "#201716"
    }
   ],
   "note": "Post red and bone alternate as full section fields, with red holding the opening and the close. Mustard, slate blue and maroon are kept for whole card frames, and slate blue also fills the one button.",
@@ -1578,7 +1588,7 @@
   "bg": "#c3d7e5",
   "surface": "#d6ebf9",
   "ink": "#141414",
-  "muted": "#4a5068",
+  "muted": "#4f5159",
   "accent": "#0f5257",
   "accentInk": "#ffffff",
   "fields": [
@@ -1708,7 +1718,7 @@
   "bg": "#cbe4f2",
   "surface": "#b8d0de",
   "ink": "#0a0a0a",
-  "muted": "#44606e",
+  "muted": "#545d62",
   "accent": "#b0298f",
   "accentInk": "#ffffff",
   "fields": [
@@ -1776,9 +1786,9 @@
   "bg": "#2b2216",
   "surface": "#382d1e",
   "ink": "#e4e2da",
-  "muted": "#a39a8b",
+  "muted": "#a09a92",
   "accent": "#bda38b",
-  "accentInk": "#2b2216",
+  "accentInk": "#28231c",
   "fields": [
    {
     "bg": "#bda38b",
@@ -1830,7 +1840,7 @@
   "bg": "#f6f1e7",
   "surface": "#ebe3d4",
   "ink": "#2b241e",
-  "muted": "#6a5f54",
+  "muted": "#676059",
   "accent": "#a3472b",
   "accentInk": "#ffffff",
   "note": "A flour-white ground with warm brown-black type and a sand step for panels. Terracotta red is the main button and the brand band, never a second fill; the photographs of ovens, tiles and bread bring the warmth."
@@ -1850,8 +1860,8 @@
   ],
   "bg": "#f3f1ec",
   "surface": "#e6e2d9",
-  "ink": "#1d2530",
-  "muted": "#5a6270",
+  "ink": "#20252b",
+  "muted": "#5d626a",
   "accent": "#2c5877",
   "accentInk": "#ffffff",
   "note": "Linen white with blue-black type and one greyer linen step for the booking form and the room cards. A muted harbour blue is the one button and the brand band; nothing else is tinted."
@@ -1873,7 +1883,7 @@
   "bg": "#f4efe5",
   "surface": "#e7dfcf",
   "ink": "#29251e",
-  "muted": "#675e51",
+  "muted": "#645f57",
   "accent": "#8c6418",
   "accentInk": "#ffffff",
   "note": "A limewashed off-white with near-black brown type and a straw step for panels. Ochre is the button and the focus ring, darkened so its white label reads; the ground stays quiet under warm photographs."

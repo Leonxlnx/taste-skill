@@ -23,4 +23,4 @@ The gate checks 1440 and 390 px, with a 320 px overflow and controls probe. It r
 
 Fix the named element and run the gate again. `--quick` checks progress without spending a round. An unchanged page reuses its result. Edits to the copy notes or plan trigger a fresh check. A checker error is reported separately from a page failure.
 
-Waive a false positive in `.taste-skill/waivers.json` with its exact check ID, target from the report and a specific reason. A passing round closes the build. The normal limit is three rounds. At the limit the gate keeps outstanding findings in its report. Use `--start --new` for a new build and `--done "reason"` to record an intentional stop.
+Waive a false positive in `.taste-skill/waivers.json` with its exact check ID, target from the report and a specific reason. One entry covers every eligible finding matching its check and target. A passing round closes the build. The normal limit is three rounds. At the limit the gate keeps outstanding findings in its report. Use `--start --new` for a new build and `--done "reason"` to record an intentional stop.

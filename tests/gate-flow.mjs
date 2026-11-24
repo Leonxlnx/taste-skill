@@ -46,6 +46,7 @@ const STUB = "import fs from 'node:fs';\nconst s = JSON.parse(fs.readFileSync(pr
 fs.writeFileSync(path.join(SKILL, 'scripts', 'consistency.mjs'), STUB +
   "if (s.consistency === 'crash') { console.error('Error: a stand-in crash'); process.exit(2); }\n" +
   "const f = s.consistency === 'fail' ? [{ check: 'contrast', sev: 'FAIL', sel: 'section#board h2', text: 'The keyboard', msg: 'a stand-in FAIL', fix: 'a stand-in fix' }] : [];\n" +
+  "if (s.consistency === 'pair') for (const sel of ['picture.hero__bg','picture.hero__bg > img']) f.push({check:'container-edges',sev:'FAIL',sel,msg:'split photo',fix:'check the slot'});\n" +
   "console.log(JSON.stringify({ widths: [{ width: 1440, findings: f, frame:s.frame }, { width: 390, findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'scripts', 'copy-lint.mjs'), "console.log(JSON.stringify({ files: [{ findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'assets', 'layout', 'check.mjs'), "console.log('[]');\n");
@@ -257,6 +258,19 @@ for (const whole of [false, true]) {
   fs.writeFileSync(path.join(dir, '.taste-skill', 'waivers.json'), JSON.stringify([{ check: 'contrast', target: whole ? line : line.replace(/^FAIL contrast\s+/, ''), reason: 'a stand-in reason, long enough' }]));
   r = gate(dir, []);
   check(r.last === 'GATE: PASS' && /WAIVED contrast/.test(r.out) && !/waiver ignored/.test(r.out), `${whole ? 'the whole line, "FAIL contrast" and all,' : 'a target ending in the widths "  [1440]"'} waives it (${r.last})`, r.out);
+}
+
+{
+  const dir = project('the keyboard', 'The keyboard', 'a keyboard');
+  gate(dir, ['--start', 'index.html']);
+  stub(dir, 'pair');
+  fs.writeFileSync(path.join(dir, '.taste-skill', 'waivers.json'), JSON.stringify([
+    {check:'container-edges', target:'picture.hero__bg', reason:'Picture occupies the assigned seven columns.'},
+    {check:'contrast', target:'missing', reason:'Testing a stale target.'}
+  ]));
+  const r = gate(dir, []);
+  check(r.last === 'GATE: PASS' && (r.out.match(/WAIVED container-edges/g) || []).length === 2, 'one target waives the frame and its image', r.out);
+  check(/waiver ignored.*matches no open finding.*Entry format: \{"check":/.test(r.out), 'a stale waiver prints its reason and entry format on one line', r.out);
 }
 
 // ---------------------------------------------------------------- 9. perf.mjs's last run reaches the gate

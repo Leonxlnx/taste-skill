@@ -131,8 +131,11 @@ if (!variant || variant==='booking') {
   const source=fs.readFileSync(path.join(assets,'layout','hero-place.html'),'utf8');
   const bar=source.match(/<form class="hero-book"[\s\S]*?<\/form>/)?.[0];
   assert.ok(bar,'shipped place hero contains the booking bar');
-  const html=source.replace(/<!--[\s\S]*?-->/g,c=>c.includes(bar)?bar:c)
+  const html=source.replace('class="hero hero--place"', 'class="hero hero--place" data-form="split"')
+    .replace(/<img class="hero__bg"([^>]+)>/, '<picture class="hero__bg"><img$1></picture>')
+    .replace(/<!--[\s\S]*?-->/g,c=>c.includes(bar)?'<div class="booking-slot">' + bar + '</div>':c)
     .replace(/((?:src|href)=")\.\.\//g,'$1assets/').replace(/((?:src|href)=")(img\/|layout\.css|layout\.js)/g,'$1assets/layout/$2')
+    .replace('<div class="close__media">', '<form id="booking" aria-label="Table request"><label>Date<input type="date" name="date"></label><button>Request a table</button></form><div class="close__media">')
     .replace(/<div class="btn-row"><a[^>]*>See today's bake<\/a><\/div>/,'');
   const file=path.join(tmp,'booking.html');
   fs.writeFileSync(file,html);
@@ -143,7 +146,9 @@ if (!variant || variant==='booking') {
   }
   if (!process.argv.includes('--layout-only')) {
     const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'booking-check')]);
+    assert.ok(report.widths[0].frame?.heroBook, 'detect the dealt booking form');
     for(const w of report.widths) {
+      assert.ok(!w.findings.some(f=>f.sev==='FAIL' && f.check==='container-edges' && /hero__bg/.test(f.sel)), 'split picture and its image occupy their seven columns');
       assert.ok(!w.errors?.length && !w.findings.some(f=>f.sev==='FAIL' && ['hero-screen','hero-fill','fold-cut'].includes(f.check)),w.width+' production booking bar failed');
       console.log('ok - '+w.width+' production checker accepts the docked booking bar');
     }
@@ -156,6 +161,8 @@ if (!variant || variant==='headings') {
   const start=fs.readFileSync(fixture(false),'utf8')
     .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"></head>')
     .replace('<h2>c</h2>',mid)
+    .replace('<h2>a</h2>','<h2>Overview</h2><h3>Not in the fee</h3>')
+    .replace('<h2>b</h2>','<h2>Features</h2><h3>Listed buildings: do you take them?</h3>')
     .replace('</body>','<footer class="footer closing"><div class="wrap"><div class="closing__cta">'+close+'</div><div class="closing__links">Wednesday, 14:00</div></div></footer><script type="module" src="assets/moments/moments.js"></script></body>');
   const file=path.join(tmp,'headings.html');
   fs.writeFileSync(file,start);
@@ -165,6 +172,9 @@ if (!variant || variant==='headings') {
     console.log('ok - '+w.size+' content and closing h2 hosts meet the moment contract');
   }
   const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'heading-check')]);
+  const terms = report.widths.flatMap(w => w.findings).filter(f => f.check === 'copy-headings');
+  for (const generic of ['Overview','Features']) assert.ok(terms.some(f => f.sev === 'FAIL' && f.msg.includes('"'+generic+'"')),generic+' still fails');
+  assert.ok(!terms.some(f => /Not in the fee|Listed buildings/.test(f.msg)), 'specific fee and building headings pass');
   for(const w of report.widths) {
     assert.ok(!w.errors?.length && !w.findings.some(f=>f.sev==='FAIL' && (['moment-text','one-heading','heading-scale'].includes(f.check) && /#(?:supply|return)/.test(f.sel||'') || f.check==='effect-kind' && /never run|never mounted/.test(f.msg))),w.width+' production heading moment rejected');
     console.log('ok - '+w.width+' production checker accepts mounted text at the h2 scale');

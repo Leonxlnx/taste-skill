@@ -15,7 +15,7 @@
                                                --type gaming means the same. Also read as a game:
                                                --type software with film, photo or setting in --has and no ui
          [--has photo,ui,film,object,setting,ground,logo,art]   material supplied by the brief
-         [--action booking|order|trial|visit|contact]          booking adds a bar to a place or service hero
+         [--action booking|order|trial|visit|contact]          add --booking stay|table|class for a dated place reservation
          [--hero <id>]                         print that one instead of dealing it
          [--history .taste-skill/layout-history.json] [--json] [--stats 1000]
 
@@ -102,7 +102,7 @@ if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 const PLACE_FORMS = [
   { id: 'band', w: 1, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
   { id: 'bleed', w: 3, how: 'the photograph over the whole first screen; the h1, the line and the button on a solid panel of the page ground in its lower left corner (data-corner="end" when the calm side is right). data-form="bleed"' },
-  { id: 'split', w: 3, how: 'the words on five columns (the h1 at the top, the line and the button at the foot), the photograph on seven down to the fold. data-form="split"' },
+  { id: 'split', w: 3, how: 'the words on five columns (title, lead and action together at the top), the photograph on seven down to the fold. data-form="split"' },
   { id: 'name', w: 2, how: 'band, with the name or the street set large across the .wrap first in .hero__text: <p class="hero__name">Henderson Street</p>. It is the page\'s one type moment (the address|name moment is then this). data-form="name"' },
 ];
 let placeForm = null;
@@ -116,9 +116,9 @@ const window = !!hero.window && has.has('ui') && tech;
 const recentPeeks = (hist.heroPeek || []).slice(-2);
 const stackedWindow = window && hero.id === 'centred';
 const peek = stackedWindow || (window && (recentPeeks.length === 2 && recentPeeks[0] === recentPeeks[1] ? !recentPeeks[0] : Math.random() < 0.5));
-const book = opt('action') === 'booking' && ['place', 'service'].includes(opt('kind') || type);
+const book = opt('action') === 'booking' && (opt('kind') || type) === 'place' && ['stay', 'table', 'class'].includes(opt('booking'));
 const peekLine = 'class hero--peek: the window may run past the first screen (its top inside it, at least 420 px showing at 1440x900), up to 760 px tall';
-const bookLine = "hero-book: a one-row booking bar docked on the hero's foot (copy the commented form in assets/layout/hero-place.html; assets/own/booking-bar.html shows the full section); the full form stays at the close";
+const bookLine = "hero-book: a one-row booking bar docked on the hero's foot (copy the commented form in assets/layout/hero-place.html; assets/own/booking-bar.html shows the full section); use its link on phones and the full form at the close";
 if (histFile && !opt('hero') && !opt('no-record')) {
   if (window) hist.heroPeek = [...(hist.heroPeek || []), peek].slice(-20);
   if (type !== 'place') { hist.heroes.push(hero.id); hist.heroes = hist.heroes.slice(-20); }

@@ -61,8 +61,7 @@
   Only a local page is checked: a file, or a URL on localhost, 127.0.0.1, [::1], *.localhost or *.test.
 
   Waivers: a FAIL judged false is waived in .taste-skill/waivers.json, an array of
-  {"check": "<id>", "target": "<part of where it is>", "reason": "<12+ characters>"}. A waiver covers exactly one
-  finding: a target that matches several is ignored and says so. A target is 3+ characters, or the whole of a
+  {"check": "<id>", "target": "<part of where it is>", "reason": "<12+ characters>"}. A waiver covers every eligible finding with that check and target. A target is 3+ characters, or the whole of a
   short where. Each copy word, stock phrase, residue or withheld hit is its own finding (where: the word and its sentence); a
   copy device used as a tic is one finding, waived only by its whole where (its count and hits), so a word added
   later is never covered. kit-edited and checker-gaming cannot be waived;
@@ -987,7 +986,7 @@ function mergeFamilies(list) {
   return out;
 }
 
-// ---------------------------------------------------------------- waivers: one finding each
+// ---------------------------------------------------------------- waivers by check and target
 function applyWaivers(fails, file) {
   const raw = fs.existsSync(file) ? readJson(file, undefined) : [];
   const out = { open: [], waived: [], waivers: [], problems: [] };
@@ -1015,11 +1014,7 @@ function applyWaivers(fails, file) {
     const all = fails.filter(f => ids(f).includes(w.check) && wheres(f).some(x => (f.exact ? x === w.target : x.includes(w.target))));
     const hits = all.filter(f => !f.hard);
     if (!hits.length) { w.invalid = all.length ? `${w.check} cannot be waived` : fails.some(f => f.exact && ids(f).includes(w.check) && wheres(f).some(x => x.includes(w.target))) ? 'a copy tic is waived only by its whole where, as the gate prints it' : 'matches no open finding'; continue; }
-    // a target that names several findings would wave a whole check through: it must name one
-    const exact = hits.filter(f => wheres(f).includes(w.target));
-    const one = hits.length === 1 ? hits[0] : exact.length === 1 ? exact[0] : null;
-    if (!one) { w.invalid = `target matches ${hits.length} findings; name one (more of its where)`; continue; }
-    if (!taken.has(one)) taken.set(one, w);
+    for (const f of hits) if (!taken.has(f)) taken.set(f, w);
   }
   for (const f of fails) { const w = taken.get(f); if (w) out.waived.push({ ...f, reason: w.reason }); else out.open.push(f); }
   return out;
@@ -1316,18 +1311,23 @@ if (!HOOK && !QUICK) state.manual = true;   // the gate has been run by hand: ho
 const idsOf = f => (f.ids && f.ids.length > 1 ? `${f.check} (${f.ids.slice(1).join(', ')})` : f.check);
 const line = f => `${idsOf(f)}, ${f.where.slice(0, 80)}${f.widths && f.widths.length ? ` [${f.widths.join(',')}]` : ''}, fix: ${(f.fix || f.msg).slice(0, 160)}`;
 const waivedText = () => W.waived.length ? `Waived (put these in your report): ${W.waived.map(w => `${w.check} ${w.where.slice(0, 50)} - ${w.reason}`).join('; ')}.` : '';
-const badWaivers = () => { const b = W.waivers.filter(x => x.invalid); return b.length ? `Waivers ignored: ${b.map(w => `${w.check} "${w.target}" (${w.invalid})`).join('; ')}.` : ''; };
-const rule = `A FAIL you judge false: add {"check": "<id>", "target": "<its where, enough to name that one finding>", "reason": "<why, 12+ characters>"} to ${slash(path.relative(base, waiverFile)) || waiverFile} (one finding each, ${MAX_WAIVERS} at most, never for kit-edited or checker-gaming); it goes in your report. Never edit the kit's files or hide the page from the checker.`;
+const waiverExample = w => {
+  const candidate = found.fails.find(f => !f.hard && (f.ids || [f.check]).includes(w.check)) || found.fails.find(f => !f.hard);
+  return JSON.stringify({check: candidate?.check || '<check id>', target: candidate?.where || '<where from FAIL>', reason: '<specific reason, 12+ characters>'});
+};
+const ignoredWaiver = w => `waiver ignored for ${w.check} "${w.target}": ${w.invalid}. Entry format: ${waiverExample(w)}`;
+const badWaivers = () => W.waivers.filter(w => w.invalid).map(ignoredWaiver).join('\n');
+const rule = `To waive matching FAILs, add {"check":"<id>","target":"<part of where>","reason":"<specific reason, 12+ characters>"} to ${slash(path.relative(base, waiverFile)) || waiverFile} (${MAX_WAIVERS} entries at most). Record the reason in your report. Fix kit-edited and checker-gaming in the page.`;
 function printAll(head) {
   print(head);
   for (const f of open) print(`  FAIL ${idsOf(f).padEnd(16)} ${f.where.slice(0, 90)}${f.widths && f.widths.length ? `  [${f.widths.join(', ')}]` : ''}\n       ${f.msg.slice(0, 220)}\n       fix: ${(f.fix || '').slice(0, 220)}`);
   for (const w of W.waived) print(`  WAIVED ${w.check} ${w.where.slice(0, 80)}: ${w.reason}`);
-  for (const w of W.waivers.filter(x => x.invalid)) print(`  waiver ignored (${w.invalid}): ${w.check} "${w.target}"`);
+  for (const w of W.waivers.filter(x => x.invalid)) print(ignoredWaiver(w));
   if (found.warns.length) print(`  ${found.warns.length} WARN (not blocking), first: ${found.warns.slice(0, 5).map(x => `${x.check} ${x.where.slice(0, 40)}`).join('; ')}`);
   if (crashed) print(`  not checked: ${found.crashed.join('; ')}`);
 }
 const record = (status, extra = {}) => {
-  Object.assign(state, { status, fp: FP, page: relPage, found, open: open.map(({ hard, ...f }) => f), waived: W.waived, warnCount: found.warns.length, ...extra });
+  Object.assign(state, { status, fp: FP, page: relPage, found, open: open.map(({ hard, ...f }) => f), waived: W.waived, ignoredWaivers: W.waivers.filter(w => w.invalid).map(ignoredWaiver), warnCount: found.warns.length, ...extra });
   const entry = { at: new Date().toISOString(), mode: HOOK ? 'hook' : QUICK ? 'quick' : 'manual', ...(HOOK ? { host: HOOK } : {}), status, fails: n, round: state.round, reused, stopHookActive: !!input.stop_hook_active };
   state.history = [...(state.history || []), entry].slice(-20);
   if (HOOK && !T.done) T.entry = entry;
@@ -1338,14 +1338,14 @@ if (QUICK) {
   // a look between rounds: no round, never closes the build
   printAll(`gate (quick look at 1440 and 390): ${n} FAIL${crashed ? ', some checks did not run' : ''}`);
   if (!HOOK) { console.log(`GATE: QUICK ${n} (not a round; run without --quick to finish)`); process.exit(n ? 1 : 0); }
-  allow('a --quick run never blocks');
+  allow([badWaivers(), 'a --quick run never blocks'].filter(Boolean).join('\n'));
 }
 
 if (n === 0 && !crashed) {
   // the page as it passed: a later run on a changed page checks it again (one more round)
   record('pass', { closedFp: PAGE_FP });
   try { fs.renameSync(markerFile, path.join(dot, 'build.done.json')); } catch { try { fs.copyFileSync(markerFile, path.join(dot, 'build.done.json')); fs.rmSync(markerFile, { force: true }); } catch { /* left armed */ } }
-  if (HOOK) allow('GATE: PASS', true);
+  if (HOOK) { const ignored = badWaivers(); allow(ignored || 'GATE: PASS', !ignored); }
   printAll('gate: no open FAIL');
   console.log('GATE: PASS'); process.exit(0);
 }
@@ -1384,7 +1384,7 @@ if (last && !idle) {
   if (HOOK) {
     if (told) allow('rounds used up, told before', true);
     block(n
-      ? [`tasteskill gate: rounds used up (${MAX} of ${MAX}), ${n} FAIL${n > 1 ? 's' : ''} open${notChecked}:`, top, waivedText(), 'Rounds used up: stop fixing. Put "GATE: OPEN" and these open FAILs in your report (with any waivers and their reasons), then finish.'].filter(Boolean).join('\n')
+      ? [`tasteskill gate: rounds used up (${MAX} of ${MAX}), ${n} FAIL${n > 1 ? 's' : ''} open${notChecked}:`, top, waivedText(), badWaivers(), 'Rounds used up: stop fixing. Put "GATE: OPEN" and these open FAILs in your report (with any waivers and their reasons), then finish.'].filter(Boolean).join('\n')
       : `tasteskill gate: rounds used up (${MAX} of ${MAX}), and the checks could not run (${what}), so the page was not fully checked. Stop fixing: put "GATE: ERROR (${what}; rounds used up)" and what was not checked in your report, then finish.`);
   }
   if (!n) {

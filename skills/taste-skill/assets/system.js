@@ -544,7 +544,10 @@ function tone() {
   if (!brand || !ink) return;
   const ground = luminance(brand) + .05;
   for (const share of [.24, .16, .08]) {
-    const muted = ink.map((v, i) => Math.round(v + (brand[i] - v) * share));
+    const mix = ink.map((v, i) => Math.round(v + (brand[i] - v) * share));
+    const y = luminance(mix);
+    const grey = Math.round(255 * (y <= .0031308 ? 12.92 * y : 1.055 * y ** (1 / 2.4) - .055));
+    const muted = Array(3).fill(grey);
     const text = luminance(muted) + .05;
     if (Math.max(text, ground) / Math.min(text, ground) >= 4.6) {
       html.style.setProperty('--p-brand-muted', hex(muted));

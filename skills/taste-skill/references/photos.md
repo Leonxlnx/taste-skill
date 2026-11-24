@@ -14,7 +14,7 @@ The library supplies licensed detail photographs of hands, tools, materials and 
 
 If the brief names a region, pass `--place "<region>"` or `--brief BRIEF.md`. A landscape of that region can lead. Use `--own-land` for land sections when the brief says the business uses that land. A live search can supply a street, a room of the right kind or the material the page names. Do not claim stock depicts a named client's work.
 
-List stand-ins and the shots to replace them in the report. For a guesthouse ask for each whole room from the door, the building, the breakfast as served and a daylight detail. For a workshop ask for the bench, a hand using the tool and the finished piece.
+For a project case, show the client’s photograph when supplied. Otherwise use a whole interior of the right kind, identify the reference in the case and list it as a stand-in in the report. A plan can explain the change beside that picture. List the client shots needed to replace stand-ins. For a guesthouse ask for each whole room from the door, the building, the breakfast as served and a daylight detail. For a workshop ask for the bench, a hand using the tool and the finished piece.
 
 ## A product without photographs (PH-04)
 

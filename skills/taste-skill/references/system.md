@@ -64,6 +64,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 - **The interface stays 90 to 95% neutral;** colour comes from the photographs, the product, the
   work and real logos. One near-black ink, often warm, never #000, for text, hairlines (12 to 15% of
   it), button borders, interface glyphs and a designed mark.
+- Body copy, labels and tables inherit the neutral ink for their ground. Only headings use a palette’s optional `--p-heading-ink`.
 - **Real logos keep their own full colours** (house rule): a client's logo or a known product's icon (the
   Google Docs icon) from `icons.mjs` or the brand's press kit, never redrawn or tinted
   (`icons.md`). A fictional client's own mark is designed, not borrowed.

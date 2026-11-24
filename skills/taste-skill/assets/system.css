@@ -131,13 +131,13 @@ html[data-radius] .panel { --p-r: var(--r-md); }
   /* a place (and a local service): the 1200 column at x 120-1320 */
   html[data-type="place"] { --gut: 120px; --container: 1200px; }
 }
-/* a place (VI-06, ST-96, PH-23): its own smaller type (h1 48/53 and 32/37, h2 32/40 and 24/30, titles
+/* a place (VI-06, ST-96, PH-23): its own smaller type (h1 48/53 and 32/37, h2 40/50 and 28/35, titles
    and the sub-line 20 and 18), the Recipe 3 hero's gap under its photograph (40, 24 on a phone),
    square photographs and cards and 2px buttons, whatever data-radius and data-buttons say */
 :root[data-type="place"] {
   --hgap: 40px;
   --t-h1: clamp(32px, 1.524vw + 26.06px, 48px);
-  --t-h2: clamp(24px, .762vw + 21px, 32px);
+  --t-h2: clamp(28px, calc(28px + (100vw - 390px) * 12 / 1050), 40px);
   --t-h3: clamp(20px, .381vw + 18.51px, 24px);
   --r-sm: 2px; --r-md: 0px; --r-lg: 0px; --r-btn: 2px;
 }
@@ -159,25 +159,29 @@ html[data-pictures="soft"] [data-picture-mask] { border-start-start-radius: 28% 
 /* ---------------------------------------------------------------- section grounds */
 :root, .ground-base {
   --bg: var(--p-bg); --surface: var(--p-surface); --ink: var(--p-ink); --muted: var(--p-muted);
+  --heading-ink: var(--p-heading-ink, currentColor);
   --accent: var(--p-accent); --accent-ink: var(--p-accent-ink); --card: var(--p-surface);
   --action: var(--p-action); --action-ink: var(--p-action-ink);
 }
 .ground-surface {
   --bg: var(--p-surface); --surface: var(--p-bg); --ink: var(--p-ink); --muted: var(--p-muted);
+  --heading-ink: var(--p-heading-ink, currentColor);
   --accent: var(--p-accent); --accent-ink: var(--p-accent-ink); --card: var(--p-bg);
   --action: var(--p-action); --action-ink: var(--p-action-ink);
 }
 .ground-inverse {
+  --heading-ink: currentColor;
   --bg: var(--p-inv-bg); --surface: var(--p-inv-surface); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted);
   --accent: var(--p-inv-accent); --accent-ink: var(--p-inv-accent-ink); --card: var(--p-inv-surface);
   --action: var(--p-inv-action); --action-ink: var(--p-inv-action-ink);
 }
 .ground-brand {
+  --heading-ink: currentColor;
   --bg: var(--p-accent); --ink: var(--p-accent-ink);
   --surface: var(--bg);
   --card: var(--surface); --muted: var(--p-brand-muted, var(--ink));
-  --accent: var(--ink); --accent-ink: var(--bg);
-  --action: var(--ink); --action-ink: var(--bg);
+  --accent: var(--ink); --accent-ink: oklch(from var(--bg) l min(c, .014) h);
+  --action: var(--ink); --action-ink: var(--accent-ink);
 }
 /* Deepen the card away from its text. Contrasting supplied ink also works in older browsers. */
 @supports (color: contrast-color(red)) {
@@ -225,6 +229,7 @@ h1, h2, h3, h4 {
   hyphens: auto; -webkit-hyphens: auto; hyphenate-limit-chars: 10 4 4;
 }
 h1, .t-h1 { font-size: var(--t-h1); line-height: 1.04; }
+:where(h1, h2, h3, h4, h5, h6) { color: var(--heading-ink, currentColor); }
 h2, .t-h2 { font-size: var(--t-h2); line-height: 1.1; }
 h3, .t-h3 { font-size: var(--t-h3); line-height: 1.2; }
 h4, .t-card { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: -0.01em; }
@@ -673,7 +678,7 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 /* .frame--lit: the same for an object's frame that holds a few words in its clear half (the
    product statement's facts in a .frame__text, lower left; the object stands right of centre) */
 .frame--cta, .frame--lit:not(:has(pre, .ui, [data-ui], [data-ui-load], .app-frame)), .frame--lit[data-matte="colour"] {
-  border-color: transparent; background: var(--ground-bg); color: var(--ground-ink);
+  border-color: transparent; background: var(--ground-bg); color: var(--ground-ink); --heading-ink: currentColor;
   --bg: var(--ground-surface); --surface: var(--ground-surface); --ink: var(--ground-ink); --muted: var(--ground-muted);
   --action: var(--ground-ink); --action-ink: var(--ground-surface);
   --line: color-mix(in oklab, var(--ground-ink) 12%, transparent); --line-strong: color-mix(in oklab, var(--ground-ink) 24%, transparent);

@@ -166,7 +166,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
    node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
-   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold. Pass `--last-section form` when the page ends with its own form or booking panel.
+   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold. For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
    It ends with a PLAN block and writes `.taste-skill/plan.json`. Copy the PLAN into the comment
    at the top of `<body>` and onto plan line 2.
 
@@ -183,7 +183,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
      Never write copy or invent a list to feed one. To swap a moment, `moments.mjs pick` again and
      note it on the plan comment as it says.
 
-5. **Build.** Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
+5. **Build.** Copy the kit into the page once at the start from the installed skill folder, never from a working copy of the skill repository. Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class; copy only the
    `<section class="hero …" data-enter>` of the dealt `assets/layout/hero-<id>.html` and make
    every word and picture the client's; move the dealt close and footer out of their

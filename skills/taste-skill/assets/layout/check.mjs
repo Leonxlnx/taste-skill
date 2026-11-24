@@ -96,6 +96,8 @@ const STRESS = String.raw`(async (maxChars) => {
   const src = doc.querySelector('main > section h1'); if (!src) return null;
   const words = (document.querySelector('main > section .hero__lead')?.textContent || 'what the company makes and sells every day').replace(/[^\p{L}\s]/gu, ' ').split(/\s+/).filter(w => w.length > 2).map(w => w.toLowerCase());
   const len = () => src.textContent.replace(/\s+/g, ' ').trim().length;
+  const authored = len();
+  if (authored >= maxChars) return { authored, chars: authored, changed: false };
   const tw = doc.createTreeWalker(src, NodeFilter.SHOW_TEXT); let last = null;
   for (let n = tw.nextNode(); n; n = tw.nextNode()) if (n.textContent.trim() && !n.parentElement.closest('.ly-word, .ly-pic, .ly-mark')) last = n;
   if (!last || !words.length) return null;
@@ -108,10 +110,11 @@ const STRESS = String.raw`(async (maxChars) => {
     if (room < 2) break;
     last.textContent = last.textContent.replace(/\s*$/, '') + ' ' + w.slice(0, room) + (/\s$/.test(last.textContent) ? ' ' : '');
   }
+  if (len() === authored) return { authored, chars: authored, changed: false };
   h1.removeAttribute('data-ly-letters'); h1.classList.remove('ly-locked', 'ly-letters');
   h1.innerHTML = src.innerHTML;
   await new Promise(r => requestAnimationFrame(() => setTimeout(r, 300)));
-  return { chars: len(), text: h1.textContent.replace(/\s+/g, ' ').trim() };
+  return { authored, chars: len(), changed: true };
 })`;
 
 const profile = inProject(profileArg, 'layout-check');
@@ -207,12 +210,13 @@ try {
         const st = await ev(`${STRESS}(${h.h1.maxChars})`);
         if (st) {
           const sev = kitDemo ? 'FAIL' : 'WARN';
-          const again = await ev(src + '\n;window.lyCheck()');
+          const again = st.changed ? await ev(src + '\n;window.lyCheck()') : res;
           const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? h.h1.lines[0] : W <= 420 ? h.h1.lines[1] : null;
-          res.stress = { hero: id, maxChars: h.h1.maxChars, chars: st.chars, lines, height: again.hero?.height };
-          for (const f of again.findings.filter(f => f.rule === 'hero-fold')) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (heroes.json maxChars): ${f.detail}` });
-          if (allowed && lines > allowed) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `the check fills the h1 to ${st.chars} characters (this hero's maxChars in heroes.json), not the page's own: it takes ${lines} lines at ${W}, ${allowed} at most` });
-          if (await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
+          res.stress = { hero: id, maxChars: h.h1.maxChars, authored: st.authored, changed: st.changed, chars: st.chars, lines, height: again.hero?.height };
+          const sameFold = f => res.findings.some(old => old.rule === f.rule && old.where === f.where && old.detail === f.detail);
+          for (const f of again.findings.filter(f => st.changed && f.rule === 'hero-fold' && !sameFold(f))) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `with a ${st.chars}-character h1 (authored ${st.authored}, budget ${h.h1.maxChars}): ${f.detail}` });
+          if (st.changed && allowed && lines > allowed && lines !== res.hero?.h1?.lines) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `with ${st.chars} characters (authored ${st.authored}, budget ${h.h1.maxChars}) the h1 takes ${lines} lines at ${W}, ${allowed} at most` });
+          if (st.changed && !res.overflowX && await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth')) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `with a ${st.chars}-character h1 the page scrolls sideways` });
         }
       }
     }
@@ -233,7 +237,7 @@ else for (const r of report) {
   console.log(`\n${r.size}  lines x ${r.L} and ${r.R}, nav ${r.nav}px, one screen ${r.screen}px`);
   if (r.hero) { const h = r.hero, b = v => v ? `${v.w}x${v.h} at ${v.x},${v.y}` : '-';
     console.log(`  hero ${h.height} tall; h1 ${h.h1 ? `${h.h1.size}px/${h.h1.leading}, ${h.h1.lines} lines, ${b(h.h1)}` : '-'}; lead ${h.lead ? `${h.lead.size}/${h.lead.lineHeight}, ${h.lead.lines} lines, ${h.lead.w} wide` : '-'}; buttons ${h.buttons ? `${h.buttons.n} x ${h.buttons.h}` : '-'}; visual ${b(h.visual)}`); }
-  if (r.stress) console.log(`  stress: ${r.stress.hero} h1 at ${r.stress.chars} of ${r.stress.maxChars} characters takes ${r.stress.lines} lines, hero ${r.stress.height} tall`);
+  if (r.stress) console.log(`  stress: ${r.stress.hero} authored ${r.stress.authored} / budget ${r.stress.maxChars}, ${r.stress.changed ? r.stress.chars + " characters tested" : "no text added"}; title takes ${r.stress.lines} lines, hero ${r.stress.height} tall`);
   for (const s of r.sections) console.log(`  section ${s.where.slice(0, 60).padEnd(60)} y ${String(s.top).padStart(5)}  h ${String(s.height).padStart(5)}  content ${s.content}`);
   if (!r.findings.length) console.log('  no findings');
   for (const f of r.findings) console.log(`  ${(f.sev === 'WARN' ? 'WARN ' : '') + f.rule.padEnd(16)} ${f.where.slice(0, 70)}: ${f.detail}${f.fix ? `\n  ${''.padEnd(16)} fix: ${f.fix}` : ''}`);
