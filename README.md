@@ -120,6 +120,21 @@ Start a new Codex session afterwards so the skill is loaded.
 </details>
 
 <details>
+<summary>Pi Agent</summary>
+
+Install the skill from this fork with Pi's package manager:
+
+```bash
+pi install git:github.com/fredjunior54/taste-skill
+```
+
+Start a new Pi session or run `/reload` in an open session. Use `/skill:design-taste-frontend` to invoke the skill explicitly.
+
+Pi does not run the Claude Code stop hook. Run `scripts/gate.mjs` directly as described in the skill instructions to validate your page.
+
+</details>
+
+<details>
 <summary>From a clone, linked instead of copied</summary>
 
 `./install.sh` symlinks the skill into Claude Code (`--codex` for Codex, `--all-agents` for both), so a `git pull` updates it in place. On Windows (Git Bash) it makes a real link, or a directory junction when symlinks are not allowed, and it reports an older copied folder instead of skipping it silently.
