@@ -49,7 +49,7 @@ where you can. Each field feeds a part of the page:
 | What they do today instead | A spreadsheet, the big rival, the bakery across town, nothing | the pain line, the comparison |
 | The true difference | What is true here and not elsewhere, with its proof | the claims worth a heading |
 | Customer words | Phrases from reviews, emails, the brief's own quotes | the pain line, headings |
-| Numbers | Each with where it came from | sentences, the facts strip |
+| Numbers | Each with where it came from | sentences, the terms beside the action |
 | People | Names and roles the brief gives | the about block, a quote |
 | Odd true details | History, an object, a ritual, a house word, the awkward bit | the texture you would otherwise invent |
 | A limit | What it does not do, who it is wrong for, what is closed | one admission a page |

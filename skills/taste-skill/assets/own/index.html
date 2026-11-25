@@ -27,6 +27,7 @@
 }
 .gallery-head { position: relative; background: var(--ink); color: var(--bg); }
 .gallery-head .wrap { padding-block: var(--s-6); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); justify-content: space-between; }
+@media (min-width: 1024px) { .gallery-head .wrap { padding-block: var(--s-9); } }
 .gallery-head h1 { font-size: var(--t-h1); }
 .gallery-head a:focus-visible { outline-color: var(--bg); }
 .gallery-head a:not(.skip-link) { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: var(--s-1); }
@@ -161,7 +162,7 @@
 
 [data-own="case-rows"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 [data-own="case-rows"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
-[data-own="case-rows"] .editions article { display: grid; grid-template-columns: 7fr 5fr; gap: var(--s-6); align-items: stretch; border-top: 1px solid var(--line); padding-block: var(--s-4); }
+[data-own="case-rows"] .editions article { display: grid; grid-template-columns: 7fr 5fr; gap: var(--s-6); align-items: stretch; padding-block: var(--s-4); }
 [data-own="case-rows"] .jacket { min-height: calc(var(--s-10) + var(--s-6)); padding: var(--s-5); display: flex; align-items: flex-end; background: var(--surface); }
 [data-own="case-rows"] .jacket span { font-family: var(--font-display); font-size: var(--t-h2); line-height: 1; letter-spacing: var(--display-tracking); }
 [data-own="case-rows"] .jacket-2 { background: var(--ink); color: var(--bg); justify-content: flex-end; text-align: right; }
@@ -296,6 +297,7 @@
   [data-own="receipt"] .wrap > p { grid-column: 1; margin: 0; max-width: 32ch; }
   [data-own="receipt"] .picnic { grid-column: 2; grid-row: 1 / 3; margin: 0; }
 }
+
 [data-own="states"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 [data-own="states"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
 [data-own="states"] .states { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-7); }
@@ -323,6 +325,7 @@
 @media (max-width: 899px) {
   [data-own="states"] .states > li { grid-template-columns: 1fr; gap: var(--s-4); }
 }
+
 [data-own="letter"] .wrap > h2 + * { margin-top: var(--head-gap); }
 [data-own="letter"] .letter-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-9); align-items: start; }
 [data-own="letter"] .letter { max-width: 66ch; font-size: var(--t-lead); line-height: 1.65; }
@@ -345,6 +348,7 @@
   [data-own="letter"] .letter { font-size: var(--t-body); }
   [data-own="letter"] .letter-facts { position: static; }
 }
+
 [data-own="margin-track"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 [data-own="margin-track"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
 [data-own="margin-track"] .track { position: relative; display: grid; gap: var(--s-8); }
@@ -370,7 +374,7 @@
   [data-own="margin-track"] .chapter-stop { position: relative; padding-left: var(--s-6); margin: 0; min-height: var(--s-6); }
   [data-own="margin-track"] .chapter-stop::before { content: ""; position: absolute; left: 0; top: .35em; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--action); }
   [data-own="margin-track"] .track__line { display: block; position: absolute; left: 6px; top: .5em; bottom: 0; width: 2px; background: var(--line); }
-  [data-own="margin-track"] .track__fill { display: block; width: 100%; height: 100%; background: var(--action); }
+  [data-own="margin-track"] .track__fill { display: block; width: 100%; height: 100%; background: var(--action); transform: scaleY(var(--p, 1)); transform-origin: top; }
 }
 </style>
 </head>
@@ -391,7 +395,7 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="meter" data-own="meter" aria-labelledby="meter-title">
+<section class="section own" id="meter" data-own="meter" aria-labelledby="meter-title">
   <div class="wrap">
     <h2 id="meter-title">A plan for your reading room</h2>
     <p class="t-lead measure">Leafcounter lends digital reading copies to book clubs. Each reader uses one seat.</p>
@@ -433,7 +437,7 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="switcher" data-own="switcher" aria-labelledby="switcher-title">
+<section class="section own" id="switcher" data-own="switcher" aria-labelledby="switcher-title">
   <div class="wrap">
     <h2 id="switcher-title">Four ways to use the hall</h2>
     <p class="t-lead measure">The Northfold Rooms team sets the furniture before you arrive. Choose the gathering you have in mind.</p>
@@ -490,11 +494,11 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="scale" data-own="scale" aria-labelledby="scale-title">
+<section class="section own" id="scale" data-own="scale" aria-labelledby="scale-title">
   <div class="wrap">
     <h2 id="scale-title">From ice water to a rolling boil</h2>
     <p class="t-lead measure">The Thimble Point kitchen probe reads from 0 to 100 °C. These five familiar temperatures put its range in context.</p>
-    <figure class="thermometer" data-assumed aria-label="Thermometer range with five temperature references">
+    <figure class="thermometer" data-chart data-assumed aria-label="Thermometer range with five temperature references">
       <div class="ruler"><svg viewBox="0 0 100 15" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h100"/><path d="M0 0v13"/><path d="M5 0v5"/><path d="M10 0v5"/><path d="M15 0v5"/><path d="M20 0v5"/><path d="M25 0v13"/><path d="M30 0v5"/><path d="M35 0v5"/><path d="M40 0v5"/><path d="M45 0v5"/><path d="M50 0v13"/><path d="M55 0v5"/><path d="M60 0v5"/><path d="M65 0v5"/><path d="M70 0v5"/><path d="M75 0v13"/><path d="M80 0v5"/><path d="M85 0v5"/><path d="M90 0v5"/><path d="M95 0v5"/><path d="M100 0v13"/></svg></div>
       <ol class="points">
         <li><strong>0 °C</strong><span>Ice water</span></li>
@@ -521,7 +525,7 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="index" data-own="index" aria-labelledby="index-title">
+<section class="section own" id="index" data-own="index" aria-labelledby="index-title">
   <div class="wrap">
     <h2 id="index-title">A catalogue of hand-pressed tiles</h2>
     <p class="t-lead measure">Two Kiln Archive keeps the original mould for every commission. Select a design to see its repeat.</p>
@@ -574,7 +578,7 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="booking-bar" data-own="booking-bar" aria-labelledby="booking-bar-title">
+<section class="section own" id="booking-bar" data-own="booking-bar" aria-labelledby="booking-bar-title">
   <div class="wrap">
     <h2 id="booking-bar-title">A stay at Wrenlock Weir</h2>
     <p class="t-lead measure">Both rooms sleep two. Breakfast by the water is included in the nightly rate.</p>
@@ -616,7 +620,7 @@
   </div>
 </section>
 
-<section class="section own ground-surface" id="receipt" data-own="receipt" aria-labelledby="receipt-title">
+<section class="section own" id="receipt" data-own="receipt" aria-labelledby="receipt-title">
   <div class="wrap">
     <h2 id="receipt-title">A picnic for four</h2>
     <p class="t-lead measure">Meadow Fold packs one basket for four people to share on the towpath.</p>
@@ -636,6 +640,7 @@
     </div>
   </div>
 </section>
+
 <section class="section own" id="states" data-own="states" aria-labelledby="states-title">
   <div class="wrap">
     <h2 id="states-title">One return, from request to refund</h2>
@@ -676,7 +681,8 @@
     </ol>
   </div>
 </section>
-<section class="section own ground-surface" id="letter" data-own="letter" aria-labelledby="letter-title">
+
+<section class="section own" id="letter" data-own="letter" aria-labelledby="letter-title">
   <div class="wrap">
     <h2 id="letter-title">Repairs cost more from March. <span class="muted">Here is why.</span></h2>
     <div class="letter-grid">
@@ -703,6 +709,7 @@
     </div>
   </div>
 </section>
+
 <section class="section own" id="margin-track" data-own="margin-track" aria-labelledby="margin-track-title">
   <div class="wrap">
     <h2 id="margin-track-title">The Pellin field recorder in four parts</h2>
@@ -766,7 +773,6 @@
 <script type="module" src="../system.js"></script>
 <script type="module" src="../motion/motion.js"></script>
 <script type="module" src="../layout/layout.js"></script>
-
 <script type="module">
 const root = document.querySelector('[data-own="meter"]');
 const slider = root.querySelector('input');

@@ -150,7 +150,7 @@ export function hasFor(page, given) {
 // deal-drift fix names it): the in-page demo that already holds the moment in a page section, else its own demo
 export const headingMoments = new Set(['letters-assemble', 'word-highlight', 'word-rotate', 'lines-rise', 'giant-type-pass', 'liquid-type']);
 export function momentSource(id, ref = '<skill>') {
-  if (id === 'word-rotate') return 'each rotating word must be a state shown on the page. Use an h1 or h2 and refuse the rotation if its widest word changes the line count at 390px. Adapt the inline slot from ' + ref + '/assets/moments/word-rotate/demo.html';
+  if (id === 'word-rotate') return 'retired: use the written word. Legacy example: ' + ref + '/assets/moments/word-rotate/demo.html';
   if (headingMoments.has(id)) return 'adapt the heading and its data-moment host from ' + ref + '/assets/moments/' + id + '/demo.html';
   for (const f of ['in-page.html', 'in-page-service.html']) {
     let src = '';
@@ -609,7 +609,7 @@ async function cmdServe(a) {
 function cmdGallery() {
   const idx = readIndex();
   const shown = idx.moments.filter(m => !m.retired);
-  const rows = shown.map(m => `<li><a href="${m.id}/demo.html"><b>${m.name}</b> <span>${m.kind} · ${m.fits.join(', ')} · ${m.trigger} · ${m.intensity}${m.webgl ? ' · WebGL' : ''} · ${(m.tones || []).join(', ')}</span><p>${m.look}</p><p class="ph">Phone and reduced motion: ${m.phone}</p></a></li>`).join('\n');
+  const rows = shown.map(m => `<li><a href="${m.id}/demo.html"><b>${m.name}</b> <span>${m.kind} · ${m.fits.join(', ')} · ${m.trigger} · ${m.intensity}${m.webgl ? ' · WebGL' : ''} · ${(m.tones || []).join(', ')}</span><p>${m.look}</p><p class="ph">Phone: ${m.phone} Reduced motion: ${m.reduced}</p></a></li>`).join('\n');
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moments</title>
 <style>body{margin:0;font:16px/1.5 system-ui,sans-serif;color:#111;background:#fff;padding:48px 24px}h1{font-size:28px;font-weight:500;margin:0 0 8px}p.lead{color:#555;margin:0 0 32px;max-width:60ch}ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}li a{display:block;padding:16px 20px;border:1px solid #e5e5e5;border-radius:12px;color:inherit;text-decoration:none}li a:hover{border-color:#999}li b{font-weight:500}li span{display:block;color:#666;font-size:13px;margin:2px 0 6px}li p{margin:0;color:#333;font-size:14px}li p.ph{margin-top:6px;color:#666;font-size:13px}</style></head>
 <body><h1>Moments</h1><p class="lead">${shown.length} creative moments, one when the brief asks for motion or the temper is lively or loud, dealt by fit: each carries tones (warm, editorial, product, tech, playful) and an intensity, and every kind takes the tones and intensities that fit it (references/moments.md, The fit rule). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;

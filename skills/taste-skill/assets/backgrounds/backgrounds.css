@@ -482,35 +482,18 @@ html[data-lowchroma] .bg-stage { --st-src: oklch(from var(--ground-accent) l c h
   background: linear-gradient(90deg, transparent 6%, color-mix(in oklab, var(--ink) calc(28% * var(--g-kd)), transparent) 50%, transparent 94%);
 }
 
-/* ---------------------------------------------------------------- 16 liquid: a slow mesh of colour, transform only */
-/* two layers, each wider than the section (160%), each holding two wide ellipses of colour that fade to nothing inside the
-   layer's own height (their radii end before the section's top and bottom, so nothing is clipped into an edge). They drift,
-   skew and stretch against each other (translate, skewX, scaleY: transforms only, nothing repaints), so the mesh keeps
-   changing shape. Three hues: the accent, the lit ground's tone (a second hue, so the wash is not blue all through) and
-   the accent's neighbour, all low in chroma. Held still, it is the same picture. */
+/* A still mesh of broad colour ellipses. */
 .bg-liquid::before, .bg-liquid::after {
-  content: ""; position: absolute; z-index: -1; pointer-events: none; top: 0; bottom: 0; left: -30%; right: -30%; will-change: transform;
+  content: ""; position: absolute; z-index: -1; pointer-events: none; top: 0; bottom: 0; left: -30%; right: -30%;
 }
 .bg-liquid::before {
   background:
     radial-gradient(ellipse 30% 36% at 30% 44%, color-mix(in oklab, var(--g-hue) calc(40% * var(--g-k)), transparent), transparent),
     radial-gradient(ellipse 22% 24% at 54% 74%, color-mix(in oklab, var(--g-hue-t) calc(44% * var(--g-k)), transparent), transparent);
-  animation: g-liq-a 26s ease-in-out infinite alternate;
 }
 .bg-liquid::after {
   background:
     radial-gradient(ellipse 28% 30% at 68% 38%, color-mix(in oklab, var(--g-hue-b) calc(32% * var(--g-k)), transparent), transparent),
     radial-gradient(ellipse 20% 20% at 44% 26%, color-mix(in oklab, var(--g-hue-t) calc(36% * var(--g-k)), transparent), transparent);
-  animation: g-liq-b 34s ease-in-out infinite alternate;
-}
-@keyframes g-liq-a { from { transform: translate3d(-7%, 0, 0) skewX(-7deg) scaleY(.94); } to { transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.05); } }
-@keyframes g-liq-b { from { transform: translate3d(8%, 0, 0) skewX(6deg) scaleY(1.04); } to { transform: translate3d(-9%, 0, 0) skewX(-6deg) scaleY(.92); } }
-.bg-liquid.is-off::before, .bg-liquid.is-off::after, .bg-liquid.is-held::before, .bg-liquid.is-held::after { animation-play-state: paused; }
-/* the pause disc sits on the container's right edge, not the section's corner */
-.bg-liquid > .loop-pause { right: max(var(--pad), calc((100% - var(--container)) / 2)); bottom: 16px; }
-
-/* ---------------------------------------------------------------- motion and print */
-@media (prefers-reduced-motion: reduce) {
-  .bg-liquid::before, .bg-liquid::after { animation: none; }
 }
 @media print { .bg-liquid::before, .bg-liquid::after { display: none; } }

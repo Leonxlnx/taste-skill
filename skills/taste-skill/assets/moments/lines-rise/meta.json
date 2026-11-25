@@ -16,9 +16,9 @@
     "playful"
   ],
   "intensity": "quiet",
-  "look": "A content heading rises line by line on first entry, with 90 ms between lines. The surrounding content stays readable. On an older section mount, marked parts follow the heading.",
+  "look": "On a loud page a content heading rises line by line on first entry, with 90 ms between lines. The surrounding content stays readable. On an older section mount, marked parts follow the heading.",
   "reduced": "The section stands as written.",
-  "phone": "The heading rises line by line once on a phone and on desktop.",
+  "phone": "The loud heading can rise once. Quiet and lively headings stay still.",
   "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 0.7,

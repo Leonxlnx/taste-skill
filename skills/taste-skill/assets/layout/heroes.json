@@ -1,13 +1,13 @@
 {
- "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place with a matching photograph uses hero-place.html in one of five forms. Without one it uses the statement hero. A hero takes the height of its copy from 72svh to 100svh. A large picture or product window fills the first screen. Where the next section begins in view, keep its heading and action whole. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. The foot form allows a bottom scrim up to 35% over the lowest 40%. Numbers are px, measured on the demos (check.mjs prints them): [1440x900, 390x844]. h1 sizes in 'size' are before --ly-scale; the measured ones in at1440/at390 are after the demo's scale. A dealt product window with hero--peek can extend below the fold with at least 420px visible at 1440x900.",
+ "about": "The hero types of layout v4 (references/layout-v4.md section 3), each built in this folder as hero-<id>.html and shot at 1440x900, 1024x768, 820x1180 and 390x844. A builder deals one at random by the brief's type and the material it really has: node <skill>/assets/layout/deal.mjs --type <software|product|service> --has <photo,ui,film,object,ground>. A place with a matching photograph uses hero-place.html in one of five forms. Without one it uses the statement hero. A hero takes the height of its copy from 72svh to 100svh. A large picture or product window fills the first screen. Where the next section begins in view, keep its heading and action whole. Its blocks stand on the container's two lines (x 80 and 1360 at 1440, 24 and 366 at 390) or run edge to edge; never out to one viewport edge only. The foot form allows a bottom scrim up to 35% over the lowest 40%. Dimensions are measured on the shipped demos at 1440×900 and 390×844. Quiet headline sizes are independent of --ly-scale. A dealt product window with hero--peek can extend below the fold with at least 420px visible at 1440x900.",
  "fields": {
   "types": "Eligible page types and weights. A game uses the gaming weights. A place with pictures takes the place hero. A product without a picture takes split with its own built view.",
   "needs": "Material the hero uses. A vertical bar means either. photo is a photograph of the subject, art its artwork, ui its screen, film actual footage, object a cut-out or render, setting a game world to illustrate, and ground a flat field.",
-  "h1": "the layout.css token, its size at 1440 and 390 before --ly-scale, the leading, the most lines at each width and the longest headline that fits",
+  "h1": "The CSS token, quiet desktop and phone sizes, leading, line limits and the longest headline tested.",
   "grid": "where each block stands on the 12 columns at 1440 (from 1024 up); below 1024 everything stacks in the order given",
-  "at1440": "measured on the demo at 1440x900 (the fixed header 72 over the hero's top, the hero exactly 900, words from y 120, content ending by y 836, container x 80 to 1360)",
-  "at390": "measured on the demo at 390x844 (header 56, the hero exactly 844, words from y 96, content ending by y 820, container x 24 to 366)",
-  "moment": "the hero's own small motion (layout.js) after the entrance every hero makes once on load (data-enter, motion.md), how it rests, and what reduced motion and a phone show; 'none' means nothing more than that entrance. The page's dealt moments are apart (moments.mjs pick). On kind other (site-kind other) and on a place the hero's own loops rest (the page's moments and scene are dealt by fit, moments.mjs): the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
+  "at1440": "Measured on the desktop demo at 1440×900. Positions are relative to the page origin.",
+  "at390": "Measured on the phone demo at 390×844. Positions are relative to the page origin.",
+  "moment": "the hero's own small motion (layout.js) alongside its dealt entrance (still, fade or rise on a quiet page; see motion.md), how it rests, and what reduced motion and a phone show; 'none' means nothing more than that entrance. The page's dealt moments are apart (moments.mjs pick). On kind other (site-kind other) and on a place the hero's own loops rest (the page's moments and scene are dealt by fit, moments.mjs): the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
   "moments": "assets/moments/index.json ids that may be dealt onto this hero (one at most; moments.mjs pick --fits hero decides), as { id, only? }: only \"tech\" means software, AI and gaming briefs only",
   "grounds": "assets/backgrounds/index.json ids the hero may stand on, as { id, only?, dark? }: only \"tech\" for software, AI and gaming briefs only; dark true for a dark page only",
   "effects": "assets/effects ids the hero's visual may carry, as { id, as? }: every effect is for tech, software, AI and gaming briefs only, never a place or a local business; 'as' says where it goes when that is not the visual itself",
@@ -28,10 +28,10 @@
     "photo"
    ],
    "h1": {
-    "token": "--place-display (56–72 desktop, 36–44 phone; foot 56–64 and 36–40)",
+    "token": "--ly-h1",
     "size": [
-     72,
-     44
+     64,
+     36
     ],
     "leading": 1.104,
     "lines": [
@@ -47,16 +47,14 @@
     "below": "the band stacks the photograph above the h1, lead and button below 1024; a phone with data-phone-fill can use the height left by the words"
    },
    "at1440": {
-    "hero": "1440x900: exactly one screen; the visit block is screen 2, never in screen 1",
-    "photo": "1440×580 at x0, y72.",
-    "text": "Band display 72px with the lead and main action.",
-    "measured": "Band demo: 900px hero, h1 72px at x80, y692 on 2 lines. Wrap x80–1360."
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 1280 × 57px at x 80, y 621.",
+    "lead": "18px. Box 462 × 54px at x 80, y 694."
    },
    "at390": {
-    "hero": "844: one screen, the action bar at its foot",
-    "photo": "390×446 at x0, y56.",
-    "text": "Band display 44px with the lead and main action.",
-    "measured": "Band demo: 844px hero, h1 44px at x24, y526 on 3 lines. Wrap x24–366."
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 75px at x 24, y 601.",
+    "lead": "16px. Box 342 × 48px at x 24, y 700."
    },
    "moment": "the dealt entrance only (start.mjs plan deals it from the deck: eligible entrances in assets/motion/meta.json), then the hero rests; the page's moments and scene are dealt apart, by fit",
    "moments": [],
@@ -95,34 +93,31 @@
    "h1": {
     "token": "--ly-h1",
     "size": [
-     72,
-     40
+     64,
+     36
     ],
     "leading": 1.02,
     "lines": [
-     3,
+     2,
      3
     ],
     "maxChars": 45
    },
    "grid": {
-    "text": "span-5 (519), top-aligned: the first line (a notice line or the h1) on the picture's top line, y 120",
-    "visual": "span-6 start-7 (628), ending on the right line, as tall as the hero's content box (716 at 1440x900: 900 - 120 - 64)",
-    "work": "With data-work-window the copy is above the product window, which spans the wrap with a narrow matte."
+    "text": "Seven columns for the headline, lead and action.",
+    "visual": "Five columns for the subject, or full width below an across headline."
    },
    "at1440": {
-    "hero": "1440x900",
-    "text": "519 wide; a notice line 14px at y 120, 16 to the h1; h1 72/1.02 on 3 lines from y 158 (from y 120 with no notice line, its capitals trimmed to the picture's top); lead 20/30 on 3 lines, max 42ch, 24 under the h1; buttons 44, 32 under the lead",
-    "visual": "628x716 at x 732, y 120 (48 under the header), radius --r-lg on all four corners",
-    "measured": "hero 900/900, h1 72px on 3 lines from y 158, the visual 628x716 at x 732, y 120",
-    "work": "Software demo: 1248px window at x96, y377 inside the 1280px stage."
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 2 lines. Box 737 × 119px at x 80, y 194.",
+    "lead": "18px. Box 485 × 54px at x 80, y 337.",
+    "stage": "519 × 642px at x 841, y 194."
    },
    "at390": {
-    "hero": "844: exactly one screen",
-    "text": "h1 40 on 2 lines from y 134 under the notice line, lead 17/25.5 on 4 lines, buttons stacked full width (44 + 12 + 44)",
-    "visual": "342 x what is left (303 here, at least 240), 32 under the buttons, cover-cropped round the subject",
-    "measured": "hero 844/844, h1 40px on 3 lines from y 134, the visual 342x262 at x 24, y 558",
-    "work": "310px window at x40, y354 inside the 342px stage."
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 68px at x 24, y 130.",
+    "lead": "16px. Box 342 × 48px at x 24, y 222.",
+    "stage": "342 × 334px at x 24, y 486."
    },
    "moment": "none on a photograph; keep any essential playback control inside the working view",
    "moments": [],
@@ -141,7 +136,7 @@
     "the picture out to the viewport edge (one-sided bleed)",
     "a photograph cropped through faces",
     "the picture above the text on a phone",
-    "a picture narrower than six columns",
+    "a side-by-side picture narrower than five columns",
     "the float card covering the subject",
     "a second float card"
    ],
@@ -164,30 +159,28 @@
    "h1": {
     "token": "--ly-h1-xl",
     "size": [
-     80,
-     44
+     64,
+     36
     ],
     "leading": 1.02,
     "lines": [
-     3,
+     2,
      3
     ],
     "maxChars": 32
    },
    "grid": {
-    "text": "the left six columns (628) on the calm side, the words in a solid box of the page's colours (padding 48); data-calm=left|right|top moves the box; data-box=none sets the words straight on a calm part that is dark (data-tone=dark) or light and empty at the desktop crop"
+    "text": "Place the reading panel on the calm part of the photograph. Allow a headline box at least 54% of the wrap on a quiet desktop."
    },
    "at1440": {
-    "hero": "1440x900: the photograph edge to edge under the fixed header (full bleed is symmetric)",
-    "text": "in its box: h1 80 (89.6 after the pairing's scale) on 3 lines from y 231; lead 20/30 on 3 or 4 lines, max 42ch; buttons 44, the page's own pair",
-    "photo": "at least 1920 wide; object-position keeps the subject off the words",
-    "measured": "hero 900/900, h1 89.6px on 3 lines from y 231, the visual 1440x900 at x 0, y 0",
-    "box": "a solid box in the page's ground colour, radius --r-lg, never a scrim, gradient, veil or blurred panel (PH-31, VI-49)"
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 774 × 65px at x 128, y 378.",
+    "lead": "18px. Box 454 × 108px at x 128, y 468."
    },
    "at390": {
-    "hero": "844: the photograph a layer under the header (42svh: 354 here), the words under it on the page ground; from 1023 down the same (56vw, at most 46svh)",
-    "text": "h1 44 (49) on 2 lines from y 450, lead 17 on 4 lines, buttons stacked",
-    "measured": "hero 844/844, h1 49.3px on 2 lines from y 450, the visual 390x354 at x 0, y 56"
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 73px at x 24, y 484.",
+    "lead": "16px. Box 342 × 96px at x 24, y 582."
    },
    "moment": "none: the photograph is the hero",
    "moments": [],
@@ -225,8 +218,8 @@
    "h1": {
     "token": "--ly-h1",
     "size": [
-     72,
-     40
+     64,
+     36
     ],
     "leading": 1.02,
     "lines": [
@@ -236,21 +229,18 @@
     "maxChars": 40
    },
    "grid": {
-    "head": "at 1280 and up the h1 on cols 1-7 (two lines), the lead and the buttons stacked on cols 9-12, their foot on the h1's foot; 1024-1279 the h1 on cols 1-6, lead and buttons on 7-12; under 1024 stacked",
+    "head": "Set the proposition and its action above the product across the content width.",
     "stage": "a render or cut-out: span-12 (1280), 32 under the head, down to 24 above the fold, no box; its frame reaches 7% past the stage's top and bottom so the product fills the stage's height. A photograph: the full screen width, down to the fold, square corners"
    },
    "at1440": {
-    "hero": "1440x900",
-    "head": "h1 72 on 2 lines from y 131; lead 20/30 on 3 lines, 411 wide; buttons 44; the head ends at y 278",
-    "stage": "1280x566 at y 310, the product whole on the page ground: the city bike's side still 1046x554 (81.7% of the wrap), its three-quarter 818x554 (63.9%, under 8 columns: the hero takes the widest view)",
-    "spots": "none by default; only when the brief asks for the parts to be pointed out on the product: one to three 32px discs (layout.js .ly-spot), each opening a 230px spec card on hover, focus or tap",
-    "measured": "hero 900/900, h1 80.6px on 2 lines from y 120, the visual 1440x568 at x 0, y 333"
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 819 × 65px at x 80, y 194.",
+    "lead": "18px. Box 503 × 81px at x 80, y 275."
    },
    "at390": {
-    "hero": "844: one screen",
-    "stage": "a render: 342 wide and what the head leaves (394 at 390x844), the product 86% of the wrap (294 wide), centred in it; a photograph: the screen width at its own ratio (390x293)",
-    "spots": "none by default; when asked for, a tap opens the card under its disc, centred on it and kept 16px inside the stage",
-    "measured": "hero 844/844, h1 44.8px on 2 lines from y 96, the visual 390x293 at x 0, y 461"
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 73px at x 24, y 130.",
+    "lead": "16px. Box 342 × 72px at x 24, y 219."
    },
    "moment": "none: the product is the hero (hotspots only when the brief asks for them); a render is a still once make-posters.mjs has made it (live only with data-product-mode=\"live\", with its pause button)",
    "moments": [],
@@ -307,30 +297,30 @@
    "h1": {
     "token": "--ly-h1-mega",
     "size": [
-     156,
-     56
+     64,
+     36
     ],
     "leading": 0.98,
     "lines": [
-     3,
+     2,
      4
     ],
     "maxChars": 34
    },
    "grid": {
-    "h1": "span-12 (1280) from the left line, centred in the height the foot leaves; one or two .ly-pic pills (0.8em tall, 1.7 to 2.1em wide) after a word, never two in one line, whole on the first frame (no opening)"
+    "h1": "Use the full wrap. Put one or two pictures of the actual work inside the line; their size follows the headline and viewport."
    },
    "at1440": {
-    "hero": "Content height, from 72svh to 100svh.",
-    "h1": "156 (146.6 after the 0.94 scale) on 3 lines from y 173; pills 117 tall, about 246 and 199 wide",
-    "measured": "hero 900/900, h1 146.6px on 3 lines from y 173, the visual 308x117 at x 794, y 222"
+    "hero": "671px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 1280 × 63px at x 80, y 194.",
+    "lead": "18px. Box 575 × 27px at x 80, y 281."
    },
    "at390": {
-    "hero": "Content height, from 72svh to 100svh. Keep the next heading whole.",
-    "h1": "56 (52.6) on 4 to 5 lines with a long lead; keep it to 4 (cut the headline)",
-    "measured": "hero 844/844, h1 52.6px on 4 lines from y 211, the visual 111x42 at x 26, y 292"
+    "hero": "730px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 3 lines. Box 342 × 154px at x 24, y 130.",
+    "lead": "16px. Box 342 × 48px at x 24, y 308."
    },
-   "moment": "the pills are whole on the first frame (no opening, no settle: the h1 never reflows after load) and still under the pointer; letters thicken and widen near the pointer (data-ly-letters=wdth, fine pointers only).",
+   "moment": "the pills are whole on the first frame (no opening, no settle: the h1 never reflows after load) and still under the pointer; only on a loud page do letters thicken near a fine pointer, widening on a face with a width axis.",
    "moments": [],
    "grounds": [
     {
@@ -349,8 +339,6 @@
    "effects": [],
    "mistakes": [
     "a picture that is mood, not the work",
-    "two pills in one line",
-    "pills taller than 0.8em",
     "the headline centred",
     "a slogan instead of what the company does",
     "a frame under the type (then it is another hero)"
@@ -372,29 +360,30 @@
     "token": "--ly-h1-col",
     "size": [
      64,
-     40
+     36
     ],
     "leading": 1.02,
     "lines": [
-     3,
+     2,
      3
     ],
     "maxChars": 48
    },
    "grid": {
-    "text": "With data-work-window the heading takes six columns. The lead, actions and proof start at column eight.",
-    "art": "Below the copy, the stage spans the wrap. An order note sits beside the main stock rows on desktop."
+    "text": "Seven columns for the headline, lead and action.",
+    "visual": "Five columns for the subject, or full width below an across headline."
    },
    "at1440": {
-    "art": "1280px stage at x80, y361.",
-    "window": "1248px stock window at x96, y377 with a 16px matte.",
-    "card": "The order note occupies the reserved space at the right of the stock list.",
-    "text": "62.7px heading on two lines from y147."
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 1280 × 52px at x 80, y 194.",
+    "lead": "18px. Box 416 × 54px at x 80, y 262.",
+    "stage": "1280 × 390px at x 80, y 446."
    },
    "at390": {
-    "art": "342px stage at x24, y485.",
-    "window": "310px window at x40, y501. The compact view shows two stock rows, including the one running low.",
-    "text": "39.2px heading on three lines from y96."
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 3 lines. Box 342 × 103px at x 24, y 130.",
+    "lead": "16px. Box 342 × 48px at x 24, y 257.",
+    "stage": "342 × 313px at x 24, y 507."
    },
    "moment": "a loop inside the small card: it shows finished first, holds 1.8 s, then its three steps arrive 0.7 s apart and it holds again; restarts when the pointer enters; pause disc bottom-right; a phone holds the finished card",
    "moments": [],
@@ -458,8 +447,8 @@
    "h1": {
     "token": "--ly-h1-word",
     "size": [
-     144,
-     54
+     64,
+     36
     ],
     "leading": 0.92,
     "lines": [
@@ -470,13 +459,14 @@
    },
    "grid": {},
    "at1440": {
-    "hero": "Content height, with the copy and action in one group.",
-    "measured": "hero 900/900, h1 129.6px on 2 lines from y 251"
+    "hero": "648px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 1280 × 59px at x 80, y 242.",
+    "lead": "18px. Box 433 × 54px at x 80, y 325."
    },
    "at390": {
-    "hero": "Content height, from 72svh to 100svh. Keep the next heading whole.",
-    "h1": "54 (48.6) on 3 lines",
-    "measured": "hero 844/844, h1 48.6px on 3 lines from y 149"
+    "hero": "645px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 66px at x 24, y 130.",
+    "lead": "16px. Box 342 × 48px at x 24, y 220."
    },
    "moment": "none",
    "moments": [],
@@ -540,33 +530,32 @@
    "h1": {
     "token": "--ly-h1",
     "size": [
-     72,
-     40
+     64,
+     36
     ],
     "leading": 1.02,
     "lines": [
-     3,
+     2,
      3
     ],
     "maxChars": 42
    },
    "grid": {
     "frame": "span-12 (1280) from 16 under the nav to 16 above the fold",
-    "words": "in a solid box of the page's inverse ground at the frame's lower left, 32 in (max 600 wide: h1 15ch, lead 42ch); never on a scrim",
+    "words": "Give the title at least 54% of the wrap within the reading panel. Keep the play action clear of the words.",
     "play": "the frame's right foot, 64 in"
    },
    "at1440": {
-    "hero": "1440x900",
-    "frame": "1280x716 at x 80, y 120",
-    "h1": "72 (70.6) on 3 lines from y 358, in the box (padding 48)",
-    "play": "a 64px white disc, its label 20px in a solid pill of the inverse ground, the running time 14px under it",
-    "measured": "hero 900/900, h1 70.6px on 3 lines from y 358, the visual 1280x716 at x 80, y 120"
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 2 lines. Box 772 × 131px at x 160, y 444.",
+    "lead": "18px. Box 462 × 81px at x 160, y 599.",
+    "stage": "1280 × 642px at x 80, y 194."
    },
    "at390": {
-    "hero": "844: exactly one screen",
-    "frame": "342x724 at y 96",
-    "words": "the box across the frame's foot, 12 in, padding 24; the play disc (52) and its label first, then the h1 40 on 3 lines, lead 17, buttons stacked",
-    "measured": "hero 844/844, h1 39.2px on 3 lines from y 389, the visual 342x724 at x 24, y 96"
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 3 lines. Box 270 × 110px at x 60, y 422.",
+    "lead": "16px. Box 270 × 96px at x 60, y 556.",
+    "stage": "342 × 690px at x 24, y 130."
    },
    "moment": "the play control: the film plays in the frame with controls (data-film) or the control goes to the film's page; the poster never autoplays sound",
    "moments": [],
@@ -609,8 +598,8 @@
    "h1": {
     "token": "--ly-h1-quiet",
     "size": [
-     56,
-     34
+     64,
+     36
     ],
     "leading": 1.1,
     "lines": [
@@ -620,18 +609,19 @@
     "maxChars": 54
    },
    "grid": {
-    "text": "from the left line, h1 max 21ch, lead max 42ch"
+    "text": "Set the headline across the wrap from its left edge, with a shorter measure for the lead."
    },
    "at1440": {
-    "ground": "the demo: bg-horizon on a dark page (the lit rim rises from the hero's foot behind the facts)",
-    "measured": "hero 900/900, h1 59.4px on 2 lines from y 184"
+    "hero": "648px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 2 lines. Box 1280 × 141px at x 80, y 258.",
+    "lead": "18px. Box 423 × 81px at x 80, y 423."
    },
    "at390": {
-    "hero": "Content height, from 72svh to 100svh. Keep the next heading whole.",
-    "h1": "34 (36) on 3 lines",
-    "measured": "hero 844/844, h1 36px on 3 lines from y 172"
+    "hero": "608px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 3 lines. Box 342 × 119px at x 24, y 206.",
+    "lead": "16px. Box 342 × 96px at x 24, y 349."
    },
-   "moment": "the ground: liquid (two slow blobs, software only, with its pause disc) or a still horizon, field, halo, dusk or grain",
+   "moment": "none: the ground is a still mesh, horizon, field, halo, dusk or grain",
    "moments": [],
    "grounds": [
     {
@@ -713,27 +703,29 @@
    "h1": {
     "token": "--ly-h1-side",
     "size": [
-     52,
-     40
+     64,
+     36
     ],
     "leading": 1.04,
     "lines": [
-     3,
+     2,
      2
     ],
     "maxChars": 34
    },
    "grid": {
-    "headline": "span-4; headline, lead and action in one group",
-    "collage": "span-7 start-6"
+    "text": "Seven columns for the headline, lead and action.",
+    "visual": "Five columns for the subject, or full width below an across headline."
    },
    "at1440": {
-    "headline": "52px, grouped with the lead and action",
-    "collage": "three distinct subjects"
+    "hero": "900px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 2 lines. Box 737 × 133px at x 80, y 194.",
+    "lead": "18px. Box 410 × 81px at x 80, y 351."
    },
    "at390": {
-    "headline": "40px, followed by the lead and action",
-    "collage": "the exhibit follows the button"
+    "hero": "844px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 75px at x 24, y 130.",
+    "lead": "16px. Box 342 × 72px at x 24, y 229."
    },
    "moment": "the sets crossfade (0.7 s) every 2.8 s through ui.loop with its pause disc; nothing moves inside a set; a phone holds set one",
    "moments": [],
@@ -779,8 +771,8 @@
    "h1": {
     "token": "--ly-h1",
     "size": [
-     72,
-     40
+     64,
+     36
     ],
     "leading": 1.02,
     "lines": [
@@ -790,18 +782,20 @@
     "maxChars": 36
    },
    "grid": {
-    "text": "centred on the page axis, max 880; h1 max 16ch (a centred block is symmetric, so both edges stay equal)",
+    "text": "Centre the copy in 80% of the content width.",
     "frame": "Span the wrap, with the product window in normal flow."
    },
    "at1440": {
-    "hero": "At least one screen. Show the first 420px of the window, or the whole window if shorter.",
-    "window": "Content height up to 760px.",
-    "measured": "1256px window at x92, y479. The stage is 1280px wide."
+    "hero": "987px tall. Content edges at x 80 and 1360.",
+    "h1": "64px on 1 line. Box 1024 × 65px at x 208, y 200.",
+    "lead": "18px. Box 791 × 54px at x 324, y 277.",
+    "stage": "1280 × 484px at x 80, y 407."
    },
    "at390": {
-    "frame": "Span the wrap below the actions.",
-    "window": "Keep the decisive rows and their result. Collapse the sidebar first.",
-    "measured": "310px window at x40, y491. The stage is 342px wide."
+    "hero": "1063px tall. Content edges at x 24 and 366.",
+    "h1": "36px on 2 lines. Box 342 × 73px at x 24, y 186.",
+    "lead": "16px. Box 342 × 96px at x 24, y 271.",
+    "stage": "342 × 492px at x 24, y 499."
    },
    "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
    "moments": [],

@@ -22,8 +22,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.045,
+   "tracking": -0.012,
+   "trackingXl": -0.012,
    "scale": 1,
    "letters": "wght"
   },
@@ -41,7 +41,8 @@
     500
    ]
   },
-  "suits": "developer tools, AI, infrastructure, fintech: exact, plain and fast"
+  "suits": "developer tools, AI, infrastructure, fintech: exact, plain and fast",
+  "scaleNote": "Quiet type at 1440/390: headline 64/36, section heading 40/28, small heading 20/18 at 500, lead 18/16, body 16. Tracking −0.012em for headlines, −0.008em for section headings, zero for small headings."
  },
  {
   "id": "host",
@@ -64,8 +65,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -111,8 +112,8 @@
    ],
    "tech": 500,
    "stretch": "96%",
-   "tracking": -0.028,
-   "trackingXl": -0.036,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1.04,
    "letters": "wght"
   },
@@ -162,8 +163,8 @@
    ],
    "tech": 500,
    "stretch": "104%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.96,
    "letters": "wdth"
   },
@@ -207,8 +208,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.038,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -248,8 +249,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.042,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.98,
    "letters": "wght"
   },
@@ -289,8 +290,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -331,8 +332,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.98,
    "letters": "wght"
   },
@@ -373,8 +374,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.045,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.97,
    "letters": "wght"
   },
@@ -418,8 +419,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.98,
    "letters": "wght"
   },
@@ -463,8 +464,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.045,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.9,
    "letters": "wght"
   },
@@ -509,8 +510,8 @@
    ],
    "tech": 500,
    "stretch": "110%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.9,
    "letters": "wdth"
   },
@@ -557,7 +558,7 @@
    "tech": 400,
    "stretch": "115%",
    "tracking": -0.02,
-   "trackingXl": -0.03,
+   "trackingXl": -0.02,
    "scale": 0.86,
    "letters": "wdth"
   },
@@ -607,8 +608,8 @@
    ],
    "tech": 400,
    "stretch": "96%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -649,8 +650,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -690,8 +691,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.98,
    "letters": "wght"
   },
@@ -731,8 +732,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.96,
    "letters": "wght"
   },
@@ -773,8 +774,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -816,8 +817,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.035,
-   "trackingXl": -0.045,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 0.97,
    "letters": "wght"
   },
@@ -858,8 +859,8 @@
    ],
    "tech": 400,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -900,8 +901,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -941,8 +942,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -982,8 +983,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.03,
-   "trackingXl": -0.04,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1023,8 +1024,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1065,8 +1066,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1106,8 +1107,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1140,8 +1141,8 @@
    ],
    "tech": 500,
    "stretch": "100%",
-   "tracking": -0.025,
-   "trackingXl": -0.035,
+   "tracking": -0.02,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1176,7 +1177,7 @@
    "tech": 500,
    "stretch": "100%",
    "tracking": -0.02,
-   "trackingXl": -0.03,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": null
   },
@@ -1263,7 +1264,7 @@
    "stretch": "100%",
    "axes": "'SOFT' 30, 'WONK' 0",
    "tracking": -0.02,
-   "trackingXl": -0.028,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1302,7 +1303,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.018,
-   "trackingXl": -0.025,
+   "trackingXl": -0.02,
    "scale": 1.06,
    "letters": "wght"
   },
@@ -1339,7 +1340,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.02,
-   "trackingXl": -0.026,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1413,7 +1414,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.02,
-   "trackingXl": -0.026,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1482,7 +1483,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.02,
-   "trackingXl": -0.026,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },
@@ -1552,7 +1553,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.018,
-   "trackingXl": -0.024,
+   "trackingXl": -0.02,
    "scale": 1.02,
    "letters": null
   },
@@ -1586,7 +1587,7 @@
    "tech": 400,
    "stretch": "100%",
    "tracking": -0.02,
-   "trackingXl": -0.03,
+   "trackingXl": -0.02,
    "scale": 1,
    "letters": "wght"
   },

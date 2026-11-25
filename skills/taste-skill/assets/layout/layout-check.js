@@ -205,7 +205,6 @@ window.lyRules = (() => {
     const out = [], ownSections = secs.filter(s => s.matches(own));
     const add = (rule, where, detail, sev = 'FAIL') => out.push({rule, where, detail, sev});
     if (secs.length && ownSections.length < (secs.length >= 6 ? 2 : 1)) add('own-count','page',secs.length + ' sections include ' + ownSections.length + ' own sections','WARN');
-    if (secs.length >= 6 && new Set(secs.map(colour)).size === 1 && !secs.some(fullPicture)) add('ground-flat','page',secs.length + ' sections share one ground without a full-bleed picture');
     const kind = kindOverride || document.documentElement.dataset.type || document.querySelector('meta[name="page-type"],meta[name="page-kind"]')?.content;
     const photosIn = section => [...section.querySelectorAll('img')].filter(img => {
       const r = img.getBoundingClientRect(), src = img.currentSrc || img.src;
@@ -531,7 +530,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     const joinedPhotos = touchesPicture(a, 'bottom', a.cBot) && touchesPicture(b, 'top', b.cTop);
     const minimum = window.lyRules.air(a.el,b.el).min;
     if (gap < minimum - .5 && !joinedPhotos && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + minimum + 'px');
-    if (gap > max + .5 && window.lyRules.colour(a.el) === window.lyRules.colour(b.el)) {
+    if (!b.el.matches(".section--pause") && gap > max + .5 && window.lyRules.colour(a.el) === window.lyRules.colour(b.el)) {
       const blank = window.lyRules.blankRun([a.el,b.el],a.cBot,b.cTop);
       if (blank>max+.5) add('empty-band', name(a.el) + ' / ' + name(b.el), Math.round(blank) + 'px of continuous empty ground, limit ' + max + 'px');
     }

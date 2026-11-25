@@ -1,467 +1,555 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-radius="soft" data-kind="light">
 <head>
-<script>window.__tpGlMax = 16;   /* a gallery shows many live effects at once; a page of a site keeps the default 4 (fx.js) */</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Effects library</title>
-<meta name="description" content="Effects drawn in code for hero frames, feature cards and bands, in the page palette.">
+<meta name="description" content="Effects drawn in code for company websites: 25 grounds, eight feature-card layouts, effects inside the page and real things printed in code.">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<!--
+  The gallery of the taste-skill effects kit (scripts/fx-gallery.template.html). It is built on the kit
+  itself: system.css for the page, ui/cards.css for every card, the layouts of ui/cards.html, the
+  components and the objects. Its asset root is "../" (assets/effects/gallery.html); the publish
+  command of scripts/effects.mjs moves it to "./" and copies every file it loads beside it.
+
+  Light on a laptop GPU: every still ground is drawn once and kept as a picture (ui.grounds); the hero,
+  one effect tile (the one pointed at), the components and the objects near the screen are the only
+  live WebGL contexts, and the page keeps them at 4 or fewer (window.__gal.gl() counts them).
+-->
+<!--assets-->
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/base.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../components/base.css">
+<!--/assets-->
 <style>
-  /* the page palette; the script sets these from the palette switcher */
+  /* ---------------------------------------------------------------- the three page palettes */
   :root {
-    --bg: #ddd6c6; --surface: #d2cab8; --ink: #2a2a26; --muted: #59574e; --accent: #4f6238; --accent-ink: #ffffff;
-    --card: #d2cab8; --panel: #cbc3b1; --win: #eeebe3; --win-surface: #e4e0d6;
+    --font-display: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-text: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+    --display-weight: 500;
+    --display-tracking: -0.035em;
+    --container: 1232px;
+  }
+  html[data-kind="light"] {
+    --p-bg: #f3f3f1; --p-surface: #ffffff; --p-ink: #0f0f0e; --p-muted: #686863; --p-accent: #e5531c; --p-accent-ink: #ffffff;
+    --p-action: #0f0f0e; --p-action-ink: #ffffff; --chip: #e9e8e4; --sheet: #ffffff;
     color-scheme: light;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0a0d14; --surface: #131824; --ink: #e9edf3; --muted: #8891a1; --accent: #5ab9fc; --accent-ink: #0a0d14;
-      --card: #131824; --panel: #0a0d14; --win: #1d2230; --win-surface: #262c3b;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0a0d14; --surface: #131824; --ink: #e9edf3; --muted: #8891a1; --accent: #5ab9fc; --accent-ink: #0a0d14;
-    --card: #131824; --panel: #0a0d14; --win: #1d2230; --win-surface: #262c3b;
+  html[data-kind="dark"] {
+    --p-bg: #070708; --p-surface: #151517; --p-ink: #f2f2ef; --p-muted: #8f9094; --p-accent: #ff7a3c; --p-accent-ink: #120c08;
+    --p-action: #f2f2ef; --p-action-ink: #070708; --chip: #18181a; --sheet: #111113;
     color-scheme: dark;
   }
-  :root {
-    --line: color-mix(in oklab, var(--ink) 12%, transparent);
-    --line-2: color-mix(in oklab, var(--ink) 22%, transparent);
-    --chip: color-mix(in oklab, var(--ink) 6%, var(--bg));
-    --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-    --wrap: 1320px;
-    --gut: 24px;
+  html[data-kind="colour"] {
+    --p-bg: #0034eb; --p-surface: #1446ec; --p-ink: #ffffff; --p-muted: #d2dafa; --p-accent: #e9e34a; --p-accent-ink: #111111;
+    --p-action: #ffffff; --p-action-ink: #0034eb; --chip: #0f3be4; --sheet: #0b36e0;
+    color-scheme: dark;
   }
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; font-feature-settings: "ss01" 0;
-    overflow-x: hidden;
-  }
-  button, select { font: inherit; color: inherit; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .wrap { max-width: calc(var(--wrap) + 2 * var(--gut)); margin: 0 auto; padding: 0 var(--gut); }
+  body { background: var(--bg); color: var(--ink); }
+  ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+  :focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+  .container { --pad: 24px; }
+  @media (min-width: 1024px) { .container { --pad: 40px; } }
+  @media (max-width: 639px) { .container { --pad: 16px; } }
 
-  /* top bar */
-  .top { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--bg) 86%, transparent);
-    backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); border-bottom: 1px solid var(--line); }
-  .top-in { display: flex; align-items: center; gap: 12px 8px; padding-top: 12px; padding-bottom: 12px; }
-  .top-in .controls { margin-left: auto; }
-  .brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
-  .brand b { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
-  .brand span { color: var(--muted); font-size: 14px; white-space: nowrap; }
-  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  /* ---------------------------------------------------------------- controls */
   .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--chip); box-shadow: inset 0 0 0 1px var(--line); }
-  .seg button { height: 30px; border: 0; background: transparent; padding: 0 12px; border-radius: 7px; cursor: pointer; color: var(--muted); font-size: 14px; }
-  .seg button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / 0.08); }
-  .btn, .select {
-    height: 36px; padding: 0 14px; border-radius: 10px; border: 0; background: var(--bg); color: var(--ink);
-    box-shadow: inset 0 0 0 1px var(--line-2); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-    font-size: 14px; font-weight: 500; white-space: nowrap;
+  .seg button { height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font: 500 13px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .seg button:hover { color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / .12); }
+  .textbtn { border: 0; background: none; padding: 4px 0; font: 500 14px/20px var(--font-text); color: var(--muted); cursor: pointer;
+    text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
+  .textbtn:hover { color: var(--ink); text-decoration-color: currentColor; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips button, .chips a { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; border: 0;
+    background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); font: 500 13px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .chips button:hover, .chips a:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .chips span { font-variant-numeric: tabular-nums; opacity: .7; font-weight: 400; }
+  .chips [aria-pressed="true"] { background: var(--ink); color: var(--bg); box-shadow: none; }
+
+  /* ---------------------------------------------------------------- nav (system.css .nav, menus filled from the data) */
+  .nav { --nav-h: 60px; }
+  .nav__bar { gap: 20px; }
+  .nav__logo { font: 600 15px/1 var(--font-text); letter-spacing: -0.01em; gap: 10px; }
+  .nav__logo svg { width: 20px; height: 20px; }
+  .nav__links { gap: 2px; }
+  .nav__link { font-size: 14px; }
+  .nav__menu { background: var(--sheet); }
+  .menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 40px; }
+  .menu-col > .t-label { margin-bottom: 4px; }
+  .menu-col a { padding: 5px 0; font-size: 14px; }
+  .menu-col a span { font-size: 13px; }
+  .menu-col a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong); }
+  .nav__actions .btn { height: 36px; padding: 0 14px; font-size: 14px; }
+  @media (max-width: 1023px) {
+    .nav__bar .seg-phone { display: inline-flex; margin-left: auto; }
+    .nav__toggle { margin-left: 0; }
+    .nav.is-open .nav__actions .seg { width: 100%; }
+    .nav.is-open .nav__actions .seg button { flex: 1; }
   }
-  .btn:hover, .select:hover { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 38%, transparent); }
-  .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
-  .btn--primary:hover { box-shadow: none; background: color-mix(in oklab, var(--accent) 88%, var(--ink)); }
-  .btn svg { width: 16px; height: 16px; flex: none; }
-  .select { max-width: 220px; padding-right: 10px; }
+  .seg-phone { display: none; }
+  @media (max-width: 639px) { .seg-phone button { padding: 0 9px; } .nav__logo .long { display: none; } }
 
-  /* hero: a dealt hero effect with text in its calm area */
-  .hero { position: relative; margin-top: 24px; height: clamp(480px, 68vh, 660px); border-radius: 20px; overflow: hidden;
-    display: flex; flex-direction: column; justify-content: flex-end; }
-  .hero::after, .stage::after, .panel::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--line); pointer-events: none; z-index: 2; }
-  .hero-copy { position: relative; z-index: 1; padding: 56px; max-width: 760px; }
-  .hero h1 { max-width: 9.5em; margin: 0 0 18px; font-size: clamp(38px, 3.4vw + 10px, 62px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 520; text-wrap: balance; }
-  .hero p { margin: 0; max-width: 44ch; font-size: 18px; line-height: 28px; color: var(--muted); text-wrap: pretty; }
-  .hero-tag { position: absolute; right: 20px; bottom: 20px; z-index: 3; }
-  .tag { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 13px;
-    background: color-mix(in oklab, var(--bg) 82%, transparent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); white-space: nowrap; }
-  .tag span { color: var(--muted); }
+  /* ---------------------------------------------------------------- hero: the dealt hero ground, live */
+  .hero { padding: 88px 0 0; text-align: center; }
+  .hero__pill { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px 0 12px; border-radius: 999px;
+    background: var(--card); box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; color: var(--ink); }
+  .hero__pill b { font-weight: 500; }
+  .hero__pill .muted { color: var(--muted); }
+  .hero__pill svg { width: 12px; height: 12px; color: var(--muted); }
+  .hero h1 { margin: 24px auto 0; max-width: 18ch; font-size: clamp(42px, 3.6vw + 18px, 76px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 500; }
+  .hero__sub { margin: 22px auto 0; max-width: 58ch; color: var(--muted); font-size: 18px; line-height: 1.55; text-wrap: pretty; }
+  .hero .btn-row { justify-content: center; margin-top: 32px; }
+  .hero__frame { position: relative; isolation: isolate; overflow: clip; margin-top: 64px; aspect-ratio: 16 / 7; border-radius: 20px; background: var(--card); }
+  .hero__frame::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .hero__cap { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap; margin-top: 14px; font-size: 14px; line-height: 20px; color: var(--muted); text-align: left; }
+  .hero__cap b { color: var(--ink); font-weight: 500; }
+  .hero__cap .acts { display: flex; gap: 20px; }
 
-  /* sections */
-  section { padding-top: 96px; }
-  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 32px; }
-  .sec-head h2 { margin: 0 0 10px; font-size: clamp(28px, 1.2vw + 18px, 36px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 520; }
-  .sec-head p { margin: 0; color: var(--muted); max-width: 56ch; font-size: 16px; line-height: 24px; text-wrap: pretty; }
-  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
-  .filters button { height: 32px; padding: 0 12px; border-radius: 999px; border: 0; cursor: pointer; font-size: 14px; color: var(--muted);
-    background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
-  .filters button b { font-weight: 500; }
-  .filters button span { margin-left: 6px; font-variant-numeric: tabular-nums; opacity: 0.75; }
-  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); box-shadow: none; }
+  /* the dock: the hero effect's own settings, live (Figma's Texture card), anchored top-right in the frame */
+  html[data-kind="light"] { --dock-bg: #ffffff; --dock-ink: #0f0f0e; --dock-muted: #6b6b66; --dock-line: rgb(15 15 14 / .1); --dock-track: rgb(15 15 14 / .12); }
+  html[data-kind="dark"] { --dock-bg: #1a1b1e; --dock-ink: #f2f2ef; --dock-muted: #8f9094; --dock-line: rgb(255 255 255 / .1); --dock-track: rgb(255 255 255 / .14); }
+  html[data-kind="colour"] { --dock-bg: #ffffff; --dock-ink: #0f0f0e; --dock-muted: #5b5f6e; --dock-line: rgb(0 20 120 / .12); --dock-track: rgb(0 20 120 / .14); }
+  .dock { position: absolute; z-index: 5; top: 28px; right: 28px; width: 300px; max-height: calc(100% - 56px); overflow: auto; scrollbar-width: none; padding: 16px 16px 4px; border-radius: 14px;
+    background: var(--dock-bg); color: var(--dock-ink); text-align: left; font-size: 13px; line-height: 18px;
+    box-shadow: 0 0 0 1px var(--dock-line), 0 1px 2px rgb(0 0 0 / .06), 0 16px 40px -16px rgb(0 0 0 / .32); }
+  .dock__head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; }
+  .dock__head div { display: grid; flex: 1; min-width: 0; }
+  .dock__head b { font-weight: 500; font-size: 14px; }
+  .dock__head span { color: var(--dock-muted); font-size: 12px; }
+  .dock__btn { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--dock-ink);
+    box-shadow: inset 0 0 0 1px var(--dock-line); font: 500 12px/1 var(--font-text); cursor: pointer; white-space: nowrap; }
+  .dock__btn:hover { box-shadow: inset 0 0 0 1px var(--dock-muted); }
+  .dock__btn svg { width: 12px; height: 12px; }
+  .dock__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--dock-line); }
+  .dock__row label { color: var(--dock-muted); font-size: 12px; }
+  .dock__row output { font: 500 12px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .dock__row input { grid-column: 1 / -1; }
+  .dock input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 18px; margin: 0; background: transparent; cursor: pointer; }
+  .dock input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(var(--dock-ink), var(--dock-ink)) 0 0 / var(--v, 50%) 100% no-repeat, var(--dock-track); }
+  .dock input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; background: var(--dock-bg); box-shadow: 0 0 0 1px var(--dock-muted), 0 1px 3px rgb(0 0 0 / .25); }
+  .dock input[type="range"]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--dock-track); }
+  .dock input[type="range"]::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--dock-ink); }
+  .dock input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--dock-bg); box-shadow: 0 0 0 1px var(--dock-muted), 0 1px 3px rgb(0 0 0 / .25); }
+  .dock input[type="range"]:focus-visible { outline: 2px solid var(--dock-ink); outline-offset: 2px; border-radius: 4px; }
+  .dock__pal { display: flex; align-items: center; gap: 6px; }
+  .dock__pal i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--dock-line); }
+  .dock__code { display: flex; align-items: center; gap: 12px; margin: 0 -16px; padding: 10px 16px 12px; border-top: 1px solid var(--dock-line); }
+  .dock__code code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dock-muted); font: 12px/18px var(--font-mono); }
+  .dock__code .textbtn { color: var(--dock-ink); font-size: 12px; padding: 0; }
+  @media (min-width: 900px) { .hero__cap { display: none; } }
+  @media (max-width: 899px) { .dock { display: none; } }
 
-  /* the grid of every effect: one size of tile, labels under the picture */
-  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 24px; }
-  .tile { min-width: 0; display: flex; flex-direction: column; }
-  .tile[hidden] { display: none; }
-  .stage { position: relative; aspect-ratio: 3 / 2; border-radius: 14px; overflow: hidden; background: var(--bg); }
-  .badge { position: absolute; top: 12px; left: 12px; z-index: 3; }
-  .info { padding: 16px 2px 0; display: grid; gap: 6px; }
-  .info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-  .info h3 { margin: 0; font-size: 17px; line-height: 24px; font-weight: 560; letter-spacing: -0.01em; }
-  .fam { flex: none; font-size: 14px; color: var(--muted); }
-  .look { margin: 0; color: var(--muted); font-size: 14px; line-height: 21px; max-width: 62ch; min-height: 42px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .info-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 2px; }
-  .for { margin: 0; font-size: 14px; line-height: 20px; }
-  .links { flex: none; display: flex; gap: 16px; }
-  .links button { border: 0; background: none; padding: 4px 0; cursor: pointer; font-size: 14px; color: var(--muted);
-    text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 4px; }
-  .links button:hover { color: var(--ink); text-decoration-color: currentColor; }
+  /* ---------------------------------------------------------------- section heads (Figma: ink, then the grey sentence) */
+  .sec-intro { display: flex; justify-content: space-between; align-items: end; gap: 24px 48px; flex-wrap: wrap; margin-bottom: 40px; }
+  .sec-intro h2 { max-width: 22ch; font-size: clamp(32px, 1.8vw + 18px, 48px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 500; text-wrap: balance; }
+  .sec-intro h2 span { color: var(--muted); }
+  .sec-intro p { margin-top: 16px; max-width: 58ch; color: var(--muted); font-size: 17px; line-height: 1.55; }
+  .block { padding: 136px 0 0; }
+  .sub-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 24px; flex-wrap: wrap; margin: 72px 0 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .sub-head h3 { font: 500 20px/1.3 var(--font-text); letter-spacing: -0.015em; }
+  .sub-head p { color: var(--muted); font-size: 15px; max-width: 60ch; }
 
-  /* feature cards: an effect ground in the inset panel and a UI fragment on top */
-  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .card { background: var(--card); border-radius: 18px; padding: 28px 28px 24px; box-shadow: inset 0 0 0 1px var(--line); display: flex; flex-direction: column; min-width: 0; }
-  .card h3 { margin: 0 0 8px; font-size: 18px; line-height: 24px; font-weight: 560; letter-spacing: -0.01em; }
-  .card > p:not(.ground) { margin: 0; color: var(--muted); font-size: 15px; line-height: 24px; max-width: 44ch; min-height: 48px; text-wrap: pretty; }
-  .panel { position: relative; margin-top: 24px; height: 380px; border-radius: 12px; overflow: hidden; display: grid; place-items: center; padding: 32px; }
-  .panel--bleed { place-items: end center; padding-bottom: 0; }
-  .panel--bleed > .slot { margin-bottom: -48px; }
-  .slot { position: relative; z-index: 1; max-width: 100%;
-    --ui-font: var(--font); --ui-mono: var(--mono); --ui-radius: 12px;
-    --fx-bg: var(--win); --fx-surface: var(--win-surface); --fx-ink: var(--ink); --fx-muted: var(--muted);
-    --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink); }
-  .ground { margin: 14px 2px 0; font-size: 13px; line-height: 20px; color: var(--muted); }
-  .ground b { font-weight: 500; color: var(--ink); }
+  /* ---------------------------------------------------------------- 1. effects: one tile per effect */
+  .fx-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  .fx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 24px; }
+  @media (min-width: 1200px) { .fx-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 52px 20px; } }
+  .fx-tile { min-width: 0; display: flex; flex-direction: column; scroll-margin-top: 96px; }
+  .fx-tile[hidden] { display: none; }
+  .fx-stage { position: relative; isolation: isolate; overflow: clip; aspect-ratio: 16 / 10; border-radius: 16px; background: var(--card); cursor: default; }
+  .fx-stage::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .fx-stage img[data-fx-photo] { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fx-play { position: absolute; right: 12px; bottom: 12px; z-index: 6; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--ink) 16%, transparent); background: var(--bg); color: var(--ink); cursor: pointer;
+    box-shadow: 0 1px 2px rgb(0 0 0 / .12), 0 4px 12px -4px rgb(0 0 0 / .28); }
+  .fx-play::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
+  .fx-play svg { width: 12px; height: 12px; fill: currentColor; }
+  .fx-play .i-pause, .is-playing .fx-play .i-play { display: none; }
+  .is-playing .fx-play .i-pause { display: block; }
+  .fx-badge[hidden] { display: none; }
+  .fx-badge { position: absolute; left: 12px; top: 12px; z-index: 5; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px;
+    background: color-mix(in oklab, var(--bg) 88%, transparent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); font-size: 12px; }
+  .fx-info { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 18px 2px 0; }
+  .fx-top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .fx-top h3 { font: 560 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .fx-fam { flex: none; font-size: 14px; color: var(--muted); }
+  .fx-look { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 62ch; text-wrap: pretty; }
+  /* what it is for, then its two actions, level across a row of tiles */
+  .fx-foot { display: grid; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .fx-for { font-size: 14px; line-height: 20px; color: var(--ink); }
+  .fx-acts { display: flex; gap: 18px; }
+  .fx-empty { color: var(--muted); padding: 48px 0; }
 
-  .foot { padding-top: 96px; padding-bottom: 48px; }
-  .foot-in > div { border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; gap: 16px 48px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
-  .foot-in p { margin: 0; max-width: 72ch; }
-  .foot a { color: var(--ink); text-underline-offset: 4px; text-decoration-color: var(--line-2); }
-  .empty { padding: 64px 0; color: var(--muted); }
+  /* ---------------------------------------------------------------- 2. cards: the layouts of ui/cards.html, on their own theme */
+  .cards-band { margin-top: 136px; padding: 112px 0 128px; background: var(--bg); color: var(--ink); }
+  .cards-band[data-theme="light"] {
+    --bg: #f3f3f1; --card: #ffffff; --ink: #0f0f0e; --muted: #686863; --accent: #e5531c; --accent-ink: #ffffff; --surface: #ffffff;
+    --action: #0f0f0e; --action-ink: #ffffff; --chip: #e9e8e4; color-scheme: light;
+  }
+  .cards-band[data-theme="dark"] {
+    --bg: #070708; --card: #151517; --ink: #f2f2ef; --muted: #8f9094; --accent: #ff7a3c; --accent-ink: #120c08; --surface: #151517;
+    --action: #f2f2ef; --action-ink: #070708; --chip: #18181a; color-scheme: dark;
+  }
+  .cards-band {
+    --line: color-mix(in oklab, var(--ink) 11%, transparent); --line-strong: color-mix(in oklab, var(--ink) 20%, transparent);
+    --fx-bg: var(--bg); --fx-surface: var(--surface); --fx-ink: var(--ink); --fx-muted: var(--muted); --fx-accent: var(--accent); --fx-accent-ink: var(--accent-ink);
+  }
+  html[data-kind="light"] .cards-band[data-theme="light"], html[data-kind="dark"] .cards-band[data-theme="dark"] { margin-top: 24px; }
+  .cards-band .sec-intro { margin-bottom: 28px; }
+  .layout-nav { margin-bottom: 8px; }
+  .cardlib .sec { padding-top: 88px; scroll-margin-top: 72px; }
+  .cardlib .sec:first-child { padding-top: 48px; }
+  .cardlib .sec__head { margin-bottom: 28px; align-items: end; }
+  .cardlib .sec__head h2 { font-size: clamp(24px, 0.8vw + 17px, 30px); line-height: 1.15; letter-spacing: -0.025em; max-width: 30ch; }
+  .cardlib .sec__meta { display: grid; justify-items: end; gap: 4px; flex: none; text-align: right; }
+  .cardlib .sec__meta .sec__tag { padding: 0; }
+  .sec__ground { font-size: 13px; line-height: 18px; color: var(--muted); }
+  .sec__ground b { color: var(--ink); font-weight: 500; }
+  .cardlib-load { padding: 64px 0; color: var(--muted); }
+  @media (max-width: 760px) { .cardlib .sec__head { flex-direction: column; align-items: flex-start; gap: 10px; } .cardlib .sec__meta { justify-items: start; text-align: left; } .cardlib .sec__meta .sec__tag { display: block; } }
 
-  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 60; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
-    max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 12px; background: var(--ink); color: var(--bg); font-size: 14px;
+  /* ---------------------------------------------------------------- 3. creative uses: the components */
+  .uses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 104px 24px; }
+  /* each part spans two rows of the list (its words, its stage), so two halves side by side start their stages level */
+  .use { grid-column: 1 / -1; grid-row: span 2; min-width: 0; display: grid; grid-template-rows: subgrid; row-gap: 28px; scroll-margin-top: 88px; }
+  .use.is-half { grid-column: auto; }
+  .use__meta { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 4px 12px; align-items: baseline; align-content: start; max-width: 760px; }
+  .use__no { font: 500 12px/1 var(--font-mono); color: var(--muted); }
+  .use__meta h3 { font: 500 20px/1.3 var(--font-text); letter-spacing: -0.015em; }
+  .use__meta p { grid-column: 2; color: var(--muted); font-size: 15px; line-height: 1.55; max-width: 64ch; }
+  .use__pick { grid-column: 2; margin-top: 10px; }
+  .use__stage { position: relative; min-width: 0; }
+  /* a small control on a lit, focal ground (Figma's Texture tile), never on an even one */
+  .use__box { position: relative; isolation: isolate; overflow: clip; display: grid; place-items: center; min-height: 400px; padding: 56px 32px; border-radius: 20px; background: var(--card); }
+  .use__box::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .use__ground { position: absolute; inset: 0; z-index: 0; border-radius: inherit; }
+  .use__box > .use__stage { z-index: 1; width: 100%; display: grid; justify-items: center; }
+  #use-fx-dither-object .use__stage { display: grid; justify-items: center; }
+  #use-fx-dither-object .cx-obj { width: min(100%, 760px); }
+
+  /* ---------------------------------------------------------------- 4. real things: objects, photographs, scenes */
+  .things { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .things > .card { min-width: 0; }
+  .things > .card.is-wide { grid-column: span 2; }
+  .things .panel--top { aspect-ratio: auto; height: 340px; min-height: 0; }
+  .things .card > p { min-height: 2lh; }
+  /* system.css caps every canvas at 100% of its box; a printed object sizes its canvas past the box on purpose */
+  .print3d > canvas { max-width: none; }
+  .photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .shot { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 14px; margin: 0; min-width: 0; }
+  .shot__frame { position: relative; isolation: isolate; overflow: clip; border-radius: 16px; background: var(--card); aspect-ratio: 4 / 5; }
+  /* before its print is drawn (or while it waits for a free context) a photograph shows greyed into the page */
+  .photos .shot__frame > img { filter: grayscale(1) contrast(1.06); opacity: .92; mix-blend-mode: multiply; }
+  html:not([data-kind="light"]) .photos .shot__frame > img { opacity: .85; mix-blend-mode: screen; }
+  /* scenes: x.ai's tab list at the left, one stage at the right (one WebGL context, whichever scene is picked) */
+  .scene-tabs { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 24px 48px; align-items: start; }
+  .scene-list { display: grid; border-top: 1px solid var(--line); }
+  .scene-tab { display: grid; gap: 8px; padding: 20px 0; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--muted); text-align: left; font: inherit; cursor: pointer; }
+  .scene-tab b { font: 500 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .scene-tab span { display: none; font-size: 15px; line-height: 1.5; text-wrap: pretty; }
+  .scene-tab small { display: none; font-size: 12px; line-height: 1.5; }
+  .scene-tab small a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  .scene-tab:hover b, .scene-tab[aria-selected="true"] b { color: var(--ink); }
+  .scene-tab[aria-selected="true"] span, .scene-tab[aria-selected="true"] small { display: block; }
+  .scene-frame { aspect-ratio: 3 / 2; }
+  .shot__frame::after { content: ""; position: absolute; inset: 0; z-index: 7; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line); }
+  .shot__frame > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shot figcaption { display: grid; gap: 4px; padding: 0 2px; }
+  .shot figcaption b { font: 560 17px/24px var(--font-text); letter-spacing: -0.012em; }
+  .shot figcaption span { color: var(--muted); font-size: 15px; line-height: 1.5; text-wrap: pretty; }
+  .shot figcaption small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .shot figcaption small a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+
+  /* ---------------------------------------------------------------- footer and toast */
+  .foot { margin-top: 136px; padding: 64px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .foot__top { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px 48px; }
+  .foot__brand .nav__logo { color: var(--ink); }
+  .foot__brand p { margin-top: 14px; max-width: 34ch; }
+  .foot__cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; }
+  .foot__cols .t-label { margin-bottom: 10px; color: var(--ink); }
+  .foot__cols a { display: block; padding: 4px 0; color: var(--muted); font-size: 14px; line-height: 20px; }
+  .foot__cols a:hover { color: var(--ink); }
+  .foot__mark { margin-top: 88px; color: var(--ink); font: 500 clamp(56px, 10.5vw, 164px)/0.9 var(--font-display); letter-spacing: -0.055em; white-space: nowrap; overflow: hidden; }
+  .foot__base { display: flex; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; }
+  .foot__base a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; }
+  @media (max-width: 1023px) { .foot__top { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 639px) { .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot__mark { margin-top: 56px; } }
+  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 80; max-width: calc(100vw - 32px); padding: 12px 16px; border-radius: 12px;
+    background: var(--ink); color: var(--bg); font-size: 14px; line-height: 20px; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
     transition: opacity .2s ease, transform .2s ease; }
   .toast.on { opacity: 1; transform: translate(-50%, 0); }
 
-  @media (max-width: 1080px) {
-    .hero-copy { padding: 40px; }
+  /* ---------------------------------------------------------------- tablet and phone */
+  @media (max-width: 1199px) {
+    .things { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (max-width: 860px) {
-    .grid, .cards { grid-template-columns: minmax(0, 1fr); }
-    .grid { gap: 40px; }
+  @media (max-width: 1023px) {
+    .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .uses { grid-template-columns: minmax(0, 1fr); gap: 88px; }
+    .use.is-half { grid-column: 1 / -1; }
+    .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .photos > :last-child { grid-column: 1 / -1; }
+    .photos > :last-child .shot__frame { aspect-ratio: 3 / 2; }
   }
-  @media (max-width: 720px) {
-    :root { --gut: 16px; }
-    .top { position: static; }
-    .brand span, .select { display: none; }
-    .top-in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand deal" "controls controls"; }
-    .brand { grid-area: brand; }
-    #deal { grid-area: deal; }
-    .top-in .controls { grid-area: controls; margin-left: 0; flex-wrap: nowrap; }
-    .seg { flex: 1; }
-    .seg button { flex: 1; }
-    .hero { margin-top: 16px; height: 560px; border-radius: 16px; }
-    .hero-copy { padding: 28px 24px 72px; }
-    .hero p { font-size: 16px; line-height: 24px; }
-    .hero-tag { left: 24px; right: auto; bottom: 20px; }
-    section { padding-top: 72px; }
-    .card { padding: 20px; }
-    .panel { height: 340px; padding: 20px 16px; }
-    .info-foot { flex-wrap: wrap; }
+  @media (max-width: 899px) {
+    .fx-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+    .scene-tabs { grid-template-columns: minmax(0, 1fr); }
+    .scene-view { order: -1; }
+  }
+  @media (max-width: 639px) {
+    .hero { padding-top: 48px; }
+    .hero h1 { font-size: 40px; letter-spacing: -0.04em; }
+    .hero__sub { font-size: 16px; }
+    .hero__frame { aspect-ratio: 4 / 5; margin-top: 40px; border-radius: 16px; }
+    .block { padding-top: 96px; }
+    .cards-band { margin-top: 96px; padding: 80px 0 96px; }
+    .sec-intro { margin-bottom: 28px; }
+    .sec-intro h2 { font-size: 32px; }
+    .fx-stage { border-radius: 14px; }
+    .things { grid-template-columns: minmax(0, 1fr); }
+    .things > .card.is-wide { grid-column: auto; }
+    .things .panel--top { height: 320px; }
+    .things .card > p { min-height: 0; }
+    .photos { grid-template-columns: minmax(0, 1fr); }
+    .photos > :last-child .shot__frame { aspect-ratio: 4 / 5; }
+    .use__meta { grid-template-columns: minmax(0, 1fr); }
+    .use__no { display: none; }
+    .use__meta p, .use__pick { grid-column: 1; }
+    .use__box { min-height: 320px; padding: 40px 16px; border-radius: 16px; }
+    .scene-frame { aspect-ratio: 4 / 3; }
+    .foot { margin-top: 96px; padding-top: 48px; }
   }
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="wrap top-in">
-    <div class="brand"><b>Effects library</b><span id="count"></span></div>
-    <div class="controls">
-      <div class="seg" role="group" aria-label="Palette kind">
-        <button type="button" data-kind="light">Light</button>
-        <button type="button" data-kind="dark">Dark</button>
-        <button type="button" data-kind="colour">Colour</button>
+<header class="nav" id="nav">
+  <div class="container nav__bar">
+    <a class="nav__logo" href="#top" aria-label="Effects library, back to the top">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".55"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".3"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".8"/></svg>
+      <span>Effects<span class="long"> library</span></span>
+    </a>
+    <nav class="nav__links" aria-label="Sections">
+      <div class="nav__item"><a class="nav__link" href="#effects">Effects <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="effects"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#cards">Cards <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="cards"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#uses">Creative uses <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="uses"></div></div></div></div>
+      <div class="nav__item"><a class="nav__link" href="#real">Real things <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu"><div class="container"><div class="menu-grid" data-menu="real"></div></div></div></div>
+    </nav>
+    <div class="nav__actions">
+      <div class="seg" role="group" aria-label="Page palette" data-kinds>
+        <button type="button" data-kind="light">Light</button><button type="button" data-kind="dark">Dark</button><button type="button" data-kind="colour">Colour</button>
       </div>
-      <select class="select" id="pal" aria-label="Palette"></select>
-      <button type="button" class="btn" id="pause" aria-pressed="false">Pause</button>
+      <button type="button" class="btn btn--primary" data-deal>Random pick</button>
     </div>
-    <button type="button" class="btn btn--primary" id="deal">
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h2.2c1.2 0 2 .6 2.7 1.6l1.2 1.8c.7 1 1.5 1.6 2.7 1.6h2.2M11.6 2.5l2 2-2 2M2.5 11.5h2.2c.9 0 1.6-.3 2.2-.9M11.6 9.5l2 2-2 2M9.3 5.4c.6-.6 1.3-.9 2.1-.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Random pick
-    </button>
+    <div class="seg seg-phone" role="group" aria-label="Page palette" data-kinds>
+      <button type="button" data-kind="light">Light</button><button type="button" data-kind="dark">Dark</button><button type="button" data-kind="colour">Colour</button>
+    </div>
+    <button type="button" class="nav__toggle" aria-label="Menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
   </div>
 </header>
 
-<main>
-  <div class="wrap">
-    <div class="hero" id="hero">
-      <div class="hero-copy">
-        <h1>Effects for hero frames and feature cards</h1>
-        <p id="lede">Grain, dither, mesh, light, liquid, pattern and material grounds, drawn in code. Every colour comes from the page palette, and each page is dealt its own at random.</p>
+<main id="top">
+  <!-- hero ---------------------------------------------------------------------------------- -->
+  <section class="hero">
+    <div class="container">
+      <a class="hero__pill" href="#real"><b>New</b><span class="muted">Real things, printed in code</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6h7M6.5 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <h1>Effects drawn in code for company websites</h1>
+      <p class="hero__sub" id="hero-sub">25 grounds drawn in your page colours, eight feature-card layouts, effects inside type, borders and maps, and real objects printed in dither and halftone.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn--primary" data-deal>Random pick</button>
+        <a class="btn btn--secondary" href="#effects" id="see-all">See all 25 effects</a>
       </div>
-      <div class="hero-tag"><span class="tag" id="hero-tag"><span>Hero</span> <b></b></span></div>
+      <div class="hero__frame" id="hero-frame">
+        <aside class="dock" id="dock" aria-label="Settings of the hero effect">
+          <div class="dock__head"><div><b id="dock-name">Hero effect</b><span id="dock-meta"></span></div>
+            <button type="button" class="dock__btn" id="dock-seed"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M10 6a4 4 0 1 1-1.2-2.85M10 1.8v2.4H7.6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>New seed</button></div>
+          <div id="dock-rows"></div>
+          <div class="dock__row"><label>Palette</label><span class="dock__pal" id="dock-pal"></span></div>
+          <div class="dock__code"><code id="dock-code"></code><button type="button" class="textbtn" id="dock-copy">Copy</button></div>
+        </aside>
+      </div>
+      <div class="hero__cap"><span id="hero-cap">Dealing a hero ground</span><span class="acts"><button type="button" class="textbtn" id="hero-seed">New seed</button><a class="textbtn" id="hero-tile" href="#effects">See its tile</a></span></div>
+    </div>
+  </section>
+
+  <!-- 1. effects ------------------------------------------------------------------------------ -->
+  <section class="block" id="effects">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2 id="fx-title">25 effects. <span>Each drawn live in the page palette.</span></h2>
+          <p>Point at a tile or press its play button to see it move. New seed draws another picture of the same effect. Random pick deals the hero and the card grounds again.</p>
+        </div>
+      </div>
+      <div class="fx-bar">
+        <div class="chips" id="families" role="group" aria-label="Family"></div>
+        <button type="button" class="btn btn--secondary btn--sm" data-deal>Random pick</button>
+      </div>
+      <div class="fx-grid" id="fx-grid"></div>
+    </div>
+  </section>
+
+  <!-- 2. cards: ui/cards.html, its layouts on their own theme ------------------------------------- -->
+  <section class="cards-band" id="cards" data-theme="light">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>8 card layouts. <span>Product UI on a lit ground, cut by the panel's edge.</span></h2>
+          <p>A sample support product, Relay, in every layout. The grounds are dealt from the quiet effects, a different one per group.</p>
+        </div>
+        <div class="seg" role="group" aria-label="Card theme" id="card-theme">
+          <button type="button" data-theme-set="light">Light</button><button type="button" data-theme-set="dark">Dark</button>
+        </div>
+      </div>
+      <div class="chips layout-nav" id="layout-nav" aria-label="Layouts"></div>
+      <div class="cardlib" id="cardlib" data-theme="light"><p class="cardlib-load">Loading the card layouts</p></div>
+    </div>
+  </section>
+
+  <!-- 3. creative uses: the components ------------------------------------------------------------ -->
+  <section class="block" id="uses">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>Effects inside the page. <span>In cards, type, borders, maps and objects.</span></h2>
+          <p>Each part is a folder in the kit with its markup, styles and script. Parts that loop have a pause button.</p>
+        </div>
+      </div>
+      <div class="uses" id="uses-list"></div>
+    </div>
+  </section>
+
+  <!-- 4. real things: objects, photographs, scenes ----------------------------------------------- -->
+  <section class="block" id="real">
+    <div class="container">
+      <div class="sec-intro">
+        <div>
+          <h2>Real things, printed in code. <span>For a product with no photographs yet.</span></h2>
+          <p>Point at an object and it leans toward you. Click it and it does one thing: the lamp switches on, the book opens.</p>
+        </div>
+      </div>
+      <div class="sub-head" id="real-objects"><h3>Objects modelled in 3D</h3><p id="objects-note">Printed in dither, halftone or engraving on a lit ground.</p></div>
+      <div class="things" id="things"></div>
+      <div class="sub-head" id="real-photos"><h3>Photographs printed in the palette</h3><p>Point at one: a loupe, parting lines or the photograph itself shows through.</p></div>
+      <div class="photos" id="photos"></div>
+      <div class="sub-head" id="real-scenes"><h3>Scenes</h3><p>A photograph or a model taken apart, set in dots or put on a turntable.</p></div>
+      <div class="scene-tabs" id="scenes">
+        <div class="scene-list" role="tablist" aria-label="Scenes" id="scene-list"></div>
+        <div class="scene-view"><div class="shot__frame scene-frame" id="scene-frame" role="tabpanel"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="foot__top">
+      <div class="foot__brand">
+        <a class="nav__logo" href="#top" aria-label="Effects library, back to the top">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".55"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".3"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".8"/></svg>
+          <span>Effects library</span>
+        </a>
+        <p>Part of the taste-skill kit. Still grounds are drawn once and kept as pictures; only what you point at, or what moves in view, uses the graphics chip.</p>
+      </div>
+      <nav class="foot__cols" id="foot-cols" aria-label="Footer"></nav>
+    </div>
+    <p class="foot__mark" aria-hidden="true">Effects library</p>
+    <div class="foot__base">
+      <p id="credits">App icons: <a href="https://simpleicons.org/">Simple Icons</a> 16.30.0. Relay, Northwind and the quotes are samples.</p>
+      <p><a id="lab-link" href="lab.html">Every parameter, on a workbench</a></p>
     </div>
   </div>
-
-  <section id="all">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <h2>All effects</h2>
-          <p>Each one live, in the palette above. A tile names the effect, its family and the slots it is made for.</p>
-        </div>
-        <div class="filters" id="filters" role="group" aria-label="Family"></div>
-      </div>
-      <div class="grid" id="grid"></div>
-    </div>
-  </section>
-
-  <section id="cards">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <h2>On feature cards</h2>
-          <p>Four effects dealt for card slots, each under a fragment from the UI kit. Random pick deals a new set.</p>
-        </div>
-      </div>
-      <div class="cards">
-        <article class="card">
-          <h3>Ask in plain words</h3>
-          <p>Ask about any project or document. Every answer links to its source.</p>
-          <div class="panel" data-card="0"><div class="slot" data-ui-load="chat"></div></div>
-          <p class="ground">Ground: <b></b></p>
-        </article>
-        <article class="card">
-          <h3>Hand off busy work</h3>
-          <p>Show it a task once. It repeats the steps for you and asks before it publishes.</p>
-          <div class="panel" data-card="1"><div class="slot" data-ui-load="cursor"></div></div>
-          <p class="ground">Ground: <b></b></p>
-        </article>
-        <article class="card">
-          <h3>See what changed</h3>
-          <p>A short weekly report shows what went up, what went down and why.</p>
-          <div class="panel" data-card="2"><div class="slot" data-ui-load="stat"></div></div>
-          <p class="ground">Ground: <b></b></p>
-        </article>
-        <article class="card">
-          <h3>Connect your tools</h3>
-          <p>Slack, Notion, Figma and GitHub connect in a few clicks.</p>
-          <div class="panel" data-card="3"><div class="slot" data-ui-load="integrations"></div></div>
-          <p class="ground">Ground: <b></b></p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <footer class="foot">
-    <div class="wrap foot-in"><div>
-      <p>Every effect is drawn in code: no images, no video. It pauses when it leaves the screen, holds one still frame under reduced motion and falls back to a CSS picture without WebGL.</p>
-      <p><a id="lab" href="lab.html">Parameters and layouts</a></p>
-    </div></div>
-  </footer>
-</main>
+</footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script id="paths" type="application/json">{"fx": "./", "ui": "../ui/"}</script>
-<script id="palettes" type="application/json">[{"id":"white-link-blue","name":"Sheet and biro","bg":"#ffffff","surface":"#f4f4f4","ink":"#111111","muted":"#6b6b6b","accent":"#1a4be0","accentInk":"#ffffff"},{"id":"cool-white-slate","name":"Frost and slate","bg":"#f7f9fa","surface":"#ecf0f2","ink":"#1f3038","muted":"#5d6b72","accent":"#0d7480","accentInk":"#ffffff"},{"id":"rose-grey-green","name":"Rose grey, green","bg":"#ebe5e3","surface":"#e1dad7","ink":"#2b2622","muted":"#6a615d","accent":"#0f7d45","accentInk":"#ffffff"},{"id":"paper-grey-brass","name":"Newsprint and brass","bg":"#e8e8e3","surface":"#dcdcd6","ink":"#181715","muted":"#63625c","accent":"#bfb21a","accentInk":"#181715"},{"id":"stone-blueprint","name":"Stone and blueprint","bg":"#dfdedb","surface":"#d3d2ce","ink":"#26251e","muted":"#5f5d55","accent":"#2456d6","accentInk":"#ffffff"},{"id":"white-navy-tab","name":"Navy on white","bg":"#ffffff","surface":"#f4f4f2","ink":"#1f2b4d","muted":"#6a7186","accent":"#f7941d","accentInk":"#1f2b4d"},{"id":"three-stones","name":"Three stones","bg":"#eeecea","surface":"#e4e1dd","ink":"#333231","muted":"#6b6763","accent":"#5c6b54","accentInk":"#ffffff"},{"id":"putty-black-teal","name":"Putty and black","bg":"#dedad3","surface":"#d3cec6","ink":"#0a0a0a","muted":"#5c5852","accent":"#256f82","accentInk":"#ffffff"},{"id":"moss-sand","name":"Sand and moss","bg":"#ddd6c6","surface":"#d2cab8","ink":"#2a2a26","muted":"#59574e","accent":"#4f6238","accentInk":"#ffffff"},{"id":"green-mat-chocolate","name":"Bone, green, chocolate","bg":"#e5e1d8","surface":"#dad5ca","ink":"#2a1d17","muted":"#6b5b51","accent":"#456f3a","accentInk":"#ffffff"},{"id":"lunar-grey-bronze","name":"Lunar and bronze","bg":"#111111","surface":"#1c1c1c","ink":"#f2f2f2","muted":"#8f8f8f","accent":"#a08672","accentInk":"#111111"},{"id":"blue-black-cornflower","name":"Night and sky blue","bg":"#0a0d14","surface":"#131824","ink":"#e9edf3","muted":"#8891a1","accent":"#5ab9fc","accentInk":"#0a0d14"},{"id":"green-black-bone","name":"Green-black and bone","bg":"#161c1a","surface":"#1f2725","ink":"#e3e2da","muted":"#8e948d","accent":"#9fc7b8","accentInk":"#161c1a"},{"id":"black-crimson","name":"Black and crimson","bg":"#0a0a0a","surface":"#151515","ink":"#efefef","muted":"#8c8c8c","accent":"#b11226","accentInk":"#ffffff"},{"id":"forest-pale-lime","name":"Forest and lime","bg":"#0f1f10","surface":"#162a17","ink":"#ffffff","muted":"#9aa39a","accent":"#c6f19d","accentInk":"#0f1f10"},{"id":"charcoal-room-sage","name":"Charcoal and sage","bg":"#1c1c1c","surface":"#262626","ink":"#f1f1ef","muted":"#9a9b96","accent":"#8fa68e","accentInk":"#1c1c1c"},{"id":"warm-black-gold","name":"Warm black, gold","bg":"#0c0a08","surface":"#181512","ink":"#ffffff","muted":"#8f8a84","accent":"#c9a45a","accentInk":"#0c0a08"},{"id":"graphite-safety-orange","name":"Graphite and orange","bg":"#18191b","surface":"#222427","ink":"#eff0f1","muted":"#9c9ea3","accent":"#ff4a1f","accentInk":"#18191b"},{"id":"soot-pale-lime","name":"Soot and lime","bg":"#0f0f0f","surface":"#1a1a1a","ink":"#ffffff","muted":"#8f8f8f","accent":"#dafa9c","accentInk":"#0f0f0f"},{"id":"plum-black-pink","name":"Plum-black and pink","bg":"#0d060b","surface":"#1b0e17","ink":"#ffffff","muted":"#9a8f97","accent":"#ff488b","accentInk":"#0d060b"},{"id":"white-signal-red","name":"Signal red, white","bg":"#ffffff","surface":"#f2f2f2","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#d92b21","accentInk":"#ffffff"},{"id":"white-mint-tiles","name":"Greys and mint","bg":"#ffffff","surface":"#f3f3f3","ink":"#232323","muted":"#6e6e6e","accent":"#a1ffcb","accentInk":"#232323"},{"id":"cool-grey-cobalt","name":"Cool grey, cobalt","bg":"#eef0f3","surface":"#e2e5ea","ink":"#0b0c0e","muted":"#5d6470","accent":"#1f2de6","accentInk":"#ffffff"},{"id":"offwhite-bottle-yellow","name":"Bottle ink, yellow","bg":"#f7f7f7","surface":"#ebebeb","ink":"#0d2a1c","muted":"#5f6b64","accent":"#f6e016","accentInk":"#0d2a1c"},{"id":"teal-on-paper","name":"Teal on paper","bg":"#f7f9f8","surface":"#ebf0ee","ink":"#06525c","muted":"#2f737d","accent":"#06525c","accentInk":"#f7f9f8"},{"id":"navy-pink","name":"Navy and pink","bg":"#1a2039","surface":"#212846","ink":"#f9a3c0","muted":"#b9879c","accent":"#f9a3c0","accentInk":"#1a2039"},{"id":"blush-aubergine","name":"Blush and aubergine","bg":"#edccbe","surface":"#e8c2b2","ink":"#351a2b","muted":"#6c4857","accent":"#351a2b","accentInk":"#edccbe"},{"id":"cobalt-on-sand","name":"Cobalt on sand","bg":"#e6dbc7","surface":"#ddd0b9","ink":"#062b8a","muted":"#3a5aa8","accent":"#062b8a","accentInk":"#e6dbc7"},{"id":"oxblood-grey","name":"Oxblood and grey","bg":"#e2e2e2","surface":"#d6d6d6","ink":"#7d0c14","muted":"#7a4a4e","accent":"#7d0c14","accentInk":"#e2e2e2"},{"id":"olive-on-bone","name":"Olive on bone","bg":"#ecebe7","surface":"#e1dfd9","ink":"#38450f","muted":"#5d683a","accent":"#38450f","accentInk":"#ecebe7"},{"id":"burgundy-bubblegum","name":"Burgundy and bubblegum","bg":"#3d0012","surface":"#4d0519","ink":"#ff99d3","muted":"#c77aa0","accent":"#ff99d3","accentInk":"#3d0012"},{"id":"bottle-green-gold","name":"Bottle green, gold","bg":"#133621","surface":"#1a4429","ink":"#f4d96c","muted":"#b3a55e","accent":"#f4d96c","accentInk":"#133621"},{"id":"cobalt-field","name":"Cobalt field","bg":"#0034eb","surface":"#002fd6","ink":"#ffffff","muted":"#dfe4f2","accent":"#e9e34a","accentInk":"#111111"},{"id":"mustard-field","name":"Mustard and black","bg":"#e1ac10","surface":"#cd9d0f","ink":"#0b0b0b","muted":"#4d3d0a","accent":"#24338f","accentInk":"#ffffff"},{"id":"carmine-field","name":"Carmine field","bg":"#9c1220","surface":"#8a101c","ink":"#ffffff","muted":"#f0b9bd","accent":"#ffd9dc","accentInk":"#9c1220"},{"id":"pink-field-lime","name":"Bubblegum and lime","bg":"#ff87ab","surface":"#ff739d","ink":"#0a0a0a","muted":"#6b1f3a","accent":"#def915","accentInk":"#0a0a0a"},{"id":"sky-field-navy","name":"Sky and navy","bg":"#6bb4ee","surface":"#7dbdf0","ink":"#0e1822","muted":"#1b3d5c","accent":"#ff5a1f","accentInk":"#0e1822"},{"id":"orange-field-black","name":"Orange and black","bg":"#ff7a1f","surface":"#ff8633","ink":"#050f16","muted":"#5a2306","accent":"#050f16","accentInk":"#ff7a1f"},{"id":"tobacco-olive","name":"Tobacco and olive","bg":"#472913","surface":"#55321a","ink":"#e4e0cf","muted":"#b39f84","accent":"#525e1b","accentInk":"#e4e0cf"},{"id":"poster-chapters","name":"Poster chapters","bg":"#e6e0d2","surface":"#dcd5c5","ink":"#1a1a1a","muted":"#5f5b52","accent":"#18bc42","accentInk":"#1a1a1a"},{"id":"blue-red-black","name":"Blue, red, black","bg":"#ffffff","surface":"#f3f3f3","ink":"#0a0a0a","muted":"#6b6b6b","accent":"#1f30e0","accentInk":"#ffffff"},{"id":"charcoal-primaries","name":"Charcoal and primaries","bg":"#191919","surface":"#242424","ink":"#ffffff","muted":"#9a9a9a","accent":"#0c7866","accentInk":"#ffffff"},{"id":"ultramarine-yellow","name":"Ultramarine and yellow","bg":"#1423b8","surface":"#1220a6","ink":"#ffffff","muted":"#e4e2d6","accent":"#1fc27a","accentInk":"#0a0a0a"},{"id":"candy-chapters","name":"Candy chapters","bg":"#ffd249","surface":"#f5c63c","ink":"#0a0a0a","muted":"#5e4a0a","accent":"#f53fd6","accentInk":"#0a0a0a"},{"id":"orange-sky-lime","name":"Orange, sky, lime","bg":"#ff8126","surface":"#ff8d3a","ink":"#111111","muted":"#5c2a05","accent":"#de194b","accentInk":"#ffffff"},{"id":"post-red-mustard","name":"Post red, mustard","bg":"#e2dccf","surface":"#d7d0c1","ink":"#2a1110","muted":"#6b524c","accent":"#4a6f84","accentInk":"#ffffff"},{"id":"mint-orange-grey","name":"Grey, mint, orange","bg":"#ffffff","surface":"#f5f5f5","ink":"#000000","muted":"#666666","accent":"#a7ff9c","accentInk":"#000000"},{"id":"report-blocks","name":"Report blocks","bg":"#ffffff","surface":"#f6f6f6","ink":"#000000","muted":"#5f5f5f","accent":"#fe7141","accentInk":"#000000"},{"id":"card-pastels","name":"Card pastels","bg":"#f7f7f5","surface":"#ebebe8","ink":"#000000","muted":"#666662","accent":"#d0106f","accentInk":"#ffffff"},{"id":"mint-pink-accounts","name":"Mint and pink","bg":"#f8f8f8","surface":"#eeeeee","ink":"#0a0a0a","muted":"#6a6a6a","accent":"#1f6b3a","accentInk":"#ffffff"},{"id":"swap-pastels","name":"Swapping pastels","bg":"#c3d7e5","surface":"#d0e0eb","ink":"#141414","muted":"#4a5068","accent":"#0f5257","accentInk":"#ffffff"},{"id":"blush-sage-slate","name":"Blush, sage, slate","bg":"#a6b3bc","surface":"#b2bdc5","ink":"#1c1c1c","muted":"#38424a","accent":"#2c3620","accentInk":"#e3e2da"},{"id":"candy-on-black","name":"Candy on black","bg":"#000000","surface":"#0d0d0d","ink":"#ffffff","muted":"#999999","accent":"#93f1f7","accentInk":"#000000"},{"id":"sky-sand","name":"Sky and sand","bg":"#cbe4f2","surface":"#bcdcee","ink":"#0a0a0a","muted":"#44606e","accent":"#b0298f","accentInk":"#ffffff"},{"id":"studio-grey","name":"Studio grey","bg":"#a8a8aa","surface":"#b4b4b6","ink":"#0e0e0e","muted":"#3a3a3c","accent":"#1f5c49","accentInk":"#ffffff"},{"id":"walnut-tan","name":"Walnut and tan","bg":"#2b2216","surface":"#382d1e","ink":"#e4e2da","muted":"#a39a8b","accent":"#bda38b","accentInk":"#2b2216"}]</script>
-<script id="presets" type="application/json">{"light":"moss-sand","dark":"blue-black-cornflower","colour":"cobalt-field"}</script>
+<script id="paths" type="application/json">{"root": "../"}</script>
 <script type="module">
-  const $ = s => document.querySelector(s);
-  const PATHS = JSON.parse($('#paths').textContent);
-  const PALETTES = JSON.parse($('#palettes').textContent);
-  const PRESETS = JSON.parse($('#presets').textContent);
-  const byId = Object.fromEntries(PALETTES.map(p => [p.id, p]));
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const ROOT = JSON.parse($('#paths').textContent).root;
+  const A = p => new URL(ROOT + p, location.href).href;
   const q = new URLSearchParams(location.search);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const frame = () => new Promise(r => requestAnimationFrame(() => r()));
 
-  const [{ default: fx }, { pick }] = await Promise.all([import(PATHS.fx + 'fx.js'), import(PATHS.fx + 'pick.js')]);
-  const ui = await import(PATHS.ui + 'ui.js').then(m => m.default).catch(() => null);
+  /* ---------------------------------------------------------------- WebGL count (window.__gal.gl()) */
+  // a context counts while it is not lost and its canvas is in the page (a canvas a part dropped
+  // without losing its context draws nothing and is collected)
+  const glSet = new Set();
+  let glPeak = 0;
+  const liveGL = () => { let n = 0; for (const c of glSet) { if (c.isContextLost()) glSet.delete(c); else if (c.canvas.isConnected) n++; } return n; };
+  const getContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+    const c = getContext.call(this, type, ...rest);
+    if (c && /webgl/i.test(type) && !glSet.has(c)) { glSet.add(c); glPeak = Math.max(glPeak, liveGL() + (this.isConnected ? 0 : 1)); }
+    return c;
+  };
+  // the page's budget: a part that needs WebGL of its own starts only while fewer than BUDGET are live
+  // (the hero, the tile pointed at, a ground being drawn, the components and objects in view)
+  const BUDGET = 4;
+  const roomQueue = [];
+  let reserved = 0, roomTimer = 0;
+  function whenRoom(want, go) {
+    const run = () => { reserved++; setTimeout(() => { reserved--; }, 1500); go(); };
+    if (liveGL() + reserved < BUDGET) { run(); return; }
+    roomQueue.push({ want, run });
+    if (!roomTimer) roomTimer = setInterval(() => {
+      for (let i = 0; i < roomQueue.length; i++) {
+        const w = roomQueue[i];
+        if (!w.want()) { roomQueue.splice(i--, 1); continue; }
+        if (liveGL() + reserved < BUDGET) { roomQueue.splice(i--, 1); w.run(); }
+      }
+      if (!roomQueue.length) { clearInterval(roomTimer); roomTimer = 0; }
+    }, 300);
+  }
 
-  $('#lab').href = PATHS.fx + 'lab.html';
-  if (q.has('fallback')) fx.config.forceFallback = true;
-  if (q.has('webgl1')) fx.config.forceWebGL1 = true;
+  const [{ default: fx }, { pick }, { default: ui }] = await Promise.all([
+    import(A('effects/fx.js')), import(A('effects/pick.js')), import(A('ui/ui.js')),
+  ]);
   if (q.has('time')) fx.setClock(+q.get('time'));
+  if (q.has('fallback')) fx.config.forceFallback = true;
+  fx.config.maxLive = 3;
+  fx.config.maxDpr = 1;
+  $('#lab-link').href = A('effects/lab.html');
 
-  const FAMILIES = { grain: 'Grain', dither: 'Dither', mesh: 'Mesh', light: 'Light', liquid: 'Liquid', pattern: 'Pattern', material: 'Material', photo: 'Photo' };
-  const ORDER = Object.keys(FAMILIES);
-  const SLOT_WORDS = { hero: 'hero frames', card: 'cards', band: 'bands', footer: 'footers' };
-  const SLOT_ORDER = ['hero', 'card', 'band', 'footer'];
+  /* ---------------------------------------------------------------- palettes */
+  // the effects' palette for each kind of page (the page's own tokens are in the CSS above)
+  const FXP = {
+    // a surface a clear step under the paper, so a light effect has a second tone to draw with
+    light: { bg: '#f3f3f1', surface: '#dad7cf', ink: '#0f0f0e', muted: '#686863', accent: '#e5531c', accentInk: '#ffffff' },
+    dark: { bg: '#070708', surface: '#151517', ink: '#f2f2ef', muted: '#8f9094', accent: '#ff7a3c', accentInk: '#120c08' },
+    // on cobalt the effects draw in a deep navy, a sky blue and white, so a ground has depth, not one flat blue
+    // (the page's yellow stays for its buttons: most effects drop an accent that far round the wheel)
+    colour: { bg: '#0034eb', surface: '#001c96', ink: '#ffffff', muted: '#dfe4f2', accent: '#5cc6ff', accentInk: '#00135c' },
+  };
   const KIND_WORDS = { light: 'light', dark: 'dark', colour: 'colour' };
-  // seeds that show each effect well in the grid; New seed on a tile deals another
-  const SEEDS = {};
+  // lit grounds behind UI (references/cards.md), the same on both card themes
+  const LIT = {
+    sky: { bg: '#c6d3df', surface: '#d6e0e9', ink: '#25303a', muted: '#5d6873', accent: '#3f6a92' },
+    sand: { bg: '#d9ccb7', surface: '#e9e0d2', ink: '#2a2622', muted: '#6f675c', accent: '#a8794a' },
+    sage: { bg: '#cdd6c6', surface: '#dce3d6', ink: '#262d24', muted: '#5f6a5a', accent: '#6c8e63' },
+    painting: { bg: '#79a8d6', accent: '#9c9b3c' },
+  };
+  let kind = ['light', 'dark', 'colour'].includes(q.get('palette')) ? q.get('palette')
+    : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const kindFor = meta => (meta.palettes.includes(kind) ? kind : meta.palettes.includes('dark') ? 'dark' : meta.palettes[0]);
+
+  const FAMILIES = { grain: 'Grain', dither: 'Dither', mesh: 'Mesh', light: 'Light', pattern: 'Pattern', material: 'Material', photo: 'Photo' };
   const famName = f => FAMILIES[f] || f[0].toUpperCase() + f.slice(1);
+  const SLOT_WORDS = { hero: 'hero frames', card: 'cards', band: 'bands', footer: 'footers' };
   const andList = a => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+  const upper = s => s[0].toUpperCase() + s.slice(1);
 
-  const tiles = [];
-  const cards = [...document.querySelectorAll('[data-card]')].map(el => ({ el, label: el.parentElement.querySelector('.ground b'), ctrl: null, id: null }));
-  const hero = { el: $('#hero'), label: $('#hero-tag b'), ctrl: null, id: null };
-  let index = null, palette = null, kind = 'light', paused = false, family = q.get('family') || '';
-
-  /* ---------------------------------------------------------------- palette */
-  function initialPalette() {
-    const key = q.get('palette');
-    if (key) return byId[PRESETS[key] || key] || byId[PRESETS.light];
-    const dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
-    return byId[PRESETS[dark ? 'dark' : 'light']] || PALETTES[0];
-  }
-  // the card, its inset panel and the UI window on it, all from the page palette
-  function derived(p, k) {
-    const c = fx.color;
-    if (k === 'light') return { card: c.mix(p.bg, p.ink, 0.045), panel: c.mix(p.surface, p.ink, 0.06), win: c.mix(p.bg, '#ffffff', 0.55), winSurface: c.mix(p.bg, '#ffffff', 0.25) };
-    if (k === 'dark') return { card: c.mix(p.bg, p.ink, 0.05), panel: p.bg, win: c.mix(p.surface, p.ink, 0.07), winSurface: c.mix(p.surface, p.ink, 0.12) };
-    return { card: c.mix(p.bg, p.ink, 0.07), panel: p.bg, win: c.mix(p.surface, p.ink, 0.12), winSurface: c.mix(p.surface, p.ink, 0.18) };
-  }
-  const cardPalette = () => { const d = derived(palette, kind); return fx.normalizePalette({ ...palette, bg: d.panel, surface: d.card }); };
-
-  function applyVars() {
-    const r = document.documentElement;
-    const d = derived(palette, kind);
-    const vars = { bg: palette.bg, surface: palette.surface, ink: palette.ink, muted: palette.muted, accent: palette.accent, 'accent-ink': palette.accentInk,
-      card: d.card, panel: d.panel, win: d.win, 'win-surface': d.winSurface };
-    for (const [k, v] of Object.entries(vars)) r.style.setProperty('--' + k, v);
-    r.dataset.theme = kind === 'light' ? 'light' : 'dark';
-    r.style.colorScheme = kind === 'light' ? 'light' : 'dark';
-    for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.kind === kind));
-    $('#pal').value = palette.id;
-  }
-
-  // a controller may come back as a promise when the effect remounts to change colour
-  function hold(holder, result) {
-    if (result && typeof result.then === 'function') result.then(c => { holder.ctrl = c; if (paused) c.pause(); });
-  }
-
-  function setPalette(p) {
-    const before = kind;
-    palette = p;
-    kind = fx.paletteKind(p);
-    applyVars();
-    if (kind !== before) order();
-    const pal = fx.normalizePalette(p);
-    for (const t of tiles) {
-      fitBadge(t);
-      if (t.ctrl) hold(t, t.ctrl.setPalette(pal));
-    }
-    if (kind !== before) deal();
-    else {
-      if (hero.ctrl) hold(hero, hero.ctrl.setPalette(pal));
-      for (const c of cards) if (c.ctrl) hold(c, c.ctrl.setPalette(cardPalette()));
-    }
-    syncUrl();
-  }
-
-  /* ---------------------------------------------------------------- tiles */
-  function fitBadge(t) {
-    const fits = t.meta.palettes.includes(kind);
-    t.badge.hidden = fits;
-    if (!fits) t.badge.querySelector('.tag').textContent = `Made for ${andList(t.meta.palettes.map(k => KIND_WORDS[k]))} pages`;
-  }
-  function snippet(t) {
-    return `<div data-fx="${t.meta.id}" data-fx-seed="${t.seed}"></div>`;
-  }
-  function buildTile(meta) {
-    const el = document.createElement('article');
-    el.className = 'tile';
-    el.dataset.id = meta.id;
-    el.dataset.family = meta.family;
-    el.innerHTML = `
-      <div class="stage"><div class="badge" hidden><span class="tag"></span></div></div>
-      <div class="info">
-        <div class="info-top"><h3></h3><span class="fam"></span></div>
-        <p class="look"></p>
-        <div class="info-foot"><p class="for"></p><div class="links"><button type="button" data-act="seed">New seed</button><button type="button" data-act="copy">Copy code</button></div></div>
-      </div>`;
-    el.querySelector('h3').textContent = meta.name;
-    el.querySelector('.fam').textContent = famName(meta.family);
-    el.querySelector('.look').textContent = meta.look;
-    const slots = SLOT_ORDER.filter(s => meta.bestOn.includes(s)).map(s => SLOT_WORDS[s]);
-    // an effect with "random": false is a literal subject: the random pick never deals it
-    el.querySelector('.for').textContent = `For ${andList(slots)}${meta.motion === 'still' ? ', still' : ''}${meta.random === false ? '. Chosen on purpose, never dealt' : ''}`;
-    const t = { meta, el, stage: el.querySelector('.stage'), badge: el.querySelector('.badge'), seed: SEEDS[meta.id] ?? 100 + fx.hashSeed(meta.id) % 900, ctrl: null };
-    el.querySelector('[data-act="seed"]').addEventListener('click', () => { t.seed = Math.floor(Math.random() * 10000); mountTile(t); });
-    el.querySelector('[data-act="copy"]').addEventListener('click', async () => {
-      const code = snippet(t);
-      try { await navigator.clipboard.writeText(code); toast('Copied ' + code); }
-      catch (_) { toast(code, 4000); }
-    });
-    return t;
-  }
-  async function mountTile(t) {
-    try {
-      t.ctrl = await fx.mount(t.stage, t.meta.id, { palette: fx.normalizePalette(palette), seed: t.seed });
-      if (paused) t.ctrl.pause();
-    } catch (err) { console.warn(`${t.meta.id}:`, err); }
-  }
-
-  function buildFilters() {
-    const box = $('#filters');
-    const counts = {};
-    for (const e of index.effects) counts[e.family] = (counts[e.family] || 0) + 1;
-    const fams = [...ORDER.filter(f => counts[f]), ...Object.keys(counts).filter(f => !ORDER.includes(f))];
-    const make = (key, label, n) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.dataset.family = key;
-      b.innerHTML = '<b></b><span></span>';
-      b.querySelector('b').textContent = label;
-      b.querySelector('span').textContent = n;
-      b.addEventListener('click', () => { family = key; filter(); syncUrl(); });
-      box.append(b);
-    };
-    make('', 'All', index.effects.length);
-    for (const f of fams) make(f, famName(f), counts[f]);
-  }
-  // effects made for this palette kind first, in family order; the others after them
-  function order() {
-    const grid = $('#grid');
-    const fits = t => t.meta.palettes.includes(kind);
-    for (const t of [...tiles.filter(fits), ...tiles.filter(t => !fits(t))]) grid.append(t.el);
-  }
-  function filter() {
-    if (family && !tiles.some(t => t.meta.family === family)) family = '';
-    for (const t of tiles) t.el.hidden = !!family && t.meta.family !== family;
-    for (const b of document.querySelectorAll('#filters button')) b.setAttribute('aria-pressed', String(b.dataset.family === family));
-  }
-
-  /* ---------------------------------------------------------------- random pick */
-  const HISTORY_KEY = 'fx-gallery-history';
-  function readHistory() {
-    try { const h = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); return Array.isArray(h) ? h : []; } catch (_) { return []; }
-  }
-  function writeHistory(h) {
-    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-100))); } catch (_) { /* no storage: picks are still spread within a deal */ }
-  }
-  let dealSeed = q.get('deal') || null;
-  async function deal(seed) {
-    const history = readHistory();
-    let dealt;
-    try {
-      // a seed from the address deals the same set every time, so it ignores this browser's history
-      dealt = pick(index.effects, { palette: kind, slots: ['hero', 'card', 'card', 'card', 'card'], history: seed == null ? history : [], seed: seed ?? undefined });
-    } catch (err) { toast(err.message); return; }
-    if (seed == null) writeHistory([...history, ...dealt.picks.map(p => p.id)]);
-    dealSeed = dealt.seed;
-    const n = fx.hashSeed(dealt.seed);
-    const [h, ...rest] = dealt.picks;
-    const jobs = [];
-    hero.id = h.id;
-    hero.label.textContent = nameOf(h.id);
-    // the effect keeps the area under the hero's text calm
-    const fr = hero.el.getBoundingClientRect(), tr = hero.el.querySelector('.hero-copy h1').getBoundingClientRect();
-    const tp = hero.el.querySelector('.hero-copy p').getBoundingClientRect();
-    const calm = fr.width ? { calmX: Math.min(0.8, Math.max(0.15, (tr.left + Math.min(tr.width, tp.width) * 0.42 - fr.left) / fr.width)), calmY: Math.min(0.85, Math.max(0.3, ((tr.top + tp.bottom) / 2 - fr.top) / fr.height)) } : { calmX: 0.24, calmY: 0.7 };
-    jobs.push(fx.mount(hero.el, h.id, { palette: fx.normalizePalette(palette), seed: n, params: calm }).then(c => { hero.ctrl = c; if (paused) c.pause(); }));
-    rest.forEach((p, i) => {
-      const c = cards[i];
-      c.id = p.id;
-      c.label.textContent = nameOf(p.id);
-      jobs.push(fx.mount(c.el, p.id, { palette: cardPalette(), seed: n + 17 * (i + 1) }).then(ctrl => { c.ctrl = ctrl; if (paused) ctrl.pause(); }));
-    });
-    await Promise.all(jobs.map(j => j.catch(err => console.warn(err))));
-    syncUrl();
-    return dealt;
-  }
-  const nameOf = id => (index.effects.find(e => e.id === id) || { name: id }).name;
-
-  /* ---------------------------------------------------------------- controls */
-  function toast(msg, ms = 1800) {
+  function toast(msg, ms = 2400) {
     const el = $('#toast');
     el.textContent = msg;
     el.classList.add('on');
@@ -471,58 +559,761 @@
   function syncUrl() {
     try {
       const u = new URL(location.href);
-      u.searchParams.set('palette', palette.id);
-      if (family) u.searchParams.set('family', family); else u.searchParams.delete('family');
+      u.searchParams.set('palette', kind);
       if (dealSeed) u.searchParams.set('deal', dealSeed);
+      u.searchParams.set('cards', cardTheme);
       history.replaceState(null, '', u);
-    } catch (_) { /* a sandboxed frame may refuse; the page works without it */ }
+    } catch { /* a sandboxed frame may refuse; the page works without it */ }
   }
-  for (const b of document.querySelectorAll('.seg button')) b.addEventListener('click', () => setPalette(byId[PRESETS[b.dataset.kind]]));
-  const sel = $('#pal');
-  const groups = { light: [], dark: [], colour: [] };
-  for (const p of PALETTES) groups[fx.paletteKind(p)].push(p);
-  for (const [k, list] of Object.entries(groups)) {
-    const og = document.createElement('optgroup');
-    og.label = k[0].toUpperCase() + k.slice(1);
-    for (const p of list) og.append(new Option(p.name, p.id));
-    sel.append(og);
-  }
-  sel.addEventListener('change', () => setPalette(byId[sel.value]));
-  $('#pause').addEventListener('click', e => {
-    paused = !paused;
-    e.currentTarget.textContent = paused ? 'Play' : 'Pause';
-    e.currentTarget.setAttribute('aria-pressed', String(paused));
-    for (const h of [...tiles, hero, ...cards]) if (h.ctrl) paused ? h.ctrl.pause() : h.ctrl.resume();
-  });
-  $('#deal').addEventListener('click', async () => {
-    const d = await deal();
-    if (d) toast(`Dealt: ${d.picks.map(p => nameOf(p.id)).join(', ')}`, 2600);
-  });
 
-  /* ---------------------------------------------------------------- load */
-  palette = initialPalette();
-  kind = fx.paletteKind(palette);
-  applyVars();
+  /* ---------------------------------------------------------------- a still picture of a live canvas */
+  // the same picture ui.grounds keeps: a 2D copy of the last frame under everything in the box, its
+  // WebGL context freed. Returns a stub controller ui.grounds can replace later.
+  function keepFrame(el, api) {
+    const src = el.querySelector(':scope > canvas.fx-canvas:not(.is-baked)');
+    let out = null;
+    if (src && src.width && src.style.opacity !== '0') {
+      try { api.set && api.set({}); } catch { /* no set: the copy below still holds the last frame */ }
+      out = document.createElement('canvas');
+      out.width = src.width; out.height = src.height;
+      try { out.getContext('2d').drawImage(src, 0, 0); } catch { out = null; }
+    }
+    api.destroy();
+    if (!out) return null;
+    out.className = 'fx-canvas is-baked';
+    out.setAttribute('aria-hidden', 'true');
+    Object.assign(out.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', display: 'block', zIndex: '-1', pointerEvents: 'none', borderRadius: 'inherit' });
+    el.insertBefore(out, el.firstChild);
+    const stub = { id: api.id, el, baked: true, pause() {}, resume() {}, set() { return stub; }, setPalette() { return stub; },
+      destroy() { out.remove(); if (el.__fx === stub) delete el.__fx; el.removeAttribute('data-fx-mounted'); } };
+    el.__fx = stub;
+    el.setAttribute('data-fx-mounted', api.id);
+    return stub;
+  }
+  // mount a live effect over the picture already in the box; the picture goes once the first frame shows
+  async function goLive(el, id, spec) {
+    const old = el.__fx;
+    if (old && old.baked) delete el.__fx;          // keep its picture under the live canvas for now
+    const api = await fx.mount(el, id, spec);
+    (async () => {
+      for (const t0 = performance.now(); performance.now() - t0 < 8000; await frame()) {
+        if (el.__fx !== api) return;
+        const c = el.querySelector(':scope > canvas.fx-canvas:not(.is-baked)');
+        if ((c && c.style.opacity === '1') || el.dataset.fxFallback) break;
+      }
+      if (el.__fx === api) for (const b of el.querySelectorAll(':scope > canvas.is-baked')) b.remove();
+    })();
+    return api;
+  }
+
+  /* ---------------------------------------------------------------- data */
+  let index;
   try {
-    index = await fetch(PATHS.fx + 'index.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+    index = await fetch(A('effects/index.json'), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
   } catch (err) {
-    $('#grid').innerHTML = '<p class="empty">The effects index did not load. Serve this folder over http (node scripts/effects.mjs serve) and run node scripts/effects.mjs index.</p>';
+    $('#fx-grid').innerHTML = '<p class="fx-empty">The effects index did not load. Serve this folder over http.</p>';
     throw err;
   }
-  const famCount = new Set(index.effects.map(e => e.family)).size;
-  $('#count').textContent = `${index.effects.length} effects in ${famCount} families`;
-  const sorted = [...index.effects].sort((a, b) => (ORDER.indexOf(a.family) + 99 * !ORDER.includes(a.family)) - (ORDER.indexOf(b.family) + 99 * !ORDER.includes(b.family)) || a.name.localeCompare(b.name));
-  for (const meta of sorted) { const t = buildTile(meta); tiles.push(t); $('#grid').append(t.el); fitBadge(t); }
-  order();
-  buildFilters();
-  filter();
-  if (!ui) document.getElementById('cards').hidden = true;
+  const byId = Object.fromEntries(index.effects.map(e => [e.id, e]));
+  const nameOf = id => (byId[id] || { name: id }).name;
+  const N = index.effects.length;
+  $('#fx-title').firstChild.textContent = `${N} effects. `;
+  $('#see-all').textContent = `See all ${N} effects`;
+  $('#hero-sub').textContent = $('#hero-sub').textContent.replace(/^\d+/, N);
+
+  /* ---------------------------------------------------------------- the hero ground */
+  const hero = { el: $('#hero-frame'), api: null, id: null, seed: 0, visible: true, paused: false, tweaks: {} };
+  const heroSpec = () => ({ palette: FXP[kind], seed: hero.seed, params: { calm: 0, ...hero.tweaks } });
+  async function mountHero() {
+    if (!hero.id) return;
+    const gen = (hero.gen = (hero.gen || 0) + 1);
+    hero.el.style.backgroundColor = FXP[kind].bg;
+    if (!hero.visible) { if (hero.api) { keepFrame(hero.el, hero.api); hero.api = null; } return; }
+    try {
+      const api = await goLive(hero.el, hero.id, heroSpec());
+      if (gen !== hero.gen) { if (hero.el.__fx === api) api.destroy(); return; }
+      hero.api = api;
+      if (hero.paused) api.pause();
+    } catch (err) { console.warn('hero', err); }
+    const m = byId[hero.id];
+    $('#hero-cap').innerHTML = `<b>${esc(m.name)}</b> &middot; ${esc(famName(m.family))} &middot; dealt for the hero, seed ${hero.seed}`;
+    $('#hero-tile').href = '#fx-' + hero.id;
+    dock();
+  }
+  // the dock: name, a few of the effect's own parameters as live sliders, the palette and the code
+  const humanize = k => upper(k.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase());
+  const fmt = (v, step) => (+v).toFixed(step >= 1 ? 0 : step >= 0.1 ? 1 : 2);
+  // a slider only for a range (a switch or a choice of modes is left to the workbench)
+  const isRange = s => typeof s.default === 'number' && s.max > s.min && !((s.step || 0) >= 1 && s.max - s.min <= 4);
+  function dock() {
+    const m = byId[hero.id];
+    if (!m) return;
+    $('#dock-name').textContent = m.name;
+    $('#dock-meta').textContent = `${famName(m.family)} · seed ${hero.seed}`;
+    $('#dock-code').textContent = `<div data-fx="${m.id}" data-fx-seed="${hero.seed}"></div>`;
+    const P = FXP[kind];
+    $('#dock-pal').innerHTML = ['bg', 'surface', 'ink', 'accent'].map(k => `<i style="background:${P[k]}" title="${k}"></i>`).join('') + `<span style="margin-left:4px">${upper(kind)}</span>`;
+    const api = hero.api && !hero.api.baked ? hero.api : null;
+    const schema = api?.effect?.params || {};
+    const keys = Object.keys(schema).filter(k => !/^(calm|seed)/i.test(k) && isRange(schema[k])).slice(0, 4);
+    if (!api) return;   // off screen: the rows stay as they were
+    $('#dock-rows').innerHTML = keys.map(k => {
+      const s = schema[k], step = s.step || +((s.max - s.min) / 100).toPrecision(2), v = api.params[k] ?? s.default;
+      return `<div class="dock__row"><label for="dock-${k}">${esc(humanize(k))}</label><output id="dock-out-${k}">${fmt(v, step)}</output>
+        <input type="range" id="dock-${k}" data-k="${k}" min="${s.min}" max="${s.max}" step="${step}" value="${v}" style="--v:${((v - s.min) / (s.max - s.min) * 100).toFixed(1)}%"></div>`;
+    }).join('');
+  }
+  $('#dock-rows').addEventListener('input', e => {
+    const r = e.target.closest('input[data-k]');
+    if (!r) return;
+    const k = r.dataset.k, v = +r.value;
+    r.style.setProperty('--v', `${((v - +r.min) / (+r.max - +r.min) * 100).toFixed(1)}%`);
+    $('#dock-out-' + k).textContent = fmt(v, +r.step);
+    hero.tweaks[k] = v;
+    if (hero.api && !hero.api.baked) hero.api.set({ [k]: v });
+  });
+  $('#dock-seed').addEventListener('click', () => { hero.seed = Math.floor(Math.random() * 10000); mountHero(); });
+  $('#dock-copy').addEventListener('click', async () => {
+    const code = $('#dock-code').textContent;
+    try { await navigator.clipboard.writeText(code); toast('Copied ' + code); } catch { toast(code, 5000); }
+  });
+  ui.pausable(hero.el, { pause() { hero.paused = true; hero.api?.pause(); }, resume() { hero.paused = false; hero.api?.resume(); } });
+  new IntersectionObserver(es => {
+    const vis = es[es.length - 1].isIntersecting;
+    if (vis === hero.visible) return;
+    hero.visible = vis;
+    if (!vis && hero.api) { hero.gen++; keepFrame(hero.el, hero.api); hero.api = null; }
+    else if (vis && !hero.api) mountHero();
+  }, { rootMargin: '0px' }).observe(hero.el);
+  $('#hero-seed').addEventListener('click', () => { hero.seed = Math.floor(Math.random() * 10000); mountHero(); });
+
+  /* ---------------------------------------------------------------- 1. effect tiles */
+  const ORDER = Object.keys(FAMILIES);
+  const famIndex = f => (ORDER.includes(f) ? ORDER.indexOf(f) : 99);
+  const tiles = [];
+  const photoSrc = A('objects/photo-kit/photos/room.jpg');
+  function tileSpec(t) {
+    const k = kindFor(t.meta);
+    t.stage.dataset.fxPalette = JSON.stringify(FXP[k]);
+    t.stage.dataset.fxSeed = String(t.seed);
+    t.stage.style.backgroundColor = FXP[k].bg;   // under an effect that draws only its marks
+    const fits = k === kind;
+    t.badge.hidden = fits;
+    if (!fits) t.badge.textContent = `Made for ${andList(t.meta.palettes.map(x => KIND_WORDS[x]))} pages`;
+    return { palette: FXP[k], seed: t.seed };
+  }
+  function buildTile(meta) {
+    const el = document.createElement('article');
+    el.className = 'fx-tile';
+    el.id = 'fx-' + meta.id;
+    el.dataset.family = meta.family;
+    const moves = meta.motion !== 'still';
+    el.innerHTML = `
+      <div class="fx-stage" data-fx="${esc(meta.id)}">
+        ${meta.usesImg ? `<img data-fx-photo src="${esc(photoSrc)}" alt="" crossorigin="anonymous">` : ''}
+        <span class="fx-badge" hidden></span>
+        ${moves ? `<button type="button" class="fx-play" aria-label="Play ${esc(meta.name)}"><svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10.2 6z"/></svg><svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/></svg></button>` : ''}
+      </div>
+      <div class="fx-info">
+        <div class="fx-top"><h3>${esc(meta.name)}</h3><span class="fx-fam">${esc(famName(meta.family))}</span></div>
+        <p class="fx-look">${esc(meta.look)}</p>
+        <div class="fx-foot">
+          <span class="fx-for">${esc(forLine(meta))}</span>
+          <span class="fx-acts"><button type="button" class="textbtn" data-act="seed">New seed</button><button type="button" class="textbtn" data-act="copy">Copy code</button></span>
+        </div>
+      </div>`;
+    const t = { meta, el, stage: el.querySelector('.fx-stage'), badge: el.querySelector('.fx-badge'), seed: 100 + fx.hashSeed(meta.id) % 900, api: null, pinned: false, visible: false };
+    tileSpec(t);
+    el.querySelector('[data-act="seed"]').addEventListener('click', () => {
+      t.seed = Math.floor(Math.random() * 10000);
+      tileSpec(t);
+      if (t.api) { const live = t.api; t.api = null; liveTile = null; live.destroy(); el.classList.remove('is-playing'); playTile(t, t.pinned); }
+      else ui.grounds(t.stage, fx);
+    });
+    el.querySelector('[data-act="copy"]').addEventListener('click', async () => {
+      const code = `<div data-fx="${meta.id}" data-fx-seed="${t.seed}"></div>`;
+      try { await navigator.clipboard.writeText(code); toast('Copied ' + code); } catch { toast(code, 5000); }
+    });
+    if (moves) {
+      const btn = el.querySelector('.fx-play');
+      btn.addEventListener('click', () => {
+        if (t.api && t.pinned) { t.pinned = false; stopTile(t); }
+        else playTile(t, true);
+      });
+      t.stage.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') playTile(t, false); });
+      t.stage.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !t.pinned) stopTile(t); });
+    }
+    return t;
+  }
+  function forLine(meta) {
+    const slots = ['hero', 'card', 'band', 'footer'].filter(s => meta.bestOn.includes(s)).map(s => SLOT_WORDS[s]);
+    let s = `For ${andList(slots)}`;
+    if (meta.motion === 'still') s += ', still';
+    if (meta.random === false) s += '. Chosen on purpose, never dealt';
+    return s;
+  }
+  // one tile plays at a time: the one pointed at, or the one whose play button was pressed
+  let liveTile = null;
+  async function playTile(t, pin) {
+    if (liveTile && liveTile !== t) { liveTile.pinned = false; stopTile(liveTile); }
+    t.pinned = t.pinned || pin;
+    if (t.api || t.starting) return;
+    liveTile = t;
+    t.starting = true;
+    t.el.classList.add('is-playing');
+    t.el.querySelector('.fx-play')?.setAttribute('aria-label', `Pause ${t.meta.name}`);
+    try {
+      const api = await goLive(t.stage, t.meta.id, tileSpec(t));
+      t.starting = false;
+      if (liveTile !== t) { keepFrame(t.stage, api); return; }
+      t.api = api;
+    } catch (err) { t.starting = false; console.warn(t.meta.id, err); }
+  }
+  function stopTile(t) {
+    if (liveTile === t) liveTile = null;
+    t.el.classList.remove('is-playing');
+    t.el.querySelector('.fx-play')?.setAttribute('aria-label', `Play ${t.meta.name}`);
+    const api = t.api;
+    t.api = null;
+    if (api && t.stage.__fx === api) keepFrame(t.stage, api);
+  }
+  const tileIO = new IntersectionObserver(es => {
+    for (const e of es) {
+      const t = tiles.find(x => x.stage === e.target);
+      if (t && !e.isIntersecting && t.api) { t.pinned = false; stopTile(t); }
+    }
+  });
+
+  const sorted = [...index.effects].sort((a, b) => famIndex(a.family) - famIndex(b.family) || a.name.localeCompare(b.name));
+  for (const meta of sorted) { const t = buildTile(meta); tiles.push(t); $('#fx-grid').append(t.el); tileIO.observe(t.stage); }
+  let family = q.get('family') || '';
+  function orderTiles() {
+    const fits = t => t.meta.palettes.includes(kind);
+    for (const t of [...tiles.filter(fits), ...tiles.filter(t => !fits(t))]) $('#fx-grid').append(t.el);
+  }
+  function filterTiles() {
+    if (family && !tiles.some(t => t.meta.family === family)) family = '';
+    for (const t of tiles) t.el.hidden = !!family && t.meta.family !== family;
+    for (const b of $$('#families button')) b.setAttribute('aria-pressed', String(b.dataset.family === family));
+  }
+  {
+    const counts = {};
+    for (const e of index.effects) counts[e.family] = (counts[e.family] || 0) + 1;
+    const fams = Object.keys(counts).sort((a, b) => famIndex(a) - famIndex(b));
+    const make = (key, label, n) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.family = key;
+      b.innerHTML = `${esc(label)} <span>${n}</span>`;
+      b.addEventListener('click', () => { family = key; filterTiles(); });
+      $('#families').append(b);
+    };
+    make('', 'All', index.effects.length);
+    for (const f of fams) make(f, famName(f), counts[f]);
+  }
+
+  /* ---------------------------------------------------------------- 2. cards: the layouts of ui/cards.html */
+  // the layouts are read from ui/cards.html at load, so the gallery always shows the kit's current cards;
+  // its page styles are kept to the layouts with @scope
+  function scopeCSS(css, scope) {
+    css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const out = [];
+    let i = 0;
+    const block = start => { let d = 0; for (let j = start; j < css.length; j++) { if (css[j] === '{') d++; else if (css[j] === '}' && --d === 0) return j; } return css.length - 1; };
+    while (i < css.length) {
+      const open = css.indexOf('{', i);
+      if (open < 0) break;
+      const prelude = css.slice(i, open).trim();
+      const end = block(open);
+      const body = css.slice(open + 1, end);
+      if (/^@media|^@supports|^@container/.test(prelude)) out.push(`${prelude} { @scope (${scope}) { ${body} } }`);
+      else if (/^@(keyframes|font-face|property)/.test(prelude)) out.push(`${prelude} {${body}}`);
+      else if (prelude && !/^:root$/.test(prelude) && !/^(html|body)(\s*,\s*(html|body))*$/.test(prelude)) out.push(`@scope (${scope}) { ${prelude} {${body}} }`);
+      i = end + 1;
+    }
+    return out.join('\n');
+  }
+  const cardlib = $('#cardlib');
+  let cardTheme = ['light', 'dark'].includes(q.get('cards')) ? q.get('cards') : (kind === 'light' ? 'light' : 'dark');
+  const cardGroups = [];
+  try {
+    const html = await fetch(A('ui/cards.html'), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const style = document.createElement('style');
+    style.textContent = scopeCSS([...doc.querySelectorAll('head style')].map(s => s.textContent).join('\n'), '#cardlib');
+    document.head.append(style);
+    const secs = [...doc.querySelectorAll('main section.sec')];
+    cardlib.replaceChildren(...secs.map(s => document.importNode(s, true)));
+    for (const sec of $$(':scope > .sec', cardlib)) {
+      sec.id = 'cards-' + sec.id;
+      const tag = sec.querySelector('.sec__tag');
+      const label = (tag?.textContent || '').replace(/^\s*\d+\s*\/\s*/, '').trim() || sec.id;
+      const meta = document.createElement('div');
+      meta.className = 'sec__meta';
+      if (tag) { tag.replaceWith(meta); meta.append(tag); } else sec.querySelector('.sec__head')?.append(meta);
+      const panels = $$('[data-fx]:not([data-knock])', sec);
+      // a group is dealt when nothing in it drives its ground (the slider in the bento changes its grain)
+      const driven = panels.some(p => p.hasAttribute('data-fx-live') || $$('[data-ui-opts]', p).some(f => /"drive"/.test(f.dataset.uiOpts || '')));
+      for (const p of panels) { p.dataset.fxOrig = p.dataset.fx; p.dataset.fxPaletteOrig = p.dataset.fxPalette || ''; p.dataset.fxParamsOrig = p.dataset.fxParams || ''; }
+      let ground = null;
+      if (panels.length) { ground = document.createElement('span'); ground.className = 'sec__ground'; meta.append(ground); }
+      cardGroups.push({ sec, label, panels, driven, ground });
+      const a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.textContent = label;
+      $('#layout-nav').append(a);
+    }
+    for (const el of $$('[data-fx]', cardlib)) { el.dataset.fxLight = el.dataset.fx; }
+  } catch (err) {
+    cardlib.innerHTML = '<p class="cardlib-load">The card layouts did not load (ui/cards.html).</p>';
+    console.warn('cards', err);
+  }
+  function applyCardTheme() {
+    const band = $('#cards');
+    band.dataset.theme = cardTheme;
+    cardlib.dataset.theme = cardTheme;
+    for (const b of $$('#card-theme button')) b.setAttribute('aria-pressed', String(b.dataset.themeSet === cardTheme));
+    const dark = cardTheme === 'dark';
+    // the big number: a light effect under white text on dark (darken), a dark one under black text on light (lighten)
+    for (const el of $$('[data-knock]', cardlib)) {
+      el.classList.toggle('knock--light', !dark);
+      el.dataset.fxPalette = JSON.stringify(dark
+        ? { bg: '#f2efea', surface: '#ffffff', ink: '#1a1a1a', muted: '#9a948c', accent: '#a9a397' }
+        : { bg: '#121110', surface: '#262422', ink: '#f2f2ef', muted: '#77736d', accent: '#5e5953' });
+      el.dataset.fxParams = JSON.stringify({ speed: 0, grainMotion: 0, calm: 0, tint: 0.9, contrast: 0.85, grain: 0.5, softness: 0.4 });
+    }
+  }
+  // one effect per dealt group; a group keeps its own lit palettes, and the painting's palette (made for
+  // the painterly landscape) becomes the sky for any other effect
+  const STILL = { speed: 0, drift: 0, grainMotion: 0 };
+  function setGroupGround(g, id) {
+    for (const p of g.panels) {
+      if (id === p.dataset.fxOrig) {
+        p.dataset.fx = id;
+        if (p.dataset.fxPaletteOrig) p.dataset.fxPalette = p.dataset.fxPaletteOrig; else delete p.dataset.fxPalette;
+        if (p.dataset.fxParamsOrig) p.dataset.fxParams = p.dataset.fxParamsOrig; else delete p.dataset.fxParams;
+        let own = {};
+        try { own = JSON.parse(p.dataset.fxPaletteOrig || '{}'); } catch { /* none */ }
+        p.style.backgroundColor = own.bg || '';
+      } else {
+        let pal = {};
+        try { pal = JSON.parse(p.dataset.fxPaletteOrig || '{}'); } catch { /* none */ }
+        if (!pal.ink) pal = LIT.sky;
+        let orig = {};
+        try { orig = JSON.parse(p.dataset.fxParamsOrig || '{}'); } catch { /* none */ }
+        const keep = Object.fromEntries(Object.entries(orig).filter(([k]) => /^calm/.test(k)));
+        p.dataset.fx = id;
+        p.dataset.fxPalette = JSON.stringify(pal);
+        p.dataset.fxParams = JSON.stringify({ ...keep, ...STILL });
+        // the lit ground's own paper under the picture: an effect that draws only its lines (grid
+        // pulse) never shows the dark panel through them
+        p.style.backgroundColor = pal.bg;
+      }
+      p.dataset.fxLight = p.dataset.fx;
+    }
+    if (g.ground) g.ground.innerHTML = `Ground: <b>${esc(nameOf(id))}</b>`;
+  }
+  function glowOnHover() {
+    for (const el of $$('[data-glow]', cardlib)) {
+      let busy = false;
+      const lap = async () => {
+        if (busy || ui.reduced()) return;
+        busy = true;
+        try {
+          const c = await fx.mount(el, el.dataset.glow, { palette: fx.readPalette(el), params: JSON.parse(el.dataset.glowParams || '{}'), seed: 2 });
+          const r = el.getBoundingClientRect(), per = 2 * (r.width + r.height);
+          await sleep(per / Math.min(c.params.speed, per / 4) * 1000);
+          el.classList.add('is-fading');
+          await sleep(650);
+          c.destroy();
+        } catch (e) { console.warn(e); }
+        el.classList.remove('is-fading');
+        busy = false;
+      };
+      el.addEventListener('pointerenter', lap);
+      el.addEventListener('focusin', lap);
+    }
+  }
+  async function setCardTheme(t) {
+    if (t === cardTheme) return;
+    cardTheme = t;
+    applyCardTheme();
+    syncUrl();
+    await ui.grounds(cardlib, fx);
+    for (const el of $$('[data-ui]', cardlib)) el.__ui?.repaint?.();
+  }
+  for (const b of $$('#card-theme button')) b.addEventListener('click', () => setCardTheme(b.dataset.themeSet));
+
+  /* ---------------------------------------------------------------- the deal: the hero, then the card grounds */
+  const HISTORY_KEY = 'fx-gallery-history';
+  const readHistory = () => { try { const h = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); return Array.isArray(h) ? h : []; } catch { return []; } };
+  const writeHistory = h => { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(-100))); } catch { /* no storage */ } };
+  let dealSeed = q.get('deal') || null;
+  // the bento's grain is driven by its slider and the 68% is filled with grain: grain-gradient stays theirs
+  const FIXED = ['grain-gradient'];
+  function deal(seed) {
+    const fromUrl = seed != null;
+    const history = fromUrl ? [] : readHistory();
+    let h, c;
+    try {
+      h = pick(index.effects, { palette: kind, slots: ['hero'], history, seed: seed ?? undefined, exclude: FIXED });
+      const groups = cardGroups.filter(g => g.panels.length && !g.driven);
+      // second call: quiet grounds only (no orb, sphere or beam behind a big window), never the hero's effect
+      c = pick(index.effects, { palette: 'light', slots: groups.map(() => 'card'), quiet: true, history, seed: `${h.seed}/cards`, exclude: [h.picks[0].id, ...FIXED] });
+      groups.forEach((g, i) => setGroupGround(g, c.picks[i].id));
+    } catch (err) { toast(err.message, 4000); return null; }
+    for (const g of cardGroups) if (g.panels.length && g.driven && g.ground) g.ground.innerHTML = `Ground: <b>${esc(nameOf(g.panels[0].dataset.fx))}</b>, driven by the slider`;
+    if (!fromUrl) writeHistory([...history, h.picks[0].id, ...c.picks.map(p => p.id)]);
+    dealSeed = String(h.seed);
+    if (hero.id !== h.picks[0].id) hero.tweaks = {};
+    hero.id = h.picks[0].id;
+    hero.seed = fx.hashSeed(h.seed);
+    syncUrl();
+    return { hero: h.picks[0].id, cards: c.picks.map(p => p.id) };
+  }
+  async function dealAndDraw(seed) {
+    const d = deal(seed);
+    if (!d) return null;
+    await Promise.all([mountHero(), ui.grounds(cardlib, fx)]);
+    return d;
+  }
+  for (const b of $$('[data-deal]')) b.addEventListener('click', async () => {
+    const d = await dealAndDraw();
+    if (d) toast(`Hero: ${nameOf(d.hero)}. Cards: ${d.cards.map(nameOf).join(', ')}.`, 3600);
+  });
+
+  /* ---------------------------------------------------------------- lazy parts: started near the screen, stopped off it */
+  // gl: the part holds WebGL of its own, so it waits for room under the page's budget (whenRoom)
+  function lazy(el, start, stop, margin = '15% 0px', gl = true) {
+    let on = false, started = false;
+    const go = () => { if (on && !started) { started = true; try { start(); } catch (e) { console.warn(e); } } };
+    const io = new IntersectionObserver(es => {
+      const vis = es[es.length - 1].isIntersecting;
+      if (vis && !on) { on = true; if (gl) whenRoom(() => on && !started, go); else go(); }
+      else if (!vis && on) { on = false; if (started) { started = false; try { stop(); } catch (e) { console.warn(e); } } }
+    }, { rootMargin: margin });
+    io.observe(el);
+    return { get on() { return on; }, get started() { return started; }, restart() { if (started) { started = false; try { stop(); } catch (e) { console.warn(e); } } if (on) { if (gl) whenRoom(() => on && !started, go); else go(); } } };
+  }
+
+  /* ---------------------------------------------------------------- 3. creative uses: the components */
+  // the parts that hold up, in the order a page would use them. Left out (still in the kit): the
+  // effect button and the search glow (nothing to see until you act), icon tiles (a row of tinted
+  // chips), the area chart (a plain chart) and spotlight cards (plain until pointed at).
+  // box: a small control shown on a lit ground of its own, [effect, lit palette, params]
+  const USES = [
+    { id: 'fx-feature-card', line: 'A 2x2 of feature cards, each with an inset panel: a painted or grain ground and a small product window running out through its bottom edge.' },
+    { id: 'fx-dither-object', line: 'A real thing with no photograph, built as a 3D form and printed in dither. Point at it and move across.', pick: true },
+    { id: 'fx-globe', line: 'A dotted globe rising from the floor of a panel, with arcs between cities beside live figures by region.' },
+    { id: 'fx-map', line: 'Contour lines in place of a map tile, with one pin, coordinates and an address card. No map service.' },
+    { id: 'fx-band', line: 'A short band between two sections: one headline, one line, a link, and quiet contour lines on the far side.' },
+    { id: 'fx-prompt', half: true, box: ['grain-gradient', 'sand', { calm: 0.3, calmX: 0.5, calmY: 0.5 }], line: 'A prompt field with one light running slowly round its border.' },
+    { id: 'fx-avatar', half: true, box: ['painterly-landscape', 'painting', { blur: 0.4, brush: 0.8 }], line: 'A call card: whoever speaks gets a thin ring of the effect.' },
+    { id: 'fx-logos', line: 'A row of brand marks; every 9 seconds a soft band of light passes through them once.' },
+    { id: 'fx-headline', line: 'One key phrase of a display line filled with a still effect, the rest in ink.' },
+    { id: 'fx-stat', line: 'Proof numbers whose digits carry the effect; the captions stay plain.' },
+    { id: 'fx-bars', half: true, line: 'A bar chart whose bars are windows onto one still grain, on a labelled scale.' },
+    { id: 'fx-progress', half: true, box: ['contour-lines', 'sky', { calm: 0.25, calmX: 0.5, calmY: 0.5 }], line: 'An import step: the file being read fills with a soft light, a thin line gives the exact share.' },
+    { id: 'fx-pricing', line: 'Plans side by side; the recommended one has a thin border of the effect.' },
+    { id: 'fx-tabs', line: 'Tabs for a product tour; the active pill is a small window of grain that glides to the tab you pick.' },
+    { id: 'fx-photo', line: 'The client\'s own photograph graded into three page tones with still grain, copy on its quiet corner.' },
+  ].filter(u => !q.get('only') || q.get('only').split(',').includes(u.id));
+  const DITHER_OBJECTS = { bike: ['Cargo bike', 'Electric, with a box at the front'], cup: ['Cup of coffee', 'On a saucer, with steam rising'], book: ['Open book', 'Hardback, open at the middle'], house: ['House under mountains', 'Two floors and a shed'] };
+  let ditherObject = 'bike';
+  async function loadUse(u) {
+    const base = A(`components/${u.id}/`);
+    try {
+      const [meta, html, mod] = await Promise.all([
+        fetch(base + 'meta.json').then(r => (r.ok ? r.json() : null)),
+        fetch(base + 'component.html').then(r => (r.ok ? r.text() : null)),
+        import(base + 'component.js'),
+      ]);
+      if (!meta || !html || !mod) return null;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = base + 'component.css';
+      document.head.append(link);
+      await new Promise(r => { link.onload = link.onerror = r; });
+      return { ...u, meta, html, mod };
+    } catch (err) { console.warn(u.id, err); return null; }
+  }
+  const uses = (await Promise.all(USES.map(loadUse))).filter(Boolean);
+  // component.html is written for components/index.html: its relative urls start at components/
+  const fixUrls = (html, base) => html.replace(/(\s(?:src|data-src|poster)=")(?!https?:|data:|\/|#)([^"]+)"/g, (m, a, v) => `${a}${base}${v}"`);
+  function useMarkup(u) {
+    u.stage.innerHTML = fixUrls(u.html, A('components/'));
+    if (u.id === 'fx-dither-object') {
+      const fig = u.stage.querySelector('.cx-obj');
+      if (fig) {
+        fig.dataset.cxObject = ditherObject;
+        const n = fig.querySelector('.cx-obj__name'), s = fig.querySelector('.cx-obj__spec');
+        if (n) n.textContent = DITHER_OBJECTS[ditherObject][0];
+        if (s) s.textContent = DITHER_OBJECTS[ditherObject][1];
+        fig.querySelector('.cx-obj__stage')?.removeAttribute('aria-label');
+      }
+    }
+  }
+  function useStart(u) {
+    if (u.ctrl) return;
+    useMarkup(u);
+    try { u.ctrl = u.mod.default(u.stage.firstElementChild || u.stage) || { destroy() {} }; }
+    catch (err) { console.error(u.id, err); u.ctrl = { destroy() {} }; }
+  }
+  function useStop(u) {
+    if (!u.ctrl) return;
+    try { u.ctrl.destroy?.(); } catch (err) { console.warn(u.id, err); }
+    fx.unmountAll(u.stage);
+    u.ctrl = null;
+  }
+  uses.forEach((u, i) => {
+    const el = document.createElement('article');
+    el.className = 'use' + (u.half ? ' is-half' : '');
+    el.id = 'use-' + u.id;
+    const pickRow = u.pick ? `<div class="chips use__pick" role="group" aria-label="Object">${Object.keys(DITHER_OBJECTS).map(k => `<button type="button" data-object="${k}" aria-pressed="${k === ditherObject}">${DITHER_OBJECTS[k][0]}</button>`).join('')}</div>` : '';
+    let stage = '<div class="use__stage"></div>';
+    if (u.box) {
+      const [gid, palName, extra] = u.box;
+      stage = `<div class="use__box"><div class="use__ground" data-fx="${gid}" data-fx-seed="${31 + i * 13}" data-fx-palette='${esc(JSON.stringify(LIT[palName]))}' data-fx-params='${esc(JSON.stringify({ ...STILL, ...extra }))}' style="background-color:${LIT[palName].bg}"></div>${stage}</div>`;
+    }
+    el.innerHTML = `<div class="use__meta"><span class="use__no">${String(i + 1).padStart(2, '0')}</span><h3>${esc(u.meta.name)}</h3><p>${esc(u.line || u.meta.for)}</p>${pickRow}</div>${stage}`;
+    u.el = el;
+    u.stage = el.querySelector('.use__stage');
+    $('#uses-list').append(el);
+    useMarkup(u);
+    u.lazy = lazy(el, () => useStart(u), () => useStop(u), '10% 0px');
+    if (u.pick) el.querySelector('.use__pick').addEventListener('click', ev => {
+      const b = ev.target.closest('[data-object]');
+      if (!b) return;
+      ditherObject = b.dataset.object;
+      for (const x of el.querySelectorAll('[data-object]')) x.setAttribute('aria-pressed', String(x === b));
+      if (u.lazy.started) { useStop(u); useStart(u); } else useMarkup(u);
+    });
+  });
+
+  /* ---------------------------------------------------------------- 4. real things */
+  const objIndex = await fetch(A('objects/_print-core/index.json')).then(r => r.json()).catch(() => ({ objects: [] }));
+  const print3d = await import(A('objects/_print-core/print3d.js')).catch(() => null);
+  if (print3d?.config) print3d.config.maxLive = 1;   // with the page's other contexts, never more than 4
+  // each object on its own lit ground, the ground drawn once (ui.grounds)
+  const OBJ_GROUND = [
+    ['sand', 'grain-gradient'], ['sky', 'contour-lines'], ['sage', 'grain-gradient'], ['sky', 'grain-gradient'],
+    ['sand', 'line-engraving'], ['sage', 'contour-lines'], ['sand', 'grain-gradient'],
+  ];
+  const things = [];
+  objIndex.objects.forEach((o, i) => {
+    const [palName, ground] = OBJ_GROUND[i % OBJ_GROUND.length];
+    const pal = LIT[palName];
+    const card = document.createElement('article');
+    card.className = 'card' + (i === 0 ? ' is-wide' : '');
+    card.id = 'thing-' + o.id;
+    card.innerHTML = `<div class="panel panel--top" data-fx="${ground}" data-fx-seed="${11 + i * 7}" data-fx-palette='${esc(JSON.stringify(pal))}' data-fx-params='${esc(JSON.stringify({ ...STILL, calm: 0.2, calmX: 0.5, calmY: 0.55 }))}' style="--calm-k:0%;background-color:${pal.bg}">
+        <div data-print="${esc(o.id)}" data-print-place="tile" data-print-palette='${esc(JSON.stringify({ bg: pal.bg, surface: pal.surface, ink: pal.ink, accent: pal.accent }))}' aria-label="${esc(o.name)}, printed in ${esc(o.effect)}"></div>
+      </div>
+      <h3>${esc(o.name)}</h3><p>${esc(o.line)} Printed in ${esc(o.effect === 'engrave' ? 'engraving' : o.effect)}.</p>`;
+    $('#things').append(card);
+    things.push({ o, card, host: card.querySelector('[data-print]') });
+  });
+  // one object turns by itself (the first in view); the others hold still until pointed at
+  for (const t of things) {
+    let ctrl = null;
+    t.lazy = lazy(t.card, async () => {
+      try {
+        const mod = (await import(A(`objects/${t.o.id}/object.js`))).default;
+        if (!t.lazy.on) return;
+        let params = {};
+        if (t !== things[0]) params.turn = 0;
+        ctrl = mod.mount(t.host, { place: 'tile', params, palette: JSON.parse(t.host.dataset.printPalette) });
+        t.ctrl = ctrl;
+      } catch (e) { console.warn(t.o.id, e); }
+    }, () => { ctrl?.destroy(); ctrl = null; t.ctrl = null; t.host.replaceChildren(); }, '10% 0px');
+  }
+  $('#objects-note').textContent = `${things.length} objects, printed in dither, halftone or engraving on a lit ground.`;
+
+  // photographs printed in the palette (photo-kit), each with its credit
+  const photoLib = await fetch(A('objects/photo-kit/photos.json')).then(r => r.json()).catch(() => ({ photos: [] }));
+  const photoKit = await import(A('objects/photo-kit/photo.js')).catch(() => null);
+  const PHOTO_OBJECTS = [
+    { id: 'photo-halftone', photo: 'lamp', title: 'Halftone', line: 'Every grey kept, the dot screen showing through. Point at it: a loupe shows the dots over the photograph\'s own colours.' },
+    { id: 'photo-engraving', photo: 'concrete', title: 'Engraving', line: 'Lines that swell in the shadows and bend over the forms. Point at it and the lines part around the pointer.' },
+    { id: 'photo-dither', photo: 'room', title: 'Dither', line: 'Two tones and a fine dither grain. Point at it and the real photograph develops through the print.' },
+  ];
+  const photoParts = [];
+  for (const p of PHOTO_OBJECTS) {
+    const ph = photoLib.photos.find(x => x.key === p.photo) || photoLib.photos[0];
+    if (!ph) continue;
+    const fig = document.createElement('figure');
+    fig.className = 'shot';
+    fig.innerHTML = `<div class="shot__frame"><img src="${esc(A('objects/photo-kit/' + ph.file))}" alt="${esc(ph.alt)}"></div>
+      <figcaption><b>${esc(p.title)}</b><span>${esc(p.line)}</span><small>${photoKit?.photoCredit ? photoKit.photoCredit(ph) : esc(ph.by)}</small></figcaption>`;
+    $('#photos').append(fig);
+    const frameEl = fig.querySelector('.shot__frame');
+    const part = { p, ph, frameEl, ctrl: null };
+    photoParts.push(part);
+    part.lazy = lazy(frameEl, async () => {
+      try {
+        const mod = (await import(A(`objects/${p.id}/object.js`))).default;
+        if (!part.lazy.on) return;
+        part.ctrl = mod.mount(frameEl, { palette: fx.readPalette(frameEl), src: A('objects/photo-kit/' + ph.file), params: { focusX: ph.focus[0], focusY: ph.focus[1] } });
+      } catch (e) { console.warn(p.id, e); }
+    }, () => { part.ctrl?.destroy(); part.ctrl = null; }, '0px');
+  }
+
+  // scenes (objects/_scenes): on the vetted photographs, or a model
+  const SCENES = [
+    { id: 'product-turntable', title: 'Product on a turntable', line: 'A camera modelled in code, turning on a studio turntable, printed in ordered dither. Drag to turn it.' },
+    { id: 'split-reveal', photo: 'concrete', title: 'Split reveal', line: 'One side printed as a halftone screen, the other the photograph itself. Move the line with the pointer.' },
+    { id: 'dot-object', photo: 'lamp', title: 'Dot object', line: 'A lamp cut from its photograph and set in dots that keep its tones. Bring the pointer close and they step aside.' },
+    { id: 'exploded-layers', photo: 'room', title: 'Exploded layers', line: 'One photograph taken apart into its print plates, standing in perspective. Point at it to open the stack.' },
+  ].filter(s => !q.get('scenes') || q.get('scenes').split(',').includes(s.id));
+  // one stage, the scene picked in the list beside it (one WebGL context for all four)
+  const sceneParts = [];
+  const sceneFrame = $('#scene-frame');
+  const scene = { cur: null, ctrl: null, gen: 0 };
+  async function sceneStart() {
+    const part = scene.cur;
+    const gen = ++scene.gen;
+    try {
+      const mod = (await import(A(`objects/${part.s.id}/object.js`))).default;
+      if (gen !== scene.gen || !scene.lazy.started) return;
+      const opts = { palette: fx.readPalette(sceneFrame), params: {} };
+      if (part.ph) opts.src = A('objects/photo-kit/' + part.ph.file);
+      scene.ctrl = mod.mount(sceneFrame, opts);
+    } catch (e) { console.warn(part.s.id, e); }
+  }
+  function sceneStop() { scene.gen++; try { scene.ctrl?.destroy(); } catch (e) { console.warn(e); } scene.ctrl = null; sceneFrame.replaceChildren(); }
+  function pickScene(part) {
+    scene.cur = part;
+    for (const p of sceneParts) { p.tab.setAttribute('aria-selected', String(p === part)); p.tab.tabIndex = p === part ? 0 : -1; }
+    sceneFrame.setAttribute('aria-labelledby', part.tab.id);
+    if (scene.lazy?.started) { sceneStop(); sceneStart(); }
+  }
+  for (const s of SCENES) {
+    const ph = s.photo ? photoLib.photos.find(x => x.key === s.photo) : null;
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'scene-tab';
+    tab.id = 'scene-' + s.id;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', 'scene-frame');
+    tab.innerHTML = `<b>${esc(s.title)}</b><span>${esc(s.line)}</span>${ph ? `<small>${photoKit?.photoCredit ? photoKit.photoCredit(ph) : esc(ph.by)}</small>` : ''}`;
+    $('#scene-list').append(tab);
+    const part = { s, ph, tab };
+    sceneParts.push(part);
+    tab.addEventListener('click', e => { if (!e.target.closest('a')) pickScene(part); });
+  }
+  $('#scene-list').addEventListener('keydown', e => {
+    const i = sceneParts.indexOf(scene.cur), n = sceneParts.length;
+    const j = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? (i + 1) % n : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? (i - 1 + n) % n : -1;
+    if (j < 0) return;
+    e.preventDefault();
+    pickScene(sceneParts[j]);
+    sceneParts[j].tab.focus();
+  });
+  if (sceneParts.length) {
+    scene.lazy = lazy(sceneFrame, sceneStart, sceneStop, '0px');
+    pickScene(sceneParts[0]);
+  }
+
+  /* ---------------------------------------------------------------- nav menus, from the data */
+  {
+    const fams = {};
+    for (const e of sorted) (fams[e.family] = fams[e.family] || []).push(e);
+    const famKeys = Object.keys(fams).sort((a, b) => fams[b].length - fams[a].length);
+    const cols = [[], [], [], []];
+    const size = c => c.reduce((s, f) => s + fams[f].length + 1.5, 0);
+    for (const f of famKeys) cols.sort((a, b) => size(a) - size(b))[0].push(f);
+    $('[data-menu="effects"]').innerHTML = cols.filter(c => c.length).map(c => `<div class="menu-col">${c.map(f =>
+      `<p class="t-label">${esc(famName(f))}</p>${fams[f].map(e => `<a href="#fx-${e.id}">${esc(e.name)}</a>`).join('')}`).join('<span style="height:12px"></span>')}</div>`).join('');
+    const half = Math.ceil(cardGroups.length / 2);
+    $('[data-menu="cards"]').innerHTML = [cardGroups.slice(0, half), cardGroups.slice(half)].map((list, i) => `<div class="menu-col"><p class="t-label">${i ? 'Proof and plans' : 'Feature cards'}</p>${list.map(g =>
+      `<a href="#${g.sec.id}">${esc(g.label)}<span>${esc((g.sec.querySelector('.sec__head h2')?.childNodes[0]?.textContent || '').trim())}</span></a>`).join('')}</div>`).join('')
+      + `<div class="menu-col"><p class="t-label">Themes</p><a href="#cards" data-theme-link="light">Light cards<span>White cards on a warm grey page</span></a><a href="#cards" data-theme-link="dark">Dark cards<span>Lit grounds behind dark UI</span></a></div>`;
+    for (const a of $$('[data-theme-link]')) a.addEventListener('click', () => setCardTheme(a.dataset.themeLink));
+    const ucols = [[], [], []];
+    uses.forEach((u, i) => ucols[Math.floor(i / Math.ceil(uses.length / 3))].push(u));
+    $('[data-menu="uses"]').innerHTML = ucols.filter(c => c.length).map((c, i) => `<div class="menu-col"><p class="t-label">${['On cards and panels', 'In type and controls', 'Charts, prices and photos'][i]}</p>${c.map(u => `<a href="#use-${u.id}">${esc(u.meta.name)}</a>`).join('')}</div>`).join('');
+    $('[data-menu="real"]').innerHTML = `<div class="menu-col"><p class="t-label">Objects modelled in 3D</p>${things.map(t => `<a href="#thing-${t.o.id}">${esc(t.o.name)}</a>`).join('')}</div>`
+      + `<div class="menu-col"><p class="t-label">Photographs</p>${photoParts.map(p => `<a href="#real-photos">${esc(p.p.title)}</a>`).join('')}</div>`
+      + `<div class="menu-col"><p class="t-label">Scenes</p>${sceneParts.map(p => `<a href="#scene-${p.s.id}">${esc(p.s.title)}</a>`).join('')}</div>`;
+
+    // the footer: the same four parts as the nav, shorter
+    const col = (title, links) => `<div><p class="t-label">${esc(title)}</p>${links.map(([href, label, extra = '']) => `<a href="${href}"${extra}>${esc(label)}</a>`).join('')}</div>`;
+    $('#foot-cols').innerHTML = [
+      col('Effects', [['#effects', `All ${N} effects`, ' data-family=""'], ...Object.keys(fams).sort((a, b) => famIndex(a) - famIndex(b)).map(f => ['#effects', `${famName(f)} (${fams[f].length})`, ` data-family="${f}"`])]),
+      col('Cards', [...cardGroups.map(g => [`#${g.sec.id}`, g.label]), ['#cards', 'Light cards', ' data-theme-link="light"'], ['#cards', 'Dark cards', ' data-theme-link="dark"']].slice(0, 10)),
+      col('Creative uses', [...uses.slice(0, 7).map(u => [`#use-${u.id}`, u.meta.name]), ['#uses', `All ${uses.length} uses`]]),
+      col('Real things', [['#real-objects', 'Objects modelled in 3D'], ['#real-photos', 'Photographs'], ['#real-scenes', 'Scenes'], [A('effects/lab.html'), 'Workbench']]),
+    ].join('');
+    for (const a of $$('#foot-cols [data-family]')) a.addEventListener('click', () => { family = a.dataset.family; filterTiles(); });
+    for (const a of $$('#foot-cols [data-theme-link]')) a.addEventListener('click', () => setCardTheme(a.dataset.themeLink));
+  }
+  // a link to a scene picks it in the list
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#scene-"]');
+    const part = a && sceneParts.find(p => '#' + p.tab.id === a.getAttribute('href'));
+    if (part) pickScene(part);
+  });
+  // the phone sheet
+  {
+    const nav = $('#nav'), toggle = nav.querySelector('.nav__toggle');
+    const bars = toggle.innerHTML;
+    const cross = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    const setOpen = open => { nav.classList.toggle('is-open', open); document.body.classList.toggle('nav-locked', open); toggle.setAttribute('aria-expanded', String(open)); toggle.innerHTML = open ? cross : bars; };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    nav.addEventListener('click', e => { if (e.target.closest('.nav__menu a, .nav__link')) setOpen(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------------------------------------------------------------- the palette switch */
+  function applyKind() {
+    document.documentElement.dataset.kind = kind;
+    for (const b of $$('[data-kinds] button')) b.setAttribute('aria-pressed', String(b.dataset.kind === kind));
+  }
+  async function setKind(k) {
+    if (k === kind) return;
+    kind = k;
+    applyKind();
+    if (cardTheme !== (kind === 'light' ? 'light' : 'dark')) { cardTheme = kind === 'light' ? 'light' : 'dark'; applyCardTheme(); }
+    orderTiles();
+    for (const t of tiles) { if (t.api) { t.pinned = false; stopTile(t); } tileSpec(t); }
+    await frame();
+    // the hero is dealt again for the new kind (some effects are made for dark pages only)
+    deal(null);
+    for (const u of uses) { if (u.lazy.started) { useStop(u); useStart(u); } else useMarkup(u); }
+    for (const p of photoParts) if (p.ctrl?.setPalette) p.ctrl.setPalette(fx.readPalette(p.frameEl)); else p.lazy.restart();
+    if (scene.ctrl?.setPalette) scene.ctrl.setPalette(fx.readPalette(sceneFrame)); else if (scene.lazy?.started) { sceneStop(); sceneStart(); }
+    // the objects' grounds and the boxes' grounds are lit palettes of their own: they stay as drawn
+    await Promise.all([mountHero(), ui.grounds($('#fx-grid'), fx), ui.grounds(cardlib, fx)]);
+    for (const el of $$('[data-ui]', cardlib)) el.__ui?.repaint?.();
+    syncUrl();
+  }
+  for (const b of $$('[data-kinds] button')) b.addEventListener('click', () => setKind(b.dataset.kind));
+
+  /* ---------------------------------------------------------------- start */
+  applyKind();
+  applyCardTheme();
+  orderTiles();
+  filterTiles();
+  deal(dealSeed);
+  glowOnHover();
+  await document.fonts?.ready;
   await Promise.all([
-    ...tiles.map(mountTile),
-    deal(dealSeed),
-    ui ? ui.loadAll(document).catch(err => console.warn(err)) : null,
+    mountHero(),
+    ui.loadAll(cardlib).catch(e => console.warn(e)),
+    ui.startAll(cardlib),
+    ui.grounds($('#fx-grid'), fx),
+    ui.grounds(cardlib, fx),
+    ui.grounds($('#things'), fx),
+    ui.grounds($('#uses-list'), fx, { skip: el => !el.classList.contains('use__ground') }),
   ]);
+  if (location.hash) { try { document.querySelector(location.hash)?.scrollIntoView(); } catch { /* not an id */ } }
+  if (q.get('play')) { const t = tiles.find(x => x.meta.id === q.get('play')); if (t) { t.el.scrollIntoView({ block: 'center' }); playTile(t, true); } }
   document.documentElement.dataset.ready = '1';
+  window.__gal = {
+    gl: () => ({ live: liveGL(), peak: glPeak }), resetPeak() { glPeak = liveGL(); },
+    glList: () => { liveGL(); return [...glSet].map(c => { const el = c.canvas; const host = el.isConnected ? el.closest('[id]') : null; return (host ? host.id : el.isConnected ? '?' : 'detached') + (el.width ? ` ${el.width}x${el.height}` : ''); }); },
+    tiles, hero, cardGroups, uses, things, photoParts, sceneParts, scene, pickScene, setKind, setCardTheme, deal: dealAndDraw, playTile, stopTile, fx, ui,
+  };
 </script>
 </body>
 </html>

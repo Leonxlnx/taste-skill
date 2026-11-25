@@ -50,7 +50,7 @@ paper`. No source, no move. One world runs through the page; the buy button and 
 
 A loud game can place one short label above a heading, set in the display face and drawn as a tag from that world (`data-sticker="tag" data-world-tag`). Name the source in the plan. Quiet and lively pages leave it out.
 
-Lively pages use the same still, fade and rise hero deck as quiet pages. Loud pages may add set-type, line-blocks or one line rise. Hover changes colour or underline at every temper.
+Lively pages use the same still, fade and rise hero deck as quiet pages. Loud pages may add set-type, line-blocks or one line rise. At every temper, keep controls and icons in place on hover. Change colour or underline and reserve the small press for activation.
 
 ## A scene the player can try
 

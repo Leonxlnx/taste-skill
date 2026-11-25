@@ -29,12 +29,12 @@
   node scripts/start.mjs types --page <kind>
       every pairing the kind can be dealt, with its exact Google Fonts link
   node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
-      [--sections N] [--long] [--has photo,ui,film,object,setting,logo,art]
+      [--sections N] [--section-plan <file>] [--motion ask] [--long] [--has photo,ui,film,object,setting,logo,art]
       [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form]
       [--tone warm|editorial|product|tech|playful] [--axis] [--story <id>] [--history .taste-skill/history.json]
       Deal the frame, four prompts for the content and one story shape (library/stories.json: one that lists the kind,
-      weighted by --carry, --action and --has, away from the folder's last three; --story <id> chooses it). A chapters
-      or two-part-promise page takes the chapters ground pattern: one ground per chapter run or half. Sections include the hero and close (default 7).
+      weighted by --carry, --action and --has, away from the folder's last three; --story <id> chooses it). On quiet pages, one ground or a single band is usual.
+      A requested story or eight sections also permits a two-ground chapter run. Sections include the hero and close (default 7).
       Quiet plans have no moment or scene unless --motion ask is set; eligible pages get one moment. --carry names what the
       copy notes hold. With no flag only place, product and service assume photos. --has names actual
       assets, including product for a photograph of the client's own product, archive for a large set,
@@ -151,11 +151,18 @@ function groundWord(c) {
   return `${warm ? 'warm ' : cool ? 'cool ' : ''}${L > 0.95 ? 'off-white' : L > 0.88 ? 'stone' : 'putty'}`;
 }
 
-// make grey text readable on both grounds (4.5:1), keep its hue
-function readableMuted(muted, ink, grounds) {
-  let m = muted;
-  for (let i = 0; i < 40 && grounds.some(g => color.contrast(m, g) < 4.6); i++) m = color.mix(m, ink, 0.08);
-  return m;
+// Choose a neutral secondary ink for both reading grounds, aiming for 8.5:1.
+function readableMuted(grounds, supplied) {
+  if (supplied && grounds.every(g => color.contrast(supplied,g) >= 7 && color.contrast(supplied,g) <= 10)) return supplied;
+  let best = '#555555', penalty = Infinity;
+  for (let i = 0; i <= 255; i++) {
+    const grey = '#' + i.toString(16).padStart(2, '0').repeat(3);
+    const ratios = grounds.map(g => color.contrast(grey, g));
+    const low = Math.min(...ratios), high = Math.max(...ratios);
+    const distance = 100 * Math.max(0, 7 - low, high - 10) + Math.abs((low + high) / 2 - 8.5);
+    if (distance < penalty) { penalty = distance; best = grey; }
+  }
+  return best;
 }
 function buttonInk(accent, ...cands) { return color.readable(accent, ...cands); }
 
@@ -171,7 +178,7 @@ function tokens(p, adjustSurface = true) {
   const distance = Math.abs(color.lab(supplied)[0] - color.lab(bg)[0]);
   const derived = adjustSurface && (distance < 0.04 || distance > 0.09);
   const surface = derived ? color.lighten(bg, color.isDark(bg) ? 0.06 : -0.06) : supplied;
-  const muted = readableMuted(readingInk(p.muted || color.mix(ink, bg, 0.45)), ink, [bg, surface]);
+  const muted = readableMuted([bg, surface], p.muted && readingInk(p.muted));
   const accent = color.hex(p.accent || ink);
   const preferred = readingInk(p.accentInk || bg);
   const accentInk = color.contrast(accent, preferred) >= 4.5 ? preferred : buttonInk(accent, '#ffffff', '#111111');
@@ -184,16 +191,16 @@ function tokens(p, adjustSurface = true) {
   const invInk = [invBg, inverseTint].every(g => color.contrast(g, neutralGround) >= 7) ? neutralGround : color.readable(invBg, '#ffffff', '#111111');
   const tint = color.mix(invBg, invInk, 0.07);
   const invSurface = color.contrast(tint, invInk) >= 7 ? tint : color.lighten(invBg, color.isDark(invInk) ? 0.04 : -0.04);
-  const invMuted = readableMuted(readingInk(color.mix(invInk, invBg, 0.38)), invInk, [invBg, invSurface]);
+  const invMuted = readableMuted([invBg, invSurface]);
   const invAccent = color.contrast(accent, invBg) >= 3 && (color.chroma(invBg) < 0.03 || color.hueDistance(accent, invBg) > 20) ? accent : invInk;
   const inverseLabel = readingInk(invBg);
   const invAccentInk = invAccent === accent ? accentInk : buttonInk(invAccent, inverseLabel, '#ffffff', '#111111');
   // buttons and links: the accent when it stands out from the ground, else the ink
-  const action = color.contrast(accent, bg) >= 2.2 ? accent : ink;
+  const action = opt('action-colour') !== 'ink' && color.contrast(accent, bg) >= 3 ? accent : ink;
   const actionInk = action === accent ? accentInk : buttonInk(action, neutralGround, '#ffffff', '#111111');
-  const invAction = color.contrast(invAccent, invBg) >= 2.2 ? invAccent : invInk;
+  const invAction = opt('action-colour') !== 'ink' && color.contrast(invAccent, invBg) >= 3 ? invAccent : invInk;
   const invActionInk = invAction === invAccent ? invAccentInk : buttonInk(invAction, inverseLabel, '#ffffff', '#111111');
-  const headingInk = p.headingInk && [bg, surface].every(g => color.contrast(p.headingInk, g) >= 3) ? p.headingInk : null;
+  const headingInk = expressive && p.headingInk && [bg, surface].every(g => color.contrast(p.headingInk, g) >= 3) ? p.headingInk : null;
   return { bg, surface, derived, ink, headingInk, muted, accent, accentInk, action, actionInk, invBg, invSurface, invInk, invMuted, invAccent, invAccentInk, invAction, invActionInk };
 }
 
@@ -347,7 +354,7 @@ const stack = (f, cls) => `"${f.family}", ${FALLBACK[cls] || 'system-ui, sans-se
 function typeVars(t) {
   // tracking: 0 or tighter, except a face drawn for capitals or on a pixel grid (up to +0.06em, study section 4)
   const open = t.display.caps || t.class === 'pixel';
-  const clamp = v => Math.max(-0.045, Math.min(open ? 0.06 : 0, v));
+  const clamp = v => Math.max(expressive ? -0.045 : -0.02, Math.min(open ? 0.06 : 0, v));
   const w = t.display.fixedWeight || Math.max(400, Math.min(techPage ? 500 : 400, weightOf(t) || 400));
   return {
     w, tr: clamp(t.display.tracking), trXl: clamp(t.display.trackingXl ?? t.display.tracking),
@@ -386,7 +393,7 @@ function block(tk, ty, radius) {
 <link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
 <link rel="stylesheet" href="assets/layout/layout.css">
 <link rel="stylesheet" href="assets/icons/icon.css">${ty.expressive ? '\n<link rel="stylesheet" href="assets/expressive/expressive.css">' : ''}
-<!-- <html lang="en" data-radius="${radius}"${ty.expressive ? ` data-temper="${temper === 'quiet' ? 'lively' : temper}"` : ''}>; keep this <style> after the links: layout.css resets --ly-scale -->
+<!-- <html lang="en" data-radius="${radius}" data-action="${opt('action-colour') === 'ink' ? 'ink' : 'accent'}"${ty.expressive ? ` data-temper="${temper === 'quiet' ? 'lively' : temper}"` : ''}>; keep this <style> after the links: layout.css resets --ly-scale -->
 <style>
 :root {
   --p-bg: ${tk.bg}; --p-surface: ${tk.surface}; --p-ink: ${tk.ink}; --p-muted: ${tk.muted};${tk.headingInk ? ` --p-heading-ink: ${tk.headingInk};` : ''}
@@ -583,7 +590,7 @@ function groundsFor(pattern, n) {
 }
 function groundLine({ bySection }) {
   const names = [...new Set(bySection)].map(g => g === 'ground-surface' ? 'tint' : g === 'ground-inverse' ? 'dark' : g === 'ground-brand' ? 'brand' : 'page');
-  return 'Suggested ' + names.length + ' grounds (' + names.join(', ') + '). Change at a new visitor task. Keep one workflow on one surface.';
+  return names.length + (names.length === 1 ? ' ground (' : ' grounds (') + names.join(', ') + '). Follow the section order: ' + bySection.join(', ') + '.';
 }
 function dealIdeas(h, carry) {
   const recent = (h.ideas || []).slice(-8);
@@ -613,7 +620,20 @@ function dealLayout(h) {
   const get = key => LISTS[key][k] || LISTS[key]['*'];
   const out = {};
   for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, key === 'buttons' && expressive ? EXPRESSIVE_BUTTONS : get(key), key === 'close' ? 2 : 1);
-  out.grounds = groundsFor(pick(`${k}:grounds`, get('grounds'), 2), sections);
+  if (expressive) out.grounds = groundsFor(pick(k + ':grounds', get('grounds'), 2), sections);
+  else {
+    const eligible = sections >= 8 || !!opt('story');
+    const roll = Math.random() * (eligible ? 100 : 85);
+    const pattern = sections === 1 || roll < 45 ? 'one' : roll < 85 ? 'band' : 'chapters';
+    const bySection = Array(sections).fill('page');
+    if (pattern === 'band') {
+      const at = 1 + Math.floor(Math.random() * (sections - 1));
+      bySection[at] = Math.random() < .27 ? 'ground-brand' : 'ground-surface';
+    } else if (pattern === 'chapters') {
+      bySection.fill('ground-surface', Math.floor(sections / 2));
+    }
+    out.grounds = {pattern, bySection};
+  }
   const densities = techPage ? 'compact|regular|compact|regular|open' : page === 'product' ? 'open|regular|compact' : 'open|regular|open|regular|compact';
   out.density = pick(`${k}:density`, densities);
   out.align = pick(`${k}:align`, 'left|centred heads on proof and close');
@@ -622,6 +642,7 @@ function dealLayout(h) {
   const lines = [], used = [];
   const dealt = v => { if (ONCE_A_PAGE.includes(v)) used.push(v); return v; };
   for (const sec of KIND_COMPS[k] || []) {
+    if (sec === 'form' && (action === 'trial' || action === 'visit')) continue;
     const edgeOptions = ['place', 'product', 'service'].includes(k) && ['showcase', 'feature'].includes(sec);
     const pool = COMPS[sec] + (edgeOptions ? '|edge-split|colour-half' : '');
     if (sec === 'feature') {
@@ -669,10 +690,16 @@ function dealFrame(h, artPalette = false) {
     if (placePage) pals = pals.filter(placeGround);   // a place's ground: light and quiet (backgrounds.md, --g-main)
     // the palettes made for the trade first, away from this folder's last ones and (with TASTE_SKILL_RECENT) the trade's
     // last six in the shared file; topped up from the rest of the kind only when fewer than three are made for it
+    if (!expressive && !placePage) pals = pals.filter(p => !['moss-sand','green-mat-chocolate','warm-paper-walnut','flour-terracotta','limewash-ochre','clay-pine'].includes(p.id));
     const shared = recentIds('palettes');
     const avoid = [...shared, ...h.palettes.slice(-12)];
     const fresh = pals.filter(p => !shared.includes(p.id));
     if (fresh.length >= 3) pals = fresh;
+    if (!expressive && techPage && !opt('dark') && !opt('light')) {
+      const dark = Math.random() < .25;
+      const group = pals.filter(p => color.isDark(p.bg) === dark);
+      if (group.length >= 3 && (!shared.length || fresh.length >= 3)) pals = group;
+    }
     const fit = trade ? pals.filter(p => (p.trades || []).includes(trade)) : [];
     const dealt = drawFresh(fit, 3, avoid);
     if (dealt.length < 3) dealt.push(...drawFresh(pals.filter(p => !fit.includes(p)), 3 - dealt.length, avoid));
@@ -744,6 +771,16 @@ if (cmd === 'deal') {
     console.log('Raised --sections from ' + sections + ' to ' + minimum + ' for the required beats of ' + story.id + '.');
     sections = minimum;
   }
+  const defaultSections = path.join(dir,'sections.txt');
+  const sectionPlan = opt('section-plan', fs.existsSync(defaultSections) ? defaultSections : undefined);
+  let shows;
+  if (sectionPlan !== undefined) {
+    if (typeof sectionPlan !== 'string') throw new Error('--section-plan needs a text file with one line per section');
+    const rows = fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
+    shows = rows.map(row => row.match(/\bshows\s+([^|]+?)(?:\s*\||$)/i)?.[1].trim());
+    if (rows.length !== sections || shows.some(subject => !subject)) throw new Error('Each of the '+sections+' section lines needs shows followed by its subject.');
+    if (!expressive && shows.filter(subject => /^nothing[.]?$/i.test(subject)).length * 4 > sections) throw new Error('More than a quarter of the section plan shows nothing. Show the subject or merge a section.');
+  }
   const artPalette = expressive && (assets.has('art') || page === 'gaming');
   const { palette, type, layout } = dealFrame(frameHistory, artPalette);
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
@@ -799,7 +836,7 @@ if (cmd === 'deal') {
   const ideas = dealIdeas(h, carry);
   h.stories = frameHistory.stories;
   // a chapters or two-part-promise page changes ground only where a chapter or half begins (the dealt pattern stays in the history)
-  if (['chapters', 'two-part-promise'].includes(story.id)) layout.grounds = chapterGrounds(story.id, sections);
+  if (expressive && ['chapters', 'two-part-promise'].includes(story.id)) layout.grounds = chapterGrounds(story.id, sections);
   const sub = {};
   if (page === 'gaming' && !assets.has('art')) sub.illustrate = "draw the game's own world";
   if (['product', 'tech'].includes(page) && !assets.has('photo')) sub.illustrate = 'show the product itself in a built picture';
@@ -811,7 +848,18 @@ if (cmd === 'deal') {
     h.mascot = [...(h.mascot || []), { seed, dealt: mascot }].slice(-40);
     if (mascot) sub.mascot = 'give a recurring guide or character one consistent form';
   }
+  const actionColour = !expressive && rng(seed + ':action-colour')() < 1/3 ? 'ink' : 'accent';
+  const footerWordmark = !expressive && rng(seed + ':footer-wordmark')() < 1/8;
+  const split = ['split','collage','triptych'].includes(hero.id);
+  const acrossRoll = rng(seed + ':across')();
+  // Keep the suited hero and its recency history. A split can also stage its subject below the offer.
+  const builtProduct = pageType === 'product' && !['photo','film','art'].some(material => assets.has(material));
+  const stackChance = builtProduct ? .6 : pageType === 'software' ? .44 : pageType === 'product' ? 0 : .2;
+  let headline = 'across';
+  if (hero.id === 'place' && (form === 'split' || form === 'bleed' && acrossRoll < .5)) headline = 'split';
+  if (split && opt('view') !== 'wide' && (expressive || acrossRoll >= stackChance)) headline = 'split';
   const plan = {
+    actionColour, footerWordmark, headline, ...(shows ? {shows} : {}),
     version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
     hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, reveals, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
@@ -823,7 +871,7 @@ if (cmd === 'deal') {
   writeHistory(path.join(dir, 'plan.json'), plan, 2);
 
   const ref = '<skill>';
-  console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, density. Grounds are suggestions. Section forms come from the content.) ====');
+  console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, density. Use the dealt grounds. Section forms come from the content.) ====');
   const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
   line('temper', temper + ': ' + temperWhy + (expressive
@@ -835,27 +883,33 @@ if (cmd === 'deal') {
   story.beats.forEach((b, i) => console.log(pad + 'beat ' + (i + 1) + ' ' + (b.required ? 'required' : 'optional') + ' | beat: ' + b.id + ' | ' + b.show));
   console.log(pad + 'thread: ' + story.thread);
   console.log(pad + 'not this: ' + story.fake);
-  console.log(pad + 'Take it, or another shape from ' + ref + '/library/stories.json when the brief fits it better (the table in references/story.md): deal again with --story <id> so the grounds follow it, and say why on plan line 3. Write the ## Story block in the copy notes first.');
+  console.log(pad + 'Take it, or another shape from ' + ref + '/library/stories.json when the brief fits it better (the table in references/story.md): deal again with --story <id> to match the story in your notes, and say why on plan line 3. Write the ## Story block in the copy notes first.');
   if (['software','tech'].includes(page) && assets.has('ui') && !variant) line('view','For one wide timeline, schedule or board, deal again with --view wide.');
   line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
   if (artPalette) line('palette','art, type ' + type.id + ': take the grounds, ink and action colour from the art. Run node '+ref+'/scripts/start.mjs brand --page '+page+' --type '+type.id+' --temper '+temper+' --bg "<art ground>" --surface "<second ground>" --ink "<reading ink>" --accent "<action colour>"');
-  else line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --history ' + histFile.split(path.sep).join('/'));
-  if (variant==='wide') line('hero',hero.id+' with data-view="wide" and class hero--peek: copy '+ref+'/assets/layout/wide-view.html for the timeline, schedule or board. Keep each lane label beside its value on phones.');
+  else line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --action-colour ' + actionColour + ' --history ' + histFile.split(path.sep).join('/'));
+  if (variant==='wide') line('hero',hero.id+' with data-view="wide" and class hero--peek: copy the frame from '+ref+'/assets/layout/wide-view.html and show the project’s working view. Keep labels beside their values on phones.');
   else if (variant==='world') line('hero',hero.id+' with data-view="world": copy the hero from '+ref+'/assets/expressive/demo.html. Use the supplied or illustrated world edge to edge with the game name as lettering on a plate.');
-  else line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
+  else line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' && headline === 'across' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
   if (order) line('order', 'put the configurator or order pad within the first three sections; give supplied delivery and return terms at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
-  line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, The entrance deck)');
+  line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, Build the plan)');
+  line('headline', headline + (split && headline === 'across' ? ': add data-headline="across" to stack the picture below the full-width copy.' : form === 'bleed' && headline === 'split' ? ': add data-headline="split" for a seven-column panel.' : split && headline === 'split' ? ': keep seven copy columns and five picture columns. Omit data-work-window from the side-by-side template.' : ''));
+  line('action', actionColour + ': set data-action="' + actionColour + '" on html.');
+  if (shows) shows.forEach((subject,i) => line('section ' + (i+1), 'shows  ' + subject));
   line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
-  line('footer', plan.footer + ': contact or support and the links a returning visitor needs. Repeat useful hours, directions or purchase terms.');
+  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': contact or support and the links a returning visitor needs. Repeat useful hours, directions or purchase terms.');
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');
   line('align', plan.align + (plan.align === 'left' ? '' : ': use .section-head--center on those headings'));
   line('pictures', plan.pictures + ': set data-pictures="' + (plan.pictures === 'square' ? 'square' : 'soft') + '" on <html>' + (plan.pictures.includes('mask') ? ' and data-picture-mask on one inset picture frame' : ''));
-  for (const [key, v] of Object.entries(comps)) line('composition', COMP_WHAT[key] + ': ' + (Array.isArray(v) ? v.join(', then ') + ' (no composition twice in a row)' : v) + ' (references/sections-library.md, Compositions)');
+  for (const [key, v] of Object.entries(comps)) {
+    if (key === 'feature' && !assets.has('photo')) continue;
+    line('composition', COMP_WHAT[key] + ': ' + (Array.isArray(v) ? v.join(', then ') + ' (no composition twice in a row)' : v) + ' (references/sections-library.md, Compositions)');
+  }
   console.log('  Use a dealt composition for photographs with words. Steps, a core view, plans, a comparison, cases with facts, hours or a booking take an own section (references/compose.md). An own section is never drift.');
   line('own', 'at least ' + (plan.own === 1 ? 'one section of this page is' : 'two sections of this page are') + ' your own design for its content (data-own); name ' + (plan.own === 1 ? 'it' : 'them') + ' in the plan');
   console.log('  Take a seed as a prompt for your own section where the content has that shape, or compose something else (references/compose.md).');
@@ -866,13 +920,13 @@ if (cmd === 'deal') {
   if (!motion.picks.length) line('moment', 'none');
   motion.picks.forEach((m, i) => {
     const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
-    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'word-rotate' ? '. Each rotating word must be a state the page shows.' : '') + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
+    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
   if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');
-  else line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
+  else line('effect', effect ? effect + ' held still on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
   line('hover layer', 'Colour or underline on hover; press .98 (references/motion.md)');
-  line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
+  if (motion.picks.length) line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
   line('then', 'record this plan in the comment at the top of <body>, build in index.html from starter.html, then run node ' + ref + '/scripts/gate.mjs index.html');
 } else if (cmd === 'types') {
   for (const t of allTypes.filter(t => suits(t, page))) console.log(describe(t, true));

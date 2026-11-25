@@ -1,6 +1,6 @@
 # Backgrounds
 
-Use the four palette grounds on every kind. Tech may also use the CSS grounds below.
+The PLAN names the page ground and any band or chapters. Quiet pages use at most two section grounds. On tech pages, the effect line can also name a still treatment for a visual.
 
 ## Palette grounds
 
@@ -35,28 +35,12 @@ ground's mood, roles, pairs, avoids and sections.
 
 - **Soft:** `mist` colour wash; `halo` light behind a heading; `ruled` fine grid on the container's
   edges, clear behind the heading; `dots` dots in the margins; `arcs` rings rising, for the close;
-  `liquid` a slow mesh of colour ellipses, the only ground that moves.
+  `liquid` a still mesh of colour ellipses.
 - **Hard:** `grain` tint with film grain; `dusk` one tone melting into the page; `band` the lit
   ground's second tone; `field` a grainy gradient (Figma's sand tile); `photo` a photograph layer;
   `horizon` a dark band with a lit rim; `deep` near-black with a cool pool (x.ai's).
-- **Deal:**
-
-  ```bash
-  node <skill>/assets/backgrounds/pick.mjs --type software --sections <the plan's ids> --mode light|dark --history .taste-skill/bg-history.json
-  ```
-
-  Hardware runs it as `--type product --kind tech`; with an effect or scene already dealt, add
-  `--effect`, and leave the section that holds it (an effect hero, the `[data-visual]` section, the
-  scene's section) out of `--sections`: it brings its own ground.
-
-  Mark a section the rhythm already makes a band: `id:dark`, `id:band` (lit ground), `id:surface`.
-  Build what it prints, then hold the rules: at most two dealt grounds a page beyond the tokens, each
-  once, never on a card, never two strong ones as neighbours, one loud one at most, never two that
-  list each other in `avoids`.
-- **The effect rule:** a ground with grain, dither or texture (`grain`, `field`, `stage`, `deep`) or
-  motion (`liquid`) is the page's one effect (`effects-usage.md`); with another effect dealt, deal
-  again without them. `liquid` runs on a clock from load with a pause disc and holds still under
-  reduced motion.
+- Use the PLAN’s ground for each section. For a kit swatch comparison, `assets/backgrounds/pick.mjs` samples the CSS library independently. Its sample does not add grounds to a page plan.
+- **The effect rule:** a ground with grain, dither or texture (`grain`, `field`, `stage`, `deep` or `liquid`) uses the page’s effect slot. All section grounds stay still.
 - **The lit ground** (`<html data-ground="sand|sky|sage|painting">`) is tech only: behind UI, in a
   closing band, in `footer-statement`; it is the tone of `band` and `field`.
 - Direct the crop beneath words on a photograph as in `photos.md`.

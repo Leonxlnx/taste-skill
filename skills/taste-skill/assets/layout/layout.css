@@ -65,7 +65,7 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
 .hero:has(.hero__media,.hero__art,.hero__stage,.ly-collage,.hero__window,.hero__bg,.hero-visual) > .wrap > .hero-text { height: 100%; }
 .hero__in { display: flex; flex-direction: column; }
 .hero h1 { font-size: var(--ly-h1); line-height: 1.02; letter-spacing: var(--display-tracking-xl, var(--display-tracking)); text-wrap: balance; }
-.hero .hero__lead { font-size: var(--ly-lead); line-height: 1.5; max-width: 42ch; text-wrap: pretty; color: var(--ink); }
+.hero .hero__lead { font-size: var(--ly-lead); line-height: 1.5; max-width: 42ch; text-wrap: pretty; color: var(--muted); }
 .hero .hero__lead .muted, .hero__lead.muted { color: var(--muted); }
 .hero__kicker { display: flex; align-items: center; gap: var(--s-2); font-size: var(--t-small); color: var(--muted); }
 .hero__kicker .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
@@ -128,6 +128,7 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
 }
 
 @media (max-width: 639px) and (max-height: 720px) {
+  main > .hero--split { max-height: none; }
   .hero--split .hero__media { min-height: min(22svh, 150px); margin-top: var(--s-3); }
 }
 
@@ -207,12 +208,12 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { margin: 0; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 {
   grid-column: 1 / span 8; grid-row: 1 / span 3; max-width: none;
-  --place-display: clamp(44px, calc(44px + (100vw - 390px) * 28 / 1050), 72px);
-  --place-floor: clamp(36px, calc(36px + (100vw - 390px) * 20 / 1050), 56px);
+  --place-display: var(--ly-h1);
+  --place-floor: clamp(36px, 4vw, 48px);
   font-size: clamp(var(--place-floor), calc(var(--ly-scale) * var(--place-title, var(--place-display))), var(--place-title, var(--place-display)));
   line-height: 1.104; text-box: trim-start cap alphabetic;
 }
-:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; max-width: 40ch; color: var(--ink); }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; max-width: 40ch; color: var(--muted); }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: var(--s-5); }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .btn { height: 48px; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__facts { display: none; }
@@ -229,7 +230,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 @media (max-width: 639px) {
   .hero--place, :root[data-type="place"] .hero--photo { --photo: 75vw; }
   :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 { line-height: 1.156; }
-  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: 18px; line-height: 1.556; }
+  :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__lead { font-size: var(--t-lead); line-height: 1.5; }
   :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > .btn-row { margin-top: 0; }
   /* a photograph whose phone source is tall enough (data-phone-fill: photos.mjs prints it with its 4:5 phone crop,
      or with a phone sizes term that covers a 4:5 box) takes what the words leave of the first screen, from --photo
@@ -282,12 +283,12 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   main > .hero--place[data-form="split"] > .wrap { margin-top: 0; }
   main > .hero--place[data-form="split"] > .hero__bg {
     position: absolute; min-height: 0; top: calc(var(--nav) + max(var(--hgap), var(--hero-clearance))); bottom: auto; left: auto;
-    height: calc(100% - var(--nav) - var(--hgap) - var(--hpadb) - var(--bar));   /* a replaced box never stretches between top and bottom */
+    height: calc(100% - var(--nav) - max(var(--hgap), var(--hero-clearance)) - var(--hpadb) - var(--bar));   /* a replaced box never stretches between top and bottom */
     right: max(var(--gut), calc((100% - var(--container)) / 2));
-    width: calc(min(100% - 2 * var(--gut), var(--container)) * 7 / 12 - var(--gutter) * 5 / 12);
+    width: calc(min(100% - 2 * var(--gut), var(--container)) * 5 / 12 - var(--gutter) * 7 / 12);
   }
   :root .hero--place[data-form="split"] > .wrap > .hero-text { height: 100%; }
-  :root .hero--place[data-form="split"] .hero__text { display: flex; flex-direction: column; width: calc(100% * 5 / 12 - var(--gutter) * 7 / 12); }
+  :root .hero--place[data-form="split"] .hero__text { display: flex; flex-direction: column; width: calc(100% * 7 / 12 - var(--gutter) * 5 / 12); }
 }
 :root .hero--place[data-form="name"] .hero__name {
   grid-column: 1 / -1; grid-row: 1; margin: 0 0 var(--s-6);
@@ -497,14 +498,14 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 /* Three distinct subjects share the exhibit. The offer and its action stay together. */
 .hero--triptych .hero__grid > :first-child { align-self: start; }
 .hero--triptych h1 { font-size: var(--ly-h1-side); line-height: 1.04; }
-.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 35ch; margin-top: var(--s-5); }
+.hero--triptych .hero__lead { font-size: var(--t-lead); max-width: 35ch; margin-top: var(--s-5); }
 .hero--triptych .hero__cta { display: flex; justify-content: flex-start; margin-top: var(--s-5); }
 /* Earlier pages placed the button after the exhibit. Keep that markup in reading order. */
 @media (min-width: 1024px) {
   .hero--triptych .hero__grid:has(> .hero__cta) { grid-template-rows: 1fr auto auto 1fr; row-gap: 0; }
-  .hero--triptych .hero__grid:has(> .hero__cta) > :first-child { grid-area: 2 / 1 / 3 / 5; }
-  .hero--triptych .hero__grid > .hero__cta { grid-area: 3 / 1 / 4 / 5; }
-  .hero--triptych .hero__grid:has(> .hero__cta) > .ly-collage { grid-area: 1 / 6 / -1 / -1; }
+  .hero--triptych .hero__grid:has(> .hero__cta) > :first-child { grid-area: 2 / 1 / 3 / 8; }
+  .hero--triptych .hero__grid > .hero__cta { grid-area: 3 / 1 / 4 / 8; }
+  .hero--triptych .hero__grid:has(> .hero__cta) > .ly-collage { grid-area: 1 / 8 / -1 / -1; }
 }
 .ly-collage { position: relative; height: 100%; min-height: 0; }
 /* the crossfade only once the sets start to cycle (.is-cycling, layout.js): a set that changes as the
@@ -529,7 +530,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 /* 10. Centred copy above a complete product window in normal flow. */
 .hero--centred .hero__c { display: grid; justify-items: center; text-align: center; gap: var(--s-4); max-width: 880px; margin-inline: auto; }
 .hero--centred h1 { max-width: 16ch; }
-.hero--centred .hero__lead { max-width: 66ch; color: var(--ink); }
+.hero--centred .hero__lead { max-width: 66ch; color: var(--muted); }
 .hero--centred .btn-row { justify-content: center; margin-top: var(--s-3); }
 .hero--centred > .wrap > .hero-text { display: flex; flex-direction: column; }
 .hero--centred .hero__window {
@@ -597,10 +598,10 @@ main > .hero--place[data-form="foot"] > .wrap { flex: none; height: auto; margin
   display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start;
 }
 :root .hero--place[data-form="foot"] .hero__text > h1 {
-  --place-display: clamp(40px, calc(40px + (100vw - 390px) * 24 / 1050), 64px);
+  --place-display: var(--ly-h1);
 }
 :root .hero--place[data-form="foot"] .hero__text > .btn-row { margin: var(--s-2) 0 0; }
-:root .hero--place[data-form="foot"] .hero__lead { max-width: none; }
+:root .hero--place[data-form="foot"] .hero__text > .hero__lead { max-width: none; color: var(--ink); }
 
 /* In a work-led split the copy shares the top row and the work takes the next. */
 :is(.hero--split, .hero--collage)[data-work-window] .hero__grid {
@@ -749,4 +750,40 @@ main > .hero[data-view="world"] { --photo: 0px; position: relative; isolation: i
   main > .hero[data-view="world"]:has(> .wrap) { display: flex; flex-direction: column; justify-content: flex-end; }
   main > .hero[data-view="world"] > .wrap { flex: none; padding-block: 0; }
   .hero[data-view="world"] .hero__text { align-self: start; }
+}
+
+/* The quiet headline occupies the copy column, even when the text is short. */
+:root:not([data-temper="lively"], [data-temper="loud"]) .hero {
+  --ly-h1: clamp(36px, calc(36px + (100vw - 390px) * 28 / 1050), 64px);
+  --ly-lead: var(--t-lead);
+}
+:root:not([data-temper="lively"], [data-temper="loud"]) .hero h1 {
+  width: 100%; max-width: none; font-size: var(--ly-h1);
+  letter-spacing: max(-.02em, var(--display-tracking-xl, -.012em));
+}
+:root:not([data-temper="lively"], [data-temper="loud"]) .hero h1[data-long-title] { font-size: clamp(36px, 4vw, 48px); }
+:root:not([data-temper="lively"], [data-temper="loud"]) .hero h1[data-short-title] { font-size: clamp(36px, 6vw, 80px); }
+@media (min-width: 1024px) {
+  .hero__grid > :first-child:has(h1) { grid-column: 1 / 8; }
+  .hero__grid > :is(.hero__media, .hero__art, .ly-collage) { grid-column: 8 / -1; }
+  .hero__head > :first-child { min-width: 64%; }
+  .hero--film .hero__over { grid-template-columns: minmax(0, 1fr) auto; }
+  .hero--film .hero__over > :first-child { width: min(100%, 62rem); max-width: none; }
+  .hero--photo .hero__text, :root .hero--place[data-form="bleed"] .hero__text { width: 68%; }
+  .hero--centred .hero__c { width: 80%; max-width: none; }
+  /* The launch notice sits above the headline inside its clearance. */
+  main > .hero--centred:has(.hero__c > .pill) { padding-top: calc(var(--nav) + var(--hero-clearance) - 38px); }
+}
+
+@media (min-width: 1024px) {
+  .hero[data-headline="across"] .hero__grid { grid-template-rows: auto minmax(0, 1fr); row-gap: var(--s-5); }
+  .hero[data-headline="across"] .hero__grid > * { grid-column: 1 / -1; }
+  .hero--triptych[data-headline="across"] .hero__grid:has(.hero__cta) { grid-template-rows: auto auto minmax(0, 1fr); }
+  .hero--triptych[data-headline="across"] .hero__grid:has(.hero__cta) > * { grid-area: auto / 1 / auto / -1; }
+}
+
+@media (min-width: 1024px) {
+  :root .hero--place[data-form="bleed"][data-headline="split"] .hero__text {
+    width: calc((100% + var(--gutter)) * 7 / 12 - var(--gutter) + 2 * var(--s-7));
+  }
 }

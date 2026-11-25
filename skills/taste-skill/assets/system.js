@@ -571,7 +571,8 @@ async function visuals() {
     el.removeAttribute('data-fx');
   });
   const grounds = [...document.querySelectorAll('[data-fx]')];
-  const glows = [...document.querySelectorAll('[data-glow]')];
+  // Quiet and lively plans keep a flat border, including legacy glow markup.
+  const glows = document.documentElement.dataset.temper === 'loud' ? [...document.querySelectorAll('[data-glow]')] : [];
   const frags = [...document.querySelectorAll('[data-ui-load], [data-ui]')].filter(el => !el.parentElement?.closest('[data-ui-load]'));
   if (!grounds.length && !frags.length && !glows.length) return;
   const phone = window.matchMedia('(max-width: 639px)').matches || kindOther();

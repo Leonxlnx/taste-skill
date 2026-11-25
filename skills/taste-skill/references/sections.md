@@ -57,7 +57,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A composition from `sections-library.md` |
 
-**Show the subject.** Use the client's pictures first, including screens, art and renders. Next build the actual view, draw the product or its world, or plot its data. Start here for a game without art, an unphotographed product or a software claim. Use a stand-in photograph only for what it shows, such as a street, a material, hands at work or a whole room of the right kind. Never use another maker's product, a detail for a whole or mood beside prices. For each photograph write “heading says X, picture shows Y”. A list, table, form or FAQ may stand on type alone. Change ground between two such neighbours.
+**Show the subject.** Use the client's pictures first, including screens, art and renders. Next build the actual view, draw the product or its world, or plot its data. Start here for a game without art, an unphotographed product or a software claim. Use a stand-in photograph only for what it shows, such as a street, a material, hands at work or a whole room of the right kind. Never use another maker's product, a detail for a whole or mood beside prices. For each photograph write “heading says X, picture shows Y”. A list, table, form or FAQ may stand on type alone. On a quiet page, at most a quarter of sections may say `shows  nothing`. At 1440, show a subject on three of every four screens across the page.
 
 - **One object cannot show every claim.** Show the whole product in the hero and at most two further sections. Elsewhere show its use, parts, output or setting. A recolour of the whole product still counts as a whole view. A game's crew, tools and world can share one drawing style.
 - **Client files.** Reserve slots at their final ratio for promised art, renders, screenshots or films. Use a complete built picture until the file arrives. Name the file in a comment and the handoff report. Show a play control only for a playable source. See `sections-library.md`, client-slots.
@@ -72,6 +72,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
   FAQ) after at most two visual ones, and the back third of the page calm before the close. Repeat
   the section scaffold (head, padding, ground logic) so it is learned once.
 - **Proof.** Use the brief's named quotes, footnoted figures, reviews or permitted customer logos. A comparison needs comparable numbers and a source.
+- **Repeated items.** Features, services, posts, steps and people sit on the page, with a picture when the subject needs one, a heading and a sentence. A plan, product, document or room that people can act on may use a flat box. Separate rows with space.
 - **Two boxes deep at most:** a card and its picture panel, or a panel and its UI. A card whose
   panel holds UI drops its box (`.card--open`) or runs the panel flush (`.panel--flush`).
 - **Real destinations.** Direct links are the default. Use a panel for several related destinations; its label predicts what opens. Put supplied sign-in, docs, status and store links in both nav and footer. Without those links, a software page links its setup section as Quickstart in both. Use real page IDs for local links.
@@ -82,15 +83,15 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 
 ## 2. The deal
 
-Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
+Run `node <skill>/scripts/start.mjs plan --section-plan .taste-skill/sections.txt` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
 
 Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
-- `grounds` suggests the number and kinds of ground. Start on the page ground, and place a change where the visitor’s question changes. Use one surface for one software workflow; highlight the changed record. Keep fields visibly distinct from a tinted form.
+- A quiet plan deals `one` page ground, one `band` on a second ground, or, with an explicit story or at least eight sections, `chapters` sharing a second ground. Use at most two grounds before the footer. Reserve a whole brand field for the dealt band or an expressive page. Keep fields distinct on a tint.
 - `story` names the dealt shape from `library/stories.json` with its beats, its thread and how it is faked (`story.md`). Keep it or name a better fit on plan line 3. Keep non-tech heroes off bands.
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
 - `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).
-- `moment` names the host or heading. Use one, with a second from seven sections. A scene appears about once in three eligible deals and needs content to carry it. See `moments.md` and `scenes.md`.
+- Quiet pages deal no moment or scene unless the brief requests motion. A requested, lively or loud page can take one fitting moment. A scene needs suitable material. See `moments.md` and `scenes.md`.
 - **Nav** (one fixed, opaque bar on the `.wrap`; `system.md`): `nav-mega` (link columns and one
   picture card in the panel), `nav-cards` (three or four picture cards), `nav-centre` (the words in
   the middle), `nav-split` (the words left, the name in the middle). `nav--tone` puts the bar on the
@@ -99,8 +100,7 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
   ground, tech only), `footer-visit` (a place or a service with a door).
 - **Close** (`footer.closing` row 1, `system.css` footer.closing): `close-type` (the h2 large, a
   line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
-  client's photograph down to the links), `close-word` (the h2 and the button, then the name set
-  across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
+  client's photograph down to the links), `close-word` (the h2 and the button, with the name across the wrap only for a dealt large wordmark on a quiet page), `close-split` (a tinted panel with the h2, one line, up to three short facts
   and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. Repeat hours and directions in `footer-visit` when they help a returning visitor.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
@@ -152,7 +152,7 @@ For photographs with words, see `sections-library.md`, Compositions. A pair can 
 
 In `street-large`, set the supplied street or district beneath the visit h2 in `.type-moment`. If the brief gives only a district, use that. Link the address where the visitor can find it. Align headings, rows, controls and picture edges to the wrap.
 
-- Link a room to its booking or a product to its order when that is the next task. Keep hover on an inner layer (`motion.md`).
+- Link a room to its booking or a product to its order when that is the next task. Use a colour change or title underline for hover (`motion.md`).
 - **Main action.** Use the same words where the visitor books or orders. On a visit page, link the address to directions. The phone bar waits until the hero action scrolls away.
 - **List text at 16px:** menu rows, descriptions, room facts and hours at 16/24 at least (the muted
   colour, never a smaller size, marks a description); 13px only for a group label.
@@ -207,22 +207,22 @@ Keep the main task near the top. Place the remaining material in the order a vis
 - **Cafe or bakery.** Visit and opening hours, full menu, the counter and the work. If the page sells beans or takes bread orders, its order pad belongs in the first three sections. For multiple shops, give each address.
 - **Guesthouse or small hotel.** Start with the house or its region and a booking bar. Show the room types and prices, what breakfast includes, how to arrive and the full booking form. Use a season switch when the same stay has two different uses.
 - **Shop or bookshop.** Show the goods and order controls early, then categories, a story and each shop's address and hours.
-- **Bike shop:** visit and workshop (usual repair turnaround); workshop prices as ruled rows with
+- **Bike shop:** visit and workshop (usual repair turnaround); workshop prices in aligned rows with
   "Book a service"; new in (cut-outs on white, name and price); brands as a plain text list; story.
 - **Florist:** a notice line with delivery area, cut-off and price; delivery and visit as the section after the hero;
   bouquets (four 4:5 tiles, each with a price from); weddings and events (three photographs of real
-  installations, what to send); workshops as ruled rows.
+  installations, what to send); workshops as spaced rows.
 
 ### Look
 
 - **Palette.** Use the palette and pairing on the PLAN. For client colours, run `start.mjs brand` with `--bg`, `--ink`, `--accent` and `--type`. Quote hex values so the shell reads the colour.
-- **Grounds.** Use the flat grounds on the PLAN. The palette's accent colours the main button and focus ring through `--p-action`. Check the label reaches 4.5:1 and the control 3:1 against its ground.
+- **Grounds.** Use the flat grounds on the PLAN. Use the dealt ink or accent for the main button and focus ring. Check the label reaches 4.5:1 and the control 3:1 against its ground.
 - **Type.** Use the display and text faces printed by the dealer. Sizes are in `layout-v4.md` section 5.
-- **Motion.** Keep hover inside the link or picture. Use the dealt entrance and moments. A section can show its own content working within the limits in `compose.md`.
+- **Motion.** Keep the picture still on hover. Follow the dealt entrance, reveal and moment. A section can show its own content working within the limits in `compose.md`.
 
 ### The short page
 
-Use `<html data-page-mode="short">` for this form. Keep the hero, the visit and offer, and the closing footer. Combine the hours and access with the address and put the menu or services in ruled groups. Give each group an id so the nav lands on it. Use a fitting picture where one exists. At 390 stack the groups in reading order. A text moment can ride the section's h2. A small page still has at least one own section.
+Use `<html data-page-mode="short">` for this form. Keep the hero, the visit and offer, and the closing footer. Combine the hours and access with the address and put the menu or services in spaced groups. Give each group an id so the nav lands on it. Use a fitting picture where one exists. At 390 stack the groups in reading order. A text moment can ride the section's h2. A small page still has at least one own section.
 
 ## 5. Visuals
 

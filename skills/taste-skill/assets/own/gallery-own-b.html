@@ -34,7 +34,6 @@
 <script src="../backgrounds/backgrounds.js"></script>
 <style>.gallery-head { position: sticky; top: 0; z-index: 5; } .gallery-head .wrap { min-height: var(--nav); padding-block: 0; align-items: center; } .gallery-head h1 { font-size: var(--t-card); } .gallery-head a { font-size: var(--t-small); } @media (max-width: 639px) { .gallery-head h1 { font-size: var(--t-body); } .gallery-head .wrap { gap: var(--s-2); } }</style>
 <style id="own-css">
-
 [data-own="media-desk"] {
   & .t-lead { margin: var(--s-4) 0 var(--head-gap); }
   & svg[width="0"] { position: absolute; }
@@ -67,7 +66,6 @@
   }
 }
 
-
 [data-own="coverage-map"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="coverage-map"] .route { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; font-variant-numeric: tabular-nums; }
 [data-own="coverage-map"] figure { grid-column: span 7; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
@@ -93,7 +91,6 @@
 [data-own="coverage-map"] .books b { line-height: 1.2; }
 [data-own="coverage-map"] .route { column-gap: var(--s-5); }
 
-
 [data-own="answer-finder"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="answer-finder"] .answers { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
 [data-own="answer-finder"] nav { grid-column: span 3; display: grid; }
@@ -103,7 +100,6 @@
 [data-own="answer-finder"] .topic + .topic { margin-top: var(--s-7); }
 [data-own="answer-finder"] h3 { margin-bottom: var(--s-3); }
 [data-own="answer-finder"] :is(h3,details) { scroll-margin-top: calc(var(--nav) + var(--s-3)); }
-[data-own="answer-finder"] details { border-top: 1px solid var(--line); }
 [data-own="answer-finder"] summary { min-height: var(--btn-h); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-4); cursor: pointer; list-style: none; }
 [data-own="answer-finder"] summary::-webkit-details-marker { display: none; }
 [data-own="answer-finder"] summary::after { content: "+"; color: var(--muted); }
@@ -122,7 +118,6 @@
 [data-own="answer-finder"] .search button { background: none; border: 0; min-height: var(--btn-h); padding: 0; color: var(--action); text-decoration: underline; cursor: pointer; }
 [data-own="answer-finder"] [role="status"] { font-size: var(--t-small); }
 @media (max-width: 639px) { [data-own="answer-finder"] .finder { grid-column: 1; } }
-
 
 [data-own="edition-outlets"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="edition-outlets"] .picker { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
@@ -161,7 +156,6 @@
 [data-own="edition-outlets"] .picker { scroll-margin-top: calc(var(--nav) + var(--s-2)); }
 [data-own="edition-outlets"] .availability:not(:empty) { margin-top: var(--s-2); font-size: var(--t-small); color: var(--muted); }
 
-
 [data-own="environment-setup"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="environment-setup"] .setup { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
 [data-own="environment-setup"] aside { grid-column: span 4; }
@@ -185,7 +179,6 @@
 [data-own="environment-setup"] article pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 [data-own="environment-setup"] .output { align-items: baseline; }
 [data-own="environment-setup"] samp { color: var(--action); font-weight: 600; }
-
 
 [data-own="fee-comparison"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="fee-comparison"] .sheet { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; align-items: start; }
@@ -211,7 +204,6 @@
 @media (max-width: 1023px) { [data-own="fee-comparison"] .sheet { grid-template-columns: 1fr; } [data-own="fee-comparison"] .quantity, [data-own="fee-comparison"] .quotes { grid-column: 1; } }
 [data-own="fee-comparison"] .quote p { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
 [data-own="fee-comparison"] .quote p span { color: var(--ink); }
-
 
 [data-own="chapter-links"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="chapter-links"] .guide-bar { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; background: var(--bg); border-block: 1px solid var(--line); padding-block: var(--s-2); z-index: 2; }
@@ -250,7 +242,6 @@
   [data-own="chapter-links"] .chart:target { position: static; width: 100%; margin: 0; }
 }
 
-
 [data-own="witness-selector"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="witness-selector"] .records { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); }
 [data-own="witness-selector"] .records > * { grid-column: 3 / span 8; min-width: 0; }
@@ -279,7 +270,6 @@
   [data-own="witness-selector"] figure { padding-top: var(--s-5); }
 }
 
-
 [data-own="lead-digest"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
 [data-own="lead-digest"] .digest { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); row-gap: 0; }
 [data-own="lead-digest"] .lead { grid-column: span 7; grid-row: 1 / span 3; }
@@ -304,7 +294,6 @@
 [data-own="lead-digest"] .digest article { scroll-margin-block-start: calc(var(--nav) + var(--s-2)); }
 [data-own="lead-digest"] .stories p a { display: inline; }
 [data-own="lead-digest"] .lead h3 a, [data-own="lead-digest"] .dispatch h3 a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: var(--s-1); }
-
 
 [data-own="field-roster"] {
   & .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
@@ -359,7 +348,8 @@
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="coverage-map" data-own="coverage-map" aria-labelledby="coverage-map-title">
+
+<section class="section own" id="coverage-map" data-own="coverage-map" aria-labelledby="coverage-map-title">
   <div class="wrap">
     <h2 id="coverage-map-title">The valley library route</h2>
     <p class="t-lead measure">Wold Mobile Library has 50 reserved books across three stops.</p>
@@ -373,6 +363,7 @@
     </div>
   </div>
 </section>
+
 <section class="section own" id="answer-finder" data-own="answer-finder" aria-labelledby="answer-finder-title">
   <div class="wrap">
     <h2 id="answer-finder-title">Ordering and caring for your mugs</h2>
@@ -397,7 +388,8 @@
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="edition-outlets" data-own="edition-outlets" aria-labelledby="edition-outlets-title">
+
+<section class="section own" id="edition-outlets" data-own="edition-outlets" aria-labelledby="edition-outlets-title">
   <div class="wrap">
     <h2 id="edition-outlets-title">Choose your edition of The Moss Signal</h2>
     <p class="t-lead measure">Windglass Games offers a download and two boxed editions.</p>
@@ -424,6 +416,7 @@
     </div>
   </div>
 </section>
+
 <section class="section own" id="environment-setup" data-own="environment-setup" aria-labelledby="environment-setup-title">
   <div class="wrap">
     <h2 id="environment-setup-title">Read a rain gauge sample</h2>
@@ -461,7 +454,8 @@ puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="fee-comparison" data-own="fee-comparison" aria-labelledby="fee-comparison-title">
+
+<section class="section own" id="fee-comparison" data-own="fee-comparison" aria-labelledby="fee-comparison-title">
   <div class="wrap">
     <h2 id="fee-comparison-title">Compare postcard print runs</h2>
     <p class="t-lead measure">Juniper Print Co-op offers two schedules on the same uncoated stock.</p>
@@ -494,6 +488,7 @@ puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
     </div>
   </div>
 </section>
+
 <section class="section own" id="chapter-links" data-own="chapter-links" aria-labelledby="chapter-links-title">
   <div class="wrap">
     <h2 id="chapter-links-title">Weave a 40 cm sampler</h2>
@@ -514,7 +509,8 @@ puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
     </article>
   </div>
 </section>
-<section class="section own ground-surface" id="witness-selector" data-own="witness-selector" aria-labelledby="witness-selector-title">
+
+<section class="section own" id="witness-selector" data-own="witness-selector" aria-labelledby="witness-selector-title">
   <div class="wrap">
     <h2 id="witness-selector-title">Returning the equipment</h2>
     <p class="t-lead measure">Three customers describe a return at Saltern Tool Hire.</p>
@@ -535,6 +531,7 @@ puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
     </div>
   </div>
 </section>
+
 <section class="section own" id="lead-digest" data-own="lead-digest" aria-labelledby="lead-digest-title">
   <div class="wrap">
     <h2 id="lead-digest-title">Wick Valley Field Notes</h2>
@@ -571,7 +568,8 @@ puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
       <article id="wick-story-ferry" tabindex="-1"><h3>Ferry hours change</h3><p class="muted">28 Oct · Wick Valley Field Notes</p><p>The valley ferry is on its winter timetable. The final boat leaves at 16:30. Arrive at the landing before that departure to cross the beck.</p><a href="#wick-teaser-ferry">Back to ferry hours change</a></article></div>
   </div>
 </section>
-<section class="section own ground-surface" id="field-roster" data-own="field-roster" aria-labelledby="field-roster-title">
+
+<section class="section own" id="field-roster" data-own="field-roster" aria-labelledby="field-roster-title">
   <div class="wrap">
     <h2 id="field-roster-title">Meet the Moss Post couriers</h2>
     <p class="t-lead measure">Each courier takes a different kind of cargo across the valley.</p>

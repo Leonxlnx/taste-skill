@@ -63,6 +63,7 @@
   [data-own="evidence-grid"] .dimensions dd { font-size: var(--t-h3); }
   [data-own="evidence-grid"] .proof-art { padding: var(--s-3); }
 }
+
 [data-own="chapter-stage"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="chapter-stage"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="chapter-stage"] .binding-tour { display: grid; gap: var(--gutter); grid-template-columns: minmax(0,1fr); }
@@ -88,6 +89,7 @@
 [data-own="chapter-stage"] .held figure { max-width: calc((100svh - var(--nav) - var(--s-9)) * 4/3); }
 @media (max-width: 1023px), (max-height: 699px), (prefers-reduced-motion: reduce) { [data-own="chapter-stage"] .steps li { grid-template-columns: minmax(0,1fr); row-gap: var(--s-5); } }
 @media (min-width: 640px) { [data-own="chapter-stage"] .steps figure { max-width: calc(var(--s-10) * 5); } }
+
 [data-own="model-matrix"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="model-matrix"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="model-matrix"] .filters { display: flex; align-items: center; flex-wrap: wrap; gap: var(--gutter); margin-bottom: var(--s-4); }
@@ -123,6 +125,7 @@
   [data-own="model-matrix"] [data-other] { display: none; }
 }
 @media (max-height: 620px) { [data-own="model-matrix"] .names { position: static; } }
+
 [data-own="billing-matrix"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="billing-matrix"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="billing-matrix"] .tariffs { font-variant-numeric: tabular-nums; }
@@ -163,6 +166,7 @@
   [data-own="billing-matrix"] .plan-links td { margin-bottom: var(--s-5); padding-block: 0; background: var(--surface); }
   [data-own="billing-matrix"] .plan-links td:last-child { margin-bottom: 0; }
 }
+
 [data-own="connector-finder"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="connector-finder"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="connector-finder"] .directory { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
@@ -200,6 +204,7 @@
   [data-own="connector-finder"] dl > div { justify-content: flex-start; padding: 0; border: 0; font-size: var(--t-small); }
   [data-own="connector-finder"] .filter-box { gap: var(--s-3); }
 }
+
 [data-own="release-register"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="release-register"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="release-register"] .register { font-variant-numeric: tabular-nums; }
@@ -227,10 +232,10 @@
   [data-own="release-register"] .change h4, [data-own="release-register"] .change p, [data-own="release-register"] .documents { grid-column: 1 / -1; }
   [data-own="release-register"] .documents { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
 }
+
 [data-own="case-foldout"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="case-foldout"] .wrap > p + * { margin-top: var(--head-gap); }
-[data-own="case-foldout"] .jobs { border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-[data-own="case-foldout"] details { border-top: 1px solid var(--line); }
+[data-own="case-foldout"] .jobs { font-variant-numeric: tabular-nums; }
 [data-own="case-foldout"] summary { display: grid; grid-template-columns: minmax(0,1fr) auto var(--s-5); align-items: center; gap: var(--s-4); padding: var(--s-4); min-height: var(--btn-h); cursor: pointer; }
 [data-own="case-foldout"] summary::-webkit-details-marker { display: none; }
 [data-own="case-foldout"] summary span:first-child { font-size: var(--t-h3); }
@@ -257,6 +262,7 @@
   [data-own="case-foldout"] .job-body { grid-template-columns: minmax(0,1fr); }
   [data-own="case-foldout"] .job-body > :is(figure,div) { grid-column: 1/-1; }
 }
+
 [data-own="annotated-source"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="annotated-source"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="annotated-source"] .annotation { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
@@ -280,7 +286,7 @@
 [data-own="annotated-source"] .printed :is(span,strong) { display: block; }
 [data-own="annotated-source"] .printed strong { font-weight: 500; font-size: var(--t-card); }
 [data-own="annotated-source"] .notes { grid-column: span 4; }
-[data-own="annotated-source"] .notes li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="annotated-source"] .notes li { padding-block: var(--s-3); }
 [data-own="annotated-source"] .notes h3 { margin: 0; }
 [data-own="annotated-source"] .notes h3 span { display: inline-grid; place-items: center; width: var(--s-5); height: var(--s-5); margin-right: var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--r-sm); color: var(--action); font-size: var(--t-small); }
 [data-own="annotated-source"] .notes p { margin-top: var(--s-2); }
@@ -291,6 +297,7 @@
   [data-own="annotated-source"] .source { grid-template-columns: var(--s-5) minmax(0,1fr) var(--btn-h); }
   [data-own="annotated-source"] .file-name { padding-left: calc(var(--s-5) + var(--s-4)); }
 }
+
 [data-own="system-paths"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="system-paths"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="system-paths"] .routing { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; font-variant-numeric: tabular-nums; }
@@ -343,6 +350,7 @@
   [data-own="system-paths"] .mobile-routes li + li { margin-top: var(--s-3); }
   [data-own="system-paths"] .mobile-routes li span { font-size: var(--t-small); color: var(--muted); }
 }
+
 [data-own="source-ledger"] .wrap > h2 + p { margin-top: var(--s-4); }
 [data-own="source-ledger"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="source-ledger"] .ledger { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; }
@@ -399,7 +407,8 @@
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="chapter-stage" data-own="chapter-stage" aria-labelledby="chapter-stage-title" data-assumed>
+
+<section class="section own" id="chapter-stage" data-own="chapter-stage" aria-labelledby="chapter-stage-title" data-assumed>
   <div class="wrap">
     <h2 id="chapter-stage-title">Binding a 192-page book</h2>
     <p class="t-lead measure">Bracken Bookbindery sews the pages, lines the spine with cloth and fits a board case.</p>
@@ -421,6 +430,7 @@
     </ol><div class="held" hidden></div></div>
   </div>
 </section>
+
 <section class="section own" id="model-matrix" data-own="model-matrix" aria-labelledby="model-matrix-title" data-assumed>
   <div class="wrap">
     <h2 id="model-matrix-title">Compare field recorders</h2>
@@ -444,7 +454,8 @@
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="billing-matrix" data-own="billing-matrix" aria-labelledby="billing-matrix-title" data-assumed>
+
+<section class="section own" id="billing-matrix" data-own="billing-matrix" aria-labelledby="billing-matrix-title" data-assumed>
   <div class="wrap">
     <h2 id="billing-matrix-title">Catalogue hosting plans</h2>
     <p class="t-lead measure">Larch Archive bills each workspace as one catalogue. Choose a plan by its editor and record limits.</p>
@@ -467,6 +478,7 @@
     </div>
   </div>
 </section>
+
 <section class="section own" id="connector-finder" data-own="connector-finder" aria-labelledby="connector-finder-title" data-assumed>
   <div class="wrap">
     <h2 id="connector-finder-title">Find an instrument connector</h2>
@@ -493,7 +505,8 @@
     <article class="local-note" id="setup-flint" tabindex="-1"><h3>Flint setup</h3><p>Choose the counter CSV and map its time and whole-number count columns.</p><a href="#connector-flint">Back to Flint</a></article>
   </div>
 </section>
-<section class="section own ground-surface" id="release-register" data-own="release-register" aria-labelledby="release-register-title" data-assumed>
+
+<section class="section own" id="release-register" data-own="release-register" aria-labelledby="release-register-title" data-assumed>
   <div class="wrap">
     <h2 id="release-register-title">Survey changes and files</h2>
     <p class="t-lead measure">North Quay Chart Office publishes a notice for each chart revision.</p>
@@ -513,6 +526,7 @@
     <article class="local-note" tabindex="-1" id="quay-1-2-notice"><h3>Chart notice 1.2</h3><p><time datetime="2026-06-18">18 Jun 2026</time> · Edition 1.2</p><p>Seasonal mooring marked on the chart.</p><a href="#quay-1-2">Back to edition 1.2</a></article>
   </div>
 </section>
+
 <section class="section own" id="case-foldout" data-own="case-foldout" aria-labelledby="case-foldout-title" data-assumed>
   <div class="wrap">
     <h2 id="case-foldout-title">Fleet jobs at the repair bench</h2>
@@ -536,7 +550,8 @@
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="annotated-source" data-own="annotated-source" aria-labelledby="annotated-source-title" data-assumed>
+
+<section class="section own" id="annotated-source" data-own="annotated-source" aria-labelledby="annotated-source-title" data-assumed>
   <div class="wrap">
     <h2 id="annotated-source-title">How the packing label is counted</h2>
     <p class="t-lead measure">Elm Parcel packs six items to a box. The label prints the item count, box count and remaining space.</p>
@@ -559,6 +574,7 @@ print(f"{count} items, {boxes} boxes, {spare} spare place")</code></pre></div>
     </div>
   </div>
 </section>
+
 <section class="section own" id="system-paths" data-own="system-paths" aria-labelledby="system-paths-title" data-assumed>
   <div class="wrap">
     <h2 id="system-paths-title">Where rainfall readings go</h2>
@@ -577,7 +593,8 @@ print(f"{count} items, {boxes} boxes, {spare} spare place")</code></pre></div>
     </div>
   </div>
 </section>
-<section class="section own ground-surface" id="source-ledger" data-own="source-ledger" aria-labelledby="source-ledger-title" data-assumed>
+
+<section class="section own" id="source-ledger" data-own="source-ledger" aria-labelledby="source-ledger-title" data-assumed>
   <div class="wrap">
     <h2 id="source-ledger-title">The October lending pilot</h2>
     <p class="t-lead measure">Mere Tool Library · 1–31 October 2026</p>

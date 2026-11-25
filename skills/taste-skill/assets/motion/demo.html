@@ -2,9 +2,11 @@
 <!-- taste-skill motion demo: every micro-interaction of assets/motion on one company page, light and dark.
      Open it served from the skill folder (http://localhost:<port>/assets/motion/demo.html).
      ?theme=dark starts dark; ?live enables motion in a headless capture. -->
-<html lang="en" data-radius="soft" data-ground="sky" data-motion>
+<html lang="en" data-type="software" data-action="ink" data-buttons="solid" data-radius="soft" data-ground="sky" data-motion>
 <head>
 <meta charset="utf-8">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stackline: plan and ship product work, for small software teams</title>
 <meta name="description" content="The taste-skill motion layer on one page: buttons, links, nav, tabs, cards, loops, photographs, numbers, fields, FAQ.">
@@ -21,14 +23,15 @@
 <link rel="stylesheet" href="../system.css">
 <link rel="stylesheet" href="../ui/cards.css">
 <link rel="stylesheet" href="motion.css">
+<link rel="stylesheet" href="../layout/layout.css">
 <style>
   :root {
-    --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #0e0e0e; --p-muted: #63635f;
+    --p-bg: #ffffff; --p-surface: #f4f4f2; --p-ink: #0e0e0e; --p-muted: #50514e;
     --p-accent: #2457d6; --p-accent-ink: #ffffff; --p-action: #0e0e0e; --p-action-ink: #ffffff;
     --p-inv-bg: #0e0e0e; --p-inv-surface: #1a1a1a; --p-inv-ink: #f3f3f1; --p-inv-muted: #a2a29d;
     --p-inv-accent: #ffffff; --p-inv-accent-ink: #0e0e0e; --p-inv-action: #ffffff; --p-inv-action-ink: #0e0e0e;
     --font-display: "Geist", system-ui, sans-serif; --font-text: "Geist", system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace;
-    --display-weight: 500; --display-tracking: -0.035em;
+    --display-weight: 500; --display-tracking: -0.012em;
     color-scheme: light;
   }
   html[data-theme="dark"] {
@@ -135,10 +138,8 @@
   .screen { position: relative; min-height: 360px; border-radius: var(--r-lg); overflow: clip; }
   .screen .mini { left: 40px; right: 40px; top: 40px; }
 
-  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gutter); border-top: 1px solid var(--line); padding-top: var(--s-6); }
-  .stats p { margin-top: var(--s-3); color: var(--muted); font-size: var(--t-small); }
-  @media (max-width: 639px) { .stats { grid-template-columns: minmax(0, 1fr); row-gap: var(--s-6); } }
-
+  .delivery-chart { margin-block-start: var(--head-gap); }
+  .delivery-chart svg { width: 100%; }
   .switch-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
   .switch-row span:first-child { display: grid; gap: 2px; }
   .switch-row small { color: var(--muted); font-size: var(--t-small); }
@@ -147,6 +148,18 @@
 
   @media (max-width: 1023px) { .board { inset: 24px 24px auto; grid-template-columns: repeat(2, minmax(0, 1fr)); } .board .col:nth-child(3), .board .mover, .board .ptr { display: none; } }
   @media (max-width: 639px) { .board { grid-template-columns: minmax(0, 1fr); } .board .col:nth-child(2) { display: none; } .hero-panel { --p-h: 340px; } .screen .mini { left: 20px; right: 20px; top: 20px; } }
+  @media (max-width: 639px) {
+    .switch-row .m-switch {
+      box-sizing: border-box;
+      width: 44px;
+      height: 44px;
+      border: solid transparent;
+      border-width: 10px 2px;
+    }
+    .switch-row .m-switch, .switch-row .m-switch:hover, .switch-row .m-switch[aria-checked="true"] {
+      background-clip: padding-box;
+    }
+  }
   .demo-progress { width: min(100%, 360px); height: 3px; background: var(--line); margin-block: var(--s-5); }
   .demo-progress::after { content: ""; display: block; height: 100%; background: var(--action); transform-origin: left; transform: scaleX(var(--p, 1)); }
   #delivery svg { display: block; max-width: 100%; height: auto; margin-block: var(--s-5); }
@@ -155,7 +168,8 @@
 <body>
 
 <header class="nav">
-  <div class="container nav__bar">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
     <a class="nav__logo" href="#top">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="2" fill="currentColor"/><rect x="3" y="10" width="12" height="4" rx="2" fill="currentColor" opacity=".6"/><rect x="3" y="16" width="7" height="4" rx="2" fill="currentColor" opacity=".35"/></svg>
       Stackline
@@ -164,7 +178,7 @@
       <div class="nav__item">
         <a class="nav__link" href="#product">Product <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="nav__menu">
-          <div class="container grid">
+          <div class="wrap grid">
             <div class="menu-col span-3">
               <p class="t-label">Plan</p>
               <a href="#product">Issues<span>Track every bug and task</span></a>
@@ -178,7 +192,7 @@
               <a href="#product">Figma<span>Designs next to the work</span></a>
             </div>
             <a class="menu-card span-3 start-10" href="#stories">
-              <div class="panel"><img class="frame__img" src="https://picsum.photos/id/1081/720/405" alt="A stepped white building against a pale sky" loading="lazy"></div>
+              <div class="panel"><img class="frame__img" src="../layout/img/photo-1081.jpg" alt="A stepped white building against a pale sky" loading="lazy"></div>
               <span class="t-card">Stackline 3.0</span>
               <span class="t-small muted">Cycles, triage and a faster board</span>
             </a>
@@ -188,7 +202,7 @@
       <div class="nav__item">
         <a class="nav__link" href="#stories">Customers <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="nav__menu">
-          <div class="container grid">
+          <div class="wrap grid">
             <div class="menu-col span-3">
               <p class="t-label">By team</p>
               <a href="#stories">Startups<span>Five to fifty people</span></a>
@@ -202,12 +216,12 @@
           </div>
         </div>
       </div>
-      <div class="nav__item"><a class="nav__link" href="#numbers" aria-current="page">Pricing</a></div>
-      <div class="nav__item"><a class="nav__link" href="#faq">Docs</a></div>
+      <div class="nav__item"><a class="nav__link" href="#numbers">Weekly report</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">Questions</a></div>
     </nav>
     <div class="nav__actions">
       <label class="theme-sw">Dark <button class="m-switch" id="theme" type="button" role="switch" aria-checked="false" aria-label="Dark theme"></button></label>
-      <a class="btn btn--secondary btn--sm" href="#try">Log in</a>
+      <a class="btn btn--secondary btn--sm" href="#views">Views</a>
       <a class="btn btn--primary btn--sm" href="#try">Start free</a>
     </div>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
@@ -217,20 +231,17 @@
 </header>
 
 <main id="top">
-  <section class="section section--hero" id="hero">
-    <div class="container">
-      <div class="section-head section-head--center">
-        <a class="pill" href="#stories">Stackline 3.0 is here <span class="muted">Read the post</span>
-          <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+  <section class="hero hero--centred hero--peek" data-enter="still" id="hero">
+    <div class="wrap">
+      <div class="hero-text"><div class="hero__c">
         <h1>Plan and ship product work in one place</h1>
-        <p>Issues, cycles and a roadmap for software teams of five to fifty. Free for three people.</p>
+        <p class="hero__lead">Issues, cycles and a roadmap for software teams of five to fifty. Free for three people.</p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="#try">Start free
-            <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
-          <a class="btn btn--secondary" href="#try">Book a demo</a>
+          <a class="btn btn--primary" href="#try">Start free</a>
+          <a class="btn btn--secondary" href="#views">Explore the board</a>
         </div>
       </div>
-      <div class="panel gr hero-panel" data-m-loop style="--m-cycle: 4s; --m-still: 0.8">
+      <div class="hero__window panel gr hero-panel" data-media-frame data-m-loop role="group" aria-label="Project issue board" style="--m-cycle: 4s; --m-still: 0.8">
         <div class="board" aria-hidden="true">
           <div class="col"><div class="col__h"><span class="dot" style="color:#9a9a96"></span>To do <span class="muted">4</span></div>
             <div class="iss"><span class="mono-id">STK-214</span><div>Export a cycle as CSV</div><div class="iss__meta"><span class="chip">Data</span><span class="ava">LB</span></div></div>
@@ -247,11 +258,11 @@
           <div class="iss mover"><span class="mono-id">STK-211</span><div>Fix sign-in on Safari 18</div><div class="iss__meta"><span class="chip">Auth</span><span class="ava">MK</span></div></div>
         </div>
       </div>
-    </div>
+    </div></div>
   </section>
 
   <section class="section" id="product">
-    <div class="container">
+    <div class="wrap">
       <div class="section-head">
         <h2>Everything a sprint needs. <span class="muted">Assign, track and close work without a status meeting.</span></h2>
       </div>
@@ -332,7 +343,7 @@
   </section>
 
   <section class="section ground-surface" id="views">
-    <div class="container">
+    <div class="wrap">
       <div class="grid grid--middle">
         <div class="span-5 stack-5">
           <h2>One project, four ways to look at it</h2>
@@ -376,24 +387,24 @@
   </section>
 
   <section class="section" id="stories">
-    <div class="container">
+    <div class="wrap">
       <div class="section-head section-head--row">
         <div><h2>How teams run on Stackline</h2></div>
         <a class="link" href="#stories">All stories</a>
       </div>
       <div class="grid">
         <a class="tile span-4" href="#stories">
-          <div class="tile__media"><img src="https://picsum.photos/id/1081/960/720" alt="A stepped white building against a pale blue sky" loading="lazy"></div>
+          <div class="tile__media"><img src="../layout/img/photo-1081.jpg" alt="A stepped white building against a pale blue sky" loading="lazy"></div>
           <div class="tile__head"><h3>Northfield ships every week</h3></div>
           <p>A 14-person team dropped its daily standup.</p>
         </a>
         <a class="tile span-4" href="#stories">
-          <div class="tile__media"><img src="https://picsum.photos/id/954/960/720" alt="A white staircase seen through a narrow opening in a white wall" loading="lazy"></div>
+          <div class="tile__media"><img src="../layout/img/photo-954.jpg" alt="A white staircase seen through a narrow opening in a white wall" loading="lazy"></div>
           <div class="tile__head"><h3>Paperhouse went from three tools to one</h3></div>
           <p>Issues, docs and the roadmap in one place.</p>
         </a>
         <a class="tile span-4" href="#stories">
-          <div class="tile__media"><img src="https://picsum.photos/id/743/960/720" alt="A narrow building corner against a teal sky" loading="lazy"></div>
+          <div class="tile__media"><img src="../layout/img/photo-887.jpg" alt="White apartment balconies and windows" loading="lazy"></div>
           <div class="tile__head"><h3>Oro moved 40,000 issues in a day</h3></div>
           <p>The import kept every comment and link.</p>
         </a>
@@ -402,53 +413,24 @@
   </section>
 
   <section class="section own" data-own="delivery" id="delivery">
-    <div class="container">
+    <div class="wrap">
       <h2>Issues closed this week</h2>
-      <div class="demo-progress" data-m-progress aria-hidden="true"></div>
-      <svg viewBox="0 0 360 82" width="360" role="img" aria-label="Closed issues rose from 12 on Monday to 28 on Friday">
-        <polyline data-m-draw points="4,72 90,60 180,43 270,35 356,6" fill="none" stroke="currentColor" stroke-width="3"/>
-      </svg>
-      <p>Monday, 12 issues. Friday, 28.</p>
-    </div>
-  </section>
-
-  <section class="section" id="numbers">
-    <div class="container">
-      <div class="section-head"><h2>What changes in the first month</h2></div>
-      <div class="stats">
-        <div><div class="t-stat">8,402</div><p>teams on Stackline</p></div>
-        <div><div class="t-stat">4.5 h</div><p>saved per person each week</p></div>
-        <div><div class="t-stat">64%</div><p>fewer status meetings</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section ground-surface" id="try">
-    <div class="container">
-      <div class="grid">
-        <div class="span-5 stack-5">
-          <h2>Start with your team</h2>
-          <p class="t-lead">Free for three people. Bring your issues from GitHub or Jira in a few minutes, as our <a href="#faq">import guide</a> shows.</p>
-        </div>
-        <form class="form span-6 start-7" onsubmit="return false">
-          <label class="field">Work email <input type="email" placeholder="you@company.com" autocomplete="off"></label>
-          <label class="field">Team size <select><option>2 to 5</option><option>6 to 20</option><option>21 to 50</option></select></label>
-          <div class="field--full">
-            <div class="switch-row"><span>Import from GitHub<small>Issues, labels and comments</small></span><button class="m-switch" type="button" role="switch" aria-checked="true" aria-label="Import from GitHub"></button></div>
-            <div class="switch-row"><span>Weekly summary by email<small>Friday at 18:00</small></span><button class="m-switch" type="button" role="switch" aria-checked="false" aria-label="Weekly summary by email"></button></div>
-          </div>
-          <label class="check-row field--full"><input class="m-check" type="checkbox" checked> Send me the product changelog once a month</label>
-          <div class="btn-row"><button class="btn btn--primary btn--arrow" type="submit">Create workspace</button></div>
-        </form>
+      <div class="delivery-chart" id="numbers">
+        <p>Monday, 12 issues. Friday, <span data-m-count>28</span>.</p>
+        <svg viewBox="0 0 640 120" role="img" aria-label="Completed issues rose from 12 on Monday to 28 on Friday">
+          <polyline data-m-draw points="4,108 162,87 320,71 478,48 636,8" fill="none" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <button class="btn btn--secondary" type="button">Trace the week</button>
+        <div class="demo-progress" data-m-progress aria-hidden="true"></div>
       </div>
     </div>
   </section>
 
   <section class="section" id="faq">
-    <div class="container">
-      <div class="grid">
-        <div class="span-4"><h2>Questions</h2></div>
-        <div class="span-8 faq faq--fold">
+    <div class="wrap">
+      <div>
+        <div class="section-head"><h2>Questions about your workspace</h2></div>
+        <div class="faq faq--fold">
           <details><summary>Is it free for small teams?</summary><p>Yes. Up to three people use every feature for free, with no time limit.</p></details>
           <details><summary>Can we import from Jira?</summary><p>Yes. The import keeps issues, comments, labels and links, and takes a few minutes for most projects.</p></details>
           <details><summary>Where is our data stored?</summary><p>In Frankfurt, on servers we run with an EU provider. You can export everything at any time.</p></details>
@@ -456,25 +438,49 @@
       </div>
     </div>
   </section>
+
+  <section class="section" id="try">
+    <div class="wrap">
+      <div>
+        <div class="section-head">
+          <h2>Start with your team</h2>
+          <p class="t-lead">Free for three people. Bring your issues from GitHub or Jira in a few minutes, as our <a href="#faq">import guide</a> shows.</p>
+        </div>
+        <form class="form" action="mailto:workspace@stackline.example" method="post" enctype="text/plain">
+          <label class="field">Work email <input type="email" placeholder="you@company.com" autocomplete="email" name="email" required></label>
+          <label class="field">Team size <select name="size"><option>2 to 5</option><option>6 to 20</option><option>21 to 50</option></select></label>
+          <div class="field--full">
+            <div class="switch-row"><span>Import from GitHub<small>Issues, labels and comments</small></span><button class="m-switch" type="button" role="switch" aria-checked="true" aria-label="Import from GitHub"></button></div>
+            <div class="switch-row"><span>Weekly summary by email<small>Friday at 18:00</small></span><button class="m-switch" type="button" role="switch" aria-checked="false" aria-label="Weekly summary by email"></button></div>
+          </div>
+          <label class="check-row field--full"><input class="m-check" type="checkbox" checked> Send me the product changelog once a month</label>
+          <div class="field--full"><p class="terms">This demo opens an email draft with your workspace request.</p><button class="btn btn--primary" type="submit">Open email draft</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer class="footer">
-  <div class="container">
-    <div class="grid">
-      <div class="span-4 stack-4">
-        <a class="nav__logo" href="#top">Stackline</a>
-        <p class="t-small measure">Issues, cycles and a roadmap for software teams.</p>
+<footer class="footer closing">
+  <div class="wrap">
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-6 stack-4">
+          <a class="nav__logo" href="#top">Stackline</a>
+          <p class="t-small measure">Issues, cycles and a roadmap for software teams.</p>
+        </div>
+        <div class="span-2 footer__col"><h4>Product</h4><ul><li><a href="#product">Issues</a></li><li><a href="#product">Cycles</a></li><li><a href="#product">Roadmap</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Company</h4><ul><li><a href="#stories">Customers</a></li><li><a href="#numbers">Weekly report</a></li><li><a href="#try">Contact</a></li></ul></div>
+        <div class="span-2 footer__col"><h4>Help</h4><ul><li><a href="#faq">Questions</a></li><li><a href="#faq">Import</a></li></ul></div>
       </div>
-      <div class="span-2 footer__col"><h4>Product</h4><ul><li><a href="#product">Issues</a></li><li><a href="#product">Cycles</a></li><li><a href="#product">Roadmap</a></li></ul></div>
-      <div class="span-2 footer__col"><h4>Company</h4><ul><li><a href="#stories">Customers</a></li><li><a href="#numbers">Pricing</a></li><li><a href="#try">Contact</a></li></ul></div>
-      <div class="span-2 footer__col"><h4>Help</h4><ul><li><a href="#faq">Docs</a></li><li><a href="#faq">Import</a></li></ul></div>
+      <div class="footer__legal"><span>Stackline is a demo company.</span><span>Photographs: Julien Moreau, Todd Quackenbush, Roman Kraft (Unsplash License).</span></div>
     </div>
-    <div class="footer__legal"><span>Stackline is a demo company.</span><span>Photographs: Julien Moreau, Todd Quackenbush, Anthony Delanoix (Unsplash License).</span></div>
   </div>
 </footer>
 
 <script type="module" src="../system.js"></script>
 <script type="module" src="motion.js"></script>
+<script type="module" src="../layout/layout.js"></script>
 <script>
   const sw = document.getElementById('theme'), h = document.documentElement;
   sw.setAttribute('aria-checked', String(h.dataset.theme === 'dark'));

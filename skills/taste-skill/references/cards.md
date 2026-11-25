@@ -9,31 +9,24 @@ Motion: `assets/ui/ui.js`. Objects instead of photographs: `assets/ui/_lab/objec
 
 ## Why theirs look expensive
 
-1. The card is barely there: one step off the page, a hairline, generous padding. The colour is
-   inside the panel.
+1. Ordinary repeats sit directly on the page. A boundary can group a plan, product, room or document with its action.
 2. The panel holds a real, lit picture (a painted landscape, a grain field, a mesh, satin), never a
    flat two-stop gradient and never a pattern of lines or dots. On a dark page it is the brightest
    thing in the card: x.ai puts a daylight painting behind its dark UI.
 3. The UI on it is a real product at true size, cut by the panel's edge: a glimpse of something
    bigger, not a toy floating in the middle.
-4. One thing moves inside a panel per tech card group. A linked card gives hover feedback on an inner layer (`motion.md`).
+4. One thing moves inside a panel per tech card group. A linked card changes border, ground or title underline on hover (`motion.md`).
 5. Everything lines up: panel edge with text edge, radii nested, titles level across a row.
 
 ## The card
 
-- Fill `--card`, one clear step off the page (light: white on `#f3f3f1`; dark: `#151517` on
-  `#070708`, as x.ai's dark cards read against their page), or no border at all when the photograph
-  or flat fill is the card.
-- Border 1px, ink at 8 to 14%; inner top highlight 1px (white 5-7%, dark only). No blurred shadow at
-  rest (a hard zero-blur offset is allowed as the rest style); a card with a link may show a soft
-  shadow on hover only (`motion.md`). Keep the hit area still. Rows show whole cards. Stack press quotes.
+- Open repeats have no side padding, border or shadow. Box an actionable item with `.card--boxed` or `.plan`: a flat fill or ink edge. Hover changes colour or the title underline. Stack press quotes.
 - Rows on the grid: two-up 6+6, three-up 4+4+4, four-up 3+3+3+3, the first card on the left line,
   the last on the right, one height per row, every row full (`layout-v4.md` section 4). Mark every
   frame that holds a visual or UI with `.frame` or `[data-visual]` so it never counts as a band.
-- Radius `--r-lg` (20 on `soft`; 18 on a phone). Padding 32 from 1024px, 28 below, 24 on a phone:
-  never under 24, and the text always inside it. A filled split panel pads 48.
+- A boxed item uses `--r-lg` (16px on soft) and 24px padding, 20px on phones. A filled split panel pads 48.
 - Title one line at the card-title token (20/18), weight 500. 8px, then at most two lines at 16/24
-  in the ink (`--c-text`, 84% ink: never small grey text), at most 46ch. All running text in a card
+  in secondary ink (`--c-text`), at most 46ch. All running text in a card
   is 16/24 in that ink: points, the line under a stat, plan lines and lists, a quote's name and role, a
   result's bar labels. Muted small text is for labels only (a price's "/ month", a section tag).
   `.card--row` holds the lines at 2 from 1024px so titles and panels line up across a row.
@@ -282,11 +275,7 @@ every other fragment holds its finished picture.**
 - **A real object, no photograph** (tech only): an object from `assets/objects` is the whole
   picture of a `.panel--top` on one of the lit palettes above, centred because it is the subject;
   how to mount, print and pause it is in `effects-objects.md`. It turns, never tilts the card.
-- **A lit border** on the one featured object: `data-glow="edge-glow"` and
-  `data-glow-params='{"fill":1,"wash":0,"speed":400,...}'` on the featured plan (never `data-fx`).
-  It rests on a quiet accent hairline; on hover or keyboard focus one light runs round the edge
-  (about 4.6 s, mounted for that lap only), then fades. Never on scroll or on view. The hairline is
-  the plan's one accent, so its badge is quiet ink.
+- **Featured plans** use the ink border. Interactive controls within the plan respond with colour and a focus ring.
 
 ## Never
 

@@ -15,7 +15,7 @@
     --g-kp     the same, counted on the raw muted text, for the two page grounds (paper, topglow), which set no tokens
     --g-kd     the same for the dark grounds (horizon, deep, photo)
   An attribute or variable the page (or start.mjs) already set is kept (--g-k, --g-kl, --g-kd each on its own: inline on
-  <html> or in a stylesheet). It also pauses the .bg-liquid blobs while their section is off screen, and measures each
+  <html> or in a stylesheet). It measures each
   .bg-photo's words to set how high its scrim stays deep (--scrim-h, or --scrim-w for .bg-photo--left on a wide screen).
   Every other ground is plain CSS.
 */
@@ -74,26 +74,6 @@
   detect(false);
   window.tasteBackgrounds = { detect: () => detect(true) };
 
-  /* the pause disc (WCAG 2.2.2: it moves for more than 5 s): the system's own .loop-pause, same icons, in the section's
-     bottom-right corner; it holds the blobs with .is-held. Nothing under prefers-reduced-motion, where they hold still. */
-  const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4.25" y="3.25" width="2.75" height="9.5" rx="0.9"/><rect x="9" y="3.25" width="2.75" height="9.5" rx="0.9"/></svg>';
-  const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.25 3.7v8.6c0 .62.68 1 1.2.66l6.5-4.3c.47-.31.47-1 0-1.32l-6.5-4.3c-.52-.34-1.2.04-1.2.66Z"/></svg>';
-  const hold = el => {
-    if (el.hasAttribute('data-no-pause') || matchMedia('(prefers-reduced-motion: reduce)').matches || el.querySelector(':scope > .loop-pause')) return;
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'loop-pause';
-    const show = () => { const held = el.classList.contains('is-held'), label = (held ? 'Play' : 'Pause') + ' animation'; b.innerHTML = held ? ICON_PLAY : ICON_PAUSE; b.setAttribute('aria-label', label); b.title = label; };
-    b.addEventListener('click', () => { el.classList.toggle('is-held'); show(); });
-    show(); el.append(b);
-  };
-  const watch = () => {
-    const live = document.querySelectorAll('.bg-liquid');
-    live.forEach(hold);
-    if (live.length && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-off', !e.isIntersecting)), { rootMargin: '80px' });
-      live.forEach(el => { el.classList.add('is-off'); io.observe(el); });
-    }
-  };
   /* the scrim of a photograph must stay deep under every word: measure where the words start (their top edge, as a share of the
      section's height, from the bottom; their right edge for .bg-photo--left on a wide screen) and keep the deep part of the
      scrim 8% past it. A value the section sets itself (inline) is kept. */
@@ -118,6 +98,6 @@
       if ('ResizeObserver' in window && !el.__fit) { el.__fit = new ResizeObserver(() => fit(el)); el.__fit.observe(el); }
     });
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { watch(); photos(); }, { once: true }); else { watch(); photos(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', photos, { once: true }); else photos();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(photos);
 })();

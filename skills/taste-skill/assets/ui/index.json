@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generated": "2026-11-03T09:12:28.298Z",
+ "generated": "2026-11-25T14:44:44.773Z",
  "count": 19,
  "load": "import ui from './ui.js'; <div data-ui-load=\"<name>\"></div>; ui.loadAll(document)",
  "motion": "One rule, the same as system.js: data-ui-loop on the group's one loop (the placeholder, the pasted root or an element around it); every other fragment holds its finished picture. With system.js the page needs nothing more (it marks the rest data-ui-still, and on a phone, on kind other and on a place every fragment); without it, ui.loadAll / ui.startAll do the same once the page holds any data-ui-loop. data-ui-still holds one by hand; data-ui-cycles=\"2\" plays two cycles then rests. One cycle is 2.5 to 4 s, its finished picture held for at most 15% of it, and repeats while on screen, 0.6 s after the fragment shows (ui.js warns in the console about a cycle outside 2.5 to 4 s); the pointer entering its card restarts it, a held fragment plays while the pointer is on its card, and ui.restart(el) restarts the fragments in el (a tab shown again). Every loop gets a pause button in its panel's bottom-right corner (ui.js); nothing moves under reduced motion. A fragment never writes words of its own over the markup: every state it shows comes from the markup (data-* beside the text) or opts.",
@@ -47,7 +47,7 @@
    "js": true,
    "place": "at-rise to-edge fit with --fit-max: 400px, 32 to 56px down, with .stage--fade-b: the body fills the wrapper, so the input always sits past the bottom edge, whatever the panel's height; the answer and its sources stay clear of the fade",
    "edit": "Write the product's own question and answer; keep the answer to three lines and name real sources (a small mark beside the source's name stays in the ink, like the text it sits in).",
-   "loop": "about 3 s a cycle: typing dots for 0.8 s, the answer's last sentence written again in place in under 0.8 s (never below 72% ink), its sources back one by one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+   "loop": "about 2.7 s a cycle: typing dots for 0.8 s, the answer's last sentence written again in place in under 0.8 s (never below 72% ink), its sources back one by one; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
   },
   {
    "name": "cursor",
@@ -150,7 +150,7 @@
    ],
    "js": true,
    "edit": "The query and results as written come first; opts.queries [{q, rows: [[icon, title, meta]]}] adds more, one per cycle. With none it types its own query again.",
-   "loop": "about 3 s a cycle: the query is typed again, results appear one by one, the selection steps down; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+   "loop": "about 2.7 s a cycle: the query is typed again, results appear one by one, the selection steps down; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
   },
   {
    "name": "integrations",
@@ -273,7 +273,7 @@
    ],
    "js": true,
    "edit": "Lines are spans with data-n (line number); tokens use .k keyword, .f function, .n number, .c comment. The first change is the line marked is-mark with the note as written; every other changed line carries its own note as data-note=\"...\" (or opts.steps [{line, text}]). The chip is left as written.",
-   "loop": "about 3 s a cycle: the highlight moves through three changed lines, the note naming each; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+   "loop": "about 2.7 s a cycle: the highlight moves through three changed lines, the note naming each; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
   },
   {
    "name": "diff-review",
@@ -339,7 +339,7 @@
    "js": true,
    "place": "at-corner to-edge with .stage--fade-b, 32 to 40px in: the page runs past the bottom edge (a cut page, never a whole sheet floating in the panel); the first mark sits in its top half so the note never lands in the fade",
    "edit": "Write the client's own document. Mark phrases with <mark class=\"ui-doc__mark\">. The first mark's note is the note box as written; give a later mark its own note on the mark itself (data-kind, data-msg, data-where), or pass opts.notes [{kind, msg, where}] in mark order. A mark with no note stays a quiet underline: the script never shows a note the page did not write.",
-   "loop": "about 3 s a cycle: two marks in turn, each sweeping in with its note sliding up beside it; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+   "loop": "about 2.7 s a cycle: two marks in turn, each sweeping in with its note sliding up beside it; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
   },
   {
    "name": "checklist",
@@ -360,7 +360,7 @@
    "js": true,
    "place": "at-rise fit with --fit-max: 340px, 40px down: whole with 24px or more of ground under it, or cut by 24px or more through its last step only (the steps that tick, the count and the bar never sit in the fade)",
    "edit": "Items are HTML (is-done on those already done). The count keeps its words; only its first figure follows the ticks.",
-   "loop": "about 3 s a cycle: back to the page's state, the open items tick in turn to all done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
+   "loop": "about 2.7 s a cycle: back to the page's state, the open items tick in turn to all done; the finished picture holds for at most 15% of the cycle; restarts when the pointer enters its card"
   },
   {
    "name": "pipeline-board",

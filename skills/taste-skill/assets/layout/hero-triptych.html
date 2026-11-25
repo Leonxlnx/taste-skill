@@ -14,12 +14,12 @@
 <link rel="stylesheet" href="layout.css">
 <style>
 :root {
-  --p-bg: #ffffff; --p-surface: #f3f3f1; --p-ink: #111111; --p-muted: #5f5f5c;
+  --p-bg: #ffffff; --p-surface: #f3f3f1; --p-ink: #111111; --p-muted: #494949;
   --p-accent: #e2472b; --p-accent-ink: #ffffff; --p-action: #111111; --p-action-ink: #ffffff;
-  --p-inv-bg: #111111; --p-inv-surface: #1c1c1c; --p-inv-ink: #f4f4f2; --p-inv-muted: #a3a3a0;
+  --p-inv-bg: #111111; --p-inv-surface: #1c1c1c; --p-inv-ink: #f4f4f2; --p-inv-muted: #b2b2b2;
   --p-inv-accent: #ff7a5c; --p-inv-accent-ink: #111111; --p-inv-action: #f4f4f2; --p-inv-action-ink: #111111;
   --font-display: "Host Grotesk", system-ui, sans-serif; --font-text: "Host Grotesk", system-ui, sans-serif;
-  --display-weight: 500; --display-tracking: -0.035em; --display-tracking-xl: -0.045em; --ly-scale: 1;
+  --display-weight: 500; --display-tracking: -0.035em; --display-tracking-xl: -.012em; --ly-scale: 1;
 }
 /* the collage's pieces: sized in % of the collage, their text in container units, so the phone shows the same picture smaller */
 .ly-collage { container-type: inline-size; }
@@ -92,12 +92,12 @@
 <main id="top">
   <section class="hero hero--triptych" data-enter="still" aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-4">
+      <div class="hero__text span-7">
         <h1 id="hero-h">Menus and posters for restaurants</h1>
         <p class="hero__lead">Change a price once and every menu, poster, table card and screen follows. From €19 a month.</p>
         <div class="hero__cta"><a class="btn btn--primary" href="#made">Start designing</a></div>
       </div>
-      <div class="ly-collage span-7 start-6" role="img" aria-label="A lunch menu, a poster for a coffee week and a table card, each made in Carte from the same price list">
+      <div class="ly-collage span-5 start-8" role="img" aria-label="A lunch menu, a poster for a coffee week and a table card, each made in Carte from the same price list">
         <div class="ly-collage__set is-on">
           <div class="ly-piece" style="left: 40%; top: 38%; width: 56%; height: 58%"><img src="img/photo-c166.jpg" alt="" style="object-position: 50% 55%"></div>
           <div class="ly-piece pc-menu" style="left: 4%; top: 0%; width: 50%">
@@ -148,7 +148,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head"><h2 id="close-h">Start designing</h2></div>
-      <a class="btn btn--primary btn--xl btn--wide" href="#made">Start designing<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <a class="btn btn--primary btn--xl btn--wide" href="#made">Start designing</a>
     </div>
     <div class="closing__links">
       <div class="grid">

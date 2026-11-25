@@ -17,8 +17,8 @@
   "bg": "#ffffff",
   "surface": "#ebebeb",
   "ink": "#111111",
-  "muted": "#6b6b6b",
-  "accent": "#1a4be0",
+  "muted": "#4c4c4c",
+  "accent": "#0a3bd1",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -26,7 +26,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "White holds the whole page with black type, one grey for secondary lines and a pale grey step for tiles and inputs; the footer may invert to black. Blue is the colour of text links and the one button, and nothing else is tinted.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-shawn-golden",
    "opl-lovably",
@@ -47,13 +47,13 @@
    "law",
    "hardware"
   ],
-  "bg": "#f7f9fa",
+  "bg": "#fcfcfc",
   "surface": "#e3e5e6",
   "ink": "#262f33",
-  "muted": "#616a6f",
-  "accent": "#0d7480",
+  "muted": "#4a4a4a",
+  "accent": "#067987",
   "accentInk": "#ffffff",
-  "note": "Cool white and one paler blue-grey step hold everything, with type in dark slate instead of black. Teal appears once per screen at most, as the primary button or one small detail beside the product photograph.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-aevion",
    "aww-cominvi"
@@ -73,13 +73,13 @@
    "wedding",
    "retail"
   ],
-  "bg": "#ebe5e3",
+  "bg": "#fdfdfd",
   "surface": "#d7d1cf",
   "ink": "#2b2622",
-  "muted": "#6a615d",
-  "accent": "#0f7d45",
+  "muted": "#4b4b4b",
+  "accent": "#068645",
   "accentInk": "#ffffff",
-  "note": "A single rosy grey covers the page from top to bottom with brown-black text and grey secondary lines; pictures keep the treatment section 0 deals, greyscale only where it deals black-and-white. Green appears only on the current-page link and on one button in the footer.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-the-queue"
   ]
@@ -97,19 +97,19 @@
    "workshop",
    "law"
   ],
-  "bg": "#e8e8e3",
+  "bg": "#ffffff",
   "surface": "#d4d4cf",
   "ink": "#181715",
-  "muted": "#63625c",
-  "accent": "#bfb21a",
-  "accentInk": "#181715",
+  "muted": "#4c4c4c",
+  "accent": "#cfc00a",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#181715",
     "ink": "#e8e8e3"
    }
   ],
-  "note": "Warm paper grey with near-black type holds the upper page, then whole sections flip to near-black with paper-grey type; no section is tinted. Brass yellow marks one small detail per screen, such as the button or a single word.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-monolog"
   ]
@@ -127,13 +127,13 @@
    "studio",
    "devtool"
   ],
-  "bg": "#dfdedb",
+  "bg": "#fcfcfc",
   "surface": "#cbcbc8",
   "ink": "#26251e",
-  "muted": "#5f5d55",
-  "accent": "#2456d6",
+  "muted": "#4a4a4a",
+  "accent": "#0a42d1",
   "accentInk": "#ffffff",
-  "note": "Stone paper carries the whole page with near-black and grey text. One image at a time is printed in the accent blue as its only ink, and the same blue fills the single button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-compile"
   ]
@@ -151,12 +151,12 @@
    "consumer-product",
    "clinic"
   ],
-  "bg": "#ffffff",
+  "bg": "#fdfdfd",
   "surface": "#ebebeb",
   "ink": "#2a2d34",
-  "muted": "#6e717a",
-  "accent": "#f7941d",
-  "accentInk": "#2a2d34",
+  "muted": "#4b4b4b",
+  "accent": "#d47707",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#05070a",
@@ -167,12 +167,11 @@
     "ink": "#2a2d34"
    }
   ],
-  "note": "White surfaces carry dark reading text. Navy headings and an orange tab identify the active section.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-white-desert",
    "aww-realevate"
-  ],
-  "headingInk": "#1f2b4d"
+  ]
  },
  {
   "id": "three-stones",
@@ -189,19 +188,19 @@
    "law",
    "clinic"
   ],
-  "bg": "#eeecea",
+  "bg": "#ffffff",
   "surface": "#dad8d6",
   "ink": "#333231",
-  "muted": "#6b6763",
-  "accent": "#5c6b54",
-  "accentInk": "#ffffff",
+  "muted": "#4c4c4c",
+  "accent": "#45b609",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#cdc3b6",
     "ink": "#333231"
    }
   ],
-  "note": "Three close stone tones share the interface: the lightest for the page, the middle one for panels, the darkest for a single band, all with charcoal type. Saturated colour is left to the photographs and their backdrops; the grey-green fills the button only.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-noho",
    "aww-vero-new-york"
@@ -222,13 +221,13 @@
    "hardware",
    "consumer-product"
   ],
-  "bg": "#dedad3",
+  "bg": "#fcfcfc",
   "surface": "#cbc7c0",
   "ink": "#0a0a0a",
-  "muted": "#5c5852",
-  "accent": "#256f82",
-  "accentInk": "#ffffff",
-  "note": "Warm putty covers the page and pure black handles all type and the main shapes. The only tint in the interface is teal, used for the one button or a single marker placed near the photographs.",
+  "muted": "#4a4a4a",
+  "accent": "#08809f",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-colonia-zacamil",
    "opl-archiv"
@@ -246,13 +245,12 @@
    "bakery",
    "hotel",
    "wellness",
-   "restaurant",
-   "consumer-product"
+   "restaurant"
   ],
-  "bg": "#ddd6c6",
+  "bg": "#f5f2ee",
   "surface": "#cac3b3",
   "ink": "#2a2a26",
-  "muted": "#59574e",
+  "muted": "#454545",
   "accent": "#4f6238",
   "accentInk": "#ffffff",
   "fields": [
@@ -261,7 +259,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "Sand grey holds the page with charcoal type, and one deep leaf-green band may close it. Moss green is reserved for buttons; brighter greens and blues arrive only through photographs.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-vestris",
    "aww-izanami"
@@ -278,13 +276,12 @@
    "cafe",
    "bakery",
    "restaurant",
-   "hotel",
-   "retail"
+   "hotel"
   ],
-  "bg": "#e5e1d8",
+  "bg": "#f4f2ee",
   "surface": "#d1cdc5",
   "ink": "#261e1b",
-  "muted": "#655d57",
+  "muted": "#454545",
   "accent": "#456f3a",
   "accentInk": "#ffffff",
   "fields": [
@@ -293,7 +290,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "Bone ground with chocolate-brown text takes most of the page. The green is spent on one large flat block, about a third of a screen, and on the button; all other colour comes from photographs.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-davesocozy",
    "opl-mat"
@@ -314,10 +311,10 @@
   "bg": "#111111",
   "surface": "#1c1c1c",
   "ink": "#f2f2f2",
-  "muted": "#8f8f8f",
-  "accent": "#a08672",
-  "accentInk": "#111111",
-  "note": "Soft black holds the page with panels one step lighter, white text and grey secondary lines, so photographs supply all the colour. Muted bronze goes on small markers and the one button only.",
+  "muted": "#afafaf",
+  "accent": "#f7954b",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-21-hrs-on-the-moon",
    "opl-dialkit",
@@ -340,10 +337,10 @@
   "bg": "#0a0d14",
   "surface": "#131824",
   "ink": "#e9edf3",
-  "muted": "#8c9199",
+  "muted": "#acacac",
   "accent": "#5ab9fc",
-  "accentInk": "#0a0d14",
-  "note": "Blue-black ground and slate panels with silver-white text fill the page; no section changes colour. A sky blue marks the buttons and the links, nothing else.",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-viewport-2",
    "aww-moto-finance",
@@ -366,10 +363,10 @@
   "bg": "#161c1a",
   "surface": "#1f2725",
   "ink": "#e3e2da",
-  "muted": "#8e948d",
-  "accent": "#9fc7b8",
-  "accentInk": "#161c1a",
-  "note": "Bone type on green-black from top to bottom, with panels and drawn details barely lighter than the ground so photographs supply the colour. Pale jade is for the booking or contact button alone.",
+  "muted": "#b7b7b7",
+  "accent": "#6ef8c4",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-kereliott",
    "aww-lama-lama-2"
@@ -389,16 +386,16 @@
   "bg": "#0a0a0a",
   "surface": "#151515",
   "ink": "#efefef",
-  "muted": "#8c8c8c",
-  "accent": "#b11226",
-  "accentInk": "#ffffff",
+  "muted": "#ababab",
+  "accent": "#f74b60",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#efefef",
     "ink": "#0a0a0a"
    }
   ],
-  "note": "Black with off-white text and mid-grey texture takes nearly the whole page, and the last sections may invert to off-white with black type. Deep crimson is scattered sparingly: a few characters in a heading, a slider fill, the one button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-textmode-overlay"
   ]
@@ -418,9 +415,9 @@
   "bg": "#0f1f10",
   "surface": "#162a17",
   "ink": "#ffffff",
-  "muted": "#9aa39a",
-  "accent": "#c6f19d",
-  "accentInk": "#171c17",
+  "muted": "#b7b7b7",
+  "accent": "#c6fa94",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#000000",
@@ -431,7 +428,7 @@
     "ink": "#171c17"
    }
   ],
-  "note": "Forest green, black and white sections alternate, with forest green holding the most; photographs stay in moss greens and stone browns. Pale lime sits on small squares only, such as arrow buttons and the closing wordmark.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-alethia"
   ]
@@ -451,16 +448,16 @@
   "bg": "#1c1c1c",
   "surface": "#262626",
   "ink": "#f1f1ef",
-  "muted": "#9a9b96",
-  "accent": "#8fa68e",
-  "accentInk": "#1c1c1c",
+  "muted": "#b8b8b8",
+  "accent": "#52f74b",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#c8c5ba",
     "ink": "#1c1c1c"
    }
   ],
-  "note": "Charcoal holds the page with off-white text, and one section may flip to a pale concrete tone with dark text. Colour comes from the photographs; grey sage is used for the single button and the active state of a control.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-transport",
    "opl-amanda-guo-design"
@@ -481,10 +478,10 @@
   "bg": "#0c0a08",
   "surface": "#181512",
   "ink": "#ffffff",
-  "muted": "#8f8a84",
-  "accent": "#c9a45a",
-  "accentInk": "#0c0a08",
-  "note": "Warm near-black fills the page and photographs sit bright against it, with pure white small type; panels warm to a brown-black. Gold is for one text link or small button per screen, never a field.",
+  "muted": "#ababab",
+  "accent": "#f7bd4b",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-cipher",
    "opl-hebbia"
@@ -505,16 +502,16 @@
   "bg": "#18191b",
   "surface": "#222427",
   "ink": "#eff0f1",
-  "muted": "#9c9ea3",
-  "accent": "#ff4a1f",
-  "accentInk": "#18191b",
+  "muted": "#b5b5b5",
+  "accent": "#ff6742",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#eff0f1",
     "ink": "#18191b"
    }
   ],
-  "note": "Graphite and cool light-grey sections alternate, graphite taking about two thirds, and photographs are chosen calm and low in colour so nothing competes (in full colour where the pictures carry the colour; greyscale only where section 0 deals black-and-white). Safety orange marks the buttons, one thick solid bar across the top of the page and the highlighted item in a list or chart.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-sstr-friction-reduction",
    "aww-boc-studio",
@@ -537,9 +534,9 @@
   "bg": "#0f0f0f",
   "surface": "#1a1a1a",
   "ink": "#ffffff",
-  "muted": "#8f8f8f",
+  "muted": "#aeaeae",
   "accent": "#dafa9c",
-  "accentInk": "#0f0f0f",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#ffffff",
@@ -550,7 +547,7 @@
     "ink": "#0f0f0f"
    }
   ],
-  "note": "A soot-black opening and close bracket white middle sections, all in black, white and grey. Pale lime is the single action colour: every button, and at most one headline set in it on the dark ground.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-builders-table",
    "aww-made-with-gsap-1",
@@ -571,9 +568,9 @@
   "bg": "#0d060b",
   "surface": "#1b0e17",
   "ink": "#ffffff",
-  "muted": "#9a8f97",
+  "muted": "#aaaaaa",
   "accent": "#ff488b",
-  "accentInk": "#0d060b",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#470c35",
@@ -584,7 +581,7 @@
     "ink": "#12141b"
    }
   ],
-  "note": "Near-black and plum at the top and bottom bracket a white middle with navy-black text. Hot pink is reserved for primary buttons, bars in charts and map markers; it never fills a section.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-cerebrium"
   ]
@@ -602,11 +599,11 @@
    "consumer-product",
    "hardware"
   ],
-  "bg": "#ffffff",
+  "bg": "#fdfdfd",
   "surface": "#ebebeb",
   "ink": "#0a0a0a",
-  "muted": "#6b6b6b",
-  "accent": "#d92b21",
+  "muted": "#4b4b4b",
+  "accent": "#d1150a",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -614,7 +611,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "White ground, black text and paper grey for filled panels, with one full black band allowed. Signal red is the only colour in the interface: the button and a few solid blocks, never a word in a headline.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-rsquad",
    "aww-serotoninn",
@@ -636,9 +633,9 @@
   "bg": "#ffffff",
   "surface": "#ebebeb",
   "ink": "#232323",
-  "muted": "#6e6e6e",
-  "accent": "#a1ffcb",
-  "accentInk": "#232323",
+  "muted": "#4c4c4c",
+  "accent": "#00db62",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#a1ffcb",
@@ -649,7 +646,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "White, near-black and two greys fill a board of flat tiles. Mint floods a few whole tiles (one statement, one figure, the closing call to action) and appears nowhere else.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-aspen-search"
   ]
@@ -667,11 +664,11 @@
    "fintech",
    "hardware"
   ],
-  "bg": "#eef0f3",
+  "bg": "#fcfcfc",
   "surface": "#dadcdf",
   "ink": "#0b0c0e",
-  "muted": "#5f646c",
-  "accent": "#1f2de6",
+  "muted": "#4a4a4a",
+  "accent": "#0a18d1",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -679,7 +676,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "Cool pale grey holds the page with near-black type and nothing else tinted. Cobalt starts as the button and one highlighted sentence, takes one whole section as a flat field with white text, then returns as a single button block.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-vessa",
    "opl-specia1ne",
@@ -698,19 +695,19 @@
    "retail",
    "consumer-product"
   ],
-  "bg": "#f7f7f7",
+  "bg": "#fdfdfd",
   "surface": "#e3e3e3",
   "ink": "#1e2621",
-  "muted": "#5f6b64",
-  "accent": "#f6e016",
-  "accentInk": "#1e2621",
+  "muted": "#4b4b4b",
+  "accent": "#d3bf08",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#f6e016",
     "ink": "#1e2621"
    }
   ],
-  "note": "Off-white ground with all type in a near-black bottle green instead of black. Yellow is the only saturated note: the button or one small object on most screens, and one later section that turns fully yellow.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-leo-parpeix-portfolio-2026",
    "opl-wild-as"
@@ -729,23 +726,22 @@
    "fintech",
    "saas"
   ],
-  "bg": "#f7f9f8",
+  "bg": "#ffffff",
   "surface": "#e3e5e4",
   "ink": "#404b4c",
-  "muted": "#5f6a6c",
-  "accent": "#06525c",
-  "accentInk": "#f7f9f8",
+  "muted": "#4c4c4c",
+  "accent": "#04535e",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#06525c",
     "ink": "#f7f9f8"
    }
   ],
-  "note": "Teal headings and actions sit on pale paper. A dark neutral carries paragraphs and labels.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-le-petit-bleu"
-  ],
-  "headingInk": "#06525c"
+  ]
  },
  {
   "id": "navy-pink",
@@ -761,9 +757,9 @@
   "bg": "#1a2039",
   "surface": "#282f49",
   "ink": "#c9bdc0",
-  "muted": "#9f9499",
+  "muted": "#bebebe",
   "accent": "#f9a3c0",
-  "accentInk": "#1f2229",
+  "accentInk": "#000000",
   "note": "Navy grounds keep the page dark. Pink headings and controls sit alongside pale reading text.",
   "seenIn": [
    "aww-trevor-noah"
@@ -782,24 +778,23 @@
    "agency",
    "consumer-product"
   ],
-  "bg": "#edccbe",
+  "bg": "#fdfdfd",
   "surface": "#d9b9ab",
   "ink": "#2a2226",
-  "muted": "#5b5155",
-  "accent": "#351a2b",
-  "accentInk": "#ddd1cd",
+  "muted": "#4b4b4b",
+  "accent": "#4b0431",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#351a2b",
     "ink": "#ddd1cd"
    }
   ],
-  "note": "Blush and aubergine grounds alternate. Dark aubergine headings identify cases on blush, with neutral text on both grounds.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-house-of-honey-1",
    "opl-sarah-matt-wedding"
-  ],
-  "headingInk": "#351a2b"
+  ]
  },
  {
   "id": "cobalt-on-sand",
@@ -815,17 +810,16 @@
    "agency",
    "workshop"
   ],
-  "bg": "#e6dbc7",
+  "bg": "#ffffff",
   "surface": "#d2c8b4",
   "ink": "#343840",
-  "muted": "#5b5f67",
+  "muted": "#4c4c4c",
   "accent": "#062b8a",
-  "accentInk": "#e1dcd2",
-  "note": "Sand paper carries dark reading text. Cobalt headings, drawings and controls identify the project.",
+  "accentInk": "#ffffff",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-illoca"
-  ],
-  "headingInk": "#062b8a"
+  ]
  },
  {
   "id": "oxblood-grey",
@@ -840,23 +834,22 @@
    "retail",
    "studio"
   ],
-  "bg": "#e2e2e2",
+  "bg": "#fcfcfc",
   "surface": "#cecece",
   "ink": "#433938",
-  "muted": "#615757",
-  "accent": "#7d0c14",
-  "accentInk": "#e2e2e2",
+  "muted": "#4a4a4a",
+  "accent": "#83060f",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#7d0c14",
     "ink": "#e2e2e2"
    }
   ],
-  "note": "Grey paper and charcoal text carry the cases. Oxblood marks the headings, selected controls and main action.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-belgrade-architecture"
-  ],
-  "headingInk": "#7d0c14"
+  ]
  },
  {
   "id": "olive-on-bone",
@@ -873,23 +866,22 @@
    "studio",
    "law"
   ],
-  "bg": "#ecebe7",
+  "bg": "#fdfdfd",
   "surface": "#d8d7d3",
   "ink": "#3d4038",
-  "muted": "#61635b",
-  "accent": "#38450f",
-  "accentInk": "#ecebe7",
+  "muted": "#4b4b4b",
+  "accent": "#3e5004",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#38450f",
     "ink": "#ecebe7"
    }
   ],
-  "note": "Bone paper carries neutral text, with olive headings and controls. The footer can use the olive field.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-tengile-malamala-collection"
-  ],
-  "headingInk": "#38450f"
+  ]
  },
  {
   "id": "burgundy-bubblegum",
@@ -904,14 +896,13 @@
   "bg": "#3d0012",
   "surface": "#4d0519",
   "ink": "#c6bcc1",
-  "muted": "#9d9397",
+  "muted": "#b6b6b6",
   "accent": "#ff99d3",
-  "accentInk": "#231a1b",
-  "note": "Burgundy carries pale reading text. Pink headings, buttons and selected states share one accent.",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-madie"
-  ],
-  "headingInk": "#ff99d3"
+  ]
  },
  {
   "id": "bottle-green-gold",
@@ -927,14 +918,13 @@
   "bg": "#133621",
   "surface": "#1a4429",
   "ink": "#dcdacf",
-  "muted": "#a6a49b",
-  "accent": "#f4d96c",
-  "accentInk": "#29302b",
-  "note": "Bottle green surrounds light reading text. Gold is reserved for headings and active controls.",
+  "muted": "#d0d0d0",
+  "accent": "#f8db68",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-lacoste-ace-breaker"
-  ],
-  "headingInk": "#f4d96c"
+  ]
  },
  {
   "id": "cobalt-field",
@@ -949,9 +939,9 @@
   "bg": "#0034eb",
   "surface": "#002ac3",
   "ink": "#ffffff",
-  "muted": "#dfe4f2",
+  "muted": "#ffffff",
   "accent": "#e9e34a",
-  "accentInk": "#111111",
+  "accentInk": "#000000",
   "note": "One electric cobalt fills everything, with white and pale type; photographs keep their own colour and are shown large. A single yellow dot or button is the only other colour on the page.",
   "seenIn": [
    "opl-george-wood",
@@ -971,7 +961,7 @@
   "bg": "#e1ac10",
   "surface": "#cd9d0f",
   "ink": "#0b0b0b",
-  "muted": "#423f37",
+  "muted": "#171717",
   "accent": "#24338f",
   "accentInk": "#ffffff",
   "note": "One warm mustard field for the whole page with black ink only. Royal blue is the single interruption, kept to a sliver along one edge or one small button.",
@@ -992,9 +982,9 @@
   "bg": "#9c1220",
   "surface": "#830115",
   "ink": "#ffffff",
-  "muted": "#d2c6c7",
+  "muted": "#ffffff",
   "accent": "#ffd9dc",
-  "accentInk": "#5b5150",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#2a2a2a",
@@ -1020,9 +1010,9 @@
   "bg": "#ff87ab",
   "surface": "#ea7498",
   "ink": "#0a0a0a",
-  "muted": "#463c3e",
+  "muted": "#0d0d0d",
   "accent": "#def915",
-  "accentInk": "#0a0a0a",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#0a0a0a",
@@ -1048,9 +1038,9 @@
   "bg": "#6bb4ee",
   "surface": "#82c7ff",
   "ink": "#12181d",
-  "muted": "#353b42",
+  "muted": "#0e0e0e",
   "accent": "#ff5a1f",
-  "accentInk": "#12181d",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#ffffff",
@@ -1082,9 +1072,9 @@
   "bg": "#ff7a1f",
   "surface": "#ff9c67",
   "ink": "#080f13",
-  "muted": "#3d3430",
+  "muted": "#000000",
   "accent": "#050f16",
-  "accentInk": "#aea39e",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#ffffff",
@@ -1111,9 +1101,9 @@
   "bg": "#472913",
   "surface": "#55321a",
   "ink": "#e2e0d6",
-  "muted": "#a8a199",
-  "accent": "#525e1b",
-  "accentInk": "#e2e0d6",
+  "muted": "#d1d1d1",
+  "accent": "#d8f74b",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#c79a3e",
@@ -1143,9 +1133,9 @@
   "bg": "#e6e0d2",
   "surface": "#d2ccbf",
   "ink": "#1a1a1a",
-  "muted": "#5f5b52",
+  "muted": "#3a3a3a",
   "accent": "#18bc42",
-  "accentInk": "#1a1a1a",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#ed4b44",
@@ -1186,7 +1176,7 @@
   "bg": "#ffffff",
   "surface": "#ebebeb",
   "ink": "#0a0a0a",
-  "muted": "#6b6b6b",
+  "muted": "#4c4c4c",
   "accent": "#1f30e0",
   "accentInk": "#ffffff",
   "fields": [
@@ -1225,7 +1215,7 @@
   "bg": "#191919",
   "surface": "#242424",
   "ink": "#ffffff",
-  "muted": "#9a9a9a",
+  "muted": "#b5b5b5",
   "accent": "#0c7866",
   "accentInk": "#ffffff",
   "fields": [
@@ -1264,9 +1254,9 @@
   "bg": "#1423b8",
   "surface": "#0e00a1",
   "ink": "#ffffff",
-  "muted": "#e4e2d6",
+  "muted": "#e6e6e6",
   "accent": "#1fc27a",
-  "accentInk": "#0a0a0a",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#1423b8",
@@ -1304,9 +1294,9 @@
   "bg": "#ffd249",
   "surface": "#ebbe2e",
   "ink": "#0a0a0a",
-  "muted": "#504c44",
+  "muted": "#343434",
   "accent": "#f53fd6",
-  "accentInk": "#0a0a0a",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#ffd249",
@@ -1347,7 +1337,7 @@
   "bg": "#ff8126",
   "surface": "#ffa26b",
   "ink": "#111111",
-  "muted": "#403834",
+  "muted": "#000000",
   "accent": "#de194b",
   "accentInk": "#ffffff",
   "fields": [
@@ -1387,7 +1377,7 @@
   "bg": "#e2dccf",
   "surface": "#cec9bc",
   "ink": "#201716",
-  "muted": "#605654",
+  "muted": "#383838",
   "accent": "#4a6f84",
   "accentInk": "#ffffff",
   "fields": [
@@ -1430,7 +1420,7 @@
   "bg": "#ffffff",
   "surface": "#ebebeb",
   "ink": "#000000",
-  "muted": "#666666",
+  "muted": "#4c4c4c",
   "accent": "#a7ff9c",
   "accentInk": "#000000",
   "fields": [
@@ -1469,7 +1459,7 @@
   "bg": "#ffffff",
   "surface": "#ebebeb",
   "ink": "#000000",
-  "muted": "#5f5f5f",
+  "muted": "#4c4c4c",
   "accent": "#fe7141",
   "accentInk": "#000000",
   "fields": [
@@ -1507,11 +1497,11 @@
    "consumer-product",
    "studio"
   ],
-  "bg": "#f7f7f5",
+  "bg": "#ffffff",
   "surface": "#e3e3e1",
   "ink": "#000000",
-  "muted": "#666662",
-  "accent": "#d0106f",
+  "muted": "#4c4c4c",
+  "accent": "#d10a6d",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -1531,7 +1521,7 @@
     "ink": "#000000"
    }
   ],
-  "note": "Neutral paper ground and black type, with each card or tile given its own flat pastel (sky, lime, amber or cyan), never two alike side by side. Magenta is reserved for the logo, the email address and text links.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-medium-rare"
   ]
@@ -1548,11 +1538,11 @@
    "bakery",
    "retail"
   ],
-  "bg": "#f8f8f8",
+  "bg": "#fcfcfc",
   "surface": "#e4e4e4",
   "ink": "#0a0a0a",
-  "muted": "#6a6a6a",
-  "accent": "#1f6b3a",
+  "muted": "#4a4a4a",
+  "accent": "#068433",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -1568,7 +1558,7 @@
     "ink": "#0a0a0a"
    }
   ],
-  "note": "Near-white base with black type; mint and pink are the only two colours and each stands for one side of the product. They first appear as small circles, then as full-screen section fields, and deep green is used only for the button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-tara"
   ]
@@ -1585,11 +1575,11 @@
    "consumer-product",
    "ai"
   ],
-  "bg": "#c3d7e5",
+  "bg": "#fdfdfd",
   "surface": "#d6ebf9",
   "ink": "#141414",
-  "muted": "#4f5159",
-  "accent": "#0f5257",
+  "muted": "#4b4b4b",
+  "accent": "#055b61",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -1613,7 +1603,7 @@
     "ink": "#141414"
    }
   ],
-  "note": "One flat pastel is the whole background and it swaps per project or chapter: pale sky, pink, sand, sage, peach. Type and one solid box stay near-black on all five, and dark teal is only for the button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-belen-jones"
   ]
@@ -1631,12 +1621,12 @@
    "agency",
    "consumer-product"
   ],
-  "bg": "#a6b3bc",
+  "bg": "#ffffff",
   "surface": "#b9c6cf",
   "ink": "#1c1c1c",
-  "muted": "#38424a",
-  "accent": "#2c3620",
-  "accentInk": "#e3e2da",
+  "muted": "#4c4c4c",
+  "accent": "#2f5204",
+  "accentInk": "#ffffff",
   "fields": [
    {
     "bg": "#a6b3bc",
@@ -1655,7 +1645,7 @@
     "ink": "#e3e2da"
    }
   ],
-  "note": "Slate blue-grey, sage and blush share the page as soft flat blocks, one per chapter or menu tile, with dark type; one deep olive block anchors the close with pale type. Olive is also the button colour, and photographs of sea and sky do the rest.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-seasats",
    "opl-nia-creative"
@@ -1674,8 +1664,8 @@
   "bg": "#000000",
   "surface": "#010101",
   "ink": "#ffffff",
-  "muted": "#999999",
-  "accent": "#93f1f7",
+  "muted": "#a6a6a6",
+  "accent": "#90f3fa",
   "accentInk": "#000000",
   "fields": [
    {
@@ -1699,7 +1689,7 @@
     "ink": "#000000"
    }
   ],
-  "note": "Black ground and dark photographs take nearly all of the surface. The only flat colour is a solid block behind each title, which takes a new candy pastel per project (mint, cyan, lemon, orange, sky); cyan is the default for the button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-glitch-grit"
   ]
@@ -1715,11 +1705,11 @@
    "agency",
    "studio"
   ],
-  "bg": "#cbe4f2",
+  "bg": "#fdfdfd",
   "surface": "#b8d0de",
   "ink": "#0a0a0a",
-  "muted": "#545d62",
-  "accent": "#b0298f",
+  "muted": "#4b4b4b",
+  "accent": "#cf0a9f",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -1739,7 +1729,7 @@
     "ink": "#f2f2f2"
    }
   ],
-  "note": "Sky blue and sand yellow are the constant ground, each holding whole sections, with black text throughout. Saturated colour arrives only as small solid objects, and magenta is kept for the contact card and its button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-applied-imagination"
   ]
@@ -1754,11 +1744,11 @@
    "hardware",
    "consumer-product"
   ],
-  "bg": "#a8a8aa",
+  "bg": "#ffffff",
   "surface": "#bbbbbd",
   "ink": "#0e0e0e",
-  "muted": "#3a3a3c",
-  "accent": "#1f5c49",
+  "muted": "#4c4c4c",
+  "accent": "#067553",
   "accentInk": "#ffffff",
   "fields": [
    {
@@ -1766,7 +1756,7 @@
     "ink": "#ffffff"
    }
   ],
-  "note": "One mid grey serves as both page and studio backdrop, so the photographed object seems to stand on the page itself; type is black and one black band comes late. Colour comes only from the product, and racing green is for the single button.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "aww-longbow",
    "aww-l-i-s-a"
@@ -1786,16 +1776,16 @@
   "bg": "#2b2216",
   "surface": "#382d1e",
   "ink": "#e4e2da",
-  "muted": "#a09a92",
-  "accent": "#bda38b",
-  "accentInk": "#28231c",
+  "muted": "#c0c0c0",
+  "accent": "#f7a151",
+  "accentInk": "#000000",
   "fields": [
    {
     "bg": "#bda38b",
     "ink": "#1c150d"
    }
   ],
-  "note": "Dark walnut holds the opening and the close with bone type, and the middle of the page may turn to flat tan around honey-lit photographs. There is no bright accent: tan is the fill for the one button on walnut.",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus.",
   "seenIn": [
    "opl-the-deep-end"
   ]
@@ -1810,18 +1800,15 @@
   "trades": [
    "cafe",
    "bakery",
-   "hotel",
-   "wedding",
-   "studio",
-   "retail"
+   "hotel"
   ],
   "bg": "#f7f3ec",
   "surface": "#e3dfd8",
   "ink": "#2a2622",
-  "muted": "#665e55",
+  "muted": "#464646",
   "accent": "#7a4a2c",
   "accentInk": "#ffffff",
-  "note": "Warm off-white holds the page with brown-black type and one darker paper step for the visit panel and the goods cards. Walnut brown is the one button, the focus ring and the links; photographs carry the rest of the colour."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "flour-terracotta",
@@ -1834,16 +1821,15 @@
    "bakery",
    "cafe",
    "restaurant",
-   "retail",
    "workshop"
   ],
-  "bg": "#f6f1e7",
+  "bg": "#f7f2e9",
   "surface": "#ebe3d4",
   "ink": "#2b241e",
-  "muted": "#676059",
+  "muted": "#454545",
   "accent": "#a3472b",
   "accentInk": "#ffffff",
-  "note": "A flour-white ground with warm brown-black type and a sand step for panels. Terracotta red is the main button and the brand band, never a second fill; the photographs of ovens, tiles and bread bring the warmth."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "linen-harbour",
@@ -1858,13 +1844,13 @@
    "cafe",
    "clinic"
   ],
-  "bg": "#f3f1ec",
+  "bg": "#fcfcfc",
   "surface": "#e6e2d9",
   "ink": "#20252b",
-  "muted": "#5d626a",
-  "accent": "#2c5877",
+  "muted": "#4a4a4a",
+  "accent": "#075e9c",
   "accentInk": "#ffffff",
-  "note": "Linen white with blue-black type and one greyer linen step for the booking form and the room cards. A muted harbour blue is the one button and the brand band; nothing else is tinted."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "limewash-ochre",
@@ -1876,17 +1862,16 @@
   "trades": [
    "bakery",
    "hotel",
-   "studio",
    "workshop",
    "restaurant"
   ],
-  "bg": "#f4efe5",
+  "bg": "#f6f2ea",
   "surface": "#e7dfcf",
   "ink": "#29251e",
-  "muted": "#645f57",
+  "muted": "#454545",
   "accent": "#8c6418",
   "accentInk": "#ffffff",
-  "note": "A limewashed off-white with near-black brown type and a straw step for panels. Ochre is the button and the focus ring, darkened so its white label reads; the ground stays quiet under warm photographs."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "clay-pine",
@@ -1899,16 +1884,15 @@
    "wellness",
    "hotel",
    "cafe",
-   "workshop",
-   "studio"
+   "workshop"
   ],
-  "bg": "#efe9e0",
+  "bg": "#f6f2ed",
   "surface": "#e2d9cb",
   "ink": "#22261f",
-  "muted": "#5f6158",
+  "muted": "#454545",
   "accent": "#2e5b44",
   "accentInk": "#ffffff",
-  "note": "Pale clay holds the page with green-black type and a darker clay step for panels. Pine green is the one button and may fill the brand band at the close; wood, stone and plants in the photographs match it."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "chalk-tomato",
@@ -1923,13 +1907,13 @@
    "retail",
    "bakery"
   ],
-  "bg": "#f8f5ef",
+  "bg": "#fcfcfc",
   "surface": "#ede7dc",
   "ink": "#1f1b18",
-  "muted": "#645c54",
-  "accent": "#b8381f",
+  "muted": "#4a4a4a",
+  "accent": "#cd2a0a",
   "accentInk": "#ffffff",
-  "note": "Chalk white with near-black type and one warm step for the menu panel. Tomato red is the order button and the brand band and appears nowhere else; the menu stays black type on the ground."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "plaster-rose",
@@ -1944,13 +1928,13 @@
    "wellness",
    "studio"
   ],
-  "bg": "#f6f0eb",
+  "bg": "#fdfdfd",
   "surface": "#ebe0d9",
   "ink": "#2c2325",
-  "muted": "#6a5d5e",
-  "accent": "#9a3c4c",
+  "muted": "#4b4b4b",
+  "accent": "#cc0a2b",
   "accentInk": "#ffffff",
-  "note": "Pale plaster with warm near-black type and a pinker plaster step for panels. A deep rose is the one button and the brand band; flowers and fabric in the photographs carry the softer colour."
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  },
  {
   "id": "steel-orange",
@@ -1965,12 +1949,12 @@
    "retail",
    "consumer-product"
   ],
-  "bg": "#eeeeeb",
+  "bg": "#ffffff",
   "surface": "#dadad7",
   "ink": "#1c1d1f",
-  "muted": "#5c5e62",
-  "accent": "#c2501b",
-  "accentInk": "#ffffff",
-  "note": "Light steel grey with graphite type and one darker grey step for panels and the price rows. Workshop orange is the one button and the focus ring; tools and bikes in the photographs bring their own colour."
+  "muted": "#4c4c4c",
+  "accent": "#d1490a",
+  "accentInk": "#000000",
+  "note": "Use the page ground for reading. Reserve the action colour for the primary action, links and focus."
  }
 ]

@@ -2,20 +2,19 @@
 
 Read `compose.md` before the first page. Look up a recipe here when it fits the section's content. Each gives its job, markup and sizes at 1440 and 390. For place pages see `sections.md` section 4.
 
+<!-- recipe index -->
+[Navigation](#navigation) · [Heroes](#heroes) · [Proof](#proof) · [Features](#features) · [Photographs, rooms, services and people](#photographs-rooms-services-and-people) · [Sections for a kind of content](#sections-for-a-kind-of-content) · [Price and questions](#price-and-questions) · [Closes](#closes) · [Compositions](#compositions) · [Footers](#footers) · [Page plans](#page-plans)
+<!-- end recipe index -->
+
 ## What every recipe assumes
 
-- **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80, gutter 24, h1 72,
-  h2 48; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
+- **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80, gutter 24, h1 64,
+  h2 40; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
   it and `--padb` under its last block (`layout-v4.md` section 2); the "At 1440" sizes below are what
   the content takes, never a screen to fill. Never add a number the system lacks; a missing value
   becomes a token.
 - **Splits.** Align the top edges. Keep text first in the markup and at phone width, including the mirrored composition.
-- **Cards.** `cards.md` builds the card, its panel, the ground and the UI on it, and wins over
-  anything here except the depth rule: two boxes at most. A card whose panel holds UI is
-  `.card--open` (no box: its words on the page ground, the panel under them with four round
-  corners) or runs its panel flush (`.panel--flush`); an inset panel holds only a picture. From 640
-  to 1023 a card with a panel takes the full row; from 1024 to 1279 span-4 cards with a panel go
-  two-up, so a span-4 panel is never under 304px.
+- **Cards.** For a quiet page use these roles with the panel placements in `cards.md`. Keep repeated features, services, steps, posts and people open. A picture may sit above the title and sentence. Put plans with a price and action, goods, rooms and documents in a flat `.card--boxed` or `.card--plan` when the whole item needs a boundary. Use 16px corners, a visible 1px edge or a tint, and no resting shadow. Padding and gaps are 24px on desktop and 20px on phones. Separate ordinary lists with space. Keep hairlines for tables, definitions, fields and the top of the footer.
 - **Grounds in frames (tech).** The page has one effect and one card group's still grounds
   (`effects-usage.md`). Where a recipe below says "the card ground", it means that group's dealt id
   with its own seed per panel; "the effect" means the page's one effect, only in the hero or the one
@@ -196,7 +195,7 @@ row on a service or place page.
 `figcaption`): a 40px photograph of the person (a quote needs a face) or the company's logo, the
 name over role and company. The stat: `p.t-stat` (38 at 1440, 28 at 390) and a grey line of up to eight words.
 
-**At 390.** Quote, person, then the stat, a 1px hairline and 24px above it.
+**At 390.** Quote, person, then the stat, 24px above it.
 
 **Copy.** A before and an after, no praise words. Example form: "We used to rebuild the rota every
 Sunday night. Now it takes twenty minutes on Friday." / name, role, home / "20 min", "to plan a week
@@ -242,7 +241,7 @@ hero frame of the same width.
 **At 1440.** The statement on `span-8`: an h2 (48px, at most 4 lines), the first sentence in ink,
 the rest in `<span class="muted">`. 48px below, `.frame.frame--hero` on `span-12` (page CSS
 `aspect-ratio: 2 / 1`) holding the cut-out photograph, centred, at least 64px from every edge; 48px
-below, three facts on `span-4`: a 1px hairline, the value at 28px with its unit, a grey line. A
+below, three facts on `span-4`: the value at 28px with its unit, a grey line. A
 technical product may show the client's render or its object of its own kind instead (`.frame--lit`
 with `<div data-print="print-…">`, its `hero` preset large and right of centre, the facts in
 `div.frame__text` at the lower left). For a product without photographs, draw its known shape or output. A requested 3D view uses `data-product` (`effects-objects.md`).
@@ -782,9 +781,7 @@ includes. From 1024 each card is a subgrid of its rows so buttons and lines alig
 **Copy.** Example, Rotaro: "Priced per restaurant. Try any plan free for 14 days."; Team: "For
 restaurants with 15 to 50 staff", €59/month.
 
-**Visual and motion.** No ground; still. On tech the featured plan's border may be lit
-(`fx-pricing`, or `data-glow="edge-glow"`: one light round its edge on hover or focus) when that is
-the page's one effect.
+**Visual and motion.** Keep the plan still with an ink border. Its button changes colour on hover.
 
 **Mistakes.** Cards that change height on the switch; a saving that does not match the prices; plans
 for something that is no subscription (a product, a place).
@@ -867,7 +864,7 @@ included."; "Book a class".
 ## close-word
 
 **Job and use.** The h2 and the button, then the client's name set across the `.wrap` in the display
-face. Use it when the dealer names it, including on a place page.
+face only when the quiet plan also deals a large wordmark. Otherwise show the heading and action alone.
 
 **At 1440.** `.closing__cta.close--word`: the h2 and the button on one head row, then the name as
 one line. The shared script fits its font size to the real name and font. Very long names wrap.
@@ -976,14 +973,14 @@ coloured social icons; effects in the footer.
 
 ## footer-dark
 
-**Job and use.** Figma's and x.ai's footer: a dark ground, the name set large, the link columns.
+**Job and use.** A dark ground for the company name and link columns.
 Software and product (the one dark band at the end).
 
 **At 1440.** `footer.closing.footer--dark.ground-inverse`: `.grid` with the company block on
-`span-4` (the mark and the name at 48px in the display face), four `.footer__col.span-2`, the legal
+`span-4` (the mark and name at the item-title size), four `.footer__col.span-2`, the legal
 row. On a dark page system.css keeps it a step darker than the page with a hairline on top.
 
-**At 390.** The name at 30px, columns two-up.
+**At 390.** Keep the normal name size and set the columns two-up. Only a dealt large wordmark spans the footer.
 
 **Mistakes.** A second dark section right above it.
 
@@ -998,8 +995,7 @@ display face), one line on the way there (the stop, minutes on foot) and `a.link
 (the OpenStreetMap search, `copy.md`; "See the area" with a district only, none with a town only); on
 `span-4 start-9` "Opening hours" over `dl.hours` with
 `data-tz` (system.js marks today). Then the nav row (the logo, the nav's words, Contact), the legal
-row with the credits line last; then on a place the name set wide across the `.wrap` in the display
-face at 400, except on `colour-band`. No button.
+row with the credits line last; a wide name is optional only when the PLAN deals it. No button.
 
 **At 390.** The address at 24 to 30px, the hours under it, the nav row wrapping.
 
@@ -1025,7 +1021,7 @@ These sketches start with the content. Keep the frame printed for the actual bri
 
 ## Software
 
-An invoicing tool can show the open invoice beside the client thread. Give the visitor a switcher for disputed, due and paid invoices. Put the pricing meter over the plans. If a text moment is dealt, put it on the heading that explains the invoice.
+An invoicing tool can show the open invoice beside the client thread. Give the visitor a switcher for disputed, due and paid invoices. Use a pricing meter only when the supplied rates support different outcomes. If a text moment is dealt, put it on the heading that explains the invoice.
 
 ## Product
 

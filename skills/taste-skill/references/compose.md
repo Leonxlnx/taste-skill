@@ -1,5 +1,7 @@
 # Compose a section
 
+Write `shows  <subject> | <source>` on each section line, or `shows  nothing` for a text-only section. Show what a heading describes beside or below it. Use `illustrate` for a drawing or `data-picture` for supplied numbers. Keep text-only sections to one quarter of a quiet plan and picture-free desktop screens to one in four.
+
 Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
 
 ## The method
@@ -15,7 +17,7 @@ Print the answer first. Add a control when changing an input gives a materially 
 4. **Keep pairs together.** Use an uneven grid only where the content needs it. Short definition lists use `.facts--compact` (42rem maximum). Put the caption in its own figure and keep menu name and price on one row in a column sized for both.
 5. **Type is the first tool.** One display-size numeral or word for the thing that matters, the
    scale's steps for the rest, tabular numerals in every column of numbers, labels in the small
-   size and the muted colour. Hairlines rule a list, space groups, and a ground is for the one
+   size and the muted colour. Space separates list entries, hairlines define tables, and a ground is for the one
    thing that is a surface (a window, a ticket, a card). No decoration that carries no fact.
 6. **Build it with the kit's tokens** and this client's content: real names, plausible numbers
    rounded as a person would write them, units. Changing one item preserves every other item’s selection.
@@ -51,10 +53,10 @@ record, a sum, a booking, a character), with the same identity and a legible cha
 
 A section about goods, dishes or rooms shows them. Spend the available photographs in rows so the visitor can see the range.
 
-- Show independent choices together, with the selected language, environment or plan’s content visible. Reserve a scroll-held sequence for steps that depend on each other.
+- Show independent choices together, with the selected language, environment or plan’s content visible. Show dependent steps in reading order. Only a small side picture may stick.
 - Place a fact, unit, source or link 16–32px from its picture or table at 1440 and 12–20px on a phone, closer than the next heading.
 - One standalone statement of twelve words or fewer may break into two or three lines starting on different column lines.
-- Related sections may share a ground. Change it when the visitor’s task changes.
+- Related sections may share the page ground.
 
 ## The section
 
@@ -82,7 +84,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Steps**
 
-- `rail` A vertical line with numbered stops; each stop says what happens and what the customer gets; the line fills as the reader passes.
+- `rail` A vertical line with numbered stops; each stop says what happens and what the customer gets; the line connects the stops.
 - `week-strip` The process on a strip of weeks or days as columns, each step a bar across the time it takes.
 - `route` The steps as stops on a drawn route or transit line, stop names set like a line map.
 
@@ -126,7 +128,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 **Place**
 
 - `edge-split` Keep words on five wrap columns and take the photograph from the next column to the screen edge. Alternate sides on a repeat.
-- `colour-half` Set a heading, short list and action on one brand-colour half with a photograph filling the other. Use it at most twice.
+- `colour-half` Set a heading, short list and action on one brand-colour half with a photograph filling the other. Use the secondary ground only where the ground deal puts it.
 - `shopfronts` Show each front in a portrait photograph with the street and one fact underneath.
 - `day-bar` Opening hours as a bar of the day with the open stretches filled.
 - `neighbourhood` A small drawn map: a few streets, water or a park, the place and two landmarks. No map tiles.
@@ -140,7 +142,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Story**
 
-- `name-foot` Set the client’s name across the full wrap at the foot of the footer as the one oversized type moment.
+- `name-foot` When the PLAN deals a large wordmark, the client’s name may span the footer.
 - `story-line` Set the origin in one sentence at 40–56px with two or three little photographs in the line at text height.
 - `archive-prints` Place four to six dated photographs on an offset grid around a short paragraph. Give each a white border and its year and keep the prints straight.
 - `release-documents` Give each release its date, one line on what changed and aligned links to its real files.

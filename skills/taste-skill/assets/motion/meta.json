@@ -229,7 +229,7 @@
     ".press": "shared press feedback for custom buttons, chips and tabs",
     "[data-m-progress]": "sets --p on a small element as it crosses the viewport; CSS fallback 1",
     "[data-m-draw]": "After a control in the own section is used, draw the visible path once in 400ms.",
-    "svg.m-arrow": "<svg class=\"m-arrow\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path class=\"m-arrow__stem\" d=\"M1 6h8\"/><path class=\"m-arrow__head\" d=\"M4.5 2.5 8 6l-3.5 3.5\"/></svg> as the last child of a button, link, pill or a row's link",
+    "svg.m-arrow": "A stationary mark for a download or external link. Keep the main action text-only.",
     "[data-m-count]": "After an action in its own section, count to the written value.",
     "[data-m-loop]": "A product or media frame contains the loop and its pause control.",
     ".m-draw": "<path class=\"m-draw\" pathLength=\"1\" d=\"...\"/> inside a [data-m-loop] svg: a route, a signature, steam, a path draws, holds and draws again",

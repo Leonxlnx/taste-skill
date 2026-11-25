@@ -9,27 +9,26 @@
 
 /* ---------------------------------------------------------------- the card */
 .card {
-  --c-r: 20px;                      /* card radius */
-  --c-pad: 28px;                    /* text padding = the panel's side inset */
-  --c-gap: 8px;                     /* an inset panel's margin; its radius is --c-r minus this */
-  --c-border: color-mix(in oklab, var(--ink) 8%, transparent);
-  --c-text: color-mix(in oklab, var(--ink) 84%, var(--card));   /* card text: the ink, a touch softer than titles */
-  --c-hi: oklch(from var(--card) 1 0 0 / clamp(0, calc(0.09 - l * 0.09), 0.07));
-  --c-sh: oklch(from var(--card) 0 0 0 / calc(0.07 - l * 0.04));
+  --c-r: 16px;
+  --c-pad: 0px;
+  --c-gap: 0px;
+  --c-border: var(--line-strong);
+  --c-text: var(--muted);
   position: relative; display: flex; flex-direction: column; min-width: 0;
-  padding: var(--c-pad); border-radius: var(--c-r);
-  background: var(--card); color: var(--ink);
-  border: 1px solid var(--c-border);
-  box-shadow: inset 0 1px 0 var(--c-hi), 0 1px 2px var(--c-sh);
-  overflow: clip;
-  gap: 0;
+  padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink);
+  box-shadow: none; overflow: visible; gap: 0;
 }
-@media (min-width: 1024px) { .card { --c-pad: 32px; } }
-@media (max-width: 639px) { .card { --c-r: 18px; --c-pad: 20px; } }
+.card:is(.card--boxed, .card--plan, .plan) {
+  --c-pad: 24px;
+  --c-gap: 8px;
+  padding: var(--c-pad); border: 1px solid var(--c-border); border-radius: var(--c-r);
+  background: var(--card); overflow: clip;
+}
+@media (max-width: 639px) { .card:is(.card--boxed, .card--plan, .plan) { --c-pad: 20px; } }
 
 .card > h3, .card__title {
-  margin: 0; font-family: var(--font-text); font-size: 18px; line-height: 26px; font-weight: 560;
-  letter-spacing: -0.012em; color: var(--ink); text-wrap: balance;
+  margin: 0; font-family: var(--font-text); font-size: var(--t-card, 20px); line-height: 1.3; font-weight: 500;
+  letter-spacing: 0; color: var(--ink); text-wrap: balance;
 }
 /* the two lines under a title: 16px in the ink (a touch softer than the title), never small grey text */
 .card > p, .card__text {
@@ -214,7 +213,7 @@
   .card--split > .panel { margin: 28px calc(var(--c-gap) - var(--c-pad)) calc(var(--c-gap) - var(--c-pad)); min-height: 360px; }
 }
 .card__points { display: grid; gap: 0; margin: 24px 0 0; padding: 0; list-style: none; }
-.card__points li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--c-border); font-size: 16px; line-height: 24px; color: var(--c-text); }
+.card__points li { display: flex; gap: 12px; padding: 12px 0; font-size: 16px; line-height: 24px; color: var(--c-text); }
 .card__points li b { color: var(--ink); font-weight: 500; }
 .card__points svg { width: 18px; height: 18px; margin-top: 3px; flex: none; color: var(--ink); }
 
@@ -266,18 +265,15 @@
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 16%, transparent);
 }
 .plan__btn--primary { background: var(--ink); color: var(--card); box-shadow: inset 0 1px 0 color-mix(in oklab, var(--card) 18%, transparent); }
-.plan__list { display: grid; gap: 10px; margin: 24px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid var(--c-border); font-size: 16px; line-height: 24px; color: var(--c-text); }
+.plan__list { display: grid; gap: 10px; margin: 24px 0 0; padding: 20px 0 0; list-style: none; font-size: 16px; line-height: 24px; color: var(--c-text); }
 .plan__list li { display: flex; gap: 10px; }
 .plan__list li::before {
   content: ""; flex: none; width: 16px; height: 16px; margin-top: 4px; background: var(--ink); opacity: 0.85;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8.4 2.8 2.8 6.2-6.4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3.5 8.4 2.8 2.8 6.2-6.4' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat;
 }
-/* the featured plan: the same --card fill as its neighbours and a quiet accent hairline, its one accent
-   touch (so the badge is quiet ink). On hover or focus a light runs once round the edge: an edge-glow
-   canvas (fill 1, wash 0) mounted for that lap only, which paints the same fill under a lit border and
-   then fades. Never a light that runs because the plan scrolled into view, never a comet left on one edge */
-.plan.is-featured { border-color: color-mix(in oklab, var(--accent) 48%, transparent); background: var(--card); }
+/* The featured plan has an ink edge. Only a loud effect may fade its canvas. */
+.plan.is-featured { border-color: var(--ink); background: var(--card); }
 .plan.is-featured.is-fading > .fx-canvas { opacity: 0 !important; transition: opacity var(--m-state, 180ms) var(--ease) !important; }
 .plan.is-featured .plan__badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font: 500 var(--t-label)/1 var(--font-text); color: var(--ink); background: color-mix(in oklab, var(--ink) 7%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent); }
 

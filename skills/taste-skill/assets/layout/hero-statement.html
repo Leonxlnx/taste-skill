@@ -16,15 +16,16 @@
 <link rel="stylesheet" href="demo.css">
 <style>
 :root {
-  --p-bg: #0d141b; --p-surface: #16202a; --p-ink: #eef1ee; --p-muted: #9aa6b0;
+  --p-bg: #0d141b; --p-surface: #16202a; --p-ink: #eef1ee; --p-muted: #b5b5b5;
   --p-accent: #7cc3db; --p-accent-ink: #0d141b; --p-action: #eef1ee; --p-action-ink: #0d141b;
-  --p-inv-bg: #f6f5f1; --p-inv-surface: #ebeae4; --p-inv-ink: #15202b; --p-inv-muted: #535e68;
+  --p-inv-bg: #f6f5f1; --p-inv-surface: #ebeae4; --p-inv-ink: #15202b; --p-inv-muted: #444444;
   --p-inv-accent: #1f6f8b; --p-inv-accent-ink: #ffffff; --p-inv-action: #15202b; --p-inv-action-ink: #f6f5f1;
   --font-display: "Newsreader", Georgia, serif; --font-text: "Hanken Grotesk", system-ui, sans-serif;
-  --display-weight: 400; --display-tracking: -0.018em; --display-tracking-xl: -0.026em; --ly-scale: 1.06;
+  --display-weight: 400; --display-tracking: -0.018em; --display-tracking-xl: -.012em; --ly-scale: 1.06;
 }
 .hero--statement .pill { margin-bottom: var(--s-6); }
-.funds { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(700px, var(--ly-fit)); display: grid; place-items: center;
+@media (min-width: 1024px) and (max-width: 1199px) { #funds.section { padding-top: var(--s-7); } }
+.funds { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(512px, var(--ly-fit)); display: grid; place-items: center;
   background: radial-gradient(70% 70% at 30% 20%, color-mix(in oklab, var(--ground-surface) 80%, white), transparent 70%), var(--ground-bg); }
 .funds .d-card { width: min(420px, calc(100% - 48px)); padding: 20px 22px; }
 .fund { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 0; border-top: 1px solid rgb(0 0 0 / .07); font-size: 13.5px; }
@@ -111,7 +112,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head"><h2 id="close-h">Try it free for 60 days</h2></div>
-      <a class="btn btn--primary btn--xl btn--wide" href="#funds">Try it free for 60 days<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <a class="btn btn--primary btn--xl btn--wide" href="#funds">Try it free for 60 days</a>
     </div>
     <div class="closing__links">
       <div class="grid">

@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generated": "2026-11-25T12:59:45.625Z",
+ "generated": "2026-11-25T14:49:32.729Z",
  "count": 18,
  "dealt": 6,
  "kinds": {
@@ -559,9 +559,9 @@
     "playful"
    ],
    "intensity": "quiet",
-   "look": "A content heading rises line by line on first entry, with 90 ms between lines. The surrounding content stays readable. On an older section mount, marked parts follow the heading.",
+   "look": "On a loud page a content heading rises line by line on first entry, with 90 ms between lines. The surrounding content stays readable. On an older section mount, marked parts follow the heading.",
    "reduced": "The section stands as written.",
-   "phone": "The heading rises line by line once on a phone and on desktop.",
+   "phone": "The loud heading can rise once. Quiet and lively headings stay still.",
    "phoneRuns": true,
    "maxPerPage": 1,
    "weight": 0.7,
@@ -1109,12 +1109,13 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "A word changes in a fixed-width grid cell inside an h1 or h2. The pause button sits below the heading. Refuse it if the widest alternative changes the line count at 390px.",
+   "look": "The authored word stays in the heading.",
    "reduced": "The written word stands.",
-   "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
-   "phoneRuns": true,
+   "phone": "The written word stands.",
+   "phoneRuns": false,
    "maxPerPage": 1,
    "weight": 0,
+   "retired": "The heading keeps its authored wording at every temper.",
    "needs": {
     "words": "An h1 or h2 with two to four alternatives in the brief. Refuse it if the widest word changes the line count at 390px.",
     "carry": [

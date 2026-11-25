@@ -1,5 +1,5 @@
 {
-  "about": "16 section and page grounds drawn in CSS (backgrounds.css). One class on a section, a wrapper, body or a visual's panel. The twelve section grounds set the page tokens for their children; the two page grounds (paper, topglow) set none and only paint. Each works on light and dark palettes and keeps ink 7:1 and muted 4.5:1 on its text zone (check.mjs measures it). pick.mjs deals a page's grounds (at most 2 beyond the flat tokens, no page ground; paper and grain are marked dealt:false and never dealt, since a ground with grain is the page's one effect; --effect also skips the grounds marked texture), for software, tech and gaming pages only (VI-41, VI-42): a product, service or place page is flat and no ground is listed for it (a product page with a technical subject asks with --kind tech and is dealt as software). Grounds list the sections they fit (sections): pick.mjs deals those; strict ones go nowhere else, byRole ones (band, field) also fit by role when the plan has none of their ids. Grounds marked coloured (band, field, stage; grain is never dealt) count toward the one coloured ground every page of five sections or more holds.",
+  "about": "16 section and page grounds drawn in CSS (backgrounds.css). One class on a section, a wrapper, body or a visual's panel. The twelve section grounds set the page tokens for their children; the two page grounds (paper, topglow) set none and only paint. Each works on light and dark palettes and keeps ink 7:1 and muted 4.5:1 on its text zone (check.mjs measures it). pick.mjs deals a page's grounds (at most 2 beyond the flat tokens, no page ground; paper and grain are marked dealt:false and never dealt, since a ground with grain is the page's one effect; --effect also skips the grounds marked texture), for software, tech and gaming pages only (VI-41, VI-42): a product, service or place page is flat and no ground is listed for it (a product page with a technical subject asks with --kind tech and is dealt as software). Grounds list the sections they fit (sections): pick.mjs deals those; strict ones go nowhere else, byRole ones (band, field) also fit by role when the plan has none of their ids. Grounds marked coloured (band, field, stage; grain is never dealt) count toward the colour sample in the standalone picker. A built page follows the section ground map in its PLAN.",
   "version": 6,
   "weights": {
     "1": "calm: reads as the page",
@@ -747,9 +747,9 @@
       "name": "Liquid",
       "kind": "soft",
       "weight": 2,
-      "animated": true,
-      "mood": "alive, two slow blobs of two neighbouring hues drifting; transforms only",
-      "where": "a call to action or a hero with a heading and two buttons. One a page; it is the page's moving thing, so no other looping effect in view",
+      "animated": false,
+      "mood": "A soft mesh of two neighbouring hues.",
+      "where": "A quiet colour field behind the hero or close.",
       "roles": [
         "hero",
         "close"
@@ -782,10 +782,6 @@
         0,
         1,
         1
-      ],
-      "checkFrames": [
-        "liquid-mid",
-        "liquid-end"
       ],
       "strict": true,
       "texture": true

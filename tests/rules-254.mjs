@@ -11,6 +11,17 @@ import {fileURLToPath} from 'node:url';
 // the story shapes, copy-story and the checker's story reads, without a browser (references/story.md)
 await import('./story.mjs');
 
+// Exact boundaries for the full-page finish measurements.
+const {finishWarnings} = await import('../skills/taste-skill/scripts/still-finish.mjs');
+const base = {empty:7, screens:20, lines:3, fraction:.5, rules:34, arrows:3};
+assert.deepEqual(finishWarnings(1440,base,.006),[]);
+assert.deepEqual(finishWarnings(390,base,.012),[]);
+const finishIds = (w,m,p) => finishWarnings(w,m,p).map(f=>f.check).sort();
+assert.deepEqual(finishIds(1440,{...base,empty:8,fraction:.49,rules:35,arrows:4},.0061),
+  ['accent-wide','arrow-links','headline-narrow','picture-sparse','rule-heavy']);
+assert.deepEqual(finishIds(390,base,.0121),['accent-wide']);
+assert.deepEqual(finishIds(1440,{...base,lines:2,fraction:.49},0),[]);
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skill = path.join(root,'skills','taste-skill');
 const tmp = fs.mkdtempSync(path.join(process.env.TASTE_SKILL_TMP || os.tmpdir(),'rules-254-'));
@@ -49,7 +60,8 @@ function fixture(bad) {
   return file;
 }
 const variant = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only')+1] : '';
-if (variant && !['good','broken','booking','bands','headings','outcomes','regressions','motion'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
+const groups = ['good','broken','booking','bands','headings','outcomes','regressions','motion','finish'];
+if (variant && !groups.includes(variant)) throw Error('Use --only with one of '+groups.join(', '));
 if (!variant || variant==='outcomes') {
   fs.writeFileSync(path.join(tmp,'store-hop.html'),'<a href="https://store.steampowered.com/search/?term=wren">Find Wren</a>');
   fs.writeFileSync(path.join(tmp,'store-item.html'),'<a href="https://store.steampowered.com/app/1234">Official store page</a>');
@@ -190,7 +202,8 @@ for (const bad of [false,true]) {
   fs.writeFileSync(file+'.json',JSON.stringify(result,null,2));
   for (const row of result) {
     const f = row.findings;
-    for (const id of ['section-air','empty-band','ground-flat','visual-caption','still-wrong','own-timer','hero-fold','own-count','pinned','brand-lookalike']) {
+    test(!f.some(v => v.rule === "ground-flat"), "a page may use one ground throughout");
+    for (const id of ['section-air','empty-band','visual-caption','still-wrong','own-timer','hero-fold','own-count','pinned','brand-lookalike']) {
       test(f.some(v=>v.rule===id) === bad,row.size+' '+id+' '+(bad?'detected':'clear'));
     }
     test(f.some(v=>v.rule==='photo-set' && v.sev==='WARN'),row.size+' built subject makes the place photo count advisory');
@@ -210,7 +223,7 @@ for (const bad of [false,true]) {
       for (const rule of ['small-terms','preview-handoff','service-notice', ...(w.width===390 ? ['subject-first'] : [])])
         test(hits.some(f=>f.check===rule && f.sev==='WARN') === bad,w.width+' '+rule+' '+(bad?'detected':'clear'));
       test(hits.some(f=>f.check==='small-terms' && /Ships March/.test(f.text))===bad,w.width+' an unlabelled dispatch date is measured');
-      for (const name of ['ground-flat','own-count','own-timer','still-wrong','empty-band','visual-caption']) {
+      for (const name of ['own-count','own-timer','still-wrong','empty-band','visual-caption']) {
         test(hits.some(v=>v.check===name)===bad,w.width+' consistency '+name+' '+(bad?'detected':'clear'));
       }
       test(hits.some(v=>v.check==='section-air' && v.sev==='FAIL')===bad,w.width+' consistency cramped spacing');
@@ -243,6 +256,26 @@ for (const bad of [false,true]) {
 }
 const assets=path.join(skill,'assets');
 if (!variant || ['booking','headings'].includes(variant)) fs.symlinkSync(assets,path.join(tmp,'assets'),'junction');
+if (!variant || variant==='finish') {
+  for (const bad of [false,true]) {
+    const file=path.join(tmp, bad?'finish-broken.html':'finish-open.html');
+    const visual='<svg role="img" aria-label="Assembly drawing" width="100" height="100"><path d="M0 0h90v90H0z"/></svg>';
+    const row='<div style="height:3px;border-top:1px solid #999"></div>';
+    const link='<a href="#drawing">Assembly →</a> ';
+    const text='Assembly instructions for the new workshop';
+    const content=Array.from({length:4},(_,i)=>'<section style="height:100vh">'+
+      (i===0?'<h1 style="font:64px/1 sans-serif;width:'+(bad?'260px':'95%')+'">'+text+'</h1>'+link.repeat(bad?4:3)+row.repeat(bad?35:34):'')+
+      (!bad||i===0?visual:'')+'</section>').join('');
+    fs.writeFileSync(file,'<!doctype html><meta name="viewport" content="width=device-width"><style>:root{--p-accent:#0055ff}body{margin:0;background:white}h1{margin:0}main{max-width:1280px;margin:auto}section{box-sizing:border-box}'+(bad?'section:first-child{background:#0055ff}':'')+'</style><main>'+content+'</main>');
+    const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--widths','1440,390','--json','--no-rhythm-expand','--no-sweep','--profile',profile,'--out',path.join(tmp,'still-'+bad)]);
+    for (const view of report.widths.filter(v=>[1440,390].includes(v.width))) {
+      assert.deepEqual(view.errors,[]);
+      for (const id of ['accent-wide','arrow-links',...(view.width===1440?['picture-sparse','headline-narrow','rule-heavy']:[])]) {
+        assert.equal(view.findings.some(f=>f.check===id && f.sev==='WARN'),bad,view.width+' '+id);
+      }
+    }
+  }
+}
 if (!variant || variant==='booking') {
   const source=fs.readFileSync(path.join(assets,'layout','hero-place.html'),'utf8');
   const bar=source.match(/<form class="hero-book"[\s\S]*?<\/form>/)?.[0];
@@ -264,7 +297,7 @@ if (!variant || variant==='booking') {
     const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'booking-check')]);
     assert.ok(report.widths[0].frame?.heroBook, 'detect the dealt booking form');
     for(const w of report.widths) {
-      assert.ok(!w.findings.some(f=>f.sev==='FAIL' && f.check==='container-edges' && /hero__bg/.test(f.sel)), 'split picture and its image occupy their seven columns');
+      assert.ok(!w.findings.some(f=>f.sev==='FAIL' && f.check==='container-edges' && /hero__bg/.test(f.sel)), 'split picture and its image occupy their five columns');
       assert.ok(!w.errors?.length && !w.findings.some(f=>f.sev==='FAIL' && ['hero-screen','hero-fill','fold-cut'].includes(f.check)),w.width+' production booking bar failed');
       console.log('ok - '+w.width+' production checker accepts the docked booking bar');
     }
