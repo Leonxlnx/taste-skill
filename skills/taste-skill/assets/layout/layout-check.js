@@ -349,6 +349,11 @@ window.lyCheck = function lyCheck(opts = {}) {
   const shown = el => {
     const c = getComputedStyle(el);
     if (c.display === 'none' || c.visibility === 'hidden') return false;
+    // the body of a closed <details> keeps a laid-out box that nobody sees (a foldout's rows below its section): only
+    // its summary shows
+    const fold = el.closest('details:not([open])');
+    if (fold && !el.closest('summary') && el !== fold) return false;
+    if (typeof el.checkVisibility === 'function' && !el.checkVisibility({ contentVisibilityAuto: false })) return false;
     for (let e = el; e && e !== document.body; e = e.parentElement) if (parseFloat(getComputedStyle(e).opacity) === 0 || e.hasAttribute('inert')) return false;
     const r = el.getBoundingClientRect();
     return r.width > 1 && r.height > 1;

@@ -587,12 +587,13 @@ function pictures() {
    follow"), a printed .example address, and one effect in more than two sections. Each is marked so it
    shows in every screenshot and the checker can read it: [data-placeholder] (a red dashed outline,
    system.css) and <html data-placeholders="n">; <html data-fx-repeat="id ...">. */
-const PLACEHOLDER = /\[[^\]\n]{1,60}\]|\((?:sample|placeholder|example)[^)]{0,30}\)|\bsample (?:figure|price|name|quote|number|photo|page)s?\b|\bplaceholder\b|\bnames and figures\b|\b(?:are|is) (?:examples?|illustrative|invented)\b|\bfor illustration\b|\b(?:made|drawn|rendered) in code\b|\bphotographs? (?:follow|to follow|coming)\b|\bto be replaced\b|[\w.+-]+@[\w-]+\.example\b|\bwww\.[\w-]+\.example\b/i;
+const PLACEHOLDER = /\[(?!\d{1,3}\])[^\]\n]{1,60}\]|\((?:sample|placeholder|example)[^)]{0,30}\)|\bsample (?:figure|price|name|quote|number|photo|page)s?\b|\bplaceholder\b|\bnames and figures\b|\b(?:are|is) (?:examples?|illustrative|invented)\b|\bfor illustration\b|\b(?:made|drawn|rendered) in code\b|\bphotographs? (?:follow|to follow|coming)\b|\bto be replaced\b|[\w.+-]+@[\w-]+\.example\b|\bwww\.[\w-]+\.example\b/i;
 function guards() {
   const html = document.documentElement;
   let n = 0;
   const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-    acceptNode: t => (t.parentElement?.closest('script, style, template, noscript') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+    // source code keeps its brackets (a list index, a JSON array), and a citation mark [1] is no stand-in
+    acceptNode: t => (t.parentElement?.closest('script, style, template, noscript, code, pre, kbd, samp') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
   });
   for (let t = walk.nextNode(); t; t = walk.nextNode()) {
     if (PLACEHOLDER.test(t.textContent)) { t.parentElement.setAttribute('data-placeholder', ''); n++; }
@@ -645,8 +646,60 @@ function fitClosingName() {
   new ResizeObserver(() => { if (word.clientWidth !== lastWidth) fit(); }).observe(word);
 }
 
+/* ------------------------------------------------------------------ chapter bar (references/story.md)
+   nav.chapter-nav[data-chapter-nav] holds links to the chapters' ids in page order. Pinned under the fixed nav from
+   the first chapter's top to the last chapter's foot, the chapter on screen marked with aria-current; under 640px
+   folded into one line ("2 / 5 · Name") that opens the list. Without script: the plain row of links. */
+function chapterNav() {
+  const nav = document.querySelector('[data-chapter-nav]');
+  if (!nav) return;
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const items = links.map(a => ({ a, el: document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))) })).filter(x => x.el);
+  if (items.length < 2) return;
+  const bar = nav.querySelector('.chapter-nav__bar') || nav;
+  const inner = nav.querySelector('.chapter-nav__in') || bar;
+  const list = nav.querySelector('ol');
+  const phone = matchMedia('(max-width: 639px)');
+  const now = document.createElement('button');
+  now.type = 'button'; now.className = 'chapter-nav__now';
+  now.setAttribute('aria-expanded', 'false');
+  if (list) { if (!list.id) list.id = 'chapter-list'; now.setAttribute('aria-controls', list.id); }
+  inner.insertBefore(now, inner.firstChild);
+  const fold = () => { nav.classList.toggle('is-folding', phone.matches); if (!phone.matches) { nav.classList.remove('is-open'); now.setAttribute('aria-expanded', 'false'); } };
+  now.addEventListener('click', () => { const open = !nav.classList.contains('is-open'); nav.classList.toggle('is-open', open); now.setAttribute('aria-expanded', String(open)); });
+  links.forEach(a => a.addEventListener('click', () => { nav.classList.remove('is-open'); now.setAttribute('aria-expanded', 'false'); }));
+  phone.addEventListener?.('change', fold);
+  fold();
+  document.documentElement.classList.add('has-chapter-bar');
+  const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav')) || 72;
+  let current = -1, ticking = false;
+  function update() {
+    ticking = false;
+    const top = navH(), first = items[0].el.getBoundingClientRect(), last = items[items.length - 1].el.getBoundingClientRect();
+    const h = bar.offsetHeight;
+    const pinned = first.top <= top && last.bottom > top + h;
+    const after = last.bottom <= top + h;
+    if (pinned && !nav.classList.contains('is-pinned')) nav.style.minHeight = nav.offsetHeight + 'px';
+    nav.classList.toggle('is-pinned', pinned);
+    nav.classList.toggle('is-after', after);
+    if (!pinned && !after) nav.style.minHeight = '';
+    const line = top + h + innerHeight * 0.25;
+    let ix = 0; items.forEach((x, i) => { if (x.el.getBoundingClientRect().top <= line) ix = i; });
+    if (ix !== current) {
+      current = ix;
+      items.forEach((x, i) => { if (i === ix) x.a.setAttribute('aria-current', 'true'); else x.a.removeAttribute('aria-current'); });
+      now.textContent = (ix + 1) + ' / ' + items.length + ' · ' + items[ix].a.textContent.replace(/^\s*\d+\s*/, '').trim();
+    }
+  }
+  const ask = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
+  update();
+}
+
 function init() {
   try { tone(); } catch (e) { console.warn('system.js: tone', e); }
+  try { chapterNav(); } catch (e) { console.warn('system.js: chapter-nav', e); }
   nav();
   fitClosingName();
   tabs();

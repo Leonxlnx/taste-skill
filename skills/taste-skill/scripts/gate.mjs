@@ -626,7 +626,7 @@ const reEsc = s => s.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 // to the next "·" or the next line that starts another part. Asides in brackets, and the words from "instead of",
 // "replaces", "re-dealt for", "not" to the next comma, are blanked first (to spaces, so every offset still points at
 // its line of the page). Returns [{ words, at }], at: where the words start in text.
-const PLAN_KEYS = 'kind|plan|type|copy|palette|hero|entrance|nav|close|footer|buttons|mark|rhythm|bands|grounds|density|align|pictures|ideas|sub|own|compositions?|photos|reveals|moments?|scenes?|effects?|hover|then';
+const PLAN_KEYS = 'kind|plan|type|story|copy|palette|hero|entrance|nav|close|footer|buttons|mark|rhythm|bands|grounds|density|align|pictures|ideas|sub|own|compositions?|photos|reveals|moments?|scenes?|effects?|hover|then';
 const blankOut = s => s.replace(/[^\n]/g, ' ');
 function planPart(text, key) {
   let t = text, o;

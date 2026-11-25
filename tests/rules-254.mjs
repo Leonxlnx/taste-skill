@@ -8,6 +8,8 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {runCheck} from './run-check.mjs';
 import {fileURLToPath} from 'node:url';
+// the story shapes, copy-story and the checker's story reads, without a browser (references/story.md)
+await import('./story.mjs');
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skill = path.join(root,'skills','taste-skill');

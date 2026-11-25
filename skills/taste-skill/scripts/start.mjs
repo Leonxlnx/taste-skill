@@ -33,8 +33,10 @@
   node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
       [--sections N] [--long] [--has photo,ui,film,object,setting,logo,art]
       [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form]
-      [--tone warm|editorial|product|tech|playful] [--axis] [--history .taste-skill/history.json]
-      Deal the frame and four prompts for the content. Sections include the hero and close (default 7).
+      [--tone warm|editorial|product|tech|playful] [--axis] [--story <id>] [--history .taste-skill/history.json]
+      Deal the frame, four prompts for the content and one story shape (library/stories.json: one that lists the kind,
+      weighted by --carry, --action and --has, away from the folder's last three; --story <id> chooses it). A chapters
+      or two-part-promise page takes the chapters ground pattern: one ground per chapter run or half. Sections include the hero and close (default 7).
       The plan has one moment, two with --long or at least seven sections. --carry names what the
       copy notes hold. With no flag only place, product and service assume photos. --has names actual
       assets, including product for a photograph of the client's own product, archive for a large set,
@@ -515,7 +517,62 @@ const groundCopy = {
   blocks: 'repeat two page sections and one tint, ending with an inverse close',
   islands: 'keep the page ground around two full-width islands, one inverse and one brand or tint',
   calm: 'change ground at the main picture and at the close when marked',
+  chapters: 'give each chapter run or half one ground and change it only where a chapter or half begins, never inside one',
 };
+// the ground of a chapters or two-part-promise page (references/story.md): one ground per chapter run or half,
+// changing only at their boundaries, never at every section (the study's stripe-grounds)
+function chapterGrounds(story, n) {
+  const by = Array(n).fill('page');
+  if (n < 3) return { pattern: 'chapters', bySection: by };
+  const last = techPage ? 'ground-inverse' : 'ground-brand';
+  if (story === 'two-part-promise') {
+    const mids = n - 2, meet = mids >= 3 ? 1 : 0, a = Math.ceil((mids - meet) / 2);
+    for (let i = 1 + a; i <= mids - meet; i++) by[i] = 'ground-surface';
+    if (meet) by[n - 2] = last;
+    by[n - 1] = last;
+  } else {
+    const tail = n >= 9 ? 2 : n >= 5 ? 1 : 0, run = n - 2 - tail;
+    for (let i = 1; i <= run; i++) by[i] = 'ground-surface';
+    for (let i = run + 1; i < n - 1; i++) by[i] = techPage ? 'ground-inverse' : 'page';
+    by[n - 1] = last;
+  }
+  return { pattern: 'chapters', bySection: by };
+}
+// the story shape (library/stories.json): one that lists the kind, weighted by what the brief carries, its action and
+// its material, kept off this folder's last three (references/story.md). A prompt like the idea seeds: the brief decides.
+const STORY_FAVOURS = {
+  carry: { steps: { 'work-path': 3 }, photos: { 'day-with-it': 2.5, 'catalogue-argued': 2 }, words: { letter: 3, 'two-part-promise': 1.5 },
+    figures: { 'claim-proofs': 3, 'problem-turn': 1.5 }, list: { 'catalogue-argued': 2.5, chapters: 2.5, sequel: 1.5 } },
+  action: { booking: { 'day-with-it': 3 }, visit: { 'day-with-it': 2.5, letter: 1.3 }, order: { 'catalogue-argued': 2.5 },
+    trial: { 'work-path': 1.5, 'problem-turn': 1.5 }, contact: { letter: 1.5, 'work-path': 1.3 } },
+  has: { ui: { 'work-path': 1.5, 'problem-turn': 1.3 }, object: { chapters: 1.5, sequel: 1.2 }, product: { chapters: 1.3 },
+    setting: { 'day-with-it': 1.5 }, art: { 'day-with-it': 1.3, chapters: 1.2 }, photo: { 'day-with-it': 1.3 }, archive: { 'catalogue-argued': 1.5 } },
+};
+function dealStory(h, { carry, action: act, assets, rand, forced }) {
+  const all = lib('stories.json');
+  h.stories = Array.isArray(h.stories) ? h.stories : [];
+  let story;
+  if (forced) {
+    story = all.find(s => s.id === forced);
+    if (!story) throw new Error('--story needs one of ' + all.map(s => s.id).join(', '));
+  } else {
+    const fits = all.filter(s => s.kinds.includes(page));
+    const recent = h.stories.slice(-Math.min(3, fits.length - 1));
+    const fresh = fits.filter(s => !recent.includes(s.id));
+    const pool = fresh.length ? fresh : fits;
+    const weight = s => {
+      let w = sections >= s.sections[0] && sections <= s.sections[1] ? 1 : 0.35;
+      for (const c of carry) w *= (STORY_FAVOURS.carry[c] || {})[s.id] || 1;
+      if (act) w *= (STORY_FAVOURS.action[act] || {})[s.id] || 1;
+      for (const a of assets) w *= (STORY_FAVOURS.has[a] || {})[s.id] || 1;
+      return w;
+    };
+    let ticket = rand() * pool.reduce((sum, s) => sum + weight(s), 0);
+    story = pool.find(s => (ticket -= weight(s)) < 0) || pool[pool.length - 1];
+  }
+  h.stories = [...h.stories, story.id].slice(-8);
+  return story;
+}
 function groundsFor(pattern, n) {
   const bySection = Array(n).fill('page');
   const middle = Math.max(1, Math.floor((n - 1) / 2));
@@ -737,6 +794,11 @@ if (cmd === 'deal') {
   closes[closes.length - 1] = close;
 
   const ideas = dealIdeas(h);
+  const forcedStory = opt('story');
+  if (forcedStory === true) throw new Error('--story needs a shape id from library/stories.json');
+  const story = dealStory(h, { carry: [...carry], action, assets: [...assets], rand: rng(seed + ':story'), forced: forcedStory });
+  // a chapters or two-part-promise page changes ground only where a chapter or half begins (the dealt pattern stays in the history)
+  if (['chapters', 'two-part-promise'].includes(story.id)) layout.grounds = chapterGrounds(story.id, sections);
   const sub = {};
   if (page === 'gaming' && !assets.has('art')) sub.illustrate = "draw the game's own world";
   if (['product', 'tech'].includes(page) && !assets.has('photo')) sub.illustrate = 'show the product itself in a built picture';
@@ -754,7 +816,7 @@ if (cmd === 'deal') {
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
     align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
     ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
-    scene: motion.scene, effect,
+    scene: motion.scene, effect, story: story.id,
   };
   if (!opt('no-record')) writeHistory(histFile, h);
   writeHistory(path.join(dir, 'plan.json'), plan, 2);
@@ -766,6 +828,12 @@ if (cmd === 'deal') {
   line('temper', temper + ': ' + temperWhy + (expressive
     ? '. Set data-temper="' + temper + '" on <html> and enable the expressive.css line in starter.html. Every expressive move names its source in the game or brand on the plan comment ("torn edge: the game\'s menus are paper"); no source, no move. Permissions, limits and the never list: ' + ref + '/references/expressive.md'
     : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
+  line('story', story.id + ': ' + story.line + (forcedStory ? ' (chosen with --story)' : ''));
+  const pad = ' '.repeat(15);
+  story.beats.forEach((b, i) => console.log(pad + 'beat ' + (i + 1) + (b.startsWith('n: ') ? ', one a section, as often as the content holds: ' + b.slice(3) : ': ' + b)));
+  console.log(pad + 'thread: ' + story.thread);
+  console.log(pad + 'not this: ' + story.fake);
+  console.log(pad + 'Take it, or another shape from ' + ref + '/library/stories.json when the brief fits it better (the table in references/story.md): deal again with --story <id> so the grounds follow it, and say why on plan line 3. Write the ## Story block in the copy notes first.');
   line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
   line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --history ' + histFile.split(path.sep).join('/'));
   line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));

@@ -145,7 +145,10 @@ world within the limits of `expressive.md`, each naming its source.
    copy notes) to `.taste-skill/copy.md` and fill it from the brief: the fact sheet; the six
    questions; the voice card (`copy-voice.md`, `copy-registers.md`, `copy-moves.md`); `Asks:` with
    one line per request, `- <ask> -> #<id> : <outcome>`. Use `play` for media, `go` for a destination,
-   `send` for a form, `file` for a download or `show` for on-page content. Write the draft one line per
+   `send` for a form, `file` for a download or `show` for on-page content. Before the draft, the `## Story`
+   block (`story.md`): a shape from its table, the thread that comes back in three sections, the turn,
+   the bookend, and the spine, every heading in order with the word joining it to the one before (so,
+   but, then; never *also*). Write the draft one line per
    part (`H1:`, `Lead:`, `H2:`, `Button:`). Lint it: `node <skill>/scripts/copy-lint.mjs
    .taste-skill/copy.md`. The hero tells a stranger in five seconds what is sold and where or for
    whom, with one hard fact; a noun in every heading; buttons a verb and an object; the close says
@@ -158,7 +161,7 @@ world within the limits of `expressive.md`, each naming its source.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
    Merge a heading, one sentence and a picture with a neighbour.
-   Then one line per section: its id, its one idea, **what the content is and the form that shape
+   Then one line per section, in the spine's order: its id, its one idea, its beat and what of the thread it shows, **what the content is and the form that shape
    asks for**, its picture and where that picture comes from on the ladder of rule 6, its ground.
    Mark the sections that are your own design. Count the sections, and note what the page really
    carries: a sentence worth a statement, a list the brief names, photographs that show a claim,
@@ -170,10 +173,12 @@ world within the limits of `expressive.md`, each naming its source.
    node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
-   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold. For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
+   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold (a price alone is no `figures`). For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
    It ends with a PLAN block and writes `.taste-skill/plan.json`. Copy the PLAN into the comment
    at the top of `<body>` and onto plan line 2.
 
+   - **Story:** the dealt shape and its beats; keep it, or deal again with `--story <id>` for the
+     one your `## Story` names, and say why on plan line 3.
    - **Temper:** pass the brief's words with `--brief "<words>"`; a lively or loud PLAN names
      `expressive.md`.
    - **Built as dealt:** palette and type (the `start.mjs css` line it prints; the client's own
@@ -197,7 +202,7 @@ world within the limits of `expressive.md`, each naming its source.
 
    - **Own sections:** `<section class="section own" id="…" data-own="<what it is>">`, styled in
      the one `<style id="own-css">` block with the kit's tokens only (spacing, type, colour,
-     radius; no new font or colour). `assets/own/` holds twelve worked examples of the craft and
+     radius; no new font or colour). `assets/own/` holds worked examples of the craft and
      the token use; build for this client's content. Interaction is
      click, tap and keyboard: tabs, a toggle, a slider, a stepper, an accordion, a chart readout.
      Motion shows the content working (`data-m-progress`, `data-m-draw`, `data-m-count`:
@@ -250,11 +255,12 @@ world within the limits of `expressive.md`, each naming its source.
 ## 3. What to read
 
 Before the first page, in full: `compose.md`, `sections.md`, `layout-v4.md`, `system.md`,
-`copy.md`. Then only what the page uses:
+`copy.md`, `story.md`. Then only what the page uses:
 
 | For | Read | Kit |
 |---|---|---|
 | Composing a section from its content, the idea seeds, the worked examples | `compose.md` | `assets/own`, `library/ideas.json` |
+| The page as a story: shapes, spine, handover devices | `story.md` | `library/stories.json` |
 | The plan by kind, the deal, compositions and recipes | `sections.md`, `sections-library.md` | `assets/starter.html` |
 | A lively or loud page: its moves, limits and type | `expressive.md` | `assets/expressive` |
 | Air, grounds, heroes, edges, type | `layout-v4.md` | `assets/system.css`, `assets/layout` |
@@ -304,6 +310,8 @@ For your eyes first, then the gate (its check ids in brackets):
   hidden [motion-layer, hover, hero-enter, loop-pause, reduced-motion, hidden-content].
 - **One system:** one button pair, one card style, one radius scale, one heading scale, text
   contrast [button-styles, card-family, heading-scale, text-contrast].
+- **Story:** the h2s alone read in order; the thread comes back; the close answers the hero
+  [copy-story, spine-drift, label-run, thread-lost, close-unanswered].
 - **Copy:** the notes first; headings name things, buttons a verb and an object; assumed facts
   marked and none against the brief; no slop word or stock line [copy-notes, copy-headings,
   copy-buttons, assumed, copy-slop-word].
@@ -324,7 +332,7 @@ Slop bans hold on every page; style limits follow the temper.
   place; two drawing styles on one page; a product page that never shows the product.
 - A drawn look-alike of a real logo; invented reviews, quotes, customers or figures; an assumed
   fact that contradicts the brief; a fake success message.
-- Monospace uppercase labels, a kicker line above every heading, check-icon lists, a row of big
+- Monospace uppercase labels, a kicker line above every heading (a chapter name with `chapter-nav` aside: `story.md`), check-icon lists, a row of big
   stat numbers as filler.
 - Violet or lavender the page invents (a real logo or the client's own art keeps its colours).
 - Reading text in a pixel, hand, blackletter or condensed face or in capitals; text on busy art

@@ -1,0 +1,130 @@
+<section class="section own" id="states" data-own="states" aria-labelledby="states-title">
+  <div class="wrap">
+    <h2 id="states-title">One return, from request to refund</h2>
+    <p class="t-lead measure">Quayline carries a web shop's return through four states without an email from you. The same apron, Tuesday to Thursday.</p>
+    <ol class="states" aria-label="Example return RMA-2291 in four states">
+      <li>
+        <div class="state-text"><h3><span class="state-n">1</span> <span class="state-name">Requested</span></h3><p>The customer picks the order and a reason on your returns page. Nothing reaches your inbox.</p></div>
+        <div class="state-card">
+          <p class="card-head"><span class="record">RMA-2291</span><span class="when">Tue 09:12</span></p>
+          <dl><div><dt>Item</dt><dd>Linen apron, size M</dd></div><div><dt>Order</dt><dd>40817</dd></div><div><dt>Reason</dt><dd>Too long</dd></div><div><dt>Refund due</dt><dd>38.00&nbsp;€</dd></div></dl>
+          <p class="state-pill">Waiting for a label</p>
+        </div>
+      </li>
+      <li>
+        <div class="state-text"><h3><span class="state-n">2</span> <span class="state-name">Label sent</span></h3><p>Two minutes later the label is in the customer's mail, with a drop-off date.</p></div>
+        <div class="state-card">
+          <p class="card-head"><span class="record">RMA-2291</span><span class="when">Tue 09:14</span></p>
+          <dl><div><dt>Item</dt><dd>Linen apron, size M</dd></div><div><dt>Tracking</dt><dd>QL 5521 0093</dd></div><div><dt>Drop off by</dt><dd>Friday</dd></div><div><dt>Refund due</dt><dd>38.00&nbsp;€</dd></div></dl>
+          <p class="state-pill">In transit</p>
+        </div>
+      </li>
+      <li>
+        <div class="state-text"><h3><span class="state-n">3</span> <span class="state-name">Checked in</span></h3><p>You scan the parcel, tick its condition and say where it goes back on the shelf.</p></div>
+        <div class="state-card">
+          <p class="card-head"><span class="record">RMA-2291</span><span class="when">Thu 16:40</span></p>
+          <dl><div><dt>Item</dt><dd>Linen apron, size M</dd></div><div><dt>Condition</dt><dd>Unworn, tags on</dd></div><div><dt>Back to</dt><dd>Shelf B-3</dd></div><div><dt>Refund due</dt><dd>38.00&nbsp;€</dd></div></dl>
+          <p class="state-pill">Ready to refund</p>
+        </div>
+      </li>
+      <li>
+        <div class="state-text"><h3><span class="state-n">4</span> <span class="state-name">Refunded</span></h3><p>One minute later the money goes back the way it came and the apron counts as stock again.</p></div>
+        <div class="state-card">
+          <p class="card-head"><span class="record">RMA-2291</span><span class="when">Thu 16:41</span></p>
+          <dl><div><dt>Item</dt><dd>Linen apron, size M</dd></div><div><dt>Paid back</dt><dd>38.00&nbsp;€ to the original payment</dd></div><div><dt>Stock</dt><dd>4 on shelf B-3</dd></div><div><dt>Time open</dt><dd>2 days, 7 hours</dd></div></dl>
+          <p class="state-pill state-pill--done">Closed</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+[data-own="states"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="states"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="states"] .states { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-7); }
+[data-own="states"] .states > li { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gutter); align-items: start; }
+[data-own="states"] h3 { display: flex; gap: var(--s-3); align-items: baseline; margin: 0; }
+[data-own="states"] .state-n { color: var(--muted); font-variant-numeric: tabular-nums; }
+[data-own="states"] .state-text p { margin: var(--s-2) 0 0; max-width: 40ch; }
+[data-own="states"] .state-card { padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); font-variant-numeric: tabular-nums; }
+[data-own="states"] .card-head { display: flex; justify-content: space-between; align-items: center; margin: 0; }
+[data-own="states"] .when { color: var(--muted); font-size: var(--t-small); }
+[data-own="states"] dl { margin: var(--s-4) 0 0; }
+[data-own="states"] dl > div { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-2); border-top: 1px solid var(--line); }
+[data-own="states"] dt { color: var(--muted); }
+[data-own="states"] dd { margin: 0; text-align: right; }
+[data-own="states"] .state-pill { display: inline-flex; margin: var(--s-4) 0 0; padding: var(--s-1) var(--s-3); border: 1px solid var(--line-strong); border-radius: var(--r-sm); font-size: var(--t-small); }
+[data-own="states"] .state-pill--done { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+/* live (script, 900px and up): the steps become tabs beside one stage that shows the chosen state */
+[data-own="states"] .states[data-live] { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--gutter); row-gap: 0; }
+[data-own="states"] .states[data-live] > li { display: contents; }
+[data-own="states"] .states[data-live] .state-text { grid-column: 1; padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+[data-own="states"] .states[data-live] .state-card { grid-column: 2; grid-row: 1 / span 4; align-self: start; }
+[data-own="states"] .states[data-live] h3 button { all: unset; display: flex; gap: var(--s-3); align-items: baseline; min-height: var(--btn-h); cursor: pointer; }
+[data-own="states"] .states[data-live] h3 button:focus-visible { outline: 2px solid var(--action); outline-offset: 4px; }
+[data-own="states"] .states[data-live] .state-text.is-on .state-name { color: var(--action); }
+@media (max-width: 899px) {
+  [data-own="states"] .states > li { grid-template-columns: 1fr; gap: var(--s-4); }
+}
+</style>
+
+<script type="module">
+const root = document.querySelector('[data-own="states"]');
+const list = root.querySelector('.states');
+const items = [...list.children];
+const wide = matchMedia('(min-width: 900px)');
+let tabs = [];
+function select(index, focus) {
+  items.forEach((li, i) => {
+    const on = i === index;
+    tabs[i].setAttribute('aria-selected', String(on));
+    tabs[i].tabIndex = on ? 0 : -1;
+    li.querySelector('.state-text').classList.toggle('is-on', on);
+    li.querySelector('.state-card').hidden = !on;
+  });
+  if (focus) tabs[index].focus();
+}
+function live() {
+  if (wide.matches && !list.dataset.live) {
+    list.dataset.live = '';
+    list.setAttribute('role', 'tablist');
+    tabs = items.map((li, i) => {
+      const h = li.querySelector('h3');
+      li.setAttribute('role', 'presentation'); h.setAttribute('role', 'presentation');
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'tab'); b.id = 'st-tab-' + i;
+      b.append(...h.childNodes);
+      h.append(b);
+      const card = li.querySelector('.state-card');
+      card.id = 'st-card-' + i; card.setAttribute('role', 'tabpanel'); card.setAttribute('aria-labelledby', b.id); card.tabIndex = 0;
+      b.setAttribute('aria-controls', card.id);
+      b.addEventListener('click', () => select(i));
+      b.addEventListener('keydown', e => {
+        const n = items.length, next = { ArrowDown: (i + 1) % n, ArrowRight: (i + 1) % n, ArrowUp: (i + n - 1) % n, ArrowLeft: (i + n - 1) % n, Home: 0, End: n - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault(); select(next, true);
+      });
+      return b;
+    });
+    list.removeAttribute('aria-label');
+    list.setAttribute('aria-label', 'Example return RMA-2291');
+    select(0);
+  } else if (!wide.matches && list.dataset.live !== undefined) {
+    delete list.dataset.live;
+    list.removeAttribute('role');
+    items.forEach((li, i) => {
+      const h = li.querySelector('h3'), b = tabs[i];
+      h.append(...b.childNodes); b.remove();
+      li.removeAttribute('role'); h.removeAttribute('role');
+      li.removeAttribute('role'); h.removeAttribute('role');
+      const card = li.querySelector('.state-card');
+      card.hidden = false; card.removeAttribute('role'); card.removeAttribute('aria-labelledby'); card.removeAttribute('tabindex');
+      li.querySelector('.state-text').classList.remove('is-on');
+    });
+    tabs = [];
+  }
+}
+wide.addEventListener?.('change', live);
+live();
+</script>

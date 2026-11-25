@@ -22,13 +22,15 @@ Use the rules here for assumptions, picture facts and buttons. The hero tells a 
 
 **copy-lint.** `node <skill>/scripts/copy-lint.mjs index.html --kind <kind> --category "<what is sold>"`
 counts the countable tells in well under a second a page (no browser). FAIL: no copy notes, or a
-voice card with a field left empty [copy-notes]; residue (a `[NEED]`, a template token, markdown,
+voice card with a field left empty [copy-notes]; no `## Story` block, a shape not in `library/stories.json` or an
+empty thread [copy-story]; residue (a `[NEED]`, a template token, markdown,
 chatbot lines); a fact held back ("Price on request", an address that "comes with your confirmation
 email", a note about the client or the build) [copy-withheld]; the old slop words and stock lines; a close whose heading repeats the section above
 it [copy-close-repeat]; a device used more than twice its budget plus one (three two-fragment
 headings, five contrast frames, five virtue words): fix every one. WARN: an h1 that is only a
 category label [copy-h1-category], a close heading that only restates its button [copy-close-ask],
-two headings sharing three content words [copy-heading-echo], a device over its budget, a strip of
+two headings sharing three content words [copy-heading-echo], a spine that is not the draft's H2 lines in order or a
+join word "also" or "and" [copy-story], a device over its budget, a strip of
 figures, a default-cast name, a footer sign-off, a response-time promise worded twice, proof figures,
 capped words (innovative, curated), typed arrows, emoji bullets, exclamation marks, puffery, a stale
 year: fix it or keep it and say why in the report. Several pages at once also print their first
@@ -70,6 +72,17 @@ Asks:
 4. What are they bad at, or not for? <answer>
 5. A strange true detail of how they work? <answer>
 6. Three real customer messages? <quotes from the brief, or: not in the brief>
+
+## Story
+Shape: <id from library/stories.json, and why the brief fits it>
+Thread: <the one record, object, person or time that travels; its name and numbers>
+Turn: <the section where something changes, and what changes>
+Bookend: <what the close brings back from the hero, and what it adds>
+Spine:
+- H1: <hero line>
+- <h2 of section 2> | beat: <which beat> | joins the previous by: <so / but / then / until / which means>
+- ...
+- Close: <the close's heading>
 
 ## Voice card
 Register: <number and name from copy-registers.md, and why it fits>
@@ -134,8 +147,9 @@ Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. L
    from a screen that already shows its action); a third copy on one screen FAILs [action-repeat].
    The button keeps its words; the headings around it do not borrow them. **The close's heading says
    something new:** the hero's promise with one fact from the brief, the admission turned into a
-   reason ("Closed Mondays. Every other day the oven is lit by six."), a time or a price, or a
-   low-pressure exit. Never the ask of the section above it, its heading or its button
+   reason ("Closed Mondays. Every other day the oven is lit by six."), a time or a price, a
+   low-pressure exit, or a bookend: the hero's words, field or object back with the one fact the page
+   earned (the price, the date, the reader's first step). Never the ask of the section above it, its heading or its button
    [copy-close-repeat], and never only its own button as a heading [copy-close-ask].
 
 ## Plain versions
@@ -211,7 +225,9 @@ Label a working object once on the object itself, for example “Example inciden
   people or portraits, result figures ("38% fewer re-runs", "3x faster", a saving), house numbers,
   postcodes or phone numbers in a real format. Customer logos only for real customers the brief
   names and that may be shown; a real tool the product works with keeps its real icon in its own
-  colours (`icons.md`), never a drawn imitation. Without proof, a strip of plain facts, or nothing.
+  colours (`icons.md`), never a drawn imitation. Without proof, a strip of plain facts, or the product
+  working on a plausible example of the reader's own case (a sum converted, an incident resolved, a
+  week planned), labelled once as an example: proof without invented customers.
 - **No pressure and no missing caveats:** never invented urgency or scarcity ("only 3 left", a
   countdown, "book now before it's gone") unless the brief gives the real stock or date, and never a
   caveat the business needs (legal, medical, financial) cut for rhythm.

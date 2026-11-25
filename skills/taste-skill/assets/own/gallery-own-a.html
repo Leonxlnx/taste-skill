@@ -53,7 +53,7 @@
 [data-own="evidence-grid"] dd small { font-size: var(--t-body); }
 [data-own="evidence-grid"] .short { grid-column: span 6; display: flex; gap: var(--s-5); align-items: center; }
 [data-own="evidence-grid"] .short svg { width: 25%; max-width: var(--s-10); }
-[data-own="evidence-grid"] .short h3 { font-size: var(--t-card); }
+[data-own="evidence-grid"] .short h3 { margin: 0; }
 @media (max-width: 1023px) { [data-own="evidence-grid"] .dimensions { padding: var(--s-4); } }
 @media (max-width: 639px) {
   [data-own="evidence-grid"] .proof-grid > * { grid-column: 1 / -1; padding: var(--s-4); }
@@ -281,7 +281,7 @@
 [data-own="annotated-source"] .printed strong { font-weight: 500; font-size: var(--t-card); }
 [data-own="annotated-source"] .notes { grid-column: span 4; }
 [data-own="annotated-source"] .notes li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
-[data-own="annotated-source"] .notes h3 { font-size: var(--t-card); }
+[data-own="annotated-source"] .notes h3 { margin: 0; }
 [data-own="annotated-source"] .notes h3 span { display: inline-grid; place-items: center; width: var(--s-5); height: var(--s-5); margin-right: var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--r-sm); color: var(--action); font-size: var(--t-small); }
 [data-own="annotated-source"] .notes p { margin-top: var(--s-2); }
 @media (max-width: 1023px) { [data-own="annotated-source"] .annotation > * { grid-column: 1/-1; } }
@@ -319,7 +319,7 @@
 [data-own="system-paths"] fieldset label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); cursor: pointer; }
 [data-own="system-paths"] input { margin: 0; accent-color: var(--action); }
 [data-own="system-paths"] .samples li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
-[data-own="system-paths"] .routing h3 { font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
+[data-own="system-paths"] .routing .route-head { margin: 0; font-weight: 500; font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
 [data-own="system-paths"] time { font-size: var(--t-small); color: var(--muted); }
 [data-own="system-paths"] .sample-value { font-size: var(--t-h3); }
 [data-own="system-paths"] .samples li > span { color: var(--muted); }
@@ -335,6 +335,7 @@
   [data-own="system-paths"] fieldset { margin-bottom: 0; }
   [data-own="system-paths"] .mobile-routes { display: grid; grid-column: 1/-1; gap: var(--s-4); }
   [data-own="system-paths"] .mobile-routes article { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  [data-own="system-paths"] .mobile-routes .route-head { margin: 0; font-weight: 500; display: flex; justify-content: space-between; gap: var(--s-2); }
   [data-own="system-paths"] .mobile-routes article[data-active] { border-color: var(--action); background: var(--surface); }
   [data-own="system-paths"] .mobile-routes ol { margin: var(--s-3) 0 0 var(--s-1); border-left: 1px dashed var(--muted); }
   [data-own="system-paths"] .mobile-routes article[data-active] ol { border-left: var(--s-1) solid var(--action); }
@@ -346,7 +347,7 @@
 [data-own="source-ledger"] .wrap > p + * { margin-top: var(--head-gap); }
 [data-own="source-ledger"] .ledger { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; }
 [data-own="source-ledger"] .lead-fact { grid-column: span 5; background: var(--ink); color: var(--bg); border-radius: var(--r-md); padding: var(--s-5); display: grid; grid-template-columns: 1fr auto; align-content: center; }
-[data-own="source-ledger"] .fact h3 { font-size: var(--t-body); }
+[data-own="source-ledger"] .fact .fact-name { margin: 0; font-weight: 500; font-size: var(--t-body); }
 [data-own="source-ledger"] .lead-fact p { grid-column: 1; margin-top: var(--s-3); }
 [data-own="source-ledger"] .lead-fact strong { display: block; font-size: var(--t-stat); line-height: 1; margin-bottom: var(--s-2); }
 [data-own="source-ledger"] .lead-fact .ref { align-self: end; justify-self: end; color: inherit; }
@@ -359,7 +360,7 @@
 [data-own="source-ledger"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
 [data-own="source-ledger"] .ref, [data-own="source-ledger"] .sources a { justify-content: center; min-width: var(--btn-h); font-size: var(--t-small); }
 [data-own="source-ledger"] .sources { margin-top: var(--s-6); }
-[data-own="source-ledger"] .sources h3 { font-size: var(--t-card); margin-bottom: var(--s-2); }
+[data-own="source-ledger"] .sources h3 { margin-bottom: var(--s-2); }
 [data-own="source-ledger"] .sources ol { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 var(--gutter); }
 [data-own="source-ledger"] .sources li { display: flex; gap: var(--s-2); align-items: baseline; border-top: 1px solid var(--line); }
 [data-own="source-ledger"] .sources p { font-size: var(--t-small); color: var(--muted); }
@@ -371,14 +372,14 @@
   [data-own="source-ledger"] .lead-fact strong { display: inline; margin-right: var(--s-1); }
   [data-own="source-ledger"] .lead-fact .ref { color: var(--action); }
   [data-own="source-ledger"] .other-facts .fact { grid-template-columns: minmax(0,1fr) auto; gap: 0 var(--s-2); }
-  [data-own="source-ledger"] .fact h3 { grid-column: 1/-1; color: var(--muted); }
+  [data-own="source-ledger"] .fact .fact-name { margin: 0; font-weight: 500; grid-column: 1/-1; }
   [data-own="source-ledger"] .other-facts p { gap: 0 var(--s-2); }
   [data-own="source-ledger"] .sources ol { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
-<header class="gallery-head"><div class="wrap"><a class="skip-link" href="#examples">Skip to examples</a><h1>Worked sections</h1><a href="index.html">First twelve examples</a></div></header>
+<header class="gallery-head"><div class="wrap"><a class="skip-link" href="#examples">Skip to examples</a><h1>Worked sections</h1><a href="index.html">First gallery</a></div></header>
 <main id="examples" tabindex="-1">
 <section class="section own" id="evidence-grid" data-own="evidence-grid" aria-labelledby="evidence-grid-title" data-assumed>
   <div class="wrap">
@@ -386,7 +387,7 @@
     <p class="t-lead measure">Mossline Print · Job M-204 · 240 copies, 48 pages each.</p>
 <div class="proof-grid">
       <figure class="spread"><div class="proof-art"><svg viewBox="76 0 328 211" role="img" aria-label="An open garden guide with botanical studies, a centre fold, solid trim marks and a dashed bleed boundary."><g transform="translate(17 -8) scale(.93 1.14)"><g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M113 12v10m0 151v12M367 12v10m0 151v12M96 26h12m261 0h14M96 173h12m261 0h14"/><rect x="108" y="21" width="264" height="157" stroke-dasharray="3 4"/></g><path d="M113 26H367V173H113Z" fill="var(--bg)" stroke="var(--ink)"/><path d="M240 26v147" stroke="var(--line-strong)"/><g transform="translate(177 138) rotate(-12)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g transform="translate(183 134) rotate(20)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g transform="translate(167 137) rotate(-30)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g fill="none" stroke="var(--muted)"><path d="M128 44h45m-45 4h29m125 66h64m-64 5h57m-57 5h60m-60 10h37m-37 5h53m-53 5h49"/><path d="M126 159h8m210 0h8"/></g><g transform="translate(305 100) rotate(22)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g></g></svg></div>
-        <figcaption><h3>Inside spread</h3><p>Two facing pages before trimming.</p></figcaption>
+        <figcaption class="fact-line">Inside spread · two pages before trimming</figcaption>
         <details><summary class="press">Proof dimensions</summary><p>Open spread 296 × 210 mm<br>Single page 148 × 210 mm</p></details>
       </figure>
       <article class="dimensions"><h3>Trim and bleed</h3>
@@ -410,13 +411,13 @@
     <div class="binding-tour"><ol class="steps">
       <li><div class="step-copy"><span class="step-number">Step 1 of 3</span>
         <h3 id="binding-step-1" tabindex="-1">Sew the signatures</h3><p>Gather the 192 pages into 12 signatures of 16. Sew through each fold to join the book block.</p></div>
-        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="Sewn spine with twelve folded signatures and two rows of stitching."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><g stroke="var(--action)" stroke-width="2" fill="none"><path d="M88 130l13 2.5 -1 3 -12 -3" /><path d="M88 133.8l13 2.5 -1 3 -12 -3" /><path d="M88 137.6l13 2.5 -1 3 -12 -3" /><path d="M88 141.4l13 2.5 -1 3 -12 -3" /><path d="M88 145.2l13 2.5 -1 3 -12 -3" /><path d="M88 149l13 2.5 -1 3 -12 -3" /><path d="M178 147l13 2.5 -1 3 -12 -3" /><path d="M178 150.8l13 2.5 -1 3 -12 -3" /><path d="M178 154.6l13 2.5 -1 3 -12 -3" /><path d="M178 158.4l13 2.5 -1 3 -12 -3" /><path d="M178 162.2l13 2.5 -1 3 -12 -3" /><path d="M178 166l13 2.5 -1 3 -12 -3" /></g></g></svg></div><figcaption>Twelve folds joined by the sewing thread.</figcaption></figure></li>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="Sewn spine with twelve folded signatures and two rows of stitching."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><g stroke="var(--action)" stroke-width="2" fill="none"><path d="M88 130l13 2.5 -1 3 -12 -3" /><path d="M88 133.8l13 2.5 -1 3 -12 -3" /><path d="M88 137.6l13 2.5 -1 3 -12 -3" /><path d="M88 141.4l13 2.5 -1 3 -12 -3" /><path d="M88 145.2l13 2.5 -1 3 -12 -3" /><path d="M88 149l13 2.5 -1 3 -12 -3" /><path d="M178 147l13 2.5 -1 3 -12 -3" /><path d="M178 150.8l13 2.5 -1 3 -12 -3" /><path d="M178 154.6l13 2.5 -1 3 -12 -3" /><path d="M178 158.4l13 2.5 -1 3 -12 -3" /><path d="M178 162.2l13 2.5 -1 3 -12 -3" /><path d="M178 166l13 2.5 -1 3 -12 -3" /></g></g></svg></div><figcaption class="fact-line">Sewn · 12 folds on one thread</figcaption></figure></li>
       <li><div class="step-copy"><span class="step-number">Step 2 of 3</span>
         <h3 id="binding-step-2" tabindex="-1">Line the spine</h3><p>Brush glue over the sewn folds and press a strip of cloth across the spine.</p></div>
-        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same spine with a band of cloth glued across its folds."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="M84 127l37 -31 61 11 -37 32v24l-61 -12Z" fill="var(--surface)" stroke="var(--muted)"/><path d="M89 130v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18" fill="none" stroke="var(--line-strong)"/></g></svg></div><figcaption>The cloth bridges the folds of the sewn block.</figcaption></figure></li>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same spine with a band of cloth glued across its folds."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="M84 127l37 -31 61 11 -37 32v24l-61 -12Z" fill="var(--surface)" stroke="var(--muted)"/><path d="M89 130v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18" fill="none" stroke="var(--line-strong)"/></g></svg></div><figcaption class="fact-line">Lined · cloth across the spine</figcaption></figure></li>
       <li><div class="step-copy"><span class="step-number">Step 3 of 3</span>
         <h3 id="binding-step-3" tabindex="-1">Fit the case</h3><p>Set the lined block into its case and secure it between two 2 mm boards.</p></div>
-        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same book block fitted between two rigid boards."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><path d="M40 144 125 74 324 110 239 184Z" fill="var(--action)"/><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="m41 119 82 -68 200 36 -83 70Z" fill="var(--action)"/><path d="m41 119 199 38v5L41 124Zm199 38 83 -70v5l-83 70Z" fill="var(--ink)"/><path d="m42 124 4 22 193 37 1 -21Z" fill="var(--action)"/><path d="m60 115 66 -55" stroke="var(--action-ink)" fill="none"/></g></svg></div><figcaption>The boards extend just past the edges of the pages.</figcaption></figure></li>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same book block fitted between two rigid boards."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><path d="M40 144 125 74 324 110 239 184Z" fill="var(--action)"/><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="m41 119 82 -68 200 36 -83 70Z" fill="var(--action)"/><path d="m41 119 199 38v5L41 124Zm199 38 83 -70v5l-83 70Z" fill="var(--ink)"/><path d="m42 124 4 22 193 37 1 -21Z" fill="var(--action)"/><path d="m60 115 66 -55" stroke="var(--action-ink)" fill="none"/></g></svg></div><figcaption class="fact-line">Cased · boards 3 mm past the pages</figcaption></figure></li>
     </ol><div class="held" hidden></div></div>
   </div>
 </section>
@@ -568,10 +569,10 @@ print(f"{count} items, {boxes} boxes, {spare} spare place")</code></pre></div>
       <div class="node end-0" data-station="N"><small>Within range</small><strong>Daily ledger</strong></div><div class="node end-1" data-station="S"><small>Outside range</small><strong>Review tray</strong></div>
       <figcaption>Each input supplies station, time and rainfall in millimetres.</figcaption></figure>
       <div class="samples"><fieldset hidden><legend>Trace a sample</legend><div><label class="press"><input type="radio" value="N" checked> Station N</label><label class="press"><input type="radio" value="S"> Station S</label></div></fieldset>
-        <ol><li data-station="N"><h3>Station N <time>08:00</time></h3><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><h3>Station S <time>08:15</time></h3><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
+        <ol><li data-station="N"><p class="route-head">Station N <time>08:00</time></p><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><p class="route-head">Station S <time>08:15</time></p><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
         <p class="spoken" role="status" aria-live="polite"></p></div>
-      <div class="mobile-routes"><article data-station="N"><h3>Station N <time>08:00</time></h3>
-        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><h3>Station S <time>08:15</time></h3>
+      <div class="mobile-routes"><article data-station="N"><p class="route-head">Station N <time>08:00</time></p>
+        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><p class="route-head">Station S <time>08:15</time></p>
         <ol><li><strong>Volunteer sheet</strong><span>230 mm</span></li><li><strong>Validator</strong><span>Outside range · 0–200 mm inclusive</span></li><li><strong>Review tray</strong></li></ol></article></div>
     </div>
   </div>
@@ -580,10 +581,10 @@ print(f"{count} items, {boxes} boxes, {spare} spare place")</code></pre></div>
   <div class="wrap">
     <h2 id="source-ledger-title">The October lending pilot</h2>
     <p class="t-lead measure">Mere Tool Library · 1–31 October 2026</p>
-<div class="ledger"><div class="fact lead-fact"><h3>Sign-out register</h3><p><strong>84</strong> <span>distinct borrowers</span></p><a class="ref" id="mere-figure-1" href="#mere-source-1" aria-label="Source 1, Sign-out register">[1]</a></div><div class="other-facts">
-      <div class="fact "><h3>Loan log</h3><p><strong>126</strong> <span>completed loans</span></p><a class="ref" id="mere-figure-2" href="#mere-source-2" aria-label="Source 2, Loan log">[2]</a></div>
-      <div class="fact "><h3>Opening log</h3><p><strong>18</strong> <span>staffed days</span></p><a class="ref" id="mere-figure-3" href="#mere-source-3" aria-label="Source 3, Opening log">[3]</a></div>
-      <div class="fact "><h3>Repair log</h3><p><strong>9</strong> <span>tools returned to stock</span></p><a class="ref" id="mere-figure-4" href="#mere-source-4" aria-label="Source 4, Repair log">[4]</a></div>
+<div class="ledger"><div class="fact lead-fact"><p class="fact-name">Sign-out register</p><p><strong>84</strong> <span>distinct borrowers</span></p><a class="ref" id="mere-figure-1" href="#mere-source-1" aria-label="Source 1, Sign-out register">[1]</a></div><div class="other-facts">
+      <div class="fact "><p class="fact-name">Loan log</p><p><strong>126</strong> <span>completed loans</span></p><a class="ref" id="mere-figure-2" href="#mere-source-2" aria-label="Source 2, Loan log">[2]</a></div>
+      <div class="fact "><p class="fact-name">Opening log</p><p><strong>18</strong> <span>staffed days</span></p><a class="ref" id="mere-figure-3" href="#mere-source-3" aria-label="Source 3, Opening log">[3]</a></div>
+      <div class="fact "><p class="fact-name">Repair log</p><p><strong>9</strong> <span>tools returned to stock</span></p><a class="ref" id="mere-figure-4" href="#mere-source-4" aria-label="Source 4, Repair log">[4]</a></div>
     </div></div>
     <div class="sources"><h3>Counting notes</h3><ol>
       <li id="mere-source-1" tabindex="-1"><a href="#mere-figure-1" aria-label="Return to 84 distinct borrowers">[1]</a><p>Unique membership numbers in the sign-out register.</p></li>

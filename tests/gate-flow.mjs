@@ -375,7 +375,7 @@ for (const whole of [false, true]) {
 // Use the real copy checker with the stand-in browser. The gate must print
 // all three states, preserve them between runs and check a newly supplied file.
 {
-  for (const script of ['copy-lint.mjs','ask-outcome.mjs','heading-copy.mjs']) {
+  for (const script of ['copy-lint.mjs','ask-outcome.mjs','heading-copy.mjs','story-check.mjs']) {
     fs.copyFileSync(path.join(SCRIPTS,script),path.join(SKILL,'scripts',script));
   }
   const dir = project('none','Press desk','a desk');

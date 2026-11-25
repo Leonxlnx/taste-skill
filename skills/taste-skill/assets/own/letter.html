@@ -1,0 +1,52 @@
+<section class="section own" id="letter" data-own="letter" aria-labelledby="letter-title">
+  <div class="wrap">
+    <h2 id="letter-title">Repairs cost more from March. <span class="muted">Here is why.</span></h2>
+    <div class="letter-grid">
+      <article class="letter" aria-label="A letter from the bindery">
+        <p class="letter-date"><time datetime="2027-01-12">12 January 2027</time></p>
+        <p>Dear customers,</p>
+        <p>most of you send us a book that has been read to pieces: a cookbook with a broken spine, a hymnal with loose pages, a first edition someone dropped in the bath. We have mended about 900 of them since we opened the workshop in 2009.</p>
+        <p>For fifteen years a spine repair cost 45&nbsp;€. The leather and the linen thread we use now cost twice what they did then, and a good repair still takes a full afternoon. From 1 March a spine repair costs 62&nbsp;€; a new cover stays at 90&nbsp;€.</p>
+        <p>What we cannot do faster: a repair still takes three to four weeks, because the glue needs its days in the press. We would rather tell you that now than in March.</p>
+        <p>Every book already on our bench, or booked before the end of February, is mended at the old price. Thank you for trusting us with the ones you cannot replace.</p>
+        <div class="signature">
+          <span class="portrait" aria-hidden="true">IH</span>
+          <p><strong>Ines Hollin</strong><span>Bookbinder, Hollin Bindery</span></p>
+        </div>
+      </article>
+      <aside class="letter-facts" aria-label="The new prices">
+        <dl>
+          <div><dt>Spine repair</dt><dd><s>45&nbsp;€</s> 62&nbsp;€</dd></div>
+          <div><dt>New cover</dt><dd>90&nbsp;€</dd></div>
+          <div><dt>Old price until</dt><dd>28 February</dd></div>
+          <div><dt>Time on the bench</dt><dd>3 to 4 weeks</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="letter"] .wrap > h2 + * { margin-top: var(--head-gap); }
+[data-own="letter"] .letter-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-9); align-items: start; }
+[data-own="letter"] .letter { max-width: 66ch; font-size: var(--t-lead); line-height: 1.65; }
+[data-own="letter"] .letter p { margin: 0; }
+[data-own="letter"] .letter p + p { margin-top: var(--s-4); }
+[data-own="letter"] .letter-date { color: var(--muted); font-size: var(--t-small); }
+[data-own="letter"] .signature { display: flex; gap: var(--s-4); align-items: center; margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="letter"] .portrait { flex: none; display: grid; place-items: center; width: var(--s-9); height: var(--s-9); border-radius: 50%; background: var(--surface); border: 1px solid var(--line); font: 500 var(--t-card)/1 var(--font-display); }
+[data-own="letter"] .signature p { display: grid; gap: var(--s-1); font-size: var(--t-body); line-height: 1.4; }
+[data-own="letter"] .signature span { color: var(--muted); }
+[data-own="letter"] .letter-facts { position: sticky; top: calc(var(--nav) + var(--s-6)); padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); font-variant-numeric: tabular-nums; }
+[data-own="letter"] .letter-facts dl { margin: 0; }
+[data-own="letter"] .letter-facts dl > div { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-3); }
+[data-own="letter"] .letter-facts dl > div + div { border-top: 1px solid var(--line); }
+[data-own="letter"] .letter-facts dt { color: var(--muted); }
+[data-own="letter"] .letter-facts dd { margin: 0; text-align: right; }
+[data-own="letter"] .letter-facts s { color: var(--muted); margin-right: var(--s-2); }
+@media (max-width: 899px) {
+  [data-own="letter"] .letter-grid { grid-template-columns: 1fr; gap: var(--s-6); }
+  [data-own="letter"] .letter { font-size: var(--t-body); }
+  [data-own="letter"] .letter-facts { position: static; }
+}
+</style>

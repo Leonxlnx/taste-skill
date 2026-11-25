@@ -1578,3 +1578,68 @@ html[data-check] [data-placeholder] { outline: 2px dashed #d92d20; outline-offse
 .stack-4 > * + * { margin-top: var(--s-4); }
 .stack-5 > * + * { margin-top: var(--s-5); }
 .stack-6 > * + * { margin-top: var(--s-6); }
+
+/* ---------------------------------------------------------------- story parts (references/story.md, system.md Story parts)
+   chapter-nav: the chapter bar of a chapters page, the first child of the first chapter's .wrap (before its h2).
+   Without script it is a plain row of links at the start of that chapter; system.js pins it under the fixed nav from
+   the first chapter to the last (html.has-chapter-bar), marks the chapter on screen (aria-current) and, under 640px,
+   folds it into one line "2 / 5 · Name" that opens the list. The one page-level exception to "nothing sticky outside
+   its section". */
+.chapter-nav { position: relative; z-index: 40; margin-bottom: var(--s-7); }
+.chapter-nav__bar { background: var(--bg); color: var(--ink); border-block: 1px solid var(--line); }
+.chapter-nav__in { display: flex; align-items: center; gap: var(--s-5); }
+.chapter-nav:is(.is-pinned, .is-after) .chapter-nav__in { width: min(100% - 2 * var(--gut), var(--container)); margin-inline: auto; }
+.chapter-nav:not(.is-pinned, .is-after) .chapter-nav__bar { background: none; }
+.chapter-nav__now { display: none; }
+.chapter-nav ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--s-6); }
+.chapter-nav a { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); color: var(--muted);
+  font: 500 15px/1.2 var(--font-text); text-decoration: none; border-bottom: 2px solid transparent; }
+.chapter-nav a:hover { color: var(--ink); }
+.chapter-nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--action); }
+.chapter-nav a span { font-variant-numeric: tabular-nums; }
+.chapter-nav.is-pinned .chapter-nav__bar { position: fixed; inset: var(--nav) 0 auto 0; z-index: 40; }
+.chapter-nav.is-after .chapter-nav__bar { position: fixed; inset: var(--nav) 0 auto 0; z-index: 40; transform: translateY(-110%); visibility: hidden; }
+html.has-chapter-bar { scroll-padding-top: calc(var(--nav) + var(--btn-h) + var(--s-2)); }
+html.has-chapter-bar main section[id] { scroll-margin-top: calc(var(--nav) + var(--btn-h) + var(--s-2)); }
+@media (max-width: 639px) {
+  .chapter-nav ol { flex-direction: column; gap: 0; width: 100%; }
+  .chapter-nav li + li { border-top: 1px solid var(--line); }
+  .chapter-nav.is-folding .chapter-nav__in { flex-direction: column; align-items: stretch; gap: 0; }
+  .chapter-nav.is-folding .chapter-nav__now { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: var(--btn-h);
+    background: none; border: 0; padding: 0; color: var(--ink); font: 500 15px/1.2 var(--font-text); text-align: left; cursor: pointer; }
+  .chapter-nav.is-folding .chapter-nav__now::after { content: ""; width: 8px; height: 8px; border: solid var(--ink); border-width: 0 1.5px 1.5px 0; transform: translateY(-2px) rotate(45deg); }
+  .chapter-nav.is-folding .chapter-nav__now[aria-expanded="true"]::after { transform: translateY(2px) rotate(-135deg); }
+  .chapter-nav.is-folding ol { display: none; }
+  .chapter-nav.is-folding.is-open ol { display: flex; padding-bottom: var(--s-2); }
+}
+@media (prefers-reduced-motion: no-preference) { .chapter-nav__bar { transition: transform 200ms ease, visibility 200ms; } }
+/* chapter-head: the chapter's number and name above its h2, in the text face at body size; only where a chapter-nav or a
+   contents-row lists the same names (never uppercase, never mono, never on a section that is no chapter) */
+.chapter-head { display: flex; gap: var(--s-2); align-items: baseline; margin: 0 0 var(--s-3); font: 500 var(--t-body)/1.4 var(--font-text); color: var(--ink); }
+.chapter-head span { color: var(--muted); font-variant-numeric: tabular-nums; }
+/* contents-row: up to five chapter links under the hero's lead, in page order */
+.contents-row { margin-top: var(--s-5); }
+.contents-row p { margin: 0; text-align: inherit; }
+.contents-row a + a { margin-left: var(--s-2); }
+.contents-row a { display: inline-flex; margin-bottom: var(--s-2); align-items: center; gap: var(--s-2); min-height: var(--btn-h); padding: 0 var(--s-4);
+  border: 1px solid var(--line-strong); border-radius: var(--r-btn); color: var(--ink); font: 500 15px/1.2 var(--font-text); text-decoration: none; }
+.contents-row a:hover { border-color: var(--ink); }
+.contents-row a span { color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) { .contents-row a { padding: 0 var(--s-3); } }
+/* end-notes: a superscript mark on a sourced figure links to its note above the footer; the note links back */
+.note-mark { font-size: .7em; line-height: 0; vertical-align: super; }
+.note-mark a { display: inline-block; min-width: 1.6em; padding: 0 .15em; color: var(--action); text-decoration: none; font-variant-numeric: tabular-nums; }
+.end-notes { margin: 0; padding: 0; list-style: none; counter-reset: note; max-width: 62ch; }
+.end-notes li { counter-increment: note; display: grid; grid-template-columns: 2em 1fr; gap: var(--s-2); padding-block: var(--s-3);
+  border-top: 1px solid var(--line); font-size: var(--t-small); line-height: 1.5; color: var(--ink); }
+.end-notes li::before { content: counter(note); color: var(--muted); font-variant-numeric: tabular-nums; }
+.end-notes li:target { background: color-mix(in oklab, var(--action) 8%, transparent); }
+.end-notes a.note-back { display: inline-flex; align-items: center; min-height: 24px; margin-left: var(--s-2); color: var(--action); }
+/* record: one look for one named record (an id, a sum, a booking line) in every built UI of the page */
+:root { --record-bg: color-mix(in oklab, var(--action) 10%, var(--bg)); --record-ink: var(--ink); --record-line: color-mix(in oklab, var(--action) 45%, transparent); }
+.record { display: inline-flex; align-items: center; gap: var(--s-2); padding: 2px var(--s-2); border: 1px solid var(--record-line);
+  border-radius: var(--r-sm); background: var(--record-bg); color: var(--record-ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.record::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--action); }
+.record--quiet { background: none; }
+/* an own section's lead sits close under its h2 (2.5.4 story proof: a builder's own section left it touching) */
+main > section.own > .wrap > h2 + .t-lead { margin-top: var(--s-4); }

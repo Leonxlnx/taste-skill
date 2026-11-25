@@ -6,6 +6,22 @@ Build the dealt frame. Choose each section's form from its content. Read `compos
 
 Before planning, name what the visitor needs to know before acting and which supplied fact answers it. Give that answer a section high on the page in its natural form: a guesthouse explains what guests get by booking direct and what follows their request, while an integration shows one real example in the existing system. Merge a section with only a heading, a sentence and a picture into its neighbour.
 
+**Order the sections as a story** (`story.md`): the shape decides their order, the spine in the copy notes names it, and the plan follows it.
+
+| The brief has | Shape |
+|---|---|
+| A pain, a rival or an old way it replaces | `problem-turn` |
+| A product used in a sequence, or a service with a process | `work-path` |
+| One object or platform with four to six distinct qualities | `chapters` |
+| Something lived through a day, a stay, a session or a shift | `day-with-it` |
+| A promise in two parts, two products or two audiences | `two-part-promise` |
+| A small team or owner speaking, or a change of course | `letter` |
+| A new version of something that existed | `sequel` |
+| Many items to choose from, a body of work, releases | `catalogue-argued` |
+| Buyers so different that the page should ask first | `question-first` |
+| Makers, merchants or founders who grow with it | `reader-rise` |
+| Real figures, standards or named customers | `claim-proofs` |
+
 Write the kind, then the frame from the PLAN. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
 
 **Match each ask to an element.** Write `- <ask> -> #<id> : <outcome>` under `Asks:` in the copy notes, using `play` for media, `go` for an external destination, `send` for a form, `file` for a download or `show` for content, including a local area map. The gate checks what the visitor gets at that id.
@@ -47,9 +63,10 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
   hero, or where a product needs "compare" beside "buy"). A long section holds one list, table or
   form, or one idea in two groups, never two ideas.
 - **Main action.** Use the same words in the nav, hero, phone bar and wherever the visitor completes it. For orders put the controls early. For dated stays, tables and classes dock the booking bar on the hero and keep the full form at the close.
-- **Merge short blocks.** Put a quote, logo row or short FAQ with the section it belongs to. A text moment rides on an existing h2 or the close. Only the page's main claim may stand alone, once, in a thin statement section.
+- **Merge short blocks.** Put a quote, logo row or short FAQ with the section it belongs to. A text moment rides on an existing h2 or the close. Only the page's main claim may stand alone, once, in a thin statement section; on a story with a turn, the turn may be that one statement instead.
 - **Repeats:** a card layout (2x2, bento, three cards, split card, open tiles) at most twice a page;
-  neighbours never share a layout; on software, product and service a calmer section (quote, prices,
+  neighbours never share a layout (on a `chapters` page the chapters may share one scaffold when each
+  shows the product in a different state); on software, product and service a calmer section (quote, prices,
   FAQ) after at most two visual ones, and the back third of the page calm before the close. Repeat
   the section scaffold (head, padding, ground logic) so it is learned once.
 - **Proof.** Use the brief's named quotes, footnoted figures, reviews or permitted customer logos. A comparison needs comparable numbers and a source.
@@ -73,7 +90,8 @@ Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and
 
 Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, grounds and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
-- `grounds` lists a ground per section. `alternate` alternates page and tint from section two, with inverse for the strongest picture. `blocks` repeats page, page, tint and closes on inverse. `islands` sets an inverse island and a brand or tint island on the page ground. `calm` changes ground at the main picture and sometimes again at the close. Neighbours may share a ground. Keep non-tech heroes off bands.
+- `grounds` lists a ground per section. `alternate` alternates page and tint from section two, with inverse for the strongest picture. `blocks` repeats page, page, tint and closes on inverse. `islands` sets an inverse island and a brand or tint island on the page ground. `calm` changes ground at the main picture and sometimes again at the close. `chapters` (dealt with a `chapters` or `two-part-promise` story) gives each chapter run or half one ground and changes it only where one begins. Neighbours may share a ground.
+- `story` names the dealt shape from `library/stories.json` with its beats, its thread and how it is faked (`story.md`). Keep it or name a better fit on plan line 3. Keep non-tech heroes off bands.
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
 - `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).
 - `moment` names the host or heading. Use one, with a second from seven sections. A scene appears about once in three eligible deals and needs content to carry it. See `moments.md` and `scenes.md`.

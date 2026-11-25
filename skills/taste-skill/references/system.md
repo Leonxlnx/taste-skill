@@ -99,7 +99,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 
 - `header.nav`: `position: fixed`, full width, `--nav` tall, opaque ground, a 1px hairline under it
   from the first paint, `z-index: 10`, the same at every scroll depth: no blur, transparency,
-  shrink, hide, shadow, colour flip or floating pill. Its `.wrap` puts the logo and main action on the page's edges. Sticky content belongs inside its own section (`compose.md`).
+  shrink, hide, shadow, colour flip or floating pill. Its `.wrap` puts the logo and main action on the page's edges. Sticky content belongs inside its own section (`compose.md`); the one page-level exception is the `chapter-nav` (Story parts).
 - The dealt type is a class (`sections.md`): `nav` (nav-mega, nav-cards), `nav nav--centre`,
   `nav nav--split`; `nav--tone` puts the bar on the inverse ground (tech).
 - Use the client's logo, the mark supplied by `brand-mark`, or the dealt `data-mark` and name. Repeat it in the footer.
@@ -165,6 +165,16 @@ Inside .closing__links, an optional list with class .footer-promises sits direct
 - A text moment rides on a heading. For a standalone main claim use `.section.statement.section--thin`.
 - `.hero--peek` lets the dealt hero window cross the fold. `.hero-book` docks a booking row inside the hero's wrap. See `layout-v4.md`, The hero.
 - Photo compositions and closes keep the markup in `sections-library.md`. `.btn--xl` fits the closing row.
+
+## Story parts
+
+For the page as a story (`story.md`); each is complete without script and reachable by keyboard.
+
+- **`chapter-nav`:** `<nav class="chapter-nav" data-chapter-nav aria-label="Chapters"><div class="chapter-nav__bar"><div class="chapter-nav__in"><ol>` with one `<li><a href="#id"><span>1</span> Name</a></li>` per chapter, four to six, as the first child of the first chapter's `.wrap`, before its h2. system.js pins it under the fixed nav from the first chapter to the last and marks the chapter on screen; under 640px it folds to one line "2 / 5 · Name" that opens the list. It is the one page-level exception to "nothing sticky outside its section", on `chapters` pages only.
+- **`chapter-head`:** `<p class="chapter-head"><span>2</span> Planning</p>` directly above a chapter's h2, the same name as its `chapter-nav` or `contents-row` link; never uppercase, never mono, never on a section that is no chapter.
+- **`contents-row`:** `<nav class="contents-row" aria-label="On this page"><p>` holding up to five chapter links (`<a href="#id"><span>1</span> Name</a>`) under the hero's lead, in the order the page takes them.
+- **`end-notes`:** a figure's source as `<sup class="note-mark"><a href="#note-1" id="ref-1">1</a></sup>`, the notes as `<ol class="end-notes">` above the footer, each `<li id="note-1">` ending in `<a class="note-back" href="#ref-1">Back to the text</a>`.
+- **`.record`:** one named record (an id, a sum, a booking line) in one look in every built UI of the page (`--record-bg`, `--record-ink`, `--record-line`); `.record--quiet` without its fill. Name its fields once in the copy notes' Thread.
 
 ## Forms
 

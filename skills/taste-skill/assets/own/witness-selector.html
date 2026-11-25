@@ -10,11 +10,11 @@
       </div>
       <div class="account-stage">
         <figure id="saltern-account-0"><blockquote>“The return slip gave me the shed number.”</blockquote><figcaption><b>Ada</b> at Flint Farm</figcaption>
-          <dl><dt>Equipment returned</dt><dd>Hedge trimmer · Shed 2</dd></dl></figure>
+          <dl><dt>Equipment returned</dt><dd>Hedge trimmer · Shed 2</dd></dl><svg class="return-tag" viewBox="0 0 112 48" role="img" aria-label="Return tag Shed 2"><path d="M2 6h84l22 18-22 18H2z"/><circle cx="88" cy="24" r="4"/><text x="12" y="29">Shed 2</text></svg></figure>
         <figure id="saltern-account-1"><blockquote>“We matched the pump by its tag.”</blockquote><figcaption><b>Bo</b> at Cinder Hall</figcaption>
-          <dl><dt>Equipment returned</dt><dd>Pump · Tag P16</dd></dl></figure>
+          <dl><dt>Equipment returned</dt><dd>Pump · Tag P16</dd></dl><svg class="return-tag" viewBox="0 0 112 48" role="img" aria-label="Return tag P16"><path d="M2 6h84l22 18-22 18H2z"/><circle cx="88" cy="24" r="4"/><text x="12" y="29">P16</text></svg></figure>
         <figure id="saltern-account-2"><blockquote>“I could see both crates on the receipt.”</blockquote><figcaption><b>Jo</b> at Tern Yard</figcaption>
-          <dl><dt>Equipment returned</dt><dd>Lighting crates · 2 crates</dd></dl></figure>
+          <dl><dt>Equipment returned</dt><dd>Lighting crates · 2 crates</dd></dl><svg class="return-tag" viewBox="0 0 112 48" role="img" aria-label="Return tag 2 crates"><path d="M2 6h84l22 18-22 18H2z"/><circle cx="88" cy="24" r="4"/><text x="12" y="29">2 crates</text></svg></figure>
       </div>
     </div>
   </div>
@@ -28,6 +28,11 @@
 [data-own="witness-selector"] figure { border-top: 1px solid var(--line); padding-block: var(--s-6) var(--s-3); }
 [data-own="witness-selector"] blockquote { font-family: var(--font-display); font-size: var(--t-h3); line-height: 1.28; letter-spacing: var(--display-tracking); max-width: 30ch; min-height: 2.56em; }
 [data-own="witness-selector"] figcaption { margin-top: var(--s-3); }
+[data-own="witness-selector"] figure:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s-7); align-items: start; }
+[data-own="witness-selector"] figure > :not(.return-tag) { grid-column: 1; }
+[data-own="witness-selector"] .return-tag { grid-column: 2; grid-row: 1 / span 3; width: 168px; height: 72px; fill: none; stroke: var(--ink); stroke-width: 1.5; }
+@media (max-width: 639px) { [data-own="witness-selector"] figure:not([hidden]) { grid-template-columns: 1fr; } [data-own="witness-selector"] .return-tag { grid-column: 1; grid-row: auto; width: 112px; height: 48px; margin-top: var(--s-4); } }
+[data-own="witness-selector"] .return-tag text { fill: var(--ink); stroke: none; font: 500 15px var(--font-text); }
 [data-own="witness-selector"] figcaption b { font-weight: 600; }
 [data-own="witness-selector"] dl { display: flex; gap: var(--s-2) var(--s-4); flex-wrap: wrap; align-items: baseline; font-size: var(--t-small); margin: var(--s-5) 0 0; }
 [data-own="witness-selector"] dt { color: var(--muted); } [data-own="witness-selector"] dd { margin: 0; font-variant-numeric: tabular-nums; }

@@ -8,10 +8,10 @@
       <div class="node end-0" data-station="N"><small>Within range</small><strong>Daily ledger</strong></div><div class="node end-1" data-station="S"><small>Outside range</small><strong>Review tray</strong></div>
       <figcaption>Each input supplies station, time and rainfall in millimetres.</figcaption></figure>
       <div class="samples"><fieldset hidden><legend>Trace a sample</legend><div><label class="press"><input type="radio" value="N" checked> Station N</label><label class="press"><input type="radio" value="S"> Station S</label></div></fieldset>
-        <ol><li data-station="N"><h3>Station N <time>08:00</time></h3><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><h3>Station S <time>08:15</time></h3><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
+        <ol><li data-station="N"><p class="route-head">Station N <time>08:00</time></p><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><p class="route-head">Station S <time>08:15</time></p><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
         <p class="spoken" role="status" aria-live="polite"></p></div>
-      <div class="mobile-routes"><article data-station="N"><h3>Station N <time>08:00</time></h3>
-        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><h3>Station S <time>08:15</time></h3>
+      <div class="mobile-routes"><article data-station="N"><p class="route-head">Station N <time>08:00</time></p>
+        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><p class="route-head">Station S <time>08:15</time></p>
         <ol><li><strong>Volunteer sheet</strong><span>230 mm</span></li><li><strong>Validator</strong><span>Outside range · 0–200 mm inclusive</span></li><li><strong>Review tray</strong></li></ol></article></div>
     </div>
   </div>
@@ -46,7 +46,7 @@
 [data-own="system-paths"] fieldset label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); cursor: pointer; }
 [data-own="system-paths"] input { margin: 0; accent-color: var(--action); }
 [data-own="system-paths"] .samples li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
-[data-own="system-paths"] .routing h3 { font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
+[data-own="system-paths"] .routing .route-head { margin: 0; font-weight: 500; font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
 [data-own="system-paths"] time { font-size: var(--t-small); color: var(--muted); }
 [data-own="system-paths"] .sample-value { font-size: var(--t-h3); }
 [data-own="system-paths"] .samples li > span { color: var(--muted); }
@@ -62,6 +62,7 @@
   [data-own="system-paths"] fieldset { margin-bottom: 0; }
   [data-own="system-paths"] .mobile-routes { display: grid; grid-column: 1/-1; gap: var(--s-4); }
   [data-own="system-paths"] .mobile-routes article { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  [data-own="system-paths"] .mobile-routes .route-head { margin: 0; font-weight: 500; display: flex; justify-content: space-between; gap: var(--s-2); }
   [data-own="system-paths"] .mobile-routes article[data-active] { border-color: var(--action); background: var(--surface); }
   [data-own="system-paths"] .mobile-routes ol { margin: var(--s-3) 0 0 var(--s-1); border-left: 1px dashed var(--muted); }
   [data-own="system-paths"] .mobile-routes article[data-active] ol { border-left: var(--s-1) solid var(--action); }

@@ -295,6 +295,7 @@ import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } 
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
 import { STOP, norm, words, stem, holds, holdsAny, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { storyProbe, storyFindings, findBeside } from './story-check.mjs';
 
 const layoutRules = readFileSync(new URL('../assets/layout/layout-check.js', import.meta.url), 'utf8');
 const browserFinding = f => ({check:f.rule, sev:f.sev || 'FAIL', sel:f.where, msg:f.detail, id:0, text:'', rects:[]});
@@ -4325,11 +4326,58 @@ async function run(ctx) {
   return { id, phase, checks, fixes, summary, flags, quick, run };
 })();
 
+const storyMod = (() => {
+// the page as a story (references/story.md, scripts/story-check.mjs): read once, at the first width, from the page's
+// headings, grounds and chapter links, the plan (.taste-skill/plan.json: its story) and the copy notes' ## Story block.
+//   story      spine-drift (the page's h2s against the notes' Spine: another order, or a planned heading with no section),
+//              label-run (three neighbouring h2s that are bare labels), thread-lost (none of the hero's or the Thread's
+//              ids, names and figures comes back in two later sections), close-unanswered (the close shares no word and no
+//              number with the hero), stripe-grounds (a chapters or two-part-promise page whose ground changes inside a
+//              chapter, or at every section for four in a row), each WARN; chapter-nav (a chapter-nav or contents-row link
+//              that misses its id FAIL; a bar of under four or over six chapters, or a label no chapter head carries, WARN)
+const id = 'story';
+const phase = 'width';
+const checks = [
+  { id: 'spine-drift', sev: 'WARN', what: 'the page’s h2s in another order than the notes’ Spine, or a planned heading with no section' },
+  { id: 'label-run', sev: 'WARN', what: 'three neighbouring h2s that are bare labels (three words or fewer, no verb, no figure)' },
+  { id: 'thread-lost', sev: 'WARN', what: 'none of the hero’s or the Thread’s ids, names and figures comes back in two later sections' },
+  { id: 'close-unanswered', sev: 'WARN', what: 'the close shares no content word and no number with the hero' },
+  { id: 'stripe-grounds', sev: 'WARN', what: 'a chapters or two-part-promise page whose ground changes inside a chapter or at every section' },
+  { id: 'chapter-nav', sev: 'FAIL', what: 'a chapter-nav or contents-row link that misses its id (FAIL); a bar of under four or over six chapters, a label no chapter head carries (WARN)' },
+];
+const fixes = {
+  'spine-drift': 'build the sections in the spine’s order, or change the spine and say why (references/story.md)',
+  'label-run': 'give each heading what happens there: a verb, a time, a number, the thing it changes',
+  'thread-lost': 'carry one named record from the hero into two later sections, each time in the state that section is about',
+  'close-unanswered': 'let the close bring back the hero’s line, field or object with the one fact the page earned',
+  'stripe-grounds': 'one ground for each chapter run or half, changing only where one begins',
+  'chapter-nav': 'point every link at its chapter’s id; four to six chapters; the link and the chapter head say the same name',
+};
+const summary = [
+  '  story      spine-drift, label-run, thread-lost, close-unanswered, stripe-grounds (WARN), chapter-nav (FAIL: a link',
+  '             that misses its id), read once at the first width with the plan and the copy notes (references/story.md)',
+].join('\n');
+const flags = [];
+const quick = true;
+const when = (ctx) => ctx.first;
+async function run(ctx) {
+  const P = await ctx.safe('story', () => ctx.tab.eval('(' + storyProbe.toString() + ')()'));
+  if (!P) return [];
+  let plan = null, notes = null;
+  try { const f = findBeside(PAGE_FILE, 'plan.json'); if (f) plan = JSON.parse(readFileSync(f, 'utf8')); } catch { /* no plan */ }
+  try { const f = findBeside(PAGE_FILE, 'copy.md'); if (f) notes = readFileSync(f, 'utf8'); } catch { /* no notes */ }
+  return storyFindings(P, { plan, notes });
+}
+  return { id, phase, checks, fixes, summary, flags, quick, when, run };
+})();
+
 // the checks kept as blocks of their own: each runs on the walked tab at every width it names (phase 'width') or opens
 // its own tab (phase 'pass'); --no-<id> skips one
-const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod];
+const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod, storyMod];
 
 const OUT = opt('out', null);
+// the page's own file when a local page is checked (the story block reads the plan and the copy notes beside it)
+let PAGE_FILE = null;
 // --root: a built site's folder, served instead of the page's own so its root-relative links (/style.css) resolve
 const ROOT = opt('root', null);
 if (ROOT !== null && (ROOT === undefined || !String(ROOT) || String(ROOT).startsWith('--'))) { console.error('--root needs a folder'); process.exit(2); }
@@ -4408,7 +4456,7 @@ else {
   const ups = Math.max(0, ...[...readFileSync(file, 'utf8').matchAll(/(?:(?:src|href)\s*=\s*|\bfrom\s*|\bimport\s*\(?\s*|url\(\s*)["']?((?:\.\.\/)+)/g)].map((m) => m[1].length / 3));
   let root = dirname(file); for (let i = 0; i < ups; i++) root = dirname(root);
   if (ROOT) { root = resolve(ROOT); const rel = relative(root, file); if (rel.split(sep)[0] === '..' || isAbsolute(rel)) { console.error(`The page is not inside --root ${root}: ${file}`); process.exit(2); } }
-  serveRoot = root;
+  serveRoot = root; PAGE_FILE = file;
   server = createServer((req, res) => {
     try {
       let f = resolve(join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
@@ -7107,7 +7155,11 @@ function lib(itemContext) {
           const r=e.getBoundingClientRect(), css=CS(e);
           return r.width>=56 && r.height>=8 && shown(e,r) && (css.backgroundImage!=='none' || rgba(css.backgroundColor).a>=0.3);
         });
-        if (painted || [...s.querySelectorAll(built)].some(substantial)) continue;
+        // a code panel built of several short blocks (a command, the source, the output: each under 80px) is the
+        // product's own view, as one tall block is (own-b's environment-setup: three short pre read as 0% visual)
+        const pres = [...s.querySelectorAll('pre')].map((e) => [e, e.getBoundingClientRect()]).filter(([e, q]) => q.width >= 120 && q.height >= 16 && shown(e, q));
+        const codePanel = pres.reduce((sum, [, q]) => sum + q.height, 0) >= 80;
+        if (painted || codePanel || [...s.querySelectorAll(built)].some(substantial)) continue;
       }
       if (!judge && !quiet) continue;
       const cell = Math.max(8, Math.round(Math.min(r.width, H) / 50));

@@ -1,0 +1,89 @@
+<section class="section own" id="margin-track" data-own="margin-track" aria-labelledby="margin-track-title">
+  <div class="wrap">
+    <h2 id="margin-track-title">The Pellin field recorder in four parts</h2>
+    <p class="t-lead measure">A pocket recorder for interviews and birdsong, in the order you meet it: what you hear, what you hold, how long it runs, what you take home.</p>
+    <div class="track">
+      <div class="track__line" aria-hidden="true"><span class="track__fill" data-m-progress></span></div>
+      <article class="chapter" id="mt-sound" aria-labelledby="mt-sound-h">
+        <p class="chapter-stop"><span>1</span> Sound</p>
+        <div class="chapter-body">
+          <h3 id="mt-sound-h">Two capsules, crossed. <span class="muted">A room sounds like the room.</span></h3>
+          <p>The pair sits at 90 degrees, so a speaker stays in the middle and the street stays at the side.</p>
+          <svg viewBox="0 0 240 64" role="img" aria-label="Level meter at minus 18 dB with peaks at minus 6 dB">
+            <g class="lv"><rect x="0" y="10" width="150" height="14" rx="2"/><rect x="0" y="36" width="138" height="14" rx="2"/></g>
+            <g class="lv-peak"><rect x="196" y="10" width="3" height="14"/><rect x="188" y="36" width="3" height="14"/></g>
+            <path class="lv-scale" d="M0 58H240M60 54v8M120 54v8M180 54v8"/>
+          </svg>
+          <p class="chapter-fact">−18&nbsp;dB average, −6&nbsp;dB peaks</p>
+        </div>
+      </article>
+      <article class="chapter" id="mt-body" aria-labelledby="mt-body-h">
+        <p class="chapter-stop"><span>2</span> Body</p>
+        <div class="chapter-body">
+          <h3 id="mt-body-h">One hand, no menu. <span class="muted">Record is the largest key.</span></h3>
+          <p>Four keys and a dial for the level, all reachable with the thumb that holds it.</p>
+          <svg viewBox="0 0 240 64" role="img" aria-label="Front of the recorder: one large record key and three small keys">
+            <rect class="body-out" x="20" y="4" width="200" height="56" rx="10"/>
+            <circle class="body-rec" cx="64" cy="32" r="14"/>
+            <g class="body-key"><rect x="104" y="24" width="22" height="16" rx="3"/><rect x="134" y="24" width="22" height="16" rx="3"/><rect x="164" y="24" width="22" height="16" rx="3"/></g>
+          </svg>
+          <p class="chapter-fact">118 × 46 × 21&nbsp;mm, 140&nbsp;g</p>
+        </div>
+      </article>
+      <article class="chapter" id="mt-battery" aria-labelledby="mt-battery-h">
+        <p class="chapter-stop"><span>3</span> Battery</p>
+        <div class="chapter-body">
+          <h3 id="mt-battery-h">A day out, then a night on the cable.</h3>
+          <p>Two AA cells or the USB-C port; it records while it charges.</p>
+          <svg viewBox="0 0 240 64" role="img" aria-label="Battery at 70 percent after five hours">
+            <rect class="bat-out" x="4" y="14" width="210" height="36" rx="5"/><rect class="bat-cap" x="216" y="24" width="8" height="16" rx="2"/>
+            <rect class="bat-fill" x="10" y="20" width="140" height="24" rx="3"/>
+          </svg>
+          <p class="chapter-fact">16&nbsp;hours on two AA cells</p>
+        </div>
+      </article>
+      <article class="chapter" id="mt-files" aria-labelledby="mt-files-h">
+        <p class="chapter-stop"><span>4</span> Files</p>
+        <div class="chapter-body">
+          <h3 id="mt-files-h">Files named by place and time.</h3>
+          <p>Each take is saved as a WAV file the moment you stop, named so you can find it a year later.</p>
+          <ul class="files" aria-label="Example takes">
+            <li><span>marsh-0612-0514.wav</span><span>12:40</span></li>
+            <li><span>kitchen-0612-1930.wav</span><span>48:02</span></li>
+          </ul>
+          <p class="chapter-fact">48&nbsp;kHz, 24-bit WAV</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="margin-track"] .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+[data-own="margin-track"] .wrap > .t-lead + * { margin-top: var(--head-gap); }
+[data-own="margin-track"] .track { position: relative; display: grid; gap: var(--s-8); }
+[data-own="margin-track"] .track__line { display: none; }
+[data-own="margin-track"] .chapter-stop { display: flex; gap: var(--s-2); align-items: baseline; margin: 0 0 var(--s-3); font: 500 var(--t-body)/1.4 var(--font-text); }
+[data-own="margin-track"] .chapter-stop span { color: var(--muted); font-variant-numeric: tabular-nums; }
+[data-own="margin-track"] h3 { margin: 0; max-width: 24ch; }
+[data-own="margin-track"] .chapter-body > p:not(.chapter-fact) { margin: var(--s-3) 0 0; max-width: 46ch; }
+[data-own="margin-track"] svg, [data-own="margin-track"] .files { display: block; width: 100%; max-width: 420px; margin-top: var(--s-5); }
+[data-own="margin-track"] .lv { fill: var(--action); }
+[data-own="margin-track"] .lv-peak { fill: var(--ink); }
+[data-own="margin-track"] .lv-scale, [data-own="margin-track"] .body-out, [data-own="margin-track"] .bat-out, [data-own="margin-track"] .body-key { fill: none; stroke: var(--ink); stroke-width: 2; }
+[data-own="margin-track"] .body-rec, [data-own="margin-track"] .bat-fill { fill: var(--action); }
+[data-own="margin-track"] .bat-cap { fill: var(--ink); }
+[data-own="margin-track"] .files { list-style: none; padding: 0; font-variant-numeric: tabular-nums; }
+[data-own="margin-track"] .files li { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-2); border-top: 1px solid var(--line); }
+[data-own="margin-track"] .files li span + span { color: var(--muted); }
+[data-own="margin-track"] .chapter-fact { margin: var(--s-3) 0 0; color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+/* from 1024: the stops move into the left gutter on one vertical line that fills as the reader passes */
+@media (min-width: 1024px) {
+  [data-own="margin-track"] .track { padding-left: 0; }
+  [data-own="margin-track"] .chapter { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: var(--gutter); }
+  [data-own="margin-track"] .chapter-stop { position: relative; padding-left: var(--s-6); margin: 0; min-height: var(--s-6); }
+  [data-own="margin-track"] .chapter-stop::before { content: ""; position: absolute; left: 0; top: .35em; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--action); }
+  [data-own="margin-track"] .track__line { display: block; position: absolute; left: 6px; top: .5em; bottom: 0; width: 2px; background: var(--line); }
+  [data-own="margin-track"] .track__fill { display: block; width: 100%; height: 100%; background: var(--action); transform: scaleY(var(--p, 1)); transform-origin: top; }
+}
+</style>

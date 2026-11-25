@@ -20,12 +20,13 @@ fs.mkdirSync(cwd, { recursive: true });
 const historyFile = path.join(cwd, '.taste-skill/history.json');
 const planFile = path.join(cwd, '.taste-skill/plan.json');
 const seeds = load(path.join(root, 'library/ideas.json'));
+const stories = load(path.join(root, 'library/stories.json'));
 const moments = load(path.join(root, 'assets/moments/index.json')).moments;
 const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-rise', 'giant-type-pass', 'liquid-type'];
 for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
   assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
 }
-const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect'.split(' ');
+const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
 const hasByKind = { software: 'ui,logo', gaming: 'setting', tech: 'ui', product: 'object', service: 'photo', place: 'photo' };
@@ -60,6 +61,7 @@ for (const kind of kindsToRun) {
   const quiet = ['place', 'service', 'product'].includes(kind);
   const counts = {};
   const recentGrounds = [];
+  const recentStories = [];
   let prev, minDelta = Infinity, previousIdeas = fs.existsSync(historyFile) ? load(historyFile).ideas || [] : [];
   for (let i = 0; i < 40; i++) {
     const sections = [5, 6, 7, 8, 9][i % 5];
@@ -95,8 +97,25 @@ for (const kind of kindsToRun) {
     assert(p.moments.every(id => eligible.some(m => m.id === id)));
     assert.equal(p.grounds.bySection.length, sections);
     assert.equal(p.grounds.bySection[0], 'page');
-    assert(!recentGrounds.slice(-2).includes(p.grounds.pattern));
-    recentGrounds.push(p.grounds.pattern);
+    // the story shape: one that lists the kind, printed with its beats, never one of the last three; a chapters or
+    // two-part-promise page takes the chapters ground pattern (one ground per chapter run or half), every other page
+    // keeps the dealt pattern, away from the last two
+    const story = stories.find(st => st.id === p.story);
+    assert(story && story.kinds.includes(kind), kind + '/' + i + ' story ' + p.story);
+    assert(!recentStories.slice(-Math.min(3, stories.filter(st => st.kinds.includes(kind)).length - 1)).includes(p.story), kind + '/' + i + ' story repeated: ' + p.story);
+    recentStories.push(p.story);
+    assert(printed.includes('  story        ' + p.story + ': ' + story.line));
+    story.beats.forEach((b, ix) => assert(printed.includes('beat ' + (ix + 1)), 'beat ' + (ix + 1) + ' not printed'));
+    if (['chapters', 'two-part-promise'].includes(p.story)) {
+      assert.equal(p.grounds.pattern, 'chapters');
+      const changes = p.grounds.bySection.slice(1).filter((g, ix) => g !== p.grounds.bySection[ix]).length;
+      assert(changes <= 3, 'chapters grounds change ' + changes + ' times');
+      recentGrounds.push(null);   // the dealt pattern under it stays in the history unseen
+    } else {
+      assert.notEqual(p.grounds.pattern, 'chapters');
+      assert(!recentGrounds.slice(-2).includes(p.grounds.pattern));
+      recentGrounds.push(p.grounds.pattern);
+    }
     const fields = Object.fromEntries(printed.split('\n').flatMap(line => {
       const match = line.match(/^  ([a-z]+(?: [0-9])?)\s{2,}(.+)$/);
       return match ? [[match[1], match[2]]] : [];
@@ -170,7 +189,8 @@ for (const kind of kindsToRun) {
     }
     prev = p;
   }
-  assert.equal(Object.keys(counts.grounds).length, 4);
+  assert(Object.keys(counts.grounds).filter(g => g !== 'chapters').length === 4, kind + ' ground patterns ' + Object.keys(counts.grounds));
+  assert(Object.keys(counts.story).length >= 3, kind + ' story shapes ' + Object.keys(counts.story));
   fs.writeFileSync(path.join(run, 'counts-' + kind + '.json'), JSON.stringify({ counts, minDelta }, null, 2));
   const part = k => Object.entries(counts[k]).map(([v, n]) => v + ' ' + n).join(', ');
   table.push({ kind, pages: 40, grounds: part('grounds'), density: part('density'), scenes: 40 - (counts.scene.null || 0), minDelta });

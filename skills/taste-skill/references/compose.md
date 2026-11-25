@@ -30,6 +30,13 @@ on a page has a shape of its own, and the section takes that shape. This file is
 A section is right when it could only belong to this client: take the words away and its shape
 still says what kind of business this is.
 
+## The page is a sequence
+
+A section's form comes from its content; its place comes from the story (`story.md`). Read the h2s
+alone, in order: they should make sense as a paragraph. A picture that comes back shows its subject
+in a new state; the same picture twice says nothing new. One thing travels through the page (a named
+record, a sum, a booking, a character), with the same name and the same numbers each time.
+
 | Content | Form |
 |---|---|
 | Ordered steps with times or handoffs | Numbered rail, week strip or route |
@@ -161,23 +168,76 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 - `booking-bar` Dates, guests and room in one row with a live total, docked under the hero.
 - `configurator` Choices as chips (size, colour, set); the picture and the price follow.
 - `order-pad` Items with steppers and a running total, like an order pad.
+- `enquiry-preview` The enquiry fields beside a concrete view of what is being requested; on a phone the submit stays with its fields.
+
+**More, by shape** (each line in full in `library/ideas.json`)
+
+- Steps: `stage-sequence` (adjacent stages on one wide view, unrolled in order on a phone).
+- Offer: `availability-list` (formats and destinations under the title they serve).
+- Product: `device-handoff` (install links by device, a scan code beside each).
+- Proof: `activity-strip` (one operating record in a narrow band), `quote-columns` (accounts with speaker and source under each), `quote-and-measure` (an account beside a sourced measure).
+- Work: `edition-archive` (covers or spines with a dated title list).
+- Story: `signed-letter` (a first-person account ending at a name and role), `chapter-contents` (named destinations grouped by subject).
+- Detail: `directory-foot` (destinations under headings, then locale and policy), `site-notice` (one dated change above the menu), `claim-notes` (numbered conditions with return links).
 
 ## Worked examples
 
 `assets/own/index.html` and `assets/own/README.md` show how to adapt these to the client. Never ship example words or repeat its exact form on a page.
 
+Galleries: `index.html`, `gallery-own-a.html`, `gallery-own-b.html`.
+
+**Steps, states and chapters**
+
 - `rail.html` · Deliverables by step
-- `meter.html` · Seat count selects a price tier
-- `core-view.html` · Jobs across teams on one clock
-- `switcher.html` · Four room configurations
-- `bars.html` · Packing times against one baseline
-- `scale.html` · Range with familiar references
-- `case-rows.html` · Book jackets and edition facts
-- `index.fragment.html` · Archive entries linked to specimens
+- `states.html` · One record through four states, the same id in each
+- `chapter-stage.html` · A physical change in three stages, one drawing
+- `chapter-links.html` · Guide chapters with a printable reference sheet
+- `margin-track.html` · Chapters on a gutter line, use before machine
 - `day-bar.html` · Weekly opening hours
+
+**Prices, plans and orders**
+
+- `meter.html` · Seat count selects a price tier
+- `billing-matrix.html` · Plans billed monthly or yearly, real bills
+- `fee-comparison.html` · Two tariffs compared at the reader's quantity
+- `receipt.html` · Item costs, total and inclusions
 - `booking-bar.html` · Stay priced by date and occupancy
 - `configurator.html` · Choices update a product and price
-- `receipt.html` · Item costs, total and inclusions
+- `edition-outlets.html` · Editions by platform, gaps explained
+
+**The product at work**
+
+- `core-view.html` · Jobs across teams on one clock
+- `switcher.html` · Four room configurations
+- `system-paths.html` · Inputs, one decision, two destinations
+- `annotated-source.html` · Lines of code with lettered notes
+- `environment-setup.html` · One first task in three runtimes
+- `connector-finder.html` · Integrations found by name or type
+- `model-matrix.html` · Models compared on shared properties
+- `coverage-map.html` · Stops on a drawn route with their times
+
+**Proof and figures**
+
+- `bars.html` · Packing times against one baseline
+- `scale.html` · Range with familiar references
+- `source-ledger.html` · Figures with their counting rules
+- `evidence-grid.html` · Several proofs before an approval
+- `witness-selector.html` · Named accounts from the brief, each with its thing
+
+**Work, cases and people**
+
+- `case-rows.html` · Book jackets and edition facts
+- `index.fragment.html` · Archive entries linked to specimens
+- `case-foldout.html` · Cases with a measured result and a job sheet
+- `field-roster.html` · People and their actions, before and after
+- `media-desk.html` · A press kit in several formats
+
+**Words, news and answers**
+
+- `letter.html` · A signed letter with the practical facts beside it
+- `release-register.html` · Dated releases and their files
+- `lead-digest.html` · One lead report and shorter dispatches
+- `answer-finder.html` · Answers by topic, searchable
 
 ## Sub-skills
 

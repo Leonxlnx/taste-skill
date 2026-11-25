@@ -37,6 +37,10 @@
                         Admission, Enemy or Customer words. WARN: no fact sheet or no draft in it, or an admission or
                         an enemy written as "none". A .md named copy.md is checked the same way. The skill's own
                         files (the starter) are never asked for notes.
+    copy-story          FAIL: the notes hold no ## Story block, its Shape is no id of library/stories.json, or its
+                        Thread is empty (the message prints the block to fill in). WARN: the Spine's headings are not
+                        the draft's H2 lines in number and order, or a heading joins the one before by "also", "and"
+                        or no word (references/story.md).
     ask-outcome         One line per mapped ask. A disclosed preview warns. A control that cannot deliver fails.
     copy-h1-category    WARN: the h1 is only a category label ("Yoga studio in Brooklyn", "Observability tool for
                         developers"): a noun phrase with a category noun (or the --category words, or the notes'
@@ -50,6 +54,7 @@
 import fs from 'node:fs';
 import {assessAsk, inferOutcome, outcomes, remedy} from './ask-outcome.mjs';
 import { copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { readStory } from './story-check.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -368,7 +373,49 @@ function notesFindings(t, where) {
   if (!lines.some((l) => /^#{1,3}\s*(the\s+)?fact sheet\b/i.test(l))) nope.push('"## Fact sheet"');
   if (!lines.some((l) => DRAFT_START.test(l))) nope.push('"## Draft"');
   if (nope.length) out.push(['WARN', nope, `${where}: the ${nope.join(' and the ')} part${nope.length > 1 ? 's are' : ' is'} missing`,'the notes hold the fact sheet, the voice card, then the draft (copy the block in references/copy.md)']);
+  out.push(...storyFindings(t, where));
   return { out, f, val };
+}
+// the ## Story block (references/story.md, copy.md The copy notes): the shape, the thread, the turn, the bookend and the
+// spine, written before the draft. FAIL copy-story: no block, a shape that is not in library/stories.json, an empty
+// thread. WARN copy-story: a spine whose headings are not the draft's H2 lines in number and order, a join word that
+// is "also" or "and" (or none).
+const STORY_BLOCK = `## Story
+Shape: <id from library/stories.json, and why the brief fits it>
+Thread: <the one record, object, person or time that travels; its name and numbers>
+Turn: <the section where something changes, and what changes>
+Bookend: <what the close brings back from the hero, and what it adds>
+Spine:
+- H1: <hero line>
+- <h2 of section 2> | beat: <which beat> | joins the previous by: <so / but / then / until / which means>
+- ...
+- Close: <the close's heading>`;
+let STORY_IDS = null;
+const storyIds = () => STORY_IDS || (STORY_IDS = (() => { try { return JSON.parse(fs.readFileSync(path.join(SKILL_DIR, 'library', 'stories.json'), 'utf8')).map((s) => s.id); } catch { return []; } })());
+const headKey = (s) => tidy(decode(String(s).replace(/<[^>]+>/g, ' '))).toLowerCase().replace(/[*_`"']/g, '').replace(/[^\p{L}\p{N}%€$£ ]+/gu, ' ').replace(/\s+/g, ' ').trim();
+function draftH2s(t) {
+  const lines = tidy(t).split(/\r?\n/);
+  const d = lines.findIndex((l) => DRAFT_START.test(l.trim()));
+  if (d < 0) return null;
+  let rest = lines.slice(d + 1); const e = rest.findIndex((l) => DRAFT_END.test(l.trim())); if (e >= 0) rest = rest.slice(0, e);
+  return rest.map((l) => l.trim().replace(/^[-*]\s+/, '').match(/^h2\s*:\s*(.*)$/i)).filter(Boolean).map((m) => m[1].trim());
+}
+function storyFindings(t, where) {
+  const out = [], S = readStory(t);
+  const fill = `copy this block into the notes before the draft and fill it from the brief (references/story.md):\n${STORY_BLOCK.split('\n').map((l) => '         ' + l).join('\n')}`;
+  if (!S) { out.push(['FAIL', ['## Story'], `${where}: no ## Story block: the page's shape, thread, turn, bookend and spine come before the draft`, fill, 'copy-story']); return out; }
+  const id = (S.shape.match(/[a-z]+(?:-[a-z]+)*/) || [''])[0];
+  if (noValue(S.shape) || !storyIds().includes(id)) out.push(['FAIL', [S.shape || 'Shape:'], `${where}: Shape "${clip(S.shape || '', 40)}" is no shape of library/stories.json (${storyIds().join(', ')})`, 'write the dealt shape\'s id, or another from library/stories.json, and why the brief fits it', 'copy-story']);
+  if (noValue(S.thread) || /^(none|n\/a|nothing|no)\b/i.test(S.thread)) out.push(['FAIL', ['Thread:'], `${where}: the story has no thread: name the one record, object, person or time that comes back in three sections`, 'Thread: a name and its numbers from the brief (an incident at 14:15, a booking for two nights, the 9 g camera); without one the shape is a list with a label on it', 'copy-story']);
+  const heads = S.spine.filter((x) => x.kind !== 'h1'), draft = draftH2s(t);
+  if (draft && draft.length && heads.length) {
+    const n = Math.min(heads.length, draft.length);
+    const off = []; for (let i = 0; i < n; i++) if (headKey(heads[i].head) !== headKey(draft[i])) off.push(`${i + 1}: spine "${clip(heads[i].head, 40)}" / draft "${clip(draft[i], 40)}"`);
+    if (heads.length !== draft.length || off.length) out.push(['WARN', off.length ? off.slice(0, 4) : [`${heads.length} / ${draft.length}`], `${where}: the spine ${heads.length !== draft.length ? `has ${heads.length} headings, the draft ${draft.length} H2 lines` : 'and the draft\'s H2 lines differ'}${off.length ? ` (${off.length} out of order or reworded)` : ''}`, 'keep one order: the spine is the draft\'s H2 lines, the close included, in the order the page takes them', 'copy-story']);
+  }
+  const weak = heads.filter((x) => x.kind === 'h2').filter((x) => !x.join || /^(also|and|and also|plus)$/i.test(x.join.replace(/[.,;]$/, '')));
+  if (weak.length) out.push(['WARN', weak.map((x) => `"${clip(x.head, 40)}" joins by "${x.join || 'nothing'}"`), `${where}: ${weak.length} heading${weak.length > 1 ? 's join' : ' joins'} the one before by ${weak.some((x) => x.join) ? '"also" or "and"' : 'no word'}: neighbours that only add are a list`, 'reorder, merge, or give the section a reason to follow the one before: so, but, then, until, which means', 'copy-story']);
+  return out;
 }
 // .taste-skill/copy.md beside the page, one or two folders up, or the .taste-skill folder the page sits in (the gate
 // lints rendered.html from inside it)
@@ -843,7 +890,7 @@ function lintRead(R, isHtml) {
         add('FAIL','caption',[t],'a picture may carry one short fact line','use one .fact-line of at most 60 characters for a name, place, size, year or price');
     }
   }
-  if (notes) for (const [sev, hits, msg, fix] of notes.out) add(sev, 'copy-notes', hits, msg, fix);
+  if (notes) for (const [sev, hits, msg, fix, id] of notes.out) add(sev, id || 'copy-notes', hits, msg, fix);
 
   // ---- the page's structure: the hero's h1, the close, headings that say the same thing
   if (isHtml) {
