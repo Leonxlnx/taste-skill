@@ -1,39 +1,4 @@
-/*
-  taste-skill motion.js - the moving half of the micro-interaction layer (motion.css is the rest).
-  Load it once, after system.js (motion.css needs no attribute; <html data-motion="off"> turns the layer off, JS too):
-    <script type="module" src="assets/motion/motion.js"></script>
-  It starts by itself. references/motion.md says what moves and how fast.
-
-  - the hero's entrance: .hero[data-enter] enters once on load (the h1 line by line, then the lead,
-    the buttons and the facts, the picture settling), about 1.1 s, when the head line set html.m-enter
-    before the first paint:
-    <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
-
-  - nav: .m-menu-open from the moment a menu starts to show (150ms of intent), so the next word swaps the panel at once
-    instead of waiting 150ms again; it stays while the pointer is on the word or its panel.
-  - tabs: every .tabs[role=tablist] gets one indicator that slides to the selected tab (system.js
-    still selects; this follows aria-selected).
-  - numbers: [data-m-count] on a stat ticks from 0 to its own text once, when 60% of it is on
-    screen (1.0 s, ease-out); prefix, suffix, decimals and thousands separators are kept. The
-    number's width is measured once the web fonts are in and again when it is first seen (a stat
-    in a hidden tab), so nothing beside it moves; a stat the observer never reports shows its own
-    text after 6 s on screen. A headless screenshot (HeadlessChrome) sees the final number unless
-    <html data-motion="live">.
-  - loops: [data-m-loop] marks a panel (or any box) whose CSS keyframe loops the page wrote itself;
-    they pause off screen, restart when the pointer enters the card around them, and get the
-    system's pause button (one per panel, shared with ui.js). ui.js restarts its own fragments.
-  - switches: a click on .m-switch flips aria-checked unless a handler before it called
-    preventDefault().
-  - the entrance deck: data-enter="<id>" picks rise (default), set-type, focus, exposure, aperture,
-    line-blocks, doors, product-at-work or still (meta.json, entrances); each settles by 1.4 s.
-  - section reveals: below the first screen each main section's h2 and lead picture (a photograph or a
-    video's poster) arrive once, the close in the footer too; in a section with a moment, those outside
-    the moment's host (never a card, row, tile or list; data-still on a section opts out).
-  - [data-m-roll] digits roll once; [data-m-swatches] crossfade a photograph; [data-open-now] gets
-    its open dot; .m-swap labels roll on hover.
-  Under prefers-reduced-motion: no entrance, no reveal, no roll, no indicator travel, no tick, no
-  loops, no restart.
-*/
+/* Optional entrances, one section fade and feedback for interactive controls. */
 const html = document.documentElement;
 const reducedQ = matchMedia('(prefers-reduced-motion: reduce)');
 const reduced = () => reducedQ.matches;
@@ -150,8 +115,8 @@ function format(v, p) {
 }
 // the web fonts, or 3 s at most: a number measured in the fallback font comes out narrower
 const fontsIn = () => Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise(r => setTimeout(r, 3000))]);
-function counts() {
-  const els = [...document.querySelectorAll('[data-m-count]')].filter(el => !el.__mCount);
+function counts(root) {
+  const els = [...root.querySelectorAll('[data-m-count]')].filter(el => !el.__mCount);
   if (!els.length || reduced() || shot()) return;
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.__mCount?.hit(); }), { threshold: 0.6 });
   const ro = new ResizeObserver(es => es.forEach(e => e.target.__mCount?.arm()));
@@ -171,7 +136,7 @@ function counts() {
     span.style.textAlign = 'right';
     span.textContent = p.raw;
     after.replaceWith(span);
-    const ms = +el.dataset.mCount || 1000;
+    const ms = +el.dataset.mCount || 400;
     let state = 'wait', timer = 0;          // wait (own text) -> armed (0, width held) -> run -> done
     const stop = () => { clearTimeout(timer); io.unobserve(el); ro.unobserve(el); };
     const onScreen = () => {
@@ -228,7 +193,8 @@ function counts() {
 /* ---------------------------------------------------------------- loops inside cards */
 const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4.25" y="3.25" width="2.75" height="9.5" rx="0.9"/><rect x="9" y="3.25" width="2.75" height="9.5" rx="0.9"/></svg>';
 const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.25 3.7v8.6c0 .62.68 1 1.2.66l6.5-4.3c.47-.31.47-1 0-1.32l-6.5-4.3c-.52-.34-1.2.04-1.2.66Z"/></svg>';
-const boxOf = el => el.closest('[data-ui-pause-host], .panel__screen, .panel, .frame') || el;
+const boxOf = el => el.closest('.panel__screen, .panel, .frame, .hero__window, [data-media-frame], figure');
+const invalidLoop = el => !boxOf(el) || el.matches('.card, .tile, [data-fx]') || el.closest('h1,h2,h3,h4,h5,h6');
 const hostOf = el => el.closest('.card, .tile, .menu-card, a') || boxOf(el);
 
 function restart(loop) {
@@ -266,10 +232,13 @@ function pauseButton(loop) {
 }
 function loops() {
   const els = [...document.querySelectorAll('[data-m-loop]')].filter(el => !el.__mLoop);
-  if (!els.length) return;
+  for (const el of els.filter(invalidLoop)) {
+    el.__mLoop = true;
+    el.classList.add('is-m-paused');
+  }
   if (reduced() || matchMedia('(max-width: 639px)').matches) return;   // motion.css holds them on their finished picture
   const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-m-off', !e.isIntersecting)), { rootMargin: '48px' });
-  els.forEach(el => {
+  els.filter(el => !el.__mLoop).forEach(el => {
     el.__mLoop = true;
     io.observe(el);
     pauseButton(el);
@@ -297,18 +266,10 @@ document.addEventListener('click', e => {
   sw.setAttribute('aria-checked', String(sw.getAttribute('aria-checked') !== 'true'));
 });
 
-/* ---------------------------------------------------------------- the hero's entrance */
-// Once, on load (motion.md, The hero's entrance): the h1 rises line by line out of its masks, then what
-// follows it (the lead, each button, the facts) enters by role, while the picture settles from a
-// slight scale; about 1.1 s in all, ease-out, transform and opacity only. motion.css hides the words
-// (never the picture) only while the head line's html.m-enter is on and its 700ms safety mark
-// (m-enter-done) is not; the picture waits at its start scale and settles by a CSS transition, so it
-// never blinks however late this file is. Without script, under reduced motion and in print the hero
-// simply stands; when this file is later than the mark, the words fade in by CSS and the hero stands.
-// The h1 gets its word masks for the length of the entrance and its own nodes back afterwards.
+/* Entrances use existing groups. Only an explicit loud entrance needs word masks. */
 const ENTER_MEDIA = '[data-enter-media], .hero__bg, .hero__media, .hero__stage, .hero__art, .hero__window, .hero-visual, .ly-collage';
-const ENTER_TEXT = 'h1 ~ *, :has(> h1) ~ *, :has(~ h1)';
-const ENTER_LEAF = 'p, dl, ul, ol, a, button, img, picture, video, figure, blockquote, h2, h3, .pill, .btn';
+const ease = () => getComputedStyle(html).getPropertyValue('--m-ease').trim() || 'cubic-bezier(.4, 0, .2, 1)';
+const time = name => parseFloat(getComputedStyle(html).getPropertyValue(name)) || 0;
 function maskWords(h1) {
   // an h1 another script reworks (layout.js: a live word, letters, a picture in the line) rises whole
   if (h1.matches('[data-ly-letters], [data-enter-whole]') || h1.querySelector('.ly-word, .ly-pic, .ly-mark, svg, img')) return null;
@@ -340,237 +301,100 @@ function maskWords(h1) {
   words.forEach(w => { const t = w.getBoundingClientRect().top; if (top === null || Math.abs(t - top) > 3) { lines.push([]); top = t; } lines[lines.length - 1].push(w.firstChild); });
   return { lines, restore() { h1.replaceChildren(own); if (!label) h1.removeAttribute('aria-label'); } };
 }
-function enterSteps(hero, h1, media) {
-  // what follows (and precedes) the h1 in its column, as whole blocks in reading order; a box of
-  // layout (a div with no words of its own) is opened, a button row gives one step a button.
-  // A picture, window or collage (or a box round one) is never opened: it stands as one block and
-  // settles by itself (motion.css), even when it carries words of its own (a menu card, a note)
-  const out = [];
-  const take = el => {
-    if (el === h1 || el.contains(h1) || out.includes(el) || el.matches('img, picture, video, canvas, .frame__img')) return;
-    if (media.includes(el) || media.some(m => el.contains(m))) return;
-    if (el.matches('.btn-row')) { [...el.children].forEach(take); return; }
-    const own = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
-    if (own || !el.children.length || el.matches(ENTER_LEAF)) out.push(el);
-    else [...el.children].forEach(take);
-  };
-  hero.querySelectorAll(ENTER_TEXT).forEach(take);
-  return out.filter(el => !el.closest('[aria-hidden="true"]') && !out.some(o => o !== el && o.contains(el)))
-    .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
-}
-// The deck (meta.json, entrances): data-enter="" or "rise" is the line rise; set-type, line-blocks and product-at-work
-// start from it; focus, exposure, aperture and doors are CSS from a hold (motion.css) and only need their start and end;
-// still stands. Each is settled by 1.4 s
-const DECK = { rise: 1150, 'set-type': 1320, 'line-blocks': 1250, 'product-at-work': 1320, focus: 1100, exposure: 1200, aperture: 1300, doors: 1200, still: 0 };
-const EASE_ENTER = 'cubic-bezier(.22, 1, .36, 1)', EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
-function animateFollowers(steps) {
-  const anims = [];
-  for (const el of steps) {
-    const facts = el.matches('dl,ul,ol,.hero-facts,.facts,[data-enter-facts]') || el.closest('.hero-facts,.facts');
-    const button = el.matches('.btn,button,[role="button"]');
-    const timing = { duration: facts ? 400 : button ? 460 : 520, delay: facts ? 260 : button ? 200 : 120, easing: EASE_ENTER, fill: 'both' };
-    anims.push(el.animate([{ opacity: 0 }, { opacity: 1 }], timing));
-    if (!facts) anims.push(el.animate([{ translate: button ? '0 8px' : '0 12px' }, { translate: '0 0' }], timing));
-  }
-  return anims;
-}
+
 function enter() {
-  const hero = document.querySelector('.hero[data-enter]:not([data-enter="off"])');
-  if (!hero || hero.classList.contains('is-entered') || hero.classList.contains('is-entering')) return;
-  let v = hero.dataset.enter || 'rise';
-  if (!(v in DECK)) { console.warn(`motion.js: data-enter="${v}" is not in the deck; the rise runs`); v = 'rise'; }
-  const total = DECK[v];
-  // still: the picture takes its place at once (no settle); otherwise the CSS settle and fade run out first
-  const done = (still = false) => { if (still) hero.classList.add('is-still'); hero.classList.add('is-entered'); };
-  const late = () => setTimeout(done, total || 1150);
-  if (v === 'still') return done(true);
-  // the head line did not run, reduced motion, a headless shot (it sees the hero at rest, as it sees the
-  // final number, unless data-motion="live") or the visitor is already below the hero (a reload half way
-  // down): the hero stands as written. The safety mark has passed: motion.css is fading the words in and
-  // settling the picture; the hero is marked done once they are through
-  if (!html.classList.contains('m-enter') || reduced() || shot() || hero.getBoundingClientRect().bottom < 0) return done(true);
-  if (html.classList.contains('m-enter-done')) return late();
+  const hero = document.querySelector('.hero[data-enter]');
+  if (!hero || hero.classList.contains('is-entered')) return;
+  hero.classList.add('is-entered');
+  if (!html.classList.contains('m-enter') || html.classList.contains('m-enter-done') || reduced() || shot()) return;
+  const variant = hero.dataset.enter;
   const h1 = hero.querySelector('h1');
-  if (!h1) return done(true);
-  const media = [...hero.querySelectorAll(ENTER_MEDIA)].filter((m, i, all) => !all.some(o => o !== m && o.contains(m)));
-  const pic = media.find(m => m.matches('img, picture, video') || m.querySelector('img, picture, video'));
-  const css = v === 'focus' || v === 'exposure' || v === 'aperture' || v === 'doors';
-  // a picture-led variant with no picture: the type is already in place, so the hero simply stands
-  if ((v === 'exposure' || v === 'aperture') && !pic) return done(true);
-  if (css) {
-    // the fonts and the picture first (250ms at most), then the CSS runs from its hold to rest
-    const img = pic && (pic.matches('img') ? pic : pic.querySelector('img'));
-    Promise.race([Promise.all([document.fonts?.ready, img?.decode?.().catch(() => {})]), new Promise(r => setTimeout(r, 250))]).then(() => {
-      if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) return late();
-      hero.classList.add('is-entering');
-      if (v === 'focus' || v === 'exposure') {
-        for (const animation of animateFollowers(enterSteps(hero, h1, media))) animation.finished.then(() => animation.cancel(), () => {});
-      }
-      setTimeout(() => { hero.classList.remove('is-entering'); done(); }, total);
-    });
+  if (!h1) return;
+  if (variant === 'fade' || variant === 'rise') {
+    const media = hero.querySelector(ENTER_MEDIA);
+    // Animate the existing copy group, including its lead and actions. A flat custom layout
+    // can opt in by marking its copy container; otherwise it keeps its finished state.
+    const copy = h1.closest('[data-enter-copy]') ||
+      h1.closest('.hero-copy, .hero__copy, .hero__head, .hero__text, .hero__c') || h1.parentElement;
+    if (copy === hero || copy.contains(media)) return;
+    const rise = variant === 'rise';
+    const options = { duration: time(rise ? '--m-rise' : '--m-fade'), easing: ease() };
+    const fade = [{ opacity: 0 }, { opacity: 1 }];
+    copy.animate(rise ? [{ opacity: 0, translate: '0 10px' }, { opacity: 1, translate: '0 0' }] : fade, options);
+    if (media && !media.contains(copy)) media.animate(fade, options);
     return;
   }
-  const steps = enterSteps(hero, h1, media);
-  const EASE = EASE_ENTER;
-  const anims = [];
-  let masks = null, over = false;
-  const finish = () => {
-    if (over) return;
-    over = true;
-    anims.forEach(a => { try { a.cancel(); } catch { /* gone */ } });
-    masks?.restore();
-    hero.classList.remove('is-entering');
-    done();
-  };
-  // the fonts first (a line set in the fallback face breaks elsewhere), 250ms at most: the words are
-  // hidden meanwhile, so nothing is seen twice
-  Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise(r => setTimeout(r, v === 'line-blocks' ? 40 : 100))]).then(() => {
-    if (html.classList.contains('m-enter-done') && !hero.classList.contains('is-entering')) { over = true; return late(); }   // the safety mark won: CSS shows it
-    masks = maskWords(h1);
-    // .is-entering ends the CSS hold: the words are held by their animations from here, and the
-    // picture starts its CSS settle in the same frame
-    hero.classList.add('is-entering');
-    const lines = masks ? masks.lines : [[h1]];
-    const lineStep = Math.min(80, 240 / Math.max(1, lines.length - 1));
-    if (v === 'line-blocks' && masks) {
-      // a block of one palette colour over each line, as long as its words; the words stand under it, and the
-      // blocks slide off toward the line ends, 90ms apart
-      const box = h1.getBoundingClientRect();
-      lines.forEach((ws, k) => {
-        const rs = ws.map(w => w.parentElement.getBoundingClientRect());
-        const l = Math.min(...rs.map(r => r.left)), t = Math.min(...rs.map(r => r.top)), rr = Math.max(...rs.map(r => r.right)), b = Math.max(...rs.map(r => r.bottom));
-        const blk = document.createElement('span');
-        blk.className = 'm-block';
-        blk.setAttribute('aria-hidden', 'true');
-        Object.assign(blk.style, { left: `${l - box.left - h1.clientLeft}px`, top: `${t - box.top - h1.clientTop}px`, width: `${rr - l}px`, height: `${b - t}px` });
-        h1.append(blk);
-        anims.push(blk.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 180, delay: Math.min(k, 3) * 15, easing: EASE, fill: 'both' }));
-      });
+  if (html.dataset.temper !== 'loud' || !['set-type', 'line-blocks'].includes(variant)) return;
+  const masks = maskWords(h1);
+  if (!masks) return;
+  const animations = [];
+  for (const [i, words] of masks.lines.entries()) {
+    const options = { duration: 300, delay: Math.min(i, 3) * 20, easing: ease(), fill: 'backwards' };
+    if (variant === 'set-type') {
+      for (const word of words) animations.push(word.animate([{ translate: '0 100%' }, { translate: '0 0' }], options));
     } else {
-      // a word starts wholly below its mask, which reaches .12em under the line: no tops show before it rises
-      lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
-        ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
-        : [{ transform: 'translateY(.35em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
-        { duration: 700, delay: k * lineStep, easing: EASE, fill: 'both' }))));
+      const first = words[0].parentElement.getBoundingClientRect();
+      const last = words.at(-1).parentElement.getBoundingClientRect();
+      const box = h1.getBoundingClientRect();
+      const block = document.createElement('span');
+      block.className = 'm-block';
+      block.setAttribute('aria-hidden', 'true');
+      Object.assign(block.style, { left: first.left-box.left+'px', top: first.top-box.top+'px', width: last.right-first.left+'px', height: first.height+'px' });
+      h1.append(block);
+      animations.push(block.animate([{ scale: '1 1' }, { scale: '0 1' }], { ...options, fill: 'both' }));
     }
-    // product at work: the window's marked parts appear one after another while the headline rises (four at most)
-    if (v === 'product-at-work') [...hero.querySelectorAll('[data-enter-step]')].slice(0, 4).forEach((el, i) => {
-      anims.push(el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 160 + i * 70, easing: EASE, fill: 'both' }));
-    });
-    anims.push(...animateFollowers(steps));
-    // a panel the words sit on stands from the first paint (it was never hidden, so it never blinks);
-    // the pictures settle by CSS over 1.1 s: the hero is done when both are through
-    anims.push({ finished: new Promise(r => setTimeout(r, total)), cancel() {} });
-    Promise.all(anims.map(a => a.finished)).then(finish, finish);
-  }).catch(finish);
-  setTimeout(finish, 2400);   // whatever stalls (a hidden tab), the hero stands after 2.4 s
-}
-
-/* ---------------------------------------------------------------- section reveals */
-// Below the first screen, each section's h2 rises out of its line masks and its lead picture (a photograph, or a
-// video's poster) settles from a slight window, once, as each comes on screen (motion.md, Section reveals). One heading
-// and one picture a section, never a card, row, tile or list, nothing in the first screen, nothing inside a moment's
-// host or a scene, nothing in a section with data-still. A section that holds a moment still reveals its h2 and lead
-// picture when they sit outside the moment's host; a section that is a moment's host, a transition moment's section
-// (iris-opens, line-carries-colour, closing-lift: the moment moves the whole section) or a scene's section is left to
-// it. The close in the footer (footer .closing__cta) reveals its h2 and picture like a section. Only what is marked
-// here waits (.m-rv-wait), so without script, under reduced motion and in a headless shot nothing is hidden. A heading
-// whose masks would set it on other lines rises whole instead (no layout shift).
-const RV_SKIP = '.hero, [data-still], [data-moment], [data-big-scene], [data-scene], [data-enter]';
-const RV_NOT = '.card, .tile, li, table, .panel, [data-ui], [data-m-loop], [data-peek] .rows, a.card, [hidden]';
-const RV_OWN = '[data-moment], [data-big-scene], [data-scene]';
-const RV_WHOLE = '[data-moment="iris-opens"], [data-moment="line-carries-colour"], [data-moment="closing-lift"], [data-big-scene], [data-scene]';
-const RV_PIC = el => el.tagName === 'IMG' || el.tagName === 'VIDEO';
-function reveals() {
-  if (reduced() || shot() || !('IntersectionObserver' in window)) return;
-  const main = document.querySelector('main') || document.body;
-  const secs = [...main.querySelectorAll('section')].filter(s => !s.parentElement.closest('section') && !s.matches(RV_SKIP) && !s.querySelector(RV_WHOLE));
-  // the close in the footer, after the sections (the starter's footer.closing: row 1 is the dealt close)
-  secs.push(...[...document.querySelectorAll('footer .closing__cta')].filter(c => !c.closest('[data-still], [data-moment], [data-big-scene], [data-scene]')));
-  const fold = innerHeight, items = [];
-  const below = el => el.getBoundingClientRect().top > fold;
-  // the first h2 and the first large picture of a block; one inside a moment's host belongs to the moment and is
-  // left to it (no other one is taken in its place)
-  const firstOf = (s, sel, ok = () => true) => [...s.querySelectorAll(sel)].find(x => !x.closest(RV_NOT) && ok(x));
-  const big = i => { const r = i.getBoundingClientRect(); return r.width >= 280 && r.height >= 160; };
-  secs.forEach(s => {
-    if (s.dataset.mRvDone) return;
-    s.dataset.mRvDone = '1';
-    const h = firstOf(s, 'h2');
-    if (h && !h.closest(RV_OWN) && below(h)) items.push(h);
-    const pic = firstOf(s, 'img, video', big);
-    if (pic && !pic.closest(RV_OWN) && below(pic)) items.push(pic);
-  });
-  if (!items.length) return;
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); reveal(e.target); } }), { rootMargin: '100000px 0px -12% 0px' });
-  items.forEach(el => { el.dataset.mRv = RV_PIC(el) ? 'photo' : 'heading'; el.classList.add('m-rv-wait'); io.observe(el); });
-  addEventListener('beforeprint', () => items.forEach(el => el.classList.remove('m-rv-wait')));
-}
-function reveal(el) {
-  if (!el.classList.contains('m-rv-wait')) return;
-  // passed by a jump (an anchor, a reload half way down) or in a hidden tab: it simply shows
-  if (el.getBoundingClientRect().bottom < 0 || document.visibilityState !== 'visible') { el.classList.remove('m-rv-wait'); return; }
-  if (RV_PIC(el)) {
-    el.animate([{ clipPath: 'inset(7% 6%)', scale: '1.06' }, { clipPath: 'inset(0% 0%)', scale: '1' }], { duration: 700, easing: EASE_ENTER, fill: 'backwards' });
-    el.classList.remove('m-rv-wait');
-    return;
   }
-  const h0 = el.offsetHeight;
-  el.classList.add('m-rv-run');
-  let masks = maskWords(el);
-  if (masks && Math.abs(el.offsetHeight - h0) > 1) { masks.restore(); masks = null; }
-  const lines = masks ? masks.lines : [[el]];
-  const step = Math.min(70, 210 / Math.max(1, lines.length - 1));
-  const anims = [];
-  lines.forEach((ws, k) => ws.forEach(w => anims.push(w.animate(masks
-    ? [{ transform: 'translateY(calc(100% + .2em))' }, { transform: 'none' }]
-    : [{ transform: 'translateY(.4em)', opacity: 0 }, { transform: 'none', opacity: 1 }],
-    { duration: 620, delay: k * step, easing: EASE_ENTER, fill: 'both' }))));
-  el.classList.remove('m-rv-wait');
-  const end = () => { anims.forEach(a => { try { a.cancel(); } catch { /* gone */ } }); masks?.restore(); el.classList.remove('m-rv-run'); };
-  Promise.all(anims.map(a => a.finished)).then(end, end);
+  Promise.allSettled(animations.map(a => a.finished)).then(() => masks.restore());
 }
 
-/* ---------------------------------------------------------------- numbers that roll once */
-// [data-m-roll] (a price, a count of years or tables): each digit rolls up three places into its own figure, 40ms
-// apart, once, when 60% of it is first seen; the written number comes back as the HTML had it
-function rolls() {
-  const els = [...document.querySelectorAll('[data-m-roll]')].filter(el => !el.__mRoll);
-  if (!els.length || reduced() || shot()) return;
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); roll(e.target); } }), { threshold: 0.6 });
-  els.forEach(el => { el.__mRoll = 1; io.observe(el); });
-}
-function roll(el) {
-  const own = document.createDocumentFragment();
-  own.append(...el.childNodes);
-  const copy = own.cloneNode(true), cols = [];
-  const walk = node => [...node.childNodes].forEach(n => {
-    if (n.nodeType === 1) return walk(n);
-    if (n.nodeType !== 3 || !/\d/.test(n.data)) return;
-    const frag = document.createDocumentFragment();
-    n.data.split(/(\d)/).forEach(part => {
-      if (!/^\d$/.test(part)) { if (part) frag.append(part); return; }
-      const d = document.createElement('span'), col = document.createElement('span'), stack = document.createElement('span');
-      d.className = 'm-roll__d'; col.className = 'm-roll__col'; stack.className = 'm-roll__stack';
-      stack.setAttribute('aria-hidden', 'true');
-      [7, 8, 9].forEach(k => { const s = document.createElement('span'); s.textContent = String((+part + k) % 10); stack.append(s); });
-      col.append(part, stack); d.append(col); frag.append(d); cols.push(col);
-    });
-    n.replaceWith(frag);
-  });
-  walk(copy);
-  if (!cols.length) { el.append(own); return; }
-  const label = el.hasAttribute('aria-label');
-  if (!label) el.setAttribute('aria-label', own.textContent.replace(/\s+/g, ' ').trim());
-  el.append(copy);
-  const anims = cols.map((c, i) => c.animate([{ transform: 'translateY(300%)' }, { transform: 'none' }], { duration: 700, delay: Math.min(i, 6) * 40, easing: EASE_ENTER, fill: 'both' }));
-  const end = () => { anims.forEach(a => a.cancel()); el.replaceChildren(own); if (!label) el.removeAttribute('aria-label'); };
-  Promise.all(anims.map(a => a.finished)).then(end, end);
+function reveals() {
+  const block = document.querySelector('main section[data-reveal="fade"], main section [data-reveal="fade"]');
+  if (!block || block.dataset.mRvDone || reduced() || shot() || !window.IntersectionObserver) return;
+  block.dataset.mRvDone = '1';
+  if (block.closest('[data-still], .hero, [data-moment], [data-big-scene]') ||
+      block.matches('h1,h2,h3,img,picture,video,figure,li,article.card,.card,.tile') ||
+      block.getBoundingClientRect().top < innerHeight) return;
+  const bounds = block.getBoundingClientRect();
+  if (!bounds.height || bounds.height / 3 > innerHeight || block.matches(':target, :focus-within')) return;
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting && e.intersectionRatio >= 1/3)) finish(true);
+  }, { threshold: 1/3 });
+  // Only hide a reachable block below the fold after its observer is ready.
+  function finish(animate = false) {
+    observer.disconnect();
+    block.classList.remove('m-reveal-wait');
+    block.removeEventListener('focusin', show);
+    removeEventListener('beforeprint', show);
+    removeEventListener('resize', resize);
+    removeEventListener('scroll', checkScroll);
+    clearTimeout(fallback);
+    reducedQ.removeEventListener('change', show);
+    if (animate === true && !reduced() && !block.matches(':focus-within')) {
+      block.animate([{ opacity: 0 }, { opacity: 1 }], { duration: time('--m-reveal'), easing: ease() });
+    }
+  }
+  let fallback = 0;
+  function checkScroll() {
+    clearTimeout(fallback);
+    fallback = setTimeout(() => {
+      const r = block.getBoundingClientRect();
+      if (Math.min(r.bottom, innerHeight) - Math.max(0, r.top) >= r.height / 3) show();
+    }, 420);
+  }
+  function show() { finish(); }
+  function resize() { if (block.getBoundingClientRect().height / 3 > innerHeight) show(); }
+  addEventListener('scroll', checkScroll, { passive: true });
+  block.addEventListener('focusin', show);
+  addEventListener('beforeprint', show);
+  addEventListener('resize', resize);
+  reducedQ.addEventListener('change', show);
+  observer.observe(block);
+  block.classList.add('m-reveal-wait');
 }
 
 /* ---------------------------------------------------------------- swatches that change the photograph */
 // [data-m-swatches="<selector of the img>"] holding buttons with data-src (and data-alt): a click or tap crossfades the
-// photograph to that source in 260ms; the pressed swatch is aria-pressed="true"
+// photograph to that source in 180ms; the pressed swatch is aria-pressed="true"
 function swatches() {
   document.querySelectorAll('[data-m-swatches]').forEach(group => {
     if (group.__mSw) return;
@@ -597,7 +421,7 @@ function swapPhoto(img, src, alt) {
     over.removeAttribute('id'); over.removeAttribute('srcset'); over.src = src; over.alt = ''; over.setAttribute('aria-hidden', 'true');
     Object.assign(over.style, { position: 'absolute', left: `${img.offsetLeft}px`, top: `${img.offsetTop}px`, width: `${img.offsetWidth}px`, height: `${img.offsetHeight}px`, margin: '0', pointerEvents: 'none' });
     box.append(over);
-    over.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: 'cubic-bezier(.2, .8, .2, 1)' }).finished
+    over.animate([{ opacity: 0 }, { opacity: 1 }], { duration: time('--m-state'), easing: ease() }).finished
       .then(() => { set(); return img.decode ? img.decode().catch(() => {}) : null; }).then(() => over.remove(), () => over.remove());
   });
 }
@@ -614,24 +438,6 @@ function openNow() {
     new MutationObserver(set).observe(el, { childList: true, characterData: true, subtree: true });
     const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { el.classList.add('is-seen'); io.disconnect(); } }, { threshold: 1 });
     io.observe(el);
-  });
-}
-
-/* ---------------------------------------------------------------- labels that roll */
-// .m-swap on a button or link: its words get a copy under them (aria-hidden), and motion.css rolls one up as the
-// other comes in, on hover and focus
-function swapLabels() {
-  document.querySelectorAll('.m-swap').forEach(el => {
-    if (el.querySelector('.m-swap__w')) return;
-    const t = [...el.childNodes].filter(n => n.nodeType === 3 && n.data.trim());
-    if (t.length !== 1) return;
-    const n = t[0], text = n.data.trim();
-    const w = document.createElement('span'), a = document.createElement('span'), b = document.createElement('span');
-    w.className = 'm-swap__w'; a.className = 'm-swap__a'; b.className = 'm-swap__b';
-    a.textContent = b.textContent = text;
-    b.setAttribute('aria-hidden', 'true');
-    w.append(a, b);
-    n.replaceWith(n.data.match(/^\s*/)[0], w, n.data.match(/\s*$/)[0]);
   });
 }
 
@@ -663,7 +469,7 @@ const lineObserver = typeof IntersectionObserver === 'function' && new Intersect
     const animation = line.animate([
       { strokeDasharray: String(length), strokeDashoffset: String(length) },
       { strokeDasharray: String(length), strokeDashoffset: '0' },
-    ], { duration: 900, easing: 'ease-out' });
+    ], { duration: time('--m-reveal'), easing: ease() });
     drawing.set(line, animation);
     animation.finished.then(() => drawing.delete(line), () => drawing.delete(line));
   }
@@ -685,36 +491,32 @@ function contentMotion() {
   if (still) {
     lineObserver.disconnect();
     for (const animation of drawing.values()) animation.cancel();
-  } else {
-    for (const line of document.querySelectorAll('path[data-m-draw], polyline[data-m-draw]')) {
-      if (!drawn.has(line)) lineObserver.observe(line);
-    }
   }
 }
+document.addEventListener('click', event => {
+  const control = event.target.closest('button, input, select, summary, [role="tab"], [data-m-run]');
+  const section = control?.closest('[data-own], [data-media-frame]');
+  if (!section || reduced() || html.dataset.motion === 'off') return;
+  counts(section);
+  for (const line of section.querySelectorAll('path[data-m-draw], polyline[data-m-draw]')) {
+    if (!drawn.has(line)) lineObserver?.observe(line);
+  }
+});
 reducedQ.addEventListener('change', contentMotion);
 
 /* ---------------------------------------------------------------- start */
 export function init() {
   if (html.dataset.motion === 'off') { html.classList.add('m-enter-done'); return; }
   if (!html.hasAttribute('data-motion')) html.setAttribute('data-motion', '');
-  document.querySelectorAll('.btn:not(.m-swap)').forEach(button => {
-    for (const node of [...button.childNodes]) {
-      if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) continue;
-      const label = document.createElement('span');
-      node.replaceWith(label); label.append(node);
-    }
-  });
   try { enter(); } catch (e) { console.warn('motion.js: enter', e); document.querySelector('.hero[data-enter]')?.classList.add('is-entered'); }
   try { nav(); } catch (e) { console.warn('motion.js: nav', e); }
   try { tabs(); } catch (e) { console.warn('motion.js: tabs', e); }
   contentMotion();
-  try { counts(); } catch (e) { console.warn('motion.js: counts', e); }
+
   try { loops(); } catch (e) { console.warn('motion.js: loops', e); }
-  try { reveals(); } catch (e) { console.warn('motion.js: reveals', e); document.querySelectorAll('.m-rv-wait').forEach(el => el.classList.remove('m-rv-wait')); }
-  try { rolls(); } catch (e) { console.warn('motion.js: rolls', e); }
+  try { reveals(); } catch (e) { console.warn('motion.js: reveals', e); document.querySelector('.m-reveal-wait')?.classList.remove('m-reveal-wait'); }
   try { swatches(); } catch (e) { console.warn('motion.js: swatches', e); }
   try { openNow(); } catch (e) { console.warn('motion.js: open now', e); }
-  try { swapLabels(); } catch (e) { console.warn('motion.js: labels', e); }
 }
 /** call again after the page adds markup (a tab list, a stat, a loop) */
 export const refresh = init;

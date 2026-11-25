@@ -68,7 +68,7 @@ One `.wrap`, h2 first. Name `data-own` in one or two words. Put scoped rules in 
 
 Use any layout on the wrap lines and `.grid` where twelve columns help. Tabs, a two-state toggle, slider, stepper, accordion, switcher and copy button respond to click, tap and keyboard. Give a chart the same readout on hover and focus. One element may use `position: sticky` within a section at most 2.5 screens tall.
 
-Use motion tokens for a working feed or a bar filling once. Anything timed needs a pause. Never auto-advance a carousel, hijack scrolling, tilt an element or position text absolutely over other text. Without script the still must be complete and correct.
+Show the result when someone uses the feed or changes a value. Keep a loop inside its product or media frame, with a pause control in the corner when it runs over five seconds. Never auto-advance a carousel, hijack scrolling, tilt an element or position text absolutely over other text. Without script the still must be complete and correct.
 
 On a lively or loud page (`expressive.md`) the world's own forms join the table: a log as a field document, items as collectibles, a character's line in a dialogue box, art crossing a ground edge. Each names its source in the plan.
 

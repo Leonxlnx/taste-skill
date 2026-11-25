@@ -1,24 +1,23 @@
 # Moments
 
-Deal one moment by default. A page of seven sections or more can take a second. Zero is a complete deal when the content supplies none. The entrance, reveals, hover feedback and motion inside own sections still work.
+A quiet page gets no moment by default. Pass `--motion ask` when the brief requests motion. A lively or loud page can also draw one moment, when its content fits.
 
 ```sh
-node <skill>/scripts/moments.mjs pick --page service --sections 7 --carry photos,steps --history .taste-skill/history.json
+node <skill>/scripts/moments.mjs pick --page service --motion ask --sections 7 --carry photos,steps --history .taste-skill/history.json
 ```
 
-`--carry` describes the copy notes. Use `words` for a sentence or heading alternatives the brief already supplies, `list` for named items, `photos` for at least three photographs that show the claim, `steps` for a real sequence and `figures` for supplied measurements. An explicitly empty carry is empty. Without the flag, place, product and service assume photos. `--has` describes actual assets such as UI or film. `--long` keeps the long-page deal for older callers. `--count 1` re-deals one slot.
+`--carry` describes the copy notes. Use `words` for a sentence or heading alternatives the brief already supplies, `list` for named items, `photos` for at least three photographs that show the claim, `steps` for a real sequence and `figures` for supplied measurements. An explicitly empty carry is empty. Without the flag, place, product and service assume photos. `--has` describes actual assets such as UI or film. `--count 1` re-deals one slot.
 
 | Moment | Use it on | What the content supplies |
 | --- | --- | --- |
-| `photo-chapters` | A picture story | Three or four related photographs, each with a title and two lines. Desktop holds half a screen per chapter. On a phone each photograph flows above its words. |
-| `pinned-chapters` | A process or product explanation | Two steps or short descriptions flow beside their frames. Longer sequences can pin on desktop. Phones show each step with its frame. |
+| `photo-chapters` | A picture story | Three or four related photographs, each with a title and two lines. The steps scroll past a small sticky side photograph. On a phone each photograph flows above its words. |
+| `pinned-chapters` | A process or product explanation | Two steps or short descriptions flow beside their frames. Only the small side frame sticks on desktop. Phones show each step with its frame. |
 | `picture-develops` | An existing section’s main picture | One clear subject from the carried photographs, at least half the container wide. Use the film look. |
 | `window-parallax` | A wide picture already in the section | A photograph with room above and below its subject for a small crop. |
 | `closing-lift` | The close | A closing photograph, line and action. Light text needs a calm, dark lower third. Use a solid reading band if the crop is bright. |
 | `word-highlight` | An existing h2 or closing heading | `--carry words` and a statement of 12–40 words. Mark the heading itself or its text with `.mo-wh__text`. |
-| `word-rotate` | One word inside an h1 or h2 | Use `--carry words` for two to four states the page shows. Keep the written word first. Refuse the part when the widest alternative changes the line count at 390px. Keep the pause button. |
 
-Details outside the count are `lines-rise` on a heading, `marquee-row` for a named list and `liquid-hover` for a game or creative tool whose picture is the product.
+A loud page may use `lines-rise` on one heading. Use `liquid-hover` for a game or creative tool whose picture is the product.
 
 By name in the brief only: `giant-type-pass`, `letters-assemble`, `iris-opens`, `line-carries-colour`, `liquid-type`, `cursor-spotlight`, `counter-rolls`, `headline-arrives`.
 
@@ -28,7 +27,7 @@ Three states with fewer than 25 words each use buttons beside one frame. Use `da
 
 Follow the section or inline host in the plan’s demo. Give its `data-moment` element the ID and its `data-moment-opts` the demo’s JSON options. Link `assets/moments/<id>/moment.css` in the head. The starter’s `system.js` loads the modules. Outside the starter, load `assets/moments/moments.js` once as a module. Keep all words and pictures in the HTML.
 
-A text moment rides on an existing heading at its section’s type scale. Put `data-moment="word-rotate"` on the inline word, not the whole heading. Only the page’s main claim may stand alone, once, with thin air. Keep a normal footer after a closing moment. Keep moments out of cards.
+Quiet pages exclude `word-highlight`, `picture-develops` and `closing-lift`. Keep rotating words retired at every temper. An eligible text moment uses the existing heading at its section’s scale. Only the page’s main claim may stand alone, once, with thin air. Keep a normal footer after a closing moment. Keep moments out of cards.
 
 ## Check every set piece
 

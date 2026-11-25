@@ -1,11 +1,7 @@
 <!doctype html>
-<!-- taste-skill motion deck: the hero's entrance deck, the section reveals and the micro-interactions any kind may use
-     (rows that answer the pointer, a number that rolls once, swatches that change the photograph, the open-now dot,
-     a label that rolls, a line that draws inside a card's picture), on one warm page: a bakery.
-     Open it served from the skill folder (http://localhost:<port>/assets/motion/deck.html).
-     ?enter=<variant> picks the entrance (rise, set-type, focus, exposure, aperture, line-blocks, doors,
-     product-at-work, still); ?live runs the motion in a headless screenshot; ?theme=dark starts dark.
-     The tech side of the layer (tabs, counts, card stories, switches) is demo.html. -->
+<!-- Bakery motion examples. The default page is still. Try ?enter=fade or ?enter=rise.
+     For the loud entrances add &temper=loud with enter=set-type or enter=line-blocks.
+     ?live enables motion for a headless capture. ?theme=dark starts in the dark theme. -->
 <html lang="en" data-type="place" data-radius="soft" data-buttons="solid" data-motion>
 <head>
 <meta charset="utf-8">
@@ -17,6 +13,7 @@
   (() => {
     const q = new URLSearchParams(location.search), h = document.documentElement;
     if (q.get('theme') === 'dark') h.dataset.theme = 'dark';
+    if (q.get('temper') === 'loud') h.dataset.temper = 'loud';
     if (q.has('live')) h.dataset.motion = 'live';
   })();
 </script>
@@ -68,7 +65,7 @@
       <div class="nav__item"><a class="nav__link" href="#crust">Crust</a></div>
       <div class="nav__item"><a class="nav__link" href="#visit">Visit</a></div>
     </nav>
-    <div class="nav__actions"><a class="btn btn--primary m-swap" href="#loaves">Order for Saturday</a></div>
+    <div class="nav__actions"><a class="btn btn--primary" href="#loaves">Order for Saturday</a></div>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>
@@ -76,7 +73,7 @@
 </header>
 
 <main id="top">
-  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+  <section class="hero hero--split" data-enter="still" aria-labelledby="hero-h">
     <script>(() => { const v = new URLSearchParams(location.search).get('enter'); if (v) document.currentScript.parentElement.dataset.enter = v; })();</script>
     <div class="wrap">
       <div class="hero-text grid hero-split">
@@ -121,7 +118,7 @@
         <p class="muted">Order by Thursday for Saturday. Prices per loaf.</p>
       </div>
       <ul class="rows span-7 start-6">
-        <li><span class="rows__name">Caraway rye, 1 kg</span><span class="rows__value" data-m-roll>EUR 6.40</span><p>The house loaf: dark crust, a tight moist crumb.</p></li>
+        <li><span class="rows__name">Caraway rye, 1 kg</span><span class="rows__value">EUR 6.40</span><p>The house loaf: dark crust, a tight moist crumb.</p></li>
         <li><span class="rows__name">Spelt and seed, 750 g</span><span class="rows__value">EUR 5.80</span><p>Sunflower, linseed and pumpkin in a lighter dough.</p></li>
         <li><span class="rows__name">Farmer's wheat, 1 kg</span><span class="rows__value">EUR 4.90</span><p>Wheat and a little rye; open crumb, thin crust.</p></li>
         <li><span class="rows__name"><a href="#visit">Saturday box, four loaves <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></span><span class="rows__value">EUR 19.00</span><p>One of each, collected from 7:00.</p></li>
@@ -150,7 +147,7 @@
     <div class="wrap grid">
       <div class="span-12 stack-4"><h2 id="route-h">Delivered by bike before eight</h2></div>
       <article class="card span-6">
-        <div class="route" data-m-loop style="--m-cycle: 3.6s; --m-still: .7">
+        <div class="route" data-media-frame data-m-loop style="--m-cycle: 3.6s; --m-still: .7">
           <svg viewBox="0 0 400 300" aria-hidden="true">
             <path class="street" d="M0 80h400M0 190h400M90 0v300M230 0v300M330 0v300M0 260l400-120"/>
             <path class="m-draw" pathLength="1" d="M60 250 L90 250 L90 190 L230 190 L230 80 L330 80"/>
@@ -173,7 +170,7 @@
       <div class="span-5 stack-5">
         <h2 id="visit-h">Sporgasse 14, by the steps</h2>
         <p class="t-small" data-open-now></p>
-        <p><a class="btn btn--primary m-swap" href="#loaves">Order for Saturday</a></p>
+        <p><a class="btn btn--primary" href="#loaves">Order for Saturday</a></p>
       </div>
       <dl class="hours span-5 start-8" data-tz="Europe/Vienna">
         <dt data-days="mon tue wed thu fri">Monday to Friday</dt><dd>7:00 to 18:00</dd>
@@ -193,8 +190,8 @@
 <nav class="deck-bar" aria-label="Entrance"></nav>
 <script>
   (() => {
-    const q = new URLSearchParams(location.search), now = q.get('enter') || 'rise', bar = document.querySelector('.deck-bar');
-    for (const v of ['rise', 'set-type', 'focus', 'exposure', 'aperture', 'line-blocks', 'doors', 'product-at-work', 'still']) {
+    const q = new URLSearchParams(location.search), now = q.get('enter') || 'still', bar = document.querySelector('.deck-bar');
+    for (const v of ['still', 'fade', 'rise', ...(q.get('temper') === 'loud' ? ['set-type','line-blocks'] : [])]) {
       const a = document.createElement('a'), p = new URLSearchParams(q);
       p.set('enter', v); a.href = '?' + p; a.textContent = v.replace(/-/g, ' ');
       if (v === now) a.setAttribute('aria-current', 'true');

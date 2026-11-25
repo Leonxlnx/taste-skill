@@ -38,8 +38,8 @@ for (let i = 0; i < args.length; i++) {
 if (!files.length) die('usage: motion-lint.mjs <page.html | folder | .css | .js> [more] [--kind <kind>] [--json] [--kit]');
 
 // the hero entrances the kit has (assets/motion/meta.json, entrances); "" and "off" are the default and the scene's hero
-const ENTRANCES = new Set(['', 'rise', 'set-type', 'focus', 'exposure', 'aperture', 'line-blocks', 'doors', 'product-at-work', 'still', 'off']);
-const NEEDS_PICTURE = new Set(['exposure', 'aperture', 'set-type']);
+const ENTRANCES = new Set(['', 'fade', 'rise', 'set-type', 'focus', 'exposure', 'aperture', 'line-blocks', 'doors', 'product-at-work', 'still', 'off']);
+
 const LAYOUT = /^(width|height|min-width|min-height|max-width|max-height|top|left|right|bottom|inset|inset-[a-z-]+|margin|margin-[a-z-]+|padding|padding-[a-z-]+|block-size|inline-size|font-size|line-height|border-width|grid-template-[a-z]+)$/;
 const clip = (s, n = 110) => { s = s.replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
 
@@ -125,6 +125,10 @@ function lintCss(src, where, base, F, ctx) {
     if (/prefers-reduced-motion\s*:\s*reduce\b/.test(r.at)) continue;   // the reduced rules stop motion; they are no fault
     for (const [k, v] of ds) {
       const show = `${clip(r.sel, 60)} { ${k}: ${clip(v, 60)} }`;
+      // Ignore disclosure panels and open-state indicators. Hover can change colour alone.
+      if (/:hover/.test(r.sel) && !/:active|aria-expanded/.test(r.sel) && !(/::(?:before|after)/.test(r.sel) && /scaleX\(1\)/i.test(v)) &&
+          /(?:button|\.btn\b|\.card\b|\.tile\b|\bsvg\b|\.chev\b|\.icon\b|\ba:hover)/i.test(r.sel) &&
+          /^(transform|translate|rotate|scale)$/.test(k) && !/^(none|0(?:px)?|1)$/.test(v.trim())) hit('hover-shift', r, show);
       if (k === 'transition' || k === 'transition-property') {
         const items = k === 'transition' ? splitTop(v).map(shorthand) : splitTop(v).map((p) => ({ first: p }));
         for (const it of items) {
@@ -174,6 +178,20 @@ function lintCss(src, where, base, F, ctx) {
     const ds = [];
     // the declarations of every keyframe step
     f.body.replace(/\{([^}]*)\}/g, (_, d) => { ds.push(...declsOf(d)); return ''; });
+    // Classify a named animation only when its selector identifies the phase.
+    // The browser measures coverage, counts and actual pixel travel.
+    for (const sel of (f.users || []).flatMap(s => s.split(','))) {
+      const permitted = /\[data-(?:enter\s*=\s*["']?(?:set-type|line-blocks)|moment\s*=\s*["']?lines-rise)\b/.test(sel);
+      if (permitted && (ctx.loud || /\[data-temper\s*=\s*["']?loud\b/.test(sel))) continue;
+      if (/:hover|:active|:focus|aria-expanded|data-ui|data-m-loop/.test(sel)) continue;
+      const effects = ds.some(([k,v]) => /^(filter|clip-path|scale)$/.test(k) || (k === 'transform' && /scale/i.test(v)));
+      if (/\b(?:reveal|in-view|inview)\b/.test(sel)) {
+        const fragmented = /h[1-6]\b[^,]*\b(?:span|i|em|word|line)\b/i.test(sel);
+        const travel = ds.some(([k,v]) => /^(translate|transform)$/.test(k) &&
+          [...v.matchAll(/(-?[\d.]+)px/g)].some(m => Math.abs(Number(m[1])) > 16));
+        if (fragmented || travel || (effects && /img|picture|photo|figure|media/.test(sel))) hit('reveal-heavy', f, sel+' uses '+f.name);
+      } else if (effects && /(?:\.hero\b|\[data-enter\b|\.entrance\b)/.test(sel)) hit('entrance-heavy', f, sel+' uses '+f.name);
+    }
     const bad = [...new Set(ds.filter(([k]) => LAYOUT.test(k)).map(([k]) => k))];
     if (bad.length) F('motion-layout', `${f.where}:${f.line}`, `@keyframes ${f.name} animates ${bad.join(', ')}`);
     // a sprite strip steps its sheet's background position (its nature); anything else moves by transform and opacity
@@ -264,6 +282,9 @@ function lintJs(src, where, base, F, ctx) {
 
 // ---------------------------------------------------------------- one file
 const RULES = {
+  'reveal-heavy': ['WARN', 'a scroll reveal moves too far, splits a heading or changes a photograph', 'keep the content whole and use opacity'],
+  'entrance-heavy': ['WARN', 'a hero entrance scales, filters or clips its content', 'use still, a fade or one small rise of the copy'],
+  'hover-shift': ['WARN', 'a hover moves the control or its icon', 'change the background, border or underline'],
   'motion-timed-text': ['FAIL', 'a timer changes the text without a pause control', 'use a button to advance, or provide a working pause button'],
   'motion-rotate-paragraph': ['FAIL', 'a rotating word is inside a paragraph', 'keep the paragraph still and use this effect only in an h1 or h2'],
   'motion-counter-still': ['FAIL', 'the resting counter shows zero before the script runs', 'put the final figure in the markup'],
@@ -273,17 +294,17 @@ const RULES = {
   'motion-scale-zero': ['FAIL', 'something grows from scale 0: nothing in the world appears from nothing', 'start at scale .9 to .96 with opacity 0, or let it fade'],
   'motion-layout': ['FAIL', 'a layout property animates (width, height, top, left, margin, padding): every frame reflows the page and the neighbours jump', 'move it with transform (translate, scale) or a clip-path, and fade with opacity'],
   'motion-no-reduced': ['FAIL', 'the page animates on its own but has no prefers-reduced-motion rule', 'add @media (prefers-reduced-motion: reduce) { ... } that shows the finished frame: animation: none, transition-property: opacity, color'],
-  'motion-enter-variant': ['FAIL', 'a hero data-enter value the kit does not have, or one that needs a picture the hero lacks', 'use one of the entrances in assets/motion/meta.json (rise, set-type, focus, exposure, line-blocks, product-at-work, still), as dealt'],
+  'motion-enter-variant': ['FAIL', 'a hero data-enter value the kit does not have, ', 'use one of the entrances in assets/motion/meta.json (still, fade, rise; set-type and line-blocks on loud pages), as dealt'],
   'motion-scroll-library': ['FAIL', 'a smooth-scroll library takes the scroll from the visitor', 'delete it: the page scrolls natively; a moment holds its section with position: sticky'],
   'motion-ease-in-ui': ['WARN', 'a UI transition that starts slow (ease-in): the control seems to hesitate', 'var(--m-ease): a fast start and a soft landing'],
-  'motion-slow-ui': ['WARN', 'a hover, focus or press transition over 400ms: the control answers late', '150ms in and 120ms out (--m-in, --m-out); a menu 200ms; a photograph takes 400ms'],
+  'motion-slow-ui': ['WARN', 'a hover, focus or press transition over 400ms: the control answers late', '130ms in and 150ms out; menus use 180ms'],
   'motion-linear-ui': ['WARN', 'linear timing on a UI step: it starts and stops like a machine', 'linear is for loops and drifts; a step takes var(--m-ease)'],
   'motion-overshoot': ['WARN', 'a curve that passes its mark (a y value outside 0 to 1): a bounce', 'no bounce on a page; a spring only for a thing the hand moves (a switch knob), at most 2% past the mark'],
   'motion-endless': ['WARN', 'an animation that never ends, outside a card loop, and no pause button on the page', 'run it 1 to 2 times, or put it in a [data-m-loop] panel (motion.js adds its pause button)'],
   'motion-endless-info': ['INFO', 'an animation that never ends (judged on the page that links this file: a pause button, or a card loop)', ''],
   'motion-no-reduced-info': ['INFO', 'no prefers-reduced-motion rule in this file (judged on the page that links it)', ''],
   'motion-background': ['WARN', 'an animation steps or slides a background position: only a sprite strip ([data-sprite], assets/expressive) moves its background, frame by frame', 'move it with transform and opacity; a sprite sheet goes on a [data-sprite] element with steps(n)'],
-  'motion-stagger': ['WARN', 'a list that comes in item after item (a delay per nth-child or per index)', 'one entrance per group: the heading rises (motion.js does it), the list is simply there'],
+  'motion-stagger': ['WARN', 'a list that comes in item after item (a delay per nth-child or per index)', 'leave the heading and list in place'],
 };
 function lint(file) {
   const raw = fs.readFileSync(file, 'utf8');
@@ -297,6 +318,7 @@ function lint(file) {
   else {
     const html = raw.replace(/<!--[\s\S]*?-->/g, (m) => m.replace(/[^\n]/g, ' '));
     const where = rel(file);
+    ctx.loud = /<html\b[^>]*\bdata-temper\s*=\s*["']?loud\b/i.test(html);
     ctx.kind = KIND || ((html.match(/<html\b[^>]*\bdata-type="([a-z]+)"/i) || [])[1] || '').toLowerCase();
     for (const m of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) lintCss(m[1], where, lineAt(html, m.index), F, ctx);
     for (const m of html.matchAll(/\sstyle\s*=\s*("([^"]*)"|'([^']*)')/gi)) lintCss(`x{${m[2] ?? m[3]}}`, where, lineAt(html, m.index), F, ctx);
@@ -328,17 +350,14 @@ function lint(file) {
         F('motion-counter-still', where + ':' + lineAt(markup, tag.index), clip(tag[0] + body));
     }
     if (/<button\b[^>]*(?:data-[\w-]*pause|aria-label=["']Pause\b)|<button\b[^>]*>\s*Pause\b/i.test(markup)) ctx.paused = true;
-    // the hero's entrance: a variant the kit has, and the picture it needs
+    // Retired names are supported as still fallbacks. Unknown values remain a typo check.
     const hero = html.match(/<section\b[^>]*\bclass=["'][^"']*\bhero\b[^"']*["'][^>]*>/i);
     const ev = hero && hero[0].match(/\bdata-enter(?:\s*=\s*["']([^"']*)["'])?/i);
     if (ev) {
       const v = (ev[1] || '').trim();
       const at = `${where}:${lineAt(html, hero.index)}`;
       if (!ENTRANCES.has(v)) F('motion-enter-variant', at, `data-enter="${v}"`);
-      else if (NEEDS_PICTURE.has(v)) {
-        const end = html.indexOf('</section>', hero.index);
-        if (!/<(img|picture|video)\b/i.test(html.slice(hero.index, end < 0 ? undefined : end))) F('motion-enter-variant', at, `data-enter="${v}" with no photograph in the hero`);
-      }
+
     }
   }
   // a page is judged whole; a lone .css or .js file has no page round it, so these two are only told (INFO)

@@ -1,9 +1,9 @@
 # Big scenes
 
-Deal at most one scene. About one page in three draws one when its material, tone, role and context budget fit. One moment is the usual deal, with room for a second from seven sections. A page can use zero of either. Keep the first action reachable.
+Quiet pages deal no scene. When the brief requests motion, pass `--motion ask`. A requested, lively or loud page can draw one scene on roughly a third of eligible deals. Keep the first action reachable.
 
 ```sh
-node <skill>/scripts/moments.mjs pick --page product --sections 7 --carry photos,list --has photo,product,pictures:6 --scene deal
+node <skill>/scripts/moments.mjs pick --page product --motion ask --sections 7 --carry photos,list --has photo,product,pictures:6 --scene deal
 ```
 
 `--carry` names what the brief supplies. Use `words` for an existing statement, `list` for named items, `photos` for the client's photographs, `steps` for a real sequence and `figures` for measurements. `--has` names the files or special material, including a product photograph, UI, film, logo, site, route or object. Supply `archive,pictures:N` for a large collection. Use the exact count whenever you know it. Each scene folder’s `meta.json` gives its content, needs, exclusions and phone treatment.

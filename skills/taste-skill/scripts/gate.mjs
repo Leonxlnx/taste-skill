@@ -32,8 +32,8 @@
     consistency.mjs --quick --widths 1440,390 --json   (with the marker's --page kind, --category, --primary, --root;
                                                         it walks the page at 320x640 too: overflow, collide, tap-size)
     assets/layout/check.mjs --sizes 1440x900,390x844 --json   (the layout rules, then the finish checks of
-        layout-check.js lyFinish: empty-band, blank-screen, placeholder, moment-target, moment-hidden, motion-visible,
-        reveal-none, and console-error for every error or failed file on load; its WARNs (empty-band 15-25%,
+        layout-check.js lyFinish: empty-band, blank-screen, placeholder, moment-target, moment-hidden, entrance-heavy,
+        reveal-heavy, hover-shift, and console-error for every error or failed file on load; its WARNs (empty-band 15-25%,
         subject-repeat, number-repeat, heading-repeat, moment-idle) never block)
   and static ones: script-twice / script-module (a script loaded twice, a module loaded as a classic script), kit-edited (a file the page loads from assets/ differs from the skill's copy, whitespace,
   quotes and semicolons aside) and checker-gaming (the page's own code looks for a headless browser or an automation
@@ -57,7 +57,7 @@
   kit file's, wherever it sits, is the kit's and is skipped. The two checkers' ids for the
   same fault on the same section (section-height / screen-height / screen-short, one-section / neighbour) are one
   finding. And the motion: scripts/motion-lint.mjs, once it exists, run exactly as copy-lint (its FAILs block).
-  The gate promotes two warnings to failures, hero-enter and photo-repeat. A missing planned moment fails deal-drift.
+  The gate promotes photo-repeat to a failure. A missing planned moment fails deal-drift.
   Only a local page is checked: a file, or a URL on localhost, 127.0.0.1, [::1], *.localhost or *.test.
 
   Waivers: a FAIL judged false is waived in .taste-skill/waivers.json, an array of
@@ -716,6 +716,8 @@ async function dealDrift(html, dot, kind, page, frame, source) {
     if (frame) {
       for (const key of ['hero','entrance','nav','footer','close','buttons','mark']) {
         if (key === 'mark' && frame.mark === 'client-logo') continue;
+        if (key === 'entrance' && ['still','off','focus','exposure','aperture','doors','product-at-work'].includes(machine.entrance) &&
+            (!frame.entrance || ['still','off','focus','exposure','aperture','doors','product-at-work'].includes(frame.entrance))) continue;
         if (machine[key] && machine[key] !== frame[key]) record(key,machine[key],frame[key]);
       }
       if (machine.heroVariant && !has('data-view',machine.heroVariant)) record('hero variant',machine.heroVariant);
@@ -935,10 +937,8 @@ const LAYOUT_FIX = {
   'hero-lines': 'widen the headline column so the test headline fits its line limit', 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
 };
 
-// two house rules the checker only WARNs (its own kit demos carry neither) and the gate holds: every hero enters
-// once on load, and every page deals a moment (SKILL.md house rules 5 and 8)
-// photo-repeat too: one photograph shown twice on a page (the 2.5.2 builds showed the oven, the bread twice)
-const HELD = new Set(['hero-enter', 'photo-repeat']);
+// Keep the gate promotion for a repeated photograph.
+const HELD = new Set(['photo-repeat']);
 async function browserChecks(target, proj, opts, gateDir) {
   const res = { fails: [], warns: [], crashed: [], seconds: {} };
   // 390 always, the quick look too (the phone is where sections run into each other); the 320 pass (overflow, collide, tap-size) comes with it

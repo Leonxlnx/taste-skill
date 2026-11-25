@@ -57,9 +57,9 @@
     inset 0 1px 0 var(--u-hi),
     0 1px 2px color-mix(in oklab, var(--u-sh) 55%, transparent),
     0 6px 16px -6px color-mix(in oklab, var(--u-sh) 80%, transparent);
-  --u-ease: var(--ease, cubic-bezier(.2, .8, .2, 1));   /* the page's one UI ease-out (system.css --ease) */
+  --u-ease: var(--m-ease, cubic-bezier(.4, 0, .2, 1));   /* the page's one UI ease-out (system.css --ease) */
   /* the name is older than the rule: a strong ease-out that lands softly and never passes its mark (no overshoot, motion.md) */
-  --u-spring: cubic-bezier(.22, 1, .36, 1);
+  --u-spring: var(--u-ease);
 
   font-family: var(--ui-font, system-ui, -apple-system, "Segoe UI", sans-serif);
   font-size: 13px;
@@ -248,14 +248,14 @@ button.ui-pause.ui-pause, button.loop-pause {
   border: 1px solid color-mix(in oklab, var(--ink, #111) 16%, transparent);
   background: var(--bg, #fff); color: var(--ink, #111);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 12px -4px rgb(0 0 0 / 0.28);
-  opacity: 0.88; transition: opacity 200ms ease, border-color 200ms ease;
+  opacity: 0.88; transition: opacity var(--m-out, 150ms) var(--u-ease), border-color var(--m-out, 150ms) var(--u-ease);
   -webkit-tap-highlight-color: transparent;
 }
 button.ui-pause.ui-pause--title { bottom: auto; box-shadow: none; opacity: 1; }
 button.ui-pause.ui-pause--below { right: 0; bottom: 6px; box-shadow: none; }
 .ui-pause-beside { padding-right: 44px; }
 button:is(.ui-pause, .loop-pause)::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; }
-button:is(.ui-pause, .loop-pause):is(:hover, :focus-visible) { opacity: 1; border-color: color-mix(in oklab, var(--ink, #111) 32%, transparent); }
+button:is(.ui-pause, .loop-pause):is(:hover, :focus-visible) { transition-duration: var(--m-in, 130ms); opacity: 1; border-color: color-mix(in oklab, var(--ink, #111) 32%, transparent); }
 button:is(.ui-pause, .loop-pause):focus-visible { outline: 2px solid var(--ink, #111); outline-offset: 2px; }
 button:is(.ui-pause, .loop-pause) svg { display: block; width: 14px; height: 14px; fill: currentColor; }
 button:is(.ui-pause, .loop-pause).is-paused svg, button.loop-pause[aria-pressed="true"] svg { margin-left: 1px; }

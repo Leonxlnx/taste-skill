@@ -21,7 +21,7 @@
   font-size: var(--t-small); font-weight: 500; color: var(--ink); display: inline-flex; gap: 6px; align-items: center; width: fit-content;
 }
 .cx-spot__link::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
-.cx-spot__link:hover::after { transform: translateX(2px); }
+.cx-spot__link:hover { text-decoration: underline; }
 .cx-spot__card { cursor: pointer; }
 .cx-spot__card:has(.cx-spot__link:focus-visible) { outline: 2px solid var(--action); outline-offset: 2px; }
 .cx-spot__fx { position: absolute; inset: 0; z-index: 1; pointer-events: none; }

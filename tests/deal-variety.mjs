@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // node tests/deal-variety.mjs (Node 22). To run bounded batches, give each --kind the same --run-dir.
 import assert from 'node:assert/strict';
-import { fitsKind, needsMet, hasFor, canShare } from '../skills/taste-skill/scripts/moments.mjs';
+import { fitsKind, needsMet, hasFor } from '../skills/taste-skill/scripts/moments.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -26,7 +26,7 @@ const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-ri
 for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
   assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
 }
-const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
+const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance reveals nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
 const hasByKind = { software: 'ui,logo', gaming: 'setting', tech: 'ui', product: 'object', service: 'photo', place: 'photo' };
@@ -91,9 +91,11 @@ for (const kind of kindsToRun) {
     const eligible = moments.filter(m => !m.retired && m.weight > 0 && m.counts !== false && !m.pointerOnly
       && fitsKind(m, kind) && needsMet(m, hasFor(kind, assets.join(',')), new Set(carry)).length === 0
       && !(action !== 'contact' && m.fits.every(f => f === 'closing')));
-    const pair = eligible.some(m => eligible.some(n => m !== n && canShare(m, n)));
-    const expected = (p.sections >= 7 || long) && pair ? 2 : Number(eligible.length > 0);
+    const expected = p.temper === 'quiet' ? 0 : Number(eligible.length > 0);
     assert.equal(p.moments.length, expected, kind + '/' + i + ' moment count');
+    if (p.temper === 'quiet') assert.equal(p.scene, null);
+    assert(['still','fade','rise'].includes(p.entrance));
+    assert(['none','fade'].includes(p.reveals));
     assert(p.moments.every(id => eligible.some(m => m.id === id)));
     assert.equal(p.grounds.bySection.length, p.sections);
     assert.equal(p.grounds.bySection[0], 'page');

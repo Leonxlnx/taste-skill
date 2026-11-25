@@ -96,6 +96,19 @@ function nav() {
     const label = item.querySelector('.nav__link')?.textContent.trim() || 'section';
     btn.setAttribute('aria-label', `Show ${label} links`);
     btn.setAttribute('aria-expanded', 'false');
+    const link = item.querySelector('.nav__link');
+    const desktop = matchMedia('(min-width: 1024px)');
+    // CSS opens this menu on pointer intent or focus. Mirror its actual visibility.
+    const menu = item.querySelector('.nav__menu');
+    const sync = () => {
+      if (desktop.matches) link.setAttribute('aria-expanded', String(getComputedStyle(menu).visibility === 'visible'));
+      else link.removeAttribute('aria-expanded');
+    };
+    menu.addEventListener('transitionstart', sync);
+    menu.addEventListener('transitionend', sync);
+    for (const event of ['pointerenter','pointerleave','focusin','focusout']) item.addEventListener(event, () => requestAnimationFrame(sync));
+    desktop.addEventListener('change', sync);
+    sync();
     btn.addEventListener('click', () => {
       const open = !item.classList.contains('is-expanded');
       item.classList.toggle('is-expanded', open);
@@ -187,7 +200,7 @@ function tabs() {
           el.hidden = !on;
           // a panel or a screen in a frame fades in on a chosen tab only (opacity only, nothing moves;
           // the panel shown at load is there on the first frame, MO-62)
-          if (on && was && !first) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 140 : 280, easing: 'ease-out' });
+          if (on && was && !first) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 0 : 180, easing: 'cubic-bezier(.4, 0, .2, 1)' });
         });
       });
       if (!first) tab.dispatchEvent(new Event('choice-tab',{bubbles:true}));
@@ -561,15 +574,7 @@ async function visuals() {
   const glows = [...document.querySelectorAll('[data-glow]')];
   const frags = [...document.querySelectorAll('[data-ui-load], [data-ui]')].filter(el => !el.parentElement?.closest('[data-ui-load]'));
   if (!grounds.length && !frags.length && !glows.length) return;
-  // only the hero's ground moves, and not when its frame holds an object (assets/objects: data-print),
-  // which is then that visual's one motion and its pause button the only one in the corner. On a phone
-  // (under 640px), on kind other and on a place nothing loops: the hero's ground is drawn once like the
-  // rest and every fragment holds its finished picture (as most good sites cut motion there), so no
-  // pause button covers the UI. A held fragment still plays while the pointer is on its card.
   const phone = window.matchMedia('(max-width: 639px)').matches || kindOther();
-  const box = el => el.closest('.frame, .panel__screen, .panel') || el;
-  const moving = phone ? [] : grounds.filter(el => el.closest('.hero, .section--hero') && !box(el).querySelector('[data-print], [data-scene]'));
-  const live = el => moving.includes(el);
   const [fx, ui] = await Promise.all([
     grounds.length || glows.length ? import(new URL('effects/fx.js', HERE).href).then(m => m.default) : null,
     import(new URL('ui/ui.js', HERE).href).then(m => m.default),
@@ -583,13 +588,9 @@ async function visuals() {
 
   if (fx) lightGrounds();
   await Promise.all([
-    // the hero's ground moves and keeps its context; every other ground is baked to a picture
-    fx && Promise.all(moving.map(el => fx.mountAll(el))),
-    fx && grounds.length && ui.grounds(document, fx, { skip: live }),
+    fx && grounds.length && ui.grounds(document, fx),
     ...frags.map(run),
   ]);
-  // the hero's ground moves, so it gets the pause button every loop has (one per frame, shared)
-  if (fx && ui) moving.forEach(el => { const c = fx.get(el); if (c) ui.pausable(el.closest('.panel__screen, .panel, .frame') || el, c); });
   if (fx && glows.length) glowOnHover(fx, glows);
 }
 

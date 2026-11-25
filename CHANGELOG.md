@@ -10,6 +10,8 @@ The 24-site comparison showed price lists padded with photographs, games without
 
 ### What's new
 
+- Quiet pages keep their content in place. The PLAN offers still, fade or a small grouped rise, with one optional section fade. Buttons and linked cards answer in colour. The checker flags heavy entrances, reveals and moving hover icons.
+
 - The PLAN deals the frame, grounds and density. Each content section gets a form that fits its job. Four idea seeds and twelve worked examples help with rails, comparisons, order pads and other layouts.
 - Five sub-skills cover product and game drawings, data pictures, photo direction, brand marks and mascots. The copy notes map each request in the brief to its section.
 - Dated stays, tables and classes can start with a booking bar in the hero. On a phone one link opens the full form. Shops put the order controls within the first three sections.

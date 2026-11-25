@@ -50,9 +50,11 @@ paper`. No source, no move. One world runs through the page; the buy button and 
 
 A loud game can place one short label above a heading, set in the display face and drawn as a tag from that world (`data-sticker="tag" data-world-tag`). Name the source in the plan. Quiet and lively pages leave it out.
 
+Lively pages use the same still, fade and rise hero deck as quiet pages. Loud pages may add set-type, line-blocks or one line rise. Hover changes colour or underline at every temper.
+
 ## A scene the player can try
 
-Without a trailer, the strongest hero picture can be a small scene from the game. Show one action and its consequence in a self-running canvas with a pause button. A click or keyboard activation hands control to the player. Start with a complete still beneath the canvas and keep it for reduced motion or when script is unavailable.
+Without a trailer, the strongest hero picture can be a small scene from the game. Show one action and its consequence inside a framed canvas with its pause button in the corner. A click or keyboard activation hands control to the player. Start with a complete still beneath the canvas and keep it for reduced motion or when script is unavailable.
 
 ## Picking the type
 

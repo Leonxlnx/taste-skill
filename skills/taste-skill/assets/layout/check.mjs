@@ -7,7 +7,7 @@
          [--sizes 1440x900,1024x768,820x1180,768x1024,390x844] [--shots <dir>] [--root <dir>] [--json]
 
   After the layout rules it runs the finish checks (layout-check.js lyFinish: empty-band, blank-screen,
-  placeholder, moment-target, moment-hidden, motion-visible, reveal-none, the repeats; --no-finish skips them)
+  placeholder, moment-target, moment-hidden, entrance-heavy, reveal-heavy, hover-shift, the repeats; --no-finish skips them)
   and lists every console error and every file that failed to load as console-error. A finding with
   sev "WARN" is listed and never counts.
   --shots writes, per size, the first screen (first-<w>.png) and a screen from each section's top
@@ -153,8 +153,8 @@ try {
     else if (m.method === 'Log.entryAdded' && m.params.entry.level === 'error' && !IGNORE.test(m.params.entry.url || '')) errors.push(`${m.params.entry.text.split('\n')[0]}${m.params.entry.url ? ' (' + m.params.entry.url.replace(/^https?:\/\/127\.0\.0\.1:\d+\//, '') + ')' : ''}`);
   });
   await S('Page.enable'); await S('Runtime.enable'); await S('Log.enable');
-  // the section reveals are required once the kit's motion.js reveals sections
-  let reveal = false; try { reveal = /data-(m-)?reveal|\bm-reveal\b|is-revealed/.test(fs.readFileSync(path.join(here, '..', 'motion', 'motion.js'), 'utf8')); } catch { /* no kit beside it */ }
+  const motionAudit = fs.readFileSync(path.join(here, 'motion-audit.js'), 'utf8');
+  await S('Page.addScriptToEvaluateOnNewDocument', {source: motionAudit});
   const snap = async file => { const { data } = await S('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(file, Buffer.from(data, 'base64')); };
   for (const [W, H] of sizes) {
     await S('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: W < 600 });
@@ -182,7 +182,19 @@ try {
     // the finish checks (layout-check.js lyFinish): they scroll, so they run before the shots and the stress
     if (!opt('no-finish')) {
       await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.momentsReady || !document.querySelector('[data-moment]') || performance.now() - t > 4000) r(); else setTimeout(w, 50); })(); })`);
-      try { res.findings.push(...await ev(`window.lyFinish(${JSON.stringify({ reveal, catalogue })})`)); } catch (e) { res.findings.push({ rule: 'finish-check', where: 'page', detail: `the finish checks could not run: ${e.message.split('\n')[0]}`, fix: 'fix the page error it names' }); }
+      // Visit the beginning of each section before the layout checks. Even a well-filled page
+      // must exercise its scroll-triggered code; lyFinish only scrolls to suspected blank areas.
+      await ev(`(async () => {
+        for (const section of document.querySelectorAll('main > section, main > .section')) {
+          const top = section.getBoundingClientRect().top + scrollY;
+          scrollTo({top: Math.max(0, top - innerHeight / 3), behavior:'instant'});
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          await new Promise(r => setTimeout(r, 60));
+        }
+        scrollTo({top:0, behavior:'instant'});
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      })()`);
+      try { res.findings.push(...await ev(`window.lyFinish(${JSON.stringify({ catalogue })})`)); } catch (e) { res.findings.push({ rule: 'finish-check', where: 'page', detail: `the finish checks could not run: ${e.message.split('\n')[0]}`, fix: 'fix the page error it names' }); }
       await ev('scrollTo(0, 0)'); await sleep(300);
     }
     if (opt('still')) {
@@ -194,6 +206,35 @@ try {
       : 'fix the error in the page\'s own script (the kit\'s files load clean on the starter)';
     for (const e of errors) res.findings.push({ rule: 'console-error', where: e.slice(0, 110), detail: 'an error on load', fix: errFix(e) });
     errors.length = 0;
+    if (W >= 1024) {
+      // Compare the same control and its visible icon on either side of a real pointer hover.
+      const signature = `(() => {
+        const control = document.querySelector('main .btn, main button, main [role="button"]');
+        if (!control) return null;
+        const r = control.getBoundingClientRect(), x = r.left+r.width/2, y = r.top+r.height/2;
+        if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight || !control.contains(document.elementFromPoint(x,y))) return null;
+        const nodes = [control,...control.querySelectorAll('svg,svg path,img,.icon,span')];
+        const geometry = nodes.flatMap(el => [null,'::before','::after'].map(pseudo => {
+          const cs = getComputedStyle(el,pseudo);
+          if (pseudo && parseFloat(cs.height) <= 3 && parseFloat(cs.width) > 3) return '';
+          return [cs.transform,cs.translate,cs.rotate,cs.scale].join(' ');
+        })).join('|');
+        return { x,y, geometry, open: control.getAttribute('aria-expanded') === 'true', name: control.id || control.textContent.trim().slice(0,50) };
+      })()`;
+      await S('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+      await sleep(180);
+      const before = await ev(signature);
+      if (before) {
+        await S('Input.dispatchMouseEvent',{type:'mouseMoved',x:before.x,y:before.y});
+        await sleep(220);
+        const after = await ev(signature);
+        if (after && !after.open && before.geometry !== after.geometry) res.findings.push({
+          rule:'hover-shift', where:before.name, detail:'The control or its icon moves on hover.', sev:'WARN'
+        });
+        await S('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+      }
+    }
+    res.findings.push(...await ev('window.readMotionAudit()'));
     report.push(res);
     if (shots && shots !== true) {
       fs.mkdirSync(shots, { recursive: true });

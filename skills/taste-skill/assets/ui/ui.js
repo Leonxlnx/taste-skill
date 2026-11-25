@@ -30,9 +30,7 @@
     pointer entering its card restarts it from the top; a held fragment plays while the pointer is on
     its card. ui.restart(el) restarts every fragment in el (a tab shown again).
   - A loop runs while on screen and gets a pause button (a solid 32px disc) when it starts to move:
-    in [data-ui-pause-host], or a .panel/.frame (a card's too, as in the hero), 12px in from its
-    bottom-right corner; in a .card with no panel, beside the card's title; with no panel, under the
-    fragment. Not where the place already holds a .loop-pause. Under prefers-reduced-motion nothing
+    in its product view or media frame, inset from the corner. Each frame shares one control. Under prefers-reduced-motion nothing
     moves and no button is shown.
   - A fragment's script never writes words of its own over the page's: every state it shows comes
     from the markup (data-* beside the text it changes) or from opts.
@@ -183,16 +181,22 @@ export function hold(el) {
 const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4.25" y="3.25" width="2.75" height="9.5" rx="0.9"/><rect x="9" y="3.25" width="2.75" height="9.5" rx="0.9"/></svg>';
 const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.25 3.7v8.6c0 .62.68 1 1.2.66l6.5-4.3c.47-.31.47-1 0-1.32l-6.5-4.3c-.52-.34-1.2.04-1.2.66Z"/></svg>';
 const boxes = new WeakMap();
-const boxOf = root => root.closest('[data-ui-pause-host], .panel__screen, .panel, .frame, figure') || root;
+// A standalone UI fragment is itself a product view. Reject a heading, ground or whole card.
+const boxOf = root => {
+  if (root.closest('h1,h2,h3,h4,h5,h6') || root.matches('.card,.tile,[data-fx]')) return null;
+  return root.closest('[data-media-frame], .panel__screen, .panel, .frame, .hero__window, .ly-collage, figure') ||
+    root.closest('[data-ui]');
+};
 
 /**
   pausable(box, ctrl): the same pause button for anything else that moves on its own in a panel for
-  more than about 5 s (an object from assets/objects, a moving ground): ctrl needs pause() and
+  more than about 5 s (an object or a product view): ctrl needs pause() and
   resume(). One button per place, shared by every loop in it. Returns a function that removes it.
   Nothing is added under reduced motion (those hold still by themselves).
   Keep the button in the medium it controls. A bare fragment is its own frame.
 */
 export function pausable(box, ctl) {
+  if (box && !box.matches('.panel__screen, .panel, .frame, .hero__window, .ly-collage, figure, [data-media-frame]')) box = boxOf(box);
   if (!box || reduced()) return () => {};
   const key = box;
   let p = boxes.get(key);
@@ -305,7 +309,7 @@ function hostListen(host, rec) {
 export function loop(root, cycle, { still, rest = 600, rootMargin = '0px', cycles, pause = true } = {}) {
   const show = () => { if (still) still(); tidy(root); };
   const setHeld = on => root.classList.toggle('is-ui-held', on);
-  if (reduced()) {
+  if (reduced() || !boxOf(root)) {
     setHeld(true);
     show();
     const none = () => {};
@@ -528,8 +532,10 @@ const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 const parseJSON = s => { try { return s ? JSON.parse(s) : null; } catch { return null; } };
 // live: marked so, or holding a fragment that drives it and is not held still (a still slider never
 // moves); never under reduced motion, where no fragment moves
-const isLive = el => !reduced() && (el.hasAttribute('data-fx-live') ||
-  [...el.querySelectorAll('[data-ui-opts]')].some(f => /"drive"/.test(f.dataset.uiOpts || '') && !f.closest('[data-ui-still]')));
+const isLive = el => !reduced() && !el.matches('section, .card, .tile, .hero__bg, .hero__art') &&
+  !!el.closest('[data-media-frame], .hero__window, .app-frame, [data-ui]') &&
+  (el.hasAttribute('data-fx-live') || [...el.querySelectorAll('[data-ui-opts]')].some(f =>
+    /"drive"/.test(f.dataset.uiOpts || '') && !f.closest('[data-ui-still]')));
 // mount with a device-pixel cap of its own: fx.shader reads fx.config.maxDpr once, when it is made
 async function mountAt(fx, el, spec, dpr) {
   await fx.load(el.dataset.fx);
@@ -679,7 +685,7 @@ export async function grounds(root, fx, { skip } = {}) {
   if (fx.config) fx.config.maxLive = Math.min(fx.config.maxLive || 3, 3);
   const els = [...root.querySelectorAll('[data-fx]')].filter(el => !(skip && skip(el)));
   if (root.matches && root.matches('[data-fx]') && !(skip && skip(root))) els.unshift(root);
-  if (!groundIO) return fx.mountAll(root);
+  if (!groundIO) { els.forEach(el => stand(el, fx)); return; }
   const seen = new Promise(r => groundWaiters.push(r));
   for (const el of els) {
     let st = grounded.get(el);

@@ -243,4 +243,4 @@ Every page's `<head>` holds, as `starter.html` has it:
 
 ## Motion
 
-`motion.md`.
+Keep the page still by default. Follow the PLAN’s entrance and reveals lines. Use colour on hover, .98 on press and a visible focus ring. Timing and frame helpers are in `motion.md`.

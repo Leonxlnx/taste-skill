@@ -17,7 +17,7 @@
   "intensity": "lively",
   "look": "Each step depends on the last and shows a distinct result. For independent details use a compact list or captioned views side by side.",
   "reduced": "Each step stays with its text and complete visual. Desktop uses two columns and phones stack them.",
-  "phone": "A lighter version on a phone, nothing pinned: each step stands with its title, two lines and its visual under it; the step crossing the middle of the screen takes the accent rule at its left, and each picture settles from a close crop to its framing as it rises.",
+  "phone": "Each complete step and its picture follow in order.",
   "phoneRuns": true,
   "maxPerPage": 1,
   "weight": 1,

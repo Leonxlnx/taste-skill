@@ -49,7 +49,7 @@ function fixture(bad) {
   return file;
 }
 const variant = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only')+1] : '';
-if (variant && !['good','broken','booking','bands','headings','outcomes','regressions'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
+if (variant && !['good','broken','booking','bands','headings','outcomes','regressions','motion'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
 if (!variant || variant==='outcomes') {
   fs.writeFileSync(path.join(tmp,'store-hop.html'),'<a href="https://store.steampowered.com/search/?term=wren">Find Wren</a>');
   fs.writeFileSync(path.join(tmp,'store-item.html'),'<a href="https://store.steampowered.com/app/1234">Official store page</a>');
@@ -292,7 +292,7 @@ if (!variant || variant==='headings') {
   const host = (id,words)=>'<h2 id="'+id+'" data-moment="word-highlight">'+words+'</h2>';
   const mid = host('supply','The workshop stocks a replacement part for every tool that apprentices use on the course');
   const close = host('return','Bring your finished piece back to the studio for firing the following Wednesday afternoon');
-  const start=fs.readFileSync(fixture(false),'utf8')
+  const start=fs.readFileSync(fixture(false),'utf8').replace('<html ', '<html data-temper="lively" ')
     .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"><style>body h3{font-size:18px}@media(max-width:390px){#supply{max-width:12ch}}</style></head>')
     .replace('<h2>c</h2>',mid)
     .replace('<h2>a</h2>','<h2>Overview</h2><h3>Not in the fee</h3>')
@@ -348,5 +348,38 @@ if (!variant || variant==='headings') {
     assert.ok(w.findings.some(f=>f.rule==='moment-target'),w.size+' missing target escaped');
     console.log('ok - '+w.size+' a mount with no text target fails');
   }
+}
+if (!variant || variant === 'motion') {
+  for (const treatment of ['heavy','still','loud']) {
+    const bad = treatment === 'heavy', loud = treatment === 'loud';
+    const file = path.join(tmp, 'motion-'+treatment+'.html');
+    const hover = bad ? 'button:hover svg { translate: 3px; }' : 'button:hover { background: #ddd; }';
+    const frames = bad ? '<h2><span>Frame</span> <span>and</span> <span>glass</span></h2>' : '<h2>Frame and glass</h2>';
+    fs.writeFileSync(file, `<!doctype html><html lang="en" data-ready="1" data-temper="${loud?'loud':'quiet'}">
+      <style>body{margin:0}section{min-height:100vh}button{padding:16px}button svg{width:12px;height:12px}
+      ${hover} .hero p{display:inline-block} h2 span{display:inline-block}</style>
+      <main><section class="hero" data-enter="${loud?'set-type':'still'}"><h1>Frames</h1><p>Blue</p><p>Red</p>
+      <button>Choose a frame <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="3"/></svg></button></section>
+      <section id="later" ${loud?'data-moment="lines-rise"':''}>${frames}<p>Local glass.</p></section></main>
+      <script>const animate=el=>el.animate([{opacity:0,transform:'translateY(32px) scale(.9)'},{opacity:1,transform:'none'}],350);
+      ${bad||loud?"document.querySelectorAll('.hero h1,.hero p').forEach(animate);":''}
+      ${bad||loud?"addEventListener('scroll',()=>document.querySelectorAll('#later h2 span,#later h2').forEach(animate),{once:true});":''}
+      </script></html>`);
+    const rows = await run(path.join(skill,'assets/layout/check.mjs'),['--url',file,'--profile',profile,'--sizes','1440x900','--json','--no-stress']);
+    fs.writeFileSync(path.join(tmp, 'motion-'+treatment+'-report.json'), JSON.stringify(rows));
+    for (const rule of ['reveal-heavy','entrance-heavy','hover-shift']) {
+      assert.equal(rows[0].findings.some(f => f.rule === rule && f.sev === 'WARN'),bad,treatment+' '+rule);
+    }
+    const lint = await run(path.join(skill,'scripts/motion-lint.mjs'),[file,'--json']);
+    assert.equal(lint.files[0].findings.some(f => f.id === 'hover-shift'),bad);
+  }
+  const css = path.join(tmp, 'authored-motion.css');
+  fs.writeFileSync(css, '@keyframes amplify { from { transform:scale(.8) translateY(32px) } to { transform:none } } .hero h1,.reveal h2 span { animation:amplify .3s } button:hover svg { translate:2px }');
+  const staticFindings = async () => (await run(path.join(skill,'scripts/motion-lint.mjs'),[css,'--json'])).files[0].findings.map(f=>f.id);
+  const heavy = await staticFindings();
+  for (const id of ['entrance-heavy','reveal-heavy','hover-shift']) assert.ok(heavy.includes(id),id+' from authored CSS');
+  fs.writeFileSync(css, '@keyframes fade {from{opacity:0}to{opacity:1}} .hero .copy,.reveal {animation:fade .3s} button:hover{background:#ddd}');
+  for (const id of await staticFindings()) assert.ok(!['entrance-heavy','reveal-heavy','hover-shift'].includes(id));
+  console.log('ok - heavy motion warns, still controls and permitted loud entrances pass');
 }
 console.log('Passed '+(variant || 'all')+' rules fixtures. Evidence in '+tmp);

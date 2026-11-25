@@ -32,7 +32,7 @@ const other = () => { const m = document.querySelector('meta[name="site-kind"]')
 
 /* ---------------------------------------------------------------- letters that answer the pointer */
 function letters(h1) {
-  if (reduced() || !matchMedia('(pointer: fine)').matches) return;
+  if (document.documentElement.dataset.temper !== 'loud' || reduced() || !matchMedia('(pointer: fine)').matches) return;
   const axis = h1.dataset.lyLetters === 'wdth';
   const cs = getComputedStyle(h1);
   const base = parseFloat(cs.fontWeight) || 400;
@@ -284,7 +284,7 @@ function init() {
   document.querySelectorAll('form.hero-book').forEach(bookingBar);
 
   document.querySelectorAll('h1[data-ly-letters]').forEach(letters);
-  document.querySelectorAll('h1[data-ly-letters], h1:has(.ly-word)').forEach(lockLines);
+  document.querySelectorAll('h1.ly-letters').forEach(lockLines);
   document.querySelectorAll('.ly-collage').forEach(collage);
   document.querySelectorAll('[data-ly-steps]').forEach(steps);
   document.querySelectorAll('.ly-spot').forEach(spot);

@@ -294,7 +294,7 @@ system.js; four different fragments or diagrams, real app icons where it names a
 service: a photograph of each feature fills the panel.
 
 **Motion.** Tech: the first card's fragment or diagram loops (`data-ui-loop`); the others hold still
-and play while the pointer rests on their card. Linked cards lift 2px.
+and play while the pointer rests on their card. A linked card can underline its title on hover.
 
 **Mistakes.** A card that moves on scroll; panels out of line; a fourth line of text; the kit's
 sample text; noun titles ("Peace of mind"); three boxes deep; a widget floating dead centre; a

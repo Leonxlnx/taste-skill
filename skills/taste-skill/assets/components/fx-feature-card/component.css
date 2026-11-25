@@ -129,7 +129,7 @@
 /* ---- the pointer and its click ring (added by the script) */
 .cx-feat__ptr {
   position: absolute; left: 0; top: 0; z-index: 3; width: 20px; height: 20px; pointer-events: none; opacity: 0;
-  transition: transform 1.1s cubic-bezier(.45, 0, .2, 1), opacity .3s var(--cx-ease);
+  transition: transform 1.1s var(--cx-ease), opacity .3s var(--cx-ease);
   filter: drop-shadow(0 2px 3px rgb(0 0 0 / .35));
 }
 .cx-feat__ptr svg { display: block; width: 20px; height: 20px; }

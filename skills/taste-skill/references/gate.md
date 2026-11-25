@@ -18,7 +18,7 @@ The gate checks 1440 and 390 px, with a 320 px overflow and controls probe. It r
 - Composed sections keep the same wrap, overflow, visibility, focus, contrast and reduced-motion checks. `own-count` warns below two composed sections on a page of six sections or more, or one on a shorter page. `still-wrong` reads the page without scripts and checks hidden content and counter targets. `own-timer` catches detectable automatic advances without a pause button.
 - A picture may be a photograph, drawing, chart or live interface. Give a picture at most one `.fact-line` of up to 60 characters naming the work, place, size, year or price. Explaining the picture fails.
 - A text moment can use a content h2 or closing heading. A peek hero can extend past the fold when at least 420 px of its window shows on desktop or 300 px on a phone. Keep the next section below the fold and the heading readable.
-- A missing dealt moment fails `deal-drift`. A page without a moment receives a `moment-none` warning. The gate promotes `hero-enter` and `photo-repeat` warnings to failures. Broken resources, console errors, clipped content, missing controls and edited kit files still block.
+- A missing dealt moment fails `deal-drift`. A still page can pass. The gate promotes a `photo-repeat` warning to a failure. Broken resources, console errors, clipped content, missing controls and edited kit files still block.
 
 ## Finish a round
 

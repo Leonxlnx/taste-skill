@@ -16,7 +16,7 @@
 .ui-app.is-on .ui-app__connect { opacity: 0; pointer-events: none; }
 .ui-app__spin { display: none; width: 10px; height: 10px; }
 .ui-app.is-busy .ui-app__spin { display: inline-block; }
-.ui-apps .ui-pointer { transition: transform 720ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms ease; }
+.ui-apps .ui-pointer { transition: transform 720ms var(--u-ease), opacity 300ms ease; }
 /* --apps-w widens the list for a wide panel (a split card) */
 .ui-apps { width: var(--apps-w, 380px); }
 /* phone: the list takes the panel's width (cards.css); a long line wraps instead of being cut */

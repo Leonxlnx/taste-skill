@@ -104,8 +104,14 @@ html[data-density="open"] { --density: 1.15; }
   --icon: 16px;         /* small icons: socials, menu chevrons, mono brand marks */
 
   /* motion: the one UI ease-out (motion.css --m-ease and ui/base.css --u-ease read it; references/motion.md) */
-  --ease: cubic-bezier(.2, .8, .2, 1);
-  --dur: 180ms;
+  --m-ease: cubic-bezier(.4, 0, .2, 1);
+  --ease: var(--m-ease);
+  --m-in: 130ms;
+  --m-out: 150ms;
+  --m-press: 100ms;
+  --m-state: 180ms;
+  --m-sheet: 280ms;
+  --dur: var(--m-state);
 }
 html[data-radius="sharp"] { --r-sm: 4px; --r-md: 6px;  --r-lg: 8px;  --r-btn: 4px; }
 html[data-radius="soft"]  { --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-btn: 8px; }
@@ -588,12 +594,13 @@ main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.h
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
   height: var(--btn-h); padding: 0 var(--s-5); border-radius: var(--r-btn); border: 1px solid transparent;
   font: 500 var(--t-body)/1 var(--font-text); letter-spacing: 0; white-space: nowrap; cursor: pointer;
-  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+  transition: background-color var(--m-out) var(--ease), color var(--m-out) var(--ease), border-color var(--m-out) var(--ease), text-decoration-color var(--m-out) var(--ease), scale var(--m-press) var(--ease);
 }
 .btn--primary { background: var(--action); color: var(--action-ink); }
-.btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--ink)); }
+.btn:hover, .link:hover { transition-duration: var(--m-in); }
+.btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--bg)); }
 /* an inverted primary (the action is the ground's ink: a brand band, a lit ground): its hover steps toward the ground, as the filled one steps toward the ink */
-:root .ground-brand .btn--primary:is(:hover, :active) { background: var(--action); text-decoration: underline; text-underline-offset: .16em; }
+:root .ground-brand .btn--primary:is(:hover, :active) { background: color-mix(in oklab, var(--action) 88%, var(--bg)); }
 :root[data-buttons] .ground-brand .btn.btn--secondary { background: var(--bg); }
 /* the ground's own colour with a clear border: never grey on grey, readable on an effect too */
 .btn--secondary { background: var(--bg); color: var(--ink); border-color: var(--line-strong); }
@@ -618,11 +625,9 @@ html[data-buttons="arrow"] :is(.btn--primary, .btn--secondary)::after {
 }
 html[data-buttons="pill"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4.5 2.5 8 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-@media (hover: hover) and (pointer: fine) { html:is([data-buttons="pill"], [data-buttons="arrow"]) .btn:hover::after { transform: translateX(3px); } }
-.btn:active { transform: translateY(1px) scale(.985); }
-.btn--arrow::after { content: "\2192"; transition: transform var(--dur) var(--ease); }
-@media (hover: hover) and (pointer: fine) { .btn--arrow:hover::after { transform: translateX(3px); } }
-/* the drawn arrow (assets/motion: its stem grows and its head moves 3px on hover), the last child of
+@media (prefers-reduced-motion: no-preference) { .btn:active { scale: .98; transition-duration: var(--m-press); } }
+.btn--arrow::after { content: "\2192"; }
+/* the drawn arrow stays in place on hover, the last child of
    a primary button, a pill or a link: <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
    <path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>.
    It replaces the dealt glyph, so a button never shows two */
@@ -645,7 +650,6 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
         transition: text-decoration-color var(--dur) var(--ease); }
 .link:hover { text-decoration-color: currentColor; }
 .link::after { content: "\2192"; display: inline-block; text-decoration: none; transition: transform var(--dur) var(--ease); }
-@media (hover: hover) and (pointer: fine) { .link:hover::after { transform: translateX(3px); } }
 .pill { display: inline-flex; align-items: center; gap: var(--s-2); height: 32px; padding: 0 var(--s-3);
         border-radius: 999px; border: 1px solid var(--line); background: var(--card);
         font-size: var(--t-label); color: var(--ink); }
@@ -889,14 +893,14 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   position: absolute; left: 0; right: 0; top: 100%; background: var(--bg); color: var(--ink);
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   padding: var(--s-7) 0 var(--s-8); opacity: 0; visibility: hidden; transform: translateY(-6px);
-  transition: opacity 120ms var(--ease), transform 120ms var(--ease), visibility 0s linear 120ms;
+  transition: opacity var(--m-state) var(--ease), transform var(--m-state) var(--ease), visibility 0s linear var(--m-state);
 }
 @media (min-width: 1024px) {
   /* hover opens the full-width panel after 150ms of intent; a click on the word goes to its page */
   .nav__item:hover > .nav__menu, .nav__item:focus-within > .nav__menu {
-    opacity: 1; visibility: visible; transform: none; transition-duration: 200ms, 200ms, 0s; transition-delay: 150ms, 150ms, 150ms;
+    opacity: 1; visibility: visible; transform: none; transition-duration: var(--m-state), var(--m-state), 0s; transition-delay: 150ms, 150ms, 150ms;
   }
-  .nav__item:hover > .nav__link .chev, .nav__item:focus-within > .nav__link .chev { transform: rotate(180deg); }
+  .nav__link[aria-expanded="true"] .chev { transform: rotate(180deg); }
 }
 .menu-col { display: grid; gap: var(--s-2); align-content: start; }
 .menu-col > .t-label { color: var(--muted); margin-bottom: var(--s-2); }
@@ -1053,7 +1057,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .tab {
   height: var(--btn-h-sm); padding: 0 var(--s-4); border-radius: var(--r-btn); border: 1px solid var(--line);
   background: transparent; color: var(--muted); font-size: var(--t-small); font-weight: 500; cursor: pointer;
-  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  transition: background-color var(--m-out) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .tab:hover { color: var(--ink); border-color: var(--line-strong); }
 .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -1375,8 +1379,7 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
    (a room, a model, a person, a case). One --tile-ratio per row so the pictures line up. */
 .tile { display: grid; gap: var(--s-4); align-content: start; color: inherit; }
 .tile__media { position: relative; overflow: clip; aspect-ratio: var(--tile-ratio, 4 / 3); border-radius: var(--r-lg); background: var(--surface); }
-.tile__media > img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms var(--ease); }
-@media (hover: hover) and (pointer: fine) { a.tile:hover .tile__media > img { transform: scale(1.03); } }   /* inside its mask; the tile never grows (motion.css has the same) */
+.tile__media > img { width: 100%; height: 100%; object-fit: cover;  }
 .tile--portrait { --tile-ratio: 4 / 5; }
 .tile--wide { --tile-ratio: 16 / 9; }
 .tile__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); }
@@ -1512,11 +1515,11 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
     gap: var(--s-3); align-items: center; height: calc(64px + env(safe-area-inset-bottom));
     padding: var(--s-2) var(--gut) env(safe-area-inset-bottom); background: var(--bg); border-top: 1px solid var(--line);
-    transition: transform 240ms var(--ease), visibility 0s;
+    transition: transform var(--m-state) var(--ease), visibility 0s;
   }
   .actionbar .btn { width: 100%; height: 48px; }
   /* hidden: below the screen's edge and out of the focus order (visibility; system.js adds inert) */
-  .actionbar[data-bar="hidden"] { transform: translateY(100%); visibility: hidden; transition: transform 240ms var(--ease), visibility 0s 240ms; }
+  .actionbar[data-bar="hidden"] { transform: translateY(100%); visibility: hidden; transition: transform var(--m-state) var(--ease), visibility 0s var(--m-state); }
   :root:has(> body > nav.actionbar:is([data-bar="shown"], [data-bar="hidden"])) main > :is(.hero, .section--hero) { --bar: 0px; }
 }
 /* with script on, hidden from the first frame until system.js has read the screen, so it never shows over the hero
@@ -1608,7 +1611,7 @@ html.has-chapter-bar main section[id] { scroll-margin-top: calc(var(--nav) + var
   .chapter-nav.is-folding ol { display: none; }
   .chapter-nav.is-folding.is-open ol { display: flex; padding-bottom: var(--s-2); }
 }
-@media (prefers-reduced-motion: no-preference) { .chapter-nav__bar { transition: transform 200ms ease, visibility 200ms; } }
+@media (prefers-reduced-motion: no-preference) { .chapter-nav__bar { transition: transform var(--m-state) var(--ease), visibility var(--m-state); } }
 /* chapter-head: the chapter's number and name above its h2, in the text face at body size; only where a chapter-nav or a
    contents-row lists the same names (never uppercase, never mono, never on a section that is no chapter) */
 .chapter-head { display: flex; gap: var(--s-2); align-items: baseline; margin: 0 0 var(--s-3); font: 500 var(--t-body)/1.4 var(--font-text); color: var(--ink); }

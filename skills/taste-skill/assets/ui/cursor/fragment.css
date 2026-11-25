@@ -20,6 +20,6 @@
 .ui-cursor__ok { width: 14px; height: 14px; }
 .ui-cursor__go.is-busy .ui-cursor__spin { display: inline-block; }
 .ui-cursor__go.is-done .ui-cursor__ok { display: block; }
-.ui-cursor .ui-pointer { transition: transform 820ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms var(--u-ease); }
-.ui-cursor .ui-pointer.is-down { scale: 0.88; transition: transform 820ms cubic-bezier(0.45, 0, 0.2, 1), opacity 300ms var(--u-ease), scale 120ms var(--u-ease); }
+.ui-cursor .ui-pointer { transition: transform 820ms var(--u-ease), opacity 300ms var(--u-ease); }
+.ui-cursor .ui-pointer.is-down { scale: 0.88; transition: transform 820ms var(--u-ease), opacity 300ms var(--u-ease), scale 120ms var(--u-ease); }
 @media (max-width: 400px) { .ui-cursor { width: 320px; } .ui-cursor__hint { display: none; } }

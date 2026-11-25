@@ -7,7 +7,7 @@ map. The parts are in `assets/components/` (a folder each: `component.html`, `.c
 while it is near the screen.
 
 **By fit** (`effects-usage.md`, The fit rule): a part that holds a WebGL context or reads as a screen
-(the dither object, the globe, the prompt glow, `fx-button`'s fill) goes on the kinds that take WebGL
+(the dither object, the globe, the prompt glow) goes on the kinds that take WebGL
 and the tech tone (software, gaming, tech: hardware, and a product passed as `--tech-subject`);
 `fx-photo` (every kind, as a plain photograph) and `fx-map` (every kind with a door, a place
 included, baked still, and only for a street the brief gives) go on every kind. A place, service or
@@ -18,12 +18,11 @@ colours and never move (rule 7, MO-57; `sections-library.md` logo-row).
 ## Under the one-effect rule
 
 - **Every part that holds a WebGL context is the page's one effect** (`effects-usage.md`): the
-  dither object, a filled headline or stat, the globe, the avatar ring, the logo light, the progress
-  light, the prompt glow, the edge-glow plan, `fx-spotlight`, and `fx-button`'s fill (on the one
-  primary call to action, or one pair, fading in on hover or focus). It sits in the hero or the one
+  dither object, a filled headline or stat, the globe, the avatar ring, the progress
+  light, the prompt glow, the edge-glow plan and `fx-spotlight`. It sits in the hero or the one
   `[data-visual]` frame, or serves a dealt moment in its own section; never beside a live hero
   ground. Painted panels in a 2x2 are card grounds drawn still, not the effect.
-- **One pointer effect a page:** `fx-button`, `fx-spotlight`, a turning object, or a hover or liquid
+- **One pointer effect a page:** `fx-spotlight`, a turning object, or a hover or liquid
   moment (`moments.md`), never two. The street map and a photograph are content, not effects.
 - Everything else stays **quiet**: a search glow only while focused, one ring on the recommended
   plan, chips with a still grain. **One lit border a page** (`fx-prompt` or `fx-pricing`).
@@ -57,8 +56,7 @@ A laptop's graphics chip shares about 2 GB with everything else; too many live c
 - **Everything pauses** off screen and in a hidden tab (fx.js does it for every mounted effect), and
   a loop that runs on its own for more than about 5 s has a pause button.
 - What holds a context on a page: `fx-dither-object` (20 fps), `fx-prompt`, `fx-globe`, `fx-avatar`
-  and `fx-progress`, each only while near the screen; `fx-button` only while
-  pointed at (freed 4 s later), `fx-search` only while focused. A page carries one of these (the
+  and `fx-progress`, each only while near the screen. `fx-search` runs only while focused. A page carries one of these (the
   effect). Every other part is a still, and so is the dither object under reduced motion. `fx-map`
   (plain SVG) and `fx-photo` (the photograph itself) hold no context at all.
 

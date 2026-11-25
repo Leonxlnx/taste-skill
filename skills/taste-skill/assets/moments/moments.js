@@ -47,6 +47,12 @@ export function mount(el) {
   if (el.__momentP) return el.__momentP;
   const id = el.dataset.moment;
   if (!id) return Promise.resolve(null);
+  const temper = html.dataset.temper || 'quiet';
+  if (id === 'word-rotate' || (id === 'lines-rise' && temper !== 'loud') ||
+      (temper === 'quiet' && ['word-highlight', 'picture-develops', 'closing-lift'].includes(id))) {
+    el.dataset.momentStill = 'retired';
+    return Promise.resolve(null);
+  }
   el.__momentP = (async () => {
     let opts = {};
     try { opts = JSON.parse(el.dataset.momentOpts || '{}'); } catch { console.warn(`moments: bad data-moment-opts on ${id}`); }

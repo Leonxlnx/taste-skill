@@ -172,18 +172,14 @@
 //              (SR-4: every block of <main> a section), one-heading (SR-5: one h2 a section), container-edges (SR-6:
 //              equal left and right margins), row-lines (SR-7: card rows on the
 //              container lines), split-pair (SR-8: splits top-aligned, text left, locally aligned columns), each FAIL
-//   motion     motion-layer, count-text, loop-cycle (the motion layer's marks: data-motion without motion.css, a count
+//   motion     count-text, loop-cycle (a count
 //              of no number, a year or a price, a card loop outside 2.5-4 s), hidden-content (text in view that stays
 //              hidden until a script reveals it: under reduced motion at the first width, and again with an
 //              IntersectionObserver that never calls back, waited 4 s and walked, and with scripts switched off; a closed menu, popup, disclosure,
 //              aria-hidden part or an alternate stacked under a shown one is passed; inside a drawn mock WARN, else
 //              FAIL; --no-hidden skips the second load)
-//   chrome     hover-move (a hovered card or link card that tilts FAIL; one that lifts more than 6px or grows past 1.03,
-//              or whose photo zooms past 1.05, WARN: the 2px lift and 1.02-1.03 zoom; first width, with hover-spill)
-//   later      (the v5 judges' faults)
-//              hover-move also FAILs a linked card or a linked photograph that shows no change at all on hover (its look, its move, its
-//              pictures' scale and its parts the same hovered as at rest: the card the motion layer does not reach, or a page that never
-//              linked motion.css); a card or photo only the pointer moves is read, a loop or a fragment running by itself is left out
+//   motion     hover-shift flags a moving control, icon or linked picture. Colour-only feedback passes.
+//              entrance-heavy and reveal-heavy check actual load and scroll animations.
 //              credit-wall also FAILs a footer holding more than 2 links that credit photographs (a photographer's page, a source file
 //              or a licence), even inside a closed <details>: the footer holds ONE line linking credits.html (photos.mjs credits --write)
 //              product-shown FAILs a physical product page whose hero shows no photograph and no render of the product (an img, a picture,
@@ -297,6 +293,7 @@ import { inflateSync } from 'node:zlib';
 import { STOP, norm, words, stem, holds, holdsAny, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
 import { storyProbe, storyFindings, findBeside } from './story-check.mjs';
 
+const motionAudit = readFileSync(new URL('../assets/layout/motion-audit.js', import.meta.url), 'utf8');
 const layoutRules = readFileSync(new URL('../assets/layout/layout-check.js', import.meta.url), 'utf8');
 const browserFinding = f => ({check:f.rule, sev:f.sev || 'FAIL', sel:f.where, msg:f.detail, id:0, text:'', rects:[]});
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -369,16 +366,16 @@ const checks = [
   { id: 'visual-caption', sev: 'FAIL', what: 'a caption, description or caption-like line under, over or on an image, render or visual of 120x80px or more' },
   { id: 'visual-empty', sev: 'FAIL', what: 'a visual of 120x80px or more showing under 6 colours or only a smooth gradient at this width (blank FAILs), or a broken picture' },
   { id: 'effect-kind', sev: 'FAIL', what: 'an effect on a place, service or plain product page beyond one quiet treatment, or a scene that does not fit its kind; past 4 live WebGL contexts, one scene or three scroll moments on a tech page' },
-  { id: 'hero-enter', sev: 'WARN', what: 'a hero that does not enter on load: no data-enter on it, or no head line setting html.m-enter (data-enter="off" on a hero holding a big scene is its entrance)' },
-  { id: 'moment-none', sev: 'WARN', what: 'a page without a mounted moment; the gate checks the dealt IDs' },
+
+
   { id: 'moment-text', sev: 'FAIL', what: 'a dealt moment whose copy misses the count its meta.json "text" gives (liquid-type 2-6 words, letters-assemble 2-5, marquee-row 6-14 items...); lines-rise\'s 2-3 lines at a desktop width WARN' },
 ];
 const fixes = {
   'moment-text': 'write the copy to the moment\'s count (moments.mjs pick prints it; assets/moments/<id>/meta.json "needs" and "text"), or deal again for a moment that fits the copy',
   'visual-caption': 'take the line away: no caption or description under, over or on any image, render or visual; a licence credit goes in one footer line',
   'visual-empty': 'make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame',
-  'hero-enter': 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter (motion.md: the entrance)',
-  'moment-none': 'use the moment the plan names on its content or closing heading, if one was dealt',
+
+
   'effect-kind': 'take the effect off or deal one that fits: a place, shop or service page takes no shader effect (effects.mjs pick deals none there) and a scene dealt by fit (moments.mjs pick --page <kind> --scene deal), never a tech-looking shader ground',
 };
 const summary = [
@@ -393,10 +390,10 @@ const summary = [
   '             any effect on a place, a service or a product without a technical subject FAILs; tech, gaming and',
   '             software: a second big scene ([data-big-scene]) or two data-fx grounds beside it FAIL (MO-16, MO-23); WARN',
   '             above 4 live WebGL contexts, 8 created, one big scene, two scroll moments, or no reduced-motion or phone branch;',
-  '             every kind: moment-none, a page with no dealt moment, WARNs; moment-text, a kit moment whose copy misses',
+
   '             the count in its meta.json "text", FAILs, lines-rise\'s lines at a desktop width WARN)',
-  '  motion     hero-enter (every kind: a hero without data-enter, or a page without the head line that sets html.m-enter, WARN;',
-  '             gate.mjs holds hero-enter as a FAIL)',
+
+
 ].join('\n');
 const flags = [{ name: 'tech-subject', kind: 'bool', default: false, help: 'a product page with a technical subject (hardware, a device): effects are judged as on a tech page' }];
 const quick = true;
@@ -971,13 +968,14 @@ function kindProbe() {
     taste: meta('taste-kind'), siteKind: meta('site-kind'), pageKind: meta('page-kind'), pageType: meta('page-type'), dataType: String(document.documentElement.getAttribute('data-type') || '').trim().toLowerCase(),
     fxIds: [...document.querySelectorAll('[data-fx]')].map((e) => String(e.getAttribute('data-fx') || '').trim().split(/[\s:]/)[0]),
     bigIds: [...document.querySelectorAll('[data-big-scene]')].map((e) => String(e.getAttribute('data-big-scene') || '').trim()),
+    retiredMoments: q('[data-moment][data-moment-still="retired"]'),
     ownSections: q('section[data-own]'), dataFx: q('[data-fx]'), dataScene: q('[data-scene], [data-big-scene]'), dataPrint: ownPrints().length, dataMoment: q('[data-scroll-moment], [data-moment]'),
     bigScene: q('[data-big-scene]'), fxBeside: [...document.querySelectorAll('[data-fx]')].filter((e) => !e.closest('[data-big-scene], [data-scroll-moment], [data-moment][data-moment-mounted]')).length,
     mount: first('[data-fx], [data-scene], [data-big-scene], [data-print]'), moment: first('[data-scroll-moment], [data-moment]'),
     // the hero's entrance (motion.md): data-enter on the hero section and the head line that sets html.m-enter; a hero
     // that holds a big scene with its own load motion writes data-enter="off" (motion.md), and the scene is its entrance
     enter: { hero: first('main > section.hero, section.hero, .hero'), data: !!document.querySelector('.hero[data-enter]:not([data-enter="off"])'), head: document.documentElement.classList.contains('m-enter'), scene: !!document.querySelector('.hero[data-enter="off"][data-big-scene], .hero[data-enter="off"] [data-big-scene]') },
-    moments: [...document.querySelectorAll('[data-moment]')].map((e) => { let look = ''; try { look = String((JSON.parse(e.getAttribute('data-moment-opts') || '{}') || {}).look || ''); } catch (x) { /* bad json */ } const id = String(e.getAttribute('data-moment') || '').trim(); return { id, look, sel: sel(e), nested: !!(e.parentElement && e.parentElement.closest('[data-moment]')), mounted: e.hasAttribute('data-moment-mounted'), failed: String(e.getAttribute('data-moment-failed') || '').slice(0, 120), loaded: performance.getEntriesByType('resource').some((r) => { try { return new URL(r.name).pathname.endsWith(`/moments/${id}/moment.js`); } catch (x) { return false; } }) }; }),
+    moments: [...document.querySelectorAll('[data-moment]:not([data-moment-still="retired"])')].map((e) => { let look = ''; try { look = String((JSON.parse(e.getAttribute('data-moment-opts') || '{}') || {}).look || ''); } catch (x) { /* bad json */ } const id = String(e.getAttribute('data-moment') || '').trim(); return { id, look, sel: sel(e), nested: !!(e.parentElement && e.parentElement.closest('[data-moment]')), mounted: e.hasAttribute('data-moment-mounted'), failed: String(e.getAttribute('data-moment-failed') || '').slice(0, 120), loaded: performance.getEntriesByType('resource').some((r) => { try { return new URL(r.name).pathname.endsWith(`/moments/${id}/moment.js`); } catch (x) { return false; } }) }; }),
     printObjects: [...ownPrints().map((e) => { let fx = 'render'; try { fx = String((JSON.parse(e.getAttribute('data-print-params') || '{}') || {}).effect || 'render').toLowerCase(); } catch (x) { /* bad json */ } return { id: String(e.getAttribute('data-print') || '').trim(), effect: fx }; }), ...[...document.querySelectorAll('[data-product]')].map(() => ({ id: 'print-product', effect: 'render' }))],
     // created: the contexts the page got (an ask the guard refused is no context, and a canvas asked again after a
     // refusal is counted once more by the guard); big: a large live canvas that is no data-fx ground and no part of a
@@ -1238,7 +1236,7 @@ function effectFindings(ctx, K) {
   // a big scene: a data-scene or data-print mount, or a large WebGL canvas that is no data-fx ground (the larger
   // count); on a no-effect page the prints are told on their own
   const scenes = Math.max(sceneTags + printTags, M.guard ? M.big : 0), scenesNo = Math.max(sceneTags, M.guard ? M.big : 0);
-  const momentsTag = Math.max(sig.dataMoment, M.dataMoment), scrollMoments = momentsTag + linkedSections.length;
+  const momentsTag = Math.max(0, Math.max(sig.dataMoment, M.dataMoment) - (K.retiredMoments || 0)), scrollMoments = momentsTag + linkedSections.length;
   const particles = sig.particleLibs.length > 0; // chart paths and line drawings can also paint many shapes per frame
   const gl = objRender ? (M.guard ? M.outsidePrint : 0) : M.guard ? M.created : sig.shaderStrings ? 1 : 0;
   const any = gl > 0 || fxMounts || scenesNo || scrollMoments || sig.scrollStrong.length;
@@ -1270,21 +1268,6 @@ function effectFindings(ctx, K) {
       const off = all.filter((m) => !fitsTech(m));
       if (off.length) add('moment', 'FAIL', `${off.length} moment${off.length > 1 ? 's' : ''} not dealt to a ${kind} page (${[...new Set(off.map((m) => m.id + (m.look ? ` look ${m.look}` : '')))].slice(0, 4).join(', ')}): retired, unknown, or dealt to other kinds only (assets/moments/index.json)`, `deal the moment again for this kind (moments.mjs pick --page ${kind})`, { sel: off[0].sel, doc: null });
     }
-  }
-  // on every kind (2.5.1, motion.md): the hero enters once on load ([data-enter] and the head line that sets html.m-enter),
-  // and the page carries one dealt moment, two on a long page; a missing one is a WARN, never a FAIL
-  if (ctx.first && K.enter && K.enter.hero && !K.enter.scene && !(K.enter.data && K.enter.head) && !S.told.has('hero-enter')) {
-    S.told.add('hero-enter');
-    const f = { check: 'hero-enter', sev: 'WARN', id: 0, sel: K.enter.hero.sel, text: '', msg: `the hero does not enter on load: ${[!K.enter.data && 'no data-enter on the hero', !K.enter.head && 'no head line setting html.m-enter'].filter(Boolean).join(' and ')} (motion.md, The hero's entrance)`, fix: 'put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter' };
-    put(ctx, f, K.enter.hero.doc);
-    F.push(f);
-  }
-  // A missing deal is checked against the plan by the gate.
-  if (ctx.first && !(K.moments || []).some(m=>MOMENT_PAGES[m.id]?.counts && m.mounted) && !S.told.has('moment-none')) {
-    S.told.add('moment-none');
-    const f = { check:'moment-none', sev:'WARN', id:0, sel:'(the page)', text:'', msg:'The page has no mounted moment.', fix:'When the plan names a moment, mount it on the content that carries it.' };
-    put(ctx, f);
-    F.push(f);
   }
   if (noEffect) {
     const why = `${kind === 'product' ? ' (a product with a technical subject: pass --tech-subject or mark <meta name="site-kind" content="tech">)' : ''}: ${KIND_RULE}`;
@@ -3467,17 +3450,17 @@ const motionMod = (() => {
 const id = 'motion-hooks';
 const phase = 'width';
 const checks = [
-  { id: 'motion-layer', sev: 'FAIL', what: '<html data-motion> without motion.css (FAIL), or motion.css without data-motion (WARN)' },
+
   { id: 'count-text', sev: 'FAIL', what: 'a [data-m-count] holding no number, or a year or a price' },
   { id: 'loop-cycle', sev: 'FAIL', what: 'a card loop ([data-m-loop], a fragment loop [data-ui-loop], the pulses of a [data-diagram]) cycling over 4 s (FAIL) or under 2.5 s (WARN)' },
 ];
 const fixes = {
-  'motion-layer': 'link assets/motion/motion.css after cards.css and keep data-motion on <html> (both, or neither)',
+
   'count-text': 'put data-m-count only on a plain figure (a count, a share, a time): never on a year, a price or words',
   'loop-cycle': 'set the loop\'s cycle to 2.5-4 s (--m-cycle) with every keyframe on it, repeating',
 };
 const summary = [
-  '  motion     motion-layer (<html data-motion> without motion.css FAIL, motion.css without it WARN), count-text (a',
+  '  motion     entrance-heavy, reveal-heavy, hover-shift (WARN), count-text (a',
   '             [data-m-count] holding no number, a year or a price, FAIL), loop-cycle (a [data-m-loop], [data-ui-loop] or',
   '             [data-diagram] pulse cycle over 4 s FAIL, under 2.5 s WARN: the card loops run 2.5-4 s and repeat)',
 ].join('\n');
@@ -3530,8 +3513,8 @@ async function run(ctx) {
   if (!P) return [];
   const F = [];
   const put = (f, d) => Object.assign(f, d ? ctx.place(d) : { stop: null, rects: [] });
-  if (P.marked && !P.css) F.push(put({ check: 'motion-layer', sev: 'FAIL', id: 0, sel: 'html[data-motion]', text: '', msg: 'the page marks <html data-motion> but motion.css is not loaded: buttons, links, cards and photos answer nothing on hover' }));
-  if (!P.marked && P.css) F.push(put({ check: 'motion-layer', sev: 'WARN', id: 0, sel: 'html', text: '', msg: 'motion.css is loaded but <html> carries no data-motion: the hover layer stays off' }));
+
+
   // a year (1900-2099 alone) or a price counting up reads as a slot machine; words cannot count
   const YEAR = /^\D*(?:19|20)\d\d\D*$/, PRICE = /[€$£¥₹]|\b(?:eur|usd|gbp|chf|sek|nok|dkk|isk|kr)\b|\/\s*(?:mo|month|year|yr|night|week)\b|\bper (?:month|year|night|week)\b/i;
   for (const c of P.counts) {
@@ -4711,6 +4694,7 @@ class Tab {
     const t = new Tab(); t.cdp = cdp; t.targetId = targetId; t.sid = sessionId; t.vw = width; t.vh = height;
     cdp.on(sessionId, 'Page.javascriptDialogOpening', () => t.send('Page.handleJavaScriptDialog', { accept: false }).catch(() => {}));
     await t.send('Page.enable'); await t.send('Runtime.enable');
+    await t.send('Page.addScriptToEvaluateOnNewDocument', {source:motionAudit});
     await t.send('Page.addScriptToEvaluateOnNewDocument', {source:layoutRules});
     await t.send('Page.addScriptToEvaluateOnNewDocument', { source: GL_GUARD }).catch(() => {});
     await t.send('Page.addScriptToEvaluateOnNewDocument', { source: IO_HOOK }).catch(() => {});
@@ -6979,7 +6963,7 @@ function lib(itemContext) {
     for (const list of bySec.values()) {
       list.sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
       const best = list.flatMap((q) => q.xs).sort((a, b) => b.gain - a.gain)[0];
-      out.push({ id: idOf(list[0].el), sel: sel(list[0].el), text: label(list[0].el), n: list.length, how: revealHow(best.p, best.v),
+      out.push({ id: idOf(list[0].el), sel: sel(list[0].el), text: label(list[0].el), n: list.length, loudEntrance: document.documentElement.dataset.temper === 'loud' && list.every(q => q.el.closest('[data-moment="lines-rise"]')), how: revealHow(best.p, best.v),
         sels: list.slice(0, 5).map((q) => sel(q.el).split(' > ').pop()), docs: list.slice(0, 8).map((q) => D(q.el.getBoundingClientRect())) });
     }
     return out;
@@ -7614,7 +7598,7 @@ function lib(itemContext) {
     return Object.assign(mx(e), { pic: Math.round(pic * 1000) / 1000 });
   }
   // everything a hover can change on a card and what is in it (its own look, its pictures' scale, its parts), read at rest and hovered:
-  // a card whose signature is the same hovered shows no change at all (hover-move). What runs by itself (a fragment, a loop, a canvas,
+  // the signature includes the look of the card and picture. What runs by itself (a fragment, a loop, a canvas,
   // a pulse) is left out: it changes without the pointer
   function hoverSig(id) {
     const e = els.get(id); if (!e) return null;
@@ -9497,7 +9481,7 @@ const FIX = {
   'product-shown': 'show the physical product, working view, chart or drawing at a readable size and identify its subject',
   hover: 'give buttons and links a small answer to the pointer (the motion layer: a fill change, a drawn underline, an arrow that moves)',
 };
-FIX['hover-move'] = 'every linked card and linked photo answers the pointer: give the card class="card" (or the tile its media class) so motion.css lifts it 2px and zooms its photo; hover a linked card up 2px (translateY(-2px)) and zoom its photo to 1.02-1.03 inside its frame; no rotate, no 3D tilt, no growing card';
+FIX['hover-shift'] = 'Keep the control and icon in place. Change colour or underline.';
 FIX['hidden-content'] = 'show the content at rest: the hidden state only under a class the script adds on its live path, never in the plain CSS (prefers-reduced-motion and a script that never runs show the finished page)';
 for (const M of MODULES) Object.assign(FIX, M.fixes || {});
 const CHECKS = Object.keys(FIX);
@@ -10217,7 +10201,7 @@ const LOST_CHECKS = {
   seams: [['flush'], 'the seams between sections'], seam: [['section-gaps'], 'the gaps between sections'],
   timelines: [['scroll-linked'], 'the scroll timelines'], hold: [['scroll-linked', 'pinned'], 'the held sections'],
   reveal: [['scroll-reveal'], 'the parts that reveal on scroll'], 'io-reveal': [['scroll-reveal'], 'the reveals that wait for the viewport'],
-  hover: [['hover', 'hover-move', 'hover-spill'], 'the hover states'], 'hover-kinds': [['hover-move'], 'the kinds of hover'],
+  hover: [['hover', 'hover-shift', 'hover-spill'], 'the hover states'], 'hover-kinds': [['hover-shift'], 'the kinds of hover'],
   hidden: [['hidden-visual'], 'what a hover shows or hides'], loops: [['loop-pause'], 'the loops and their pause'], forms: [['forms'], 'the forms'],
   webgl: [['webgl'], 'the WebGL counts'], moments: [['effects-fit'], 'the scroll moments'], place: [['effects-fit'], 'where the effect parts sit'],
   'no-visual': [['no-visual'], 'the sections without a visual'], 'hero-fill': [['hero-fill'], 'the hero against the screen'],
@@ -10315,7 +10299,7 @@ function groupSame(F) {
 }
 const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
-ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
+ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-shift', 'entrance-heavy', 'reveal-heavy');
 ORDER.splice(ORDER.indexOf('overlap-text') + 1, 0, 'collide', 'tap-size');
 for (const M of MODULES) for (const c of M.checks) if (!ORDER.includes(c.id)) ORDER.push(c.id);
 const bySev = (a, b) => (a.sev === b.sev ? 0 : a.sev === 'FAIL' ? -1 : 1) || ORDER.indexOf(a.check) - ORDER.indexOf(b.check);
@@ -10380,7 +10364,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         display:style.getPropertyValue('--font-display').trim().split(',')[0].replace(/["']/g,''),
         text:style.getPropertyValue('--font-text').trim().split(',')[0].replace(/["']/g,''),
         heroPeek:hero?.classList.contains('hero--peek') || false, heroBook:!!window.lyRules.booking(hero),
-        hero:[...(hero?.classList || [])].find(c=>c.startsWith('hero--') && c!=='hero--peek')?.slice(6), entrance:hero?.hasAttribute('data-enter') ? hero.getAttribute('data-enter') || 'rise' : null, buttons:root.dataset.buttons, density:root.dataset.density || 'regular',
+        hero:[...(hero?.classList || [])].find(c=>c.startsWith('hero--') && c!=='hero--peek')?.slice(6), entrance:hero?.getAttribute('data-enter') || 'still', buttons:root.dataset.buttons, density:root.dataset.density || 'regular',
         nav:nav ? 'nav-' + (['split','centre'].find(v=>nav.classList.contains('nav--'+v)) || (nav.querySelector('.nav__menu .menu-col,.menu-col,.menu__col,.menu-column') || nav.querySelectorAll('.menu-card').length < 3 ? 'mega' : 'cards')) : null,
         footer:footer ? 'footer-' + (['visit','dark','statement','columns'].find(v=>footer.classList.contains('footer--'+v)) || (footer.querySelector('.links-visit,.visit-links,.footer__address') ? 'visit' : 'columns')) : null,
         close:close ? 'close-' + (variant(close,'close--') || 'form') : footer?.querySelector('.closing__cta') ? 'close-type' : null,
@@ -10781,12 +10765,11 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // what animated in when it was first scrolled to
     const revealed = [];
     if (!quick) for (const r of (await safe('reveal', () => tab.eval('window.__cc.revealList()'))) || []) {
+      if (r.n <= 2 || r.loudEntrance) continue;
       const p = place(r.docs[0]); revealed.push(r.id);
       if (p.stop != null) for (const d of r.docs.slice(1)) { const top = d.top - stopY[p.stop]; if (top < vh && top + d.height > 0) p.rects.push({ left: d.left, top, width: d.width, height: d.height }); }
-      F.push(Object.assign({ check: 'scroll-reveal', sev: 'FAIL', id: r.id, sel: r.sel, text: r.text, msg: `${r.n > 1 ? `${r.n} parts of this section animate` : 'animates'} in when scrolled into view (${r.how})${r.n > 1 ? `: ${r.sels.join(', ')}${r.n > 5 ? ', ...' : ''}` : ''}` }, p));
+      F.push(Object.assign({ check: 'reveal-heavy', sev: 'WARN', id: r.id, sel: r.sel, text: r.text, msg: `${r.n > 1 ? `${r.n} parts of this section animate` : 'animates'} in when scrolled into view (${r.how})${r.n > 1 ? `: ${r.sels.join(', ')}${r.n > 5 ? ', ...' : ''}` : ''}` }, p));
     }
-    // what an IntersectionObserver set moving as it came on screen (seen in the walk, so also with --quick)
-    for (const r of (await safe('io-reveal', () => tab.eval(`window.__cc.ioReveals(${JSON.stringify(revealed)})`))) || []) F.push(Object.assign({ check: 'scroll-reveal', sev: 'FAIL', id: r.id, sel: r.sel, text: r.text, msg: r.msg }, place(r.doc)));
     // feature sections without a visual
     TM('seams+lint+held');
     const NV = (await safe('no-visual', () => tab.eval(`window.__cc.noVisual(${JSON.stringify(TYPE)})`, 300000))) || { nv: [], holes: [] };
@@ -11128,43 +11111,29 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     if (first && !quick) {
       // hover-spill: a card or link card that grows past its column or the screen on hover
       const hc = (await safe('hover', () => tab.eval('window.__cc.hoverCands()'))) || [];
-      let spills = 0; const moved = [], deadCards = [];
+      let spills = 0; const moved = [];
       for (const c of hc) {
         if (spills >= 3) break;
         await tab.eval(`window.__cc.scrollTo(${Math.max(0, Math.round(c.doc.top + c.doc.height / 2 - vh / 2))})`); await sleep(250);
         const a = await safe('hover', () => tab.eval(`window.__cc.hoverBox(${c.id})`)); if (!a || a.r.top < 0 || a.r.top + a.r.height > vh) continue;
         const xr = moved.length < 3 ? await safe('hover', () => tab.eval(`window.__cc.hoverXf(${c.id})`)) : null;
-        const sg0 = c.linked ? await safe('hover', () => tab.eval(`window.__cc.hoverSig(${c.id})`)) : null;
         await tab.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: Math.round(a.r.left + a.r.width / 2), y: Math.round(a.r.top + a.r.height / 2) }).catch(() => {});
         await sleep(450);
-        const sg1 = sg0 ? await safe('hover', () => tab.eval(`window.__cc.hoverSig(${c.id})`)) : null;
-        if (!c.own && sg0 && sg1 && sg0.sig === sg1.sig && JSON.stringify(sg0.r) === JSON.stringify(sg1.r)) deadCards.push({ c, a, sg: sg1 });
         const b = await safe('hover', () => tab.eval(`window.__cc.hoverBox(${c.id})`));
         const xa = moved.length < 3 ? await safe('hover', () => tab.eval(`window.__cc.hoverXf(${c.id})`)) : null;
         const shot = await tab.shot();
-        // hover-move: a tilt FAILs; a card that jumps more than 6px or grows past 1.03, or a picture zooming past 1.05, WARNs
+        // A change in the card or picture geometry on hover is a warning.
         // (what the hover changed: a card already turned or scaled at rest is tilt's or the layout's)
         if (xa && xr && b) {
           const lift = xr.ty - xa.ty, grow = xa.s / (xr.s || 1), zoom = xa.pic / (xr.pic || 1);
-          const why = (!xa.flat && xr.flat) ? 'turns in 3D (a tilt)' : Math.abs(xa.deg - xr.deg) >= 0.5 ? `rotates ${Math.round((xa.deg - xr.deg) * 10) / 10}deg (a tilt)` : lift >= 6.5 ? `lifts ${Math.round(lift)}px` : grow > 1.031 ? `grows to ${grow.toFixed(3)}x` : zoom > 1.051 ? `zooms its picture to ${zoom.toFixed(3)}x` : '';
-          if (why && (!c.own || /tilt/.test(why))) { shots.push(shot); moved.push(c.id); F.push({ check: 'hover-move', sev: /tilt/.test(why) ? 'FAIL' : 'WARN', id: c.id, sel: c.sel, text: c.text, stop: shots.length - 1, rects: [b.r], msg: `on hover the card ${why}: a linked card lifts 2px and a photo zooms 1.02-1.03 inside its frame, nothing tilts (house rule)` }); }
+          const why = (!xa.flat && xr.flat) ? 'turns in 3D (a tilt)' : Math.abs(xa.deg - xr.deg) >= 0.5 ? `rotates ${Math.round((xa.deg - xr.deg) * 10) / 10}deg (a tilt)` : Math.abs(lift) > .5 ? `lifts ${Math.round(lift)}px` : Math.abs(grow-1) > .001 ? `grows to ${grow.toFixed(3)}x` : Math.abs(zoom-1) > .001 ? `zooms its picture to ${zoom.toFixed(3)}x` : '';
+          if (why) { shots.push(shot); moved.push(c.id); F.push({ check: 'hover-shift', sev: 'WARN', id: c.id, sel: c.sel, text: c.text, stop: shots.length - 1, rects: [b.r], msg: `on hover the card ${why}. Keep the frame and its picture stationary.` }); }
         }
         await tab.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: Math.round(vh - 2) }).catch(() => {});
         if (!b) continue;
         const past = (q, bx) => Math.max(bx.left - q.left, q.left + q.width - bx.right, -q.left, q.left + q.width - b.vw);
         const grow = past(b.r, b.box) - Math.max(0, past(a.r, a.box));
         if (grow >= 12) { shots.push(shot); spills++; F.push({ check: 'hover-spill', sev: 'FAIL', id: c.id, sel: c.sel, text: c.text, stop: shots.length - 1, rects: [b.r, Object.assign({ left: b.box.left, top: b.box.top, width: b.box.right - b.box.left, height: b.box.bottom - b.box.top }, { ref: true })], msg: `on hover it runs ${Math.round(grow)}px past its column or the screen (${a.r.width}x${a.r.height} at rest, ${b.r.width}x${b.r.height} hovered)` }); }
-      }
-      // hover-move, the other half (house rule and the judges: "hover shows no change on the tested card"): a linked card or a linked
-      // photograph whose look, move and pictures are the same hovered as at rest. With the motion layer on it is a card the layer does not reach (a tile
-      // without .card or .frame__img); without it, a page that never linked motion.css
-      if (deadCards.length) {
-        const names = deadCards.map((d) => `"${(d.c.text || d.c.sel).slice(0, 30)}"`);
-        for (const d of deadCards.slice(0, 3)) {
-          shots.push(await tab.shot());
-          F.push({ check: 'hover-move', sev: 'FAIL', id: d.c.id, sel: d.c.sel, text: d.c.text, stop: shots.length - 1, rects: [d.a.r], msg: `a linked card or photo shows no change on hover (${d.a.r.width}x${d.a.r.height}): it does not lift, its photograph does not zoom, nothing darkens or draws${d.sg.motion ? ' (the page marks data-motion, but the motion layer does not reach this card)' : ' (the page carries no data-motion: link assets/motion/motion.css after cards.css and put data-motion on <html>)'}${deadCards.length > 1 ? `; ${deadCards.length} of the page's linked cards and photos do the same: ${names.slice(0, 4).join(', ')}` : ''}` });
-          if (deadCards.length > 1) break;
-        }
       }
       await sleep(300);
       // hover (house rule: micro-animations, button hovers): a filled button, an outlined one, a text link and a
@@ -11346,6 +11315,9 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       });
       for (const f of drop) F.splice(F.indexOf(f), 1);
     }
+    for (const finding of await tab.eval('window.readMotionAudit()')) {
+      F.push({ check: finding.rule, sev: 'WARN', sel: finding.where, msg: finding.detail, id: 0 });
+    }
     // one fault under one id: what empty-visual, caption or effects-fit tells is not told again by the visuals block
     // (only when that check tells it as gravely: a figcaption caption WARNs as a credit stays a visual-caption FAIL)
     for (const f of [...F]) if (sameFault(f, F)) F.splice(F.indexOf(f), 1);
@@ -11523,7 +11495,7 @@ const report = { page: server ? resolve(target) : url, url, at: new Date().toISO
 // --quick reads no scroll stepping and no reveal walk; what the walk itself sees is still told: an IntersectionObserver reveal
 // (scroll-reveal), a held section (pinned) and a CSS scroll timeline (scroll-linked)
 if (quick) report.notChecked = ['scroll-linked (stepping)', 'scroll-reveal (the reveal walk; IntersectionObserver reveals are read)', 'hover-spill', 'hidden-visual', 'loop-pause', 'forms', 'reduced-motion'];
-if (quick) report.notChecked = [...report.notChecked, `the dead-IntersectionObserver walk (hidden content is read with scripts off and under reduced motion)`, 'hover-move'];
+if (quick) report.notChecked = [...report.notChecked, `the dead-IntersectionObserver walk (hidden content is read with scripts off and under reduced motion)`, 'hover-shift (extended card walk)'];
 if (quick && noHidden) report.notChecked = [...report.notChecked, 'hidden-content (--no-hidden)'];
 for (const M of MODULES) if (modOff(M)) report.notChecked = [...(report.notChecked || []), ...M.checks.map((c) => `${c.id} (${MOD_FLAGS.get(M.id).skip ? '--no-' + M.id : '--quick'})`)];
 let code = 0, cdp = null;

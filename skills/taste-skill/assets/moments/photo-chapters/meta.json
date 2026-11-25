@@ -46,5 +46,5 @@
     }
   },
   "phoneRuns": true,
-  "height": "Desktop holds half a screen per chapter plus the stage. Phone chapters take their natural height."
+  "height": "Steps set the section height. A small desktop frame sticks in its own column."
 }

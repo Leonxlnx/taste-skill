@@ -44,8 +44,6 @@
                      direct child), so the moment does nothing or hides what it holds.
     moment-hidden    a dealt moment that shows nothing once it is scrolled into view.
     moment-idle      (WARN) a moment whose root the page left exactly as written after it came into view.
-    motion-visible   at 1280 and wider: no dealt moment, scene or effect starts within the first three screens.
-    reveal-none      the kit reveals sections (reveal: true) and this page has no revealed section.
     subject-repeat   (WARN) different photographs with one data-subject in two sections or more (the same file
                      twice is the checker's photo-repeat, which the gate holds as a FAIL).
     number-repeat    (WARN) one UI number ("2,412 ms", "$48") printed in three sections or more.
@@ -707,7 +705,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
       if (!pinned && over(inkOf(s, true)).length) continue;
       await go(a, 900);   // what reveals there gets its time, then it is read again
       const seen = inkOf(s, true).filter(i => i.bottom > scrollY + 2 && i.top < scrollY + vh - 2);
-      if (!(pinned ? seen : over(seen)).length) add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) shows nothing after 0.9 s on screen`, 'make what is in that screen show: a reveal or a moment that never ends hides it, or a moment sits on the wrong element (moment-target); data-still on the section keeps it standing');
+      if (!(pinned ? seen : over(seen)).length) add('blank-screen', secName(s), `its ${nth} screen (y ${Math.round(a)} to ${Math.round(z)}) shows nothing after 0.9 s on screen`, 'make what is in that screen show: a reveal or a moment that never ends hides it, or a moment sits on the wrong element (moment-target)');
     }
   }
 
@@ -758,20 +756,6 @@ window.lyFinish = async function lyFinish(opts = {}) {
     if (!vis || (!now.length && !el.matches(INK) && !ownText(el))) add('moment-hidden', where, `${id} shows nothing once it is on screen (1.3 s after it came in)`, `give it what assets/moments/${id}/demo.html gives it, or take data-moment off and deal another`);
     else if (vw >= 1024 && !el.dataset.momentStill && !el.dataset.momentFailed && srcMoms[k] && srcMoms[k].dataset.moment === id && shape(el) === shape(srcMoms[k]))
       add('moment-idle', where, `${id} left its root exactly as written once it was on screen: it found nothing to move`, `compare the markup with assets/moments/${id}/demo.html`, 'WARN');
-  }
-
-  /* motion in the first three screens, and the section reveals */
-  if (vw >= 1280) {
-    const MOVE = '[data-moment]:not([data-moment-failed]), [data-big-scene], [data-scene], [data-effect], [data-fx]';
-    const early = [...document.querySelectorAll(MOVE)].filter(e => { const r = e.getBoundingClientRect(); return r.height > 2 && r.top + scrollY < 3 * vh; });
-    // a page with no moment, scene or effect at all is moment-none's (a warning unless a required deal is missing); the
-    // hero demos are heroes only. Here: the page has its motion, but all of it past the third screen
-    const later = early.length ? [] : [...document.querySelectorAll(MOVE)].map(e => `${e.dataset.moment || e.dataset.bigScene || e.dataset.scene || e.dataset.effect || e.dataset.fx || '?'} at screen ${Math.floor((e.getBoundingClientRect().top + scrollY) / vh) + 1}`);
-    if (later.length) add('motion-visible', 'page', `after the hero's entrance nothing moves in the first three screens (the page's motion: ${later.join(', ')})`, 'move the first dealt moment (start.mjs plan names it) into the second or third section, on the element its demo.html names');
-  }
-  if (opts.reveal && secs.length > 2) {
-    const R = '[data-reveal], [data-revealed], [data-m-reveal], .m-reveal, .is-revealed';
-    if (!document.querySelector(R) && !secs.every(s => s.matches('[data-still]'))) add('reveal-none', 'page', 'no section reveals: the kit reveals each section\'s h2 and its lead photograph once as it comes in, and this page has none', 'load assets/motion/motion.js as the starter does (<script type="module" src="assets/motion/motion.js"></script>) and keep data-still for the few sections that must stand');
   }
 
   /* repeats: one subject twice, one UI number in three sections, one heading twice */

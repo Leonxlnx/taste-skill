@@ -10,14 +10,14 @@
 .cx-tabs__ind {
   position: absolute; left: 0; right: 0; top: 4px; bottom: 4px; z-index: 0; background: var(--accent);
   clip-path: inset(0 calc(100% - var(--x, 4px) - var(--w, 0px)) 0 var(--x, 4px) round 999px);
-  transition: clip-path .42s cubic-bezier(.3, .9, .3, 1);
+  transition: clip-path var(--m-state, 180ms) var(--cx-ease);
 }
 .cx-tabs__tab {
   position: relative; z-index: 1; height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent;
   font: 500 var(--t-small)/1 var(--font-text); color: var(--muted); cursor: pointer; white-space: nowrap;
-  transition: color .3s var(--cx-ease);
+  transition: color var(--m-out, 150ms) var(--cx-ease);
 }
-.cx-tabs__tab:hover { color: var(--ink); }
+.cx-tabs__tab:hover { transition-duration: var(--m-in, 130ms); color: var(--ink); }
 .cx-tabs__tab[aria-selected="true"] { color: var(--ink); }
 /* white-on-accent only once the script has placed the pill (it writes --w inline) */
 .cx-tabs__bar:has(.cx-tabs__ind[style*="--w"]) .cx-tabs__tab[aria-selected="true"] { color: var(--accent-ink); }

@@ -136,16 +136,13 @@
   <!-- HERO: the first screen, with a product window continuing below it when dealt; the fixed header lies over its top. Paste the dealt hero from
        assets/layout/hero-<id>.html (layout/deal.mjs deals it; heroes.json has its numbers) in place of
        this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most), and give it
-       data-enter="<the dealt entrance>" (its one entrance on load from the deck: rise, set-type, focus, exposure,
-       aperture, line-blocks, doors, product-at-work, still; data-enter alone is the rise; motion.md, The entrance
-       deck; the head line above makes it run).
+       data-enter="<the dealt entrance>" from the PLAN. An empty value stands still.
        A place's hero is always assets/layout/hero-place.html in the form deal.mjs deals: copy its section and set
        data-form="band|bleed|split|name" (layout.css 0b); use a calm crop or the page ground behind its words.
-       Every later section's h2 and lead photograph rise once as it comes on screen (motion.js, automatic; never a
-       card, row or tile); data-still on a section keeps it still.
+       For reveals fade, mark one later content block with data-reveal="fade".
        This default is the split: the words on span-6, the client's photograph on span-6 start-7 (the
        page's split pair, the same on every split: 6/6, 5/7 or 7/5), as tall as the hero's content box. The primary button carries the drawn arrow (svg.m-arrow). -->
-  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+  <section class="hero hero--split" data-enter="still" aria-labelledby="hero-h">
     <div class="wrap">
       <div class="hero-text grid hero-split">
         <div class="hero-copy span-6">

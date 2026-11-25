@@ -49,10 +49,13 @@ for (const p of palettes) {
 console.log(palettes.length + ' palettes: ' + derived + ' derived, ' + (palettes.length - derived) + ' retained. Emitted OKLCH distances ' + (low * 100).toFixed(2) + '% to ' + (high * 100).toFixed(2) + '%.');
 const pick = (...flags) => JSON.parse(cli('scripts/moments.mjs', 'pick', '--page', 'software', '--json', '--seed', 'copy', ...flags));
 assert.equal(pick().picks.length, 0);
-const withMaterial = (...flags) => pick('--carry', 'words,photos,steps', ...flags);
+assert.deepEqual(pick('--carry','words,photos,steps','--scene','deal').picks, []);
+assert.equal(pick('--carry','words,photos,steps','--scene','deal').scene, null);
+assert(pick('--motion','ask','--carry','photos,steps').picks.every(p => !['word-highlight','picture-develops','closing-lift'].includes(p.id)));
+const withMaterial = (...flags) => pick('--temper','lively','--carry', 'words,photos,steps', ...flags);
 assert.equal(withMaterial('--sections', '6').picks.length, 1);
-assert.equal(withMaterial('--sections', '7').picks.length, 2);
-assert.equal(withMaterial('--long').picks.length, 2);
+assert.equal(withMaterial('--sections', '7').picks.length, 1);
+assert.equal(withMaterial('--long').picks.length, 1);
 assert.equal(withMaterial('--count', '3').picks.length, 2);
 assert.equal(withMaterial('--count', '1', '--sections', '9').picks.length, 1);
 assert(withMaterial('--contexts', '4').picks.every(p => !p.webgl));
@@ -72,7 +75,7 @@ const conflictingScene = 'fly-into-the-shape';
 const alternatives = scenes.filter(s => s.id !== conflictingScene).map(s => s.id);
 const material = {page:'product',tone:'product',seed:'product-32',has:'photo,logo,pictures:3',carry:'words,photos',exclude:alternatives};
 assert.equal(dealScene(scenes, {...material, chance:1}).scene?.id, conflictingScene);
-const crowded = JSON.parse(cli('scripts/moments.mjs', 'pick', '--page', 'product', '--sections', '7',
+const crowded = JSON.parse(cli('scripts/moments.mjs', 'pick', '--page', 'product', '--temper','lively', '--count','2', '--sections', '7',
   '--has', material.has, '--carry', material.carry, '--fits', 'statement,closing', '--tone', 'product', '--scene', 'deal', '--seed', 'product-32', '--exclude', [...alternatives,'window-parallax','photo-chapters','word-rotate','pinned-chapters'].join(','), '--json'));
 assert.equal(crowded.picks.length, 2);
 assert.equal(crowded.scene, null);

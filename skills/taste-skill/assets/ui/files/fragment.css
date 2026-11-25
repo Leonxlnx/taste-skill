@@ -33,7 +33,7 @@
 /* the tile being read is the fragment's one accent touch */
 .ui-file.is-reading { border-color: color-mix(in oklab, var(--u-accent) 55%, transparent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--u-accent) 14%, transparent), var(--u-shadow-sm); }
 .ui-file.is-reading .ui-file__bar { opacity: 1; }
-.ui-file.is-reading .ui-file__bar i { transform: scaleX(1); transition: transform 440ms cubic-bezier(0.4, 0, 0.2, 1); }
+.ui-file.is-reading .ui-file__bar i { transform: scaleX(1); transition: transform 440ms var(--u-ease); }
 .ui-file.is-done .ui-file__check { transform: scale(1); opacity: 1; }
 .ui-files.is-reset .ui-file__check { transition-duration: 240ms; }
 

@@ -35,7 +35,7 @@
       Deal the frame, four prompts for the content and one story shape (library/stories.json: one that lists the kind,
       weighted by --carry, --action and --has, away from the folder's last three; --story <id> chooses it). A chapters
       or two-part-promise page takes the chapters ground pattern: one ground per chapter run or half. Sections include the hero and close (default 7).
-      The plan has one moment, two with --long or at least seven sections. --carry names what the
+      Quiet plans have no moment or scene unless --motion ask is set; eligible pages get one moment. --carry names what the
       copy notes hold. With no flag only place, product and service assume photos. --has names actual
       assets, including product for a photograph of the client's own product, archive for a large set,
       film for footage, route or site for those subjects. For a dated place reservation pass --booking stay|table|class. Service enquiries use one action.
@@ -757,7 +757,7 @@ if (cmd === 'deal') {
   const reserveClose = ownFormClose || layout.close === 'close-form';
   const common = ['--page', page, '--history', histFile, '--seed', seed, ...(tone ? ['--tone', tone] : []),
     ...(opt('no-record') ? ['--no-record'] : [])];
-  const motion = run(path.join(here, 'moments.mjs'), ['pick', ...common, '--scene', 'deal', '--has', has,
+  const motion = run(path.join(here, 'moments.mjs'), ['pick', ...common, '--temper', temper, ...(opt('motion') === 'ask' ? ['--motion','ask'] : []), '--scene', 'deal', '--has', has,
     '--carry', [...carry].join(','), '--sections', String(sections), ...(opt('long') ? ['--long'] : []),
     ...(peek || book || variant ? ['--keep-hero'] : []), ...(reserveClose ? ['--keep-close'] : []), ...(action ? ['--action', action] : [])]);
   const sceneHero = motion.sceneFits.includes('hero');
@@ -776,11 +776,11 @@ if (cmd === 'deal') {
     : /moving|scene/i.test(need) ? sceneHero || hero.id === 'film'
     : /70%|half/i.test(need) ? picture && (form || hero.id) !== 'split'
     : /photograph/i.test(need) ? assets.has('photo') : /picture/i.test(need) ? picture : true;
-  const fit = deck.filter(e => e.id !== 'still' && (e.weight ?? 1) > 0 && fitsKind(e, page, { tone }) && e.needs.every(meets));
-  const freshEntrances = fit.filter(e => !(h.entrances || []).slice(-2).includes(e.id));
-  const pool = freshEntrances.length ? freshEntrances : fit;
-  let ticket = Math.random() * pool.reduce((sum, e) => sum + (e.weight ?? 1), 0);
-  const entrance = sceneHero ? deck.find(e => e.id === 'still') : pool.find(e => (ticket -= e.weight ?? 1) < 0) || deck.find(e => e.default);
+  const pool = deck.filter(e => (!e.tempers || e.tempers.includes(temper)) && fitsKind(e, page, { tone }) && e.needs.every(meets));
+  let ticket = rng(seed + ':entrance')() * pool.reduce((sum, e) => sum + (e.weight ?? 1), 0);
+  const still = deck.find(e => e.default);
+  const entrance = sceneHero ? still : pool.find(e => (ticket -= e.weight ?? 1) < 0) || still;
+  const reveals = rng(seed + ':reveals')() < 1/3 ? 'fade' : 'none';
   h.entrances = [...(h.entrances || []), entrance.id].slice(-8);
 
   const closeMoment = motion.picks.find(p => p.fits.length === 1 && p.fits[0] === 'closing');
@@ -813,7 +813,7 @@ if (cmd === 'deal') {
   }
   const plan = {
     version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
-    hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, nav: layout.nav, footer: layout.footer,
+    hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, reveals, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
     align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
     ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
@@ -862,8 +862,8 @@ if (cmd === 'deal') {
   for (const s of ideas) line('ideas', s.id + ': ' + s.line);
   for (const [name, why] of Object.entries(sub)) line('sub', name + ': ' + why + '. ' + ref + '/subskills/' + name + '/SKILL.md');
   if (!techPage || assets.has('photo')) line('photos', "show the subject itself with client pictures, a built view or a matching photograph (references/photos.md)");
-  line('reveals', "each section's h2 and lead photograph rise once (motion.js). Use data-still to keep a section still.");
-  if (!motion.picks.length) line('moment', 'none: use the entrance, reveals, hover feedback and motion in own sections.');
+  line('reveals', reveals === 'fade' ? 'fade · mark one section content block data-reveal="fade".' : 'none');
+  if (!motion.picks.length) line('moment', 'none');
   motion.picks.forEach((m, i) => {
     const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
     line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'word-rotate' ? '. Each rotating word must be a state the page shows.' : '') + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
@@ -871,7 +871,7 @@ if (cmd === 'deal') {
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
   if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');
   else line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
-  line('hover layer', 'motion.js handles buttons, links, linked cards and photographs (references/motion.md)');
+  line('hover layer', 'Colour or underline on hover; press .98 (references/motion.md)');
   line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
   line('then', 'record this plan in the comment at the top of <body>, build in index.html from starter.html, then run node ' + ref + '/scripts/gate.mjs index.html');
 } else if (cmd === 'types') {

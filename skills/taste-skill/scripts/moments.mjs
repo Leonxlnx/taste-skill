@@ -29,7 +29,7 @@
   service or product page also wants the kind's own tone on the part (warm, editorial, product), or the
   brief's --tone in its place: --tone narrows the deal to one tone of the brief (a cafe: warm; a hotel
   brand or an architect: editorial).
-  Deal one moment, or two with --long or seven or more sections. A text moment rides on a heading.
+  Deal one moment for --motion ask or a lively or loud temper; otherwise deal none. A text moment rides on a heading.
   --carry names the material the notes hold. Its default is photos on place, product and service only.
   Only --carry words can give a main claim one thin statement section. A retired moment is never dealt. --scene deal deals the scene first (as the scene command does) and then
   the moments around it. The WebGL budget: a page holds at most 4 live contexts (perf.mjs glPeak). The deal
@@ -490,12 +490,14 @@ export function writeHistory(file, hist, indent = 1) {
 }
 function pageArg(a, cmd) {
   const pg = pageKind(a.page || a.type);
-  if (!pg) die(`${cmd}: pass --page <kind>, one of ${PAGES.join(', ')} (SKILL.md section 1). Every kind gets one moment, up to two on a long page.`);
+  if (!pg) die(`${cmd}: pass --page <kind>, one of ${PAGES.join(', ')} (SKILL.md section 1). Use --motion ask for an explicitly requested moment.`);
   if (!pg.page) die(`${cmd}: ` + pg.none);
   return pg.page;
 }
 // the scene deal, shared by `scene` and `pick --scene deal`; it appends the scene to the history
+const wantsMotion = a => a.motion === 'ask' || ['lively','loud'].includes(a.temper);
 function sceneFor(a, page, tone, hist, accepts) {
+  if (!wantsMotion(a)) return { seed: seedArg(a), scene: null, notes: [] };
   const out = dealScene(readScenes(), { page, tone, accepts, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has),
     carry: carryFor(page, a.carry), keepClose: !!a['keep-close'] || a.action === 'booking' || a.action === 'order', keepHero: !!a['keep-hero'] || a.action === 'booking',
     room: BUDGET - (list(a.effects) || []).length - (+a.contexts || 0) });
@@ -518,12 +520,13 @@ function cmdPick(a) {
   const idx = readIndex();
   const page = pageArg(a, 'pick');
   const tone = toneArg(a, page);
-  const count = Math.max(1, Math.min(2, Number(a.count) || (a.long || Number(a.sections) >= 7 ? 2 : 1)));
+  const count = Math.max(1, Math.min(2, Number(a.count) || 1));
   const carry = carryFor(page, a.carry);
   const hist = readHistory(a.history);
   const has = hasFor(page, a.has);
   const base = pageContexts({ effects: list(a.effects) || [], contexts: a.contexts });
   const excluded = list(a.exclude) || [];
+  if (!['lively', 'loud'].includes(a.temper)) excluded.push('word-highlight', 'picture-develops', 'closing-lift', 'lines-rise');
   const closingMoments = idx.moments.filter(m => m.fits.length === 1 && m.fits[0] === 'closing').map(m => m.id);
   const options = {
     count, seed: seedArg(a), history: (hist.moments || []).map(m => m.id),
@@ -533,10 +536,12 @@ function cmdPick(a) {
   const beside = sc => {
     const keepClose = !!a['keep-close'] || a.action === 'booking' || a.action === 'order' || sc?.fits?.includes('close');
     const exclude = [...excluded, ...(sc?.avoidMoments || []), ...(keepClose ? closingMoments : [])];
+    if (!wantsMotion(a)) return { seed: options.seed, picks: [], notes: [] };
     return deal(idx.moments, { ...options, exclude, used: base.n + (sc?.webgl || 0) });
   };
   let scene = a.scene && a.scene !== true ? String(a.scene) : null;
   let sceneMeta, dealtScene;
+  if (!wantsMotion(a)) scene = null;
   if (scene === 'deal') {
     // An optional scene must leave a compatible place for every required moment.
     const available = beside(null).picks.length;
@@ -553,7 +558,7 @@ function cmdPick(a) {
   const ctx = { n: base.n + (sceneMeta?.webgl || 0) };
   let out;
   try { out = beside(sceneMeta); } catch (e) { die(e.message); }
-  if (a.json && !out.picks.length) console.error('moment none · The entrance, section reveals, hover feedback and own sections carry the motion.');
+  if (a.json && !out.picks.length) console.error('moment none');
   out.notes.forEach(n => console.error(n));
   if (a.history && a.history !== true && !a['no-record']) {
     const at = new Date().toISOString();
@@ -573,7 +578,7 @@ function cmdPick(a) {
   else {
     console.log(`seed ${out.seed} · page ${page}${tone ? ' · tone ' + tone : ''} · live WebGL contexts ${gl} of ${BUDGET}`);
     if (dealtScene) console.log(sceneLine(dealtScene.scene));
-    if (!out.picks.length) { console.log('moment none · The entrance, section reveals, hover feedback and own sections carry the motion.'); return; }
+    if (!out.picks.length) { console.log('moment none'); return; }
     out.picks.forEach((p, i) => console.log(`${i + 1}. ${p.id.padEnd(20)} ${p.kind} · ${p.fits.join('/')} · ${p.intensity}${i === 0 && p.intensity !== 'quiet' && p.fits.some(f => f !== 'closing') ? ' · place it in the first three screens' : ''}${p.fits.length === 1 && p.fits[0] === 'closing' ? ' · the close: the footer keeps its links row only' : ''}${p.webgl ? ' · one WebGL context' : ''}${p.needs?.photo ? ' · needs a photograph' : ''}${p.phoneRuns ? ' · runs on a phone' : ''}${p.pointerOnly ? ' · the extra: it answers a mouse only' : ''}\n   ${p.look}${rides[p.id] ? '\n   ' + rideLine(rides[p.id]) + textRule(p.text) : p.needs?.words ? '\n   the copy: ' + p.needs.words.replace('the closing section of its own', 'the close') + textRule(p.text) : ''}`));
     console.log("Give each moment a different content section. Write its id, section and purpose in the plan and use the indicated copy count.");
     console.log('Dealt again to swap one moment: take one of these, keep the others, and write it on the plan comment\'s moments line as "<id> (re-dealt for <the old id>)"; the gate\'s deal-drift reads that line.');
@@ -607,7 +612,7 @@ function cmdGallery() {
   const rows = shown.map(m => `<li><a href="${m.id}/demo.html"><b>${m.name}</b> <span>${m.kind} · ${m.fits.join(', ')} · ${m.trigger} · ${m.intensity}${m.webgl ? ' · WebGL' : ''} · ${(m.tones || []).join(', ')}</span><p>${m.look}</p><p class="ph">Phone and reduced motion: ${m.phone}</p></a></li>`).join('\n');
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moments</title>
 <style>body{margin:0;font:16px/1.5 system-ui,sans-serif;color:#111;background:#fff;padding:48px 24px}h1{font-size:28px;font-weight:500;margin:0 0 8px}p.lead{color:#555;margin:0 0 32px;max-width:60ch}ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}li a{display:block;padding:16px 20px;border:1px solid #e5e5e5;border-radius:12px;color:inherit;text-decoration:none}li a:hover{border-color:#999}li b{font-weight:500}li span{display:block;color:#666;font-size:13px;margin:2px 0 6px}li p{margin:0;color:#333;font-size:14px}li p.ph{margin-top:6px;color:#666;font-size:13px}</style></head>
-<body><h1>Moments</h1><p class="lead">${shown.length} creative moments, one a page, two on a long page, dealt by fit: each carries tones (warm, editorial, product, tech, playful) and an intensity, and every kind takes the tones and intensities that fit it (references/moments.md, The fit rule). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
+<body><h1>Moments</h1><p class="lead">${shown.length} creative moments, one when the brief asks for motion or the temper is lively or loud, dealt by fit: each carries tones (warm, editorial, product, tech, playful) and an intensity, and every kind takes the tones and intensities that fit it (references/moments.md, The fit rule). Each link is a full demo page; the moment is marked data-moment in its source.</p><ul>${rows}</ul></body></html>`;
   fs.writeFileSync(path.join(DIR, 'gallery.html'), html);
   console.log(`wrote ${path.join(DIR, 'gallery.html')} (${shown.length} moments)`);
 }

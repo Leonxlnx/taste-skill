@@ -79,6 +79,16 @@ function gate(dir, args, { hook = null, session = 's1', env = {} } = {}) {
 const state = dir => JSON.parse(fs.readFileSync(path.join(dir, '.taste-skill', 'gate.json'), 'utf8'));
 const has = (dir, f) => fs.existsSync(path.join(dir, '.taste-skill', f));
 
+// A still plan can be built without entrance attributes or motion assets.
+{
+  const dir = project('none','Frame sizes','Frame');
+  fs.writeFileSync(path.join(dir,'.taste-skill','plan.json'),JSON.stringify({entrance:'still',reveals:'none',moments:[],scene:null}));
+  fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame:{entrance:null}}));
+  gate(dir,['--start','index.html']);
+  const result = gate(dir,[]);
+  check(result.last === 'GATE: PASS', 'a still page passes the gate without an entrance, reveal or moment',result.out);
+}
+
 // ---------------------------------------------------------------- 1. Products lines that crashed the gate
 const LINES = [
   ['the keyboard (one model, three colours)', 'The keyboard in three colours', 'a desk lamp', 'keyboard'],

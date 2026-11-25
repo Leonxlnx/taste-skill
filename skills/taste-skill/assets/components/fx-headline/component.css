@@ -11,7 +11,7 @@
 }
 .cx-headline__pill:hover { border-color: var(--cx-line-2); background: var(--cx-panel); }
 .cx-headline__pill svg { color: var(--muted); transition: transform var(--dur) var(--ease); }
-.cx-headline__pill:hover svg { transform: translateX(2px); }
+.cx-headline__pill:hover { text-decoration: underline; }
 .cx-headline__tag {
   display: inline-grid; place-items: center; height: 24px; padding: 0 10px; border-radius: 999px;
   background: var(--action); color: var(--action-ink); font-weight: 500; font-size: 12px;

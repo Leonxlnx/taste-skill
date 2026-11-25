@@ -23,7 +23,7 @@
   position: absolute; left: 0; top: 0; z-index: 1; pointer-events: none; border-radius: 999px;
   width: calc(var(--ava) + 2 * var(--pad)); height: calc(var(--ava) + 2 * var(--pad));
   transform: translate(var(--fx-x, -999px), var(--fx-y, 0));
-  transition: transform .55s cubic-bezier(.3, .9, .3, 1);
+  transition: transform .55s var(--cx-ease);
   /* a 2.5px ring 2px off the avatar, then a soft glow fading out */
   -webkit-mask: radial-gradient(closest-side, transparent calc(100% - var(--pad) + 1.5px), #000 calc(100% - var(--pad) + 2.5px), #000 calc(100% - var(--pad) + 4.5px), rgb(0 0 0 / .32) calc(100% - var(--pad) + 5.5px), transparent 100%);
   mask: radial-gradient(closest-side, transparent calc(100% - var(--pad) + 1.5px), #000 calc(100% - var(--pad) + 2.5px), #000 calc(100% - var(--pad) + 4.5px), rgb(0 0 0 / .32) calc(100% - var(--pad) + 5.5px), transparent 100%);

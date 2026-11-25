@@ -1,53 +1,52 @@
 # Motion
 
-Load `assets/motion/motion.css` after the component styles and the module `assets/motion/motion.js` after `system.js`. The starter includes both. `assets/motion/demo.html` shows the controls. Use the kit’s classes so a link, button or field answers the same way throughout the page.
+Almost everything is simply there. What moves is small, short and answers something the visitor did.
 
-## The entrance deck
+## What well-known sites do, measured
 
-The plan gives the hero its `data-enter` value. `rise` lifts headline lines, `set-type` settles the type, `focus` sharpens a picture from at most 8px blur, and `exposure` develops it. `product-at-work` needs a real working view with up to four `data-enter-step` elements. `still` leaves the hero in place. `line-blocks` is a rare bold tech or gaming entrance with its headline readable by 300ms. Use `aperture` or `doors` only by name in the brief.
+The probe sampled 39 outside pages and 12 pages built with the kit. Counts refer to those pages and the capture window. Distances include zero for fades. Medians use the pages where a measurement was available.
 
-Keep the starter’s early `m-enter` mark and its 700ms safety timeout. Mark the principal visual with `data-enter-media` in a custom layout. A rising headline takes 700ms with lines 80ms apart. The lead rises 12px over 520ms from +120ms. Buttons rise 8px over 460ms from +200ms. Facts fade over 400ms from +260ms. All words should read by 800ms. A slow module leaves the standing hero in view.
+| Desktop observation | Outside pages | Earlier kit pages |
+| --- | --- | --- |
+| Elements changing on load, median | 1 | 7 |
+| Area covered on the first screen, median | 31% | 49% |
+| Entrance travel and duration, median | 10px in 336ms | 4px in 429ms |
+| Sections with a heading, paragraph or media reveal, median | 0% | 100% |
+| Sections with any moving entrant, including product UI, median | 33% | 100% |
+| Travel of a reveal, median | 2px | 48px |
+| Pages with three or more animated heading fragments on scroll | 0 of 39 | 12 of 12 |
+| Pages clipping a photograph on scroll | 0 of 39 | 6 of 12 |
+| Primary hover, most frequent response | Background colour | Background plus icon travel |
+| Primary hover duration, median | 126ms in, 148ms out | 120ms in, 101ms out |
+| Linked card lift and picture scale, median | 0px and 1 across 12 targets | 0px and 1 on one measured target |
 
-Below the fold, the first section heading and lead picture arrive once. A section can opt out with `data-still`. A linked picture takes `.m-zoom`. A linked card keeps its outer hit area still while the content lifts. Rows, cards and tiles stay in place as the page scrolls.
+## Build the plan
 
-## The floor
+Load `assets/motion/motion.css` after the component styles and the module `motion.js` after `system.js`. Keep the starter’s early `m-enter` mark and safety timeout for an optional hero entrance. Without script or under reduced motion, all content is present.
 
-| Interaction | Timing and movement |
-| --- | --- |
-| Press | Buttons, tabs, nav toggles, linked cards, pills, swatches and disclosure summaries scale to .97 in 100ms ease-out and release in 160ms. Put `class="press"` on custom chips and controls. |
-| Hover colour | 150ms in, 120ms out. |
-| Hover lift | Fine pointers only. Button content rises 1px, card content 2px, over 180ms. Both return in 120ms. |
-| Linked photograph | Scale to 1.03 over 400ms, return in 300ms. |
-| Desktop nav | Wait 150ms for pointer intent, open in 200ms, close in 120ms. Keyboard focus opens immediately. |
-| Phone nav | Open with opacity and 8px of travel over 200ms. Fade closed over 120ms. |
-| Accordion | Native `details` in `.faq--fold` or an own section opens and closes over 200ms with `cubic-bezier(.25,1,.5,1)`. Content opacity takes 150ms. |
-| Tabs | Indicate the selected tab over 240ms and crossfade its panel over 180ms. Use `role="tab"`, `aria-selected` and `aria-controls`. |
-| Form | Focus ring 140ms, error text 150ms fade. The field stays in place. |
-| Numbers | `<b data-m-count>1,240</b>` counts once in 1.0s. Write the final value in HTML, including units and punctuation. Keep prices steady. |
-| Reduced motion | Show finished content. Colour and opacity can fade briefly. Disable travel, pinning and loops. |
+- **Still** is dealt about half the time. Write `data-enter="still"` on the hero. Omitted, empty or retired values also stand still.
+- **Fade** uses `data-enter="fade"`. The copy column and principal picture fade together in 300ms. Mark a custom column with `data-enter-copy` and its picture with `data-enter-media`.
+- **Rise** uses `data-enter="rise"`. The same copy block rises 10px as it fades in 350ms. The picture only fades.
+- **Reveals** are usually `none`. For the optional `fade` deal, mark one content block below the fold with `data-reveal="fade"`. Its whole composition fades once in 400ms as one third comes into view. Use a block small enough to reach that threshold. Leave individual headings, cards and photographs alone.
+- **Moment and scene** are both `none` on a quiet page. Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. A requested, lively or loud page can receive one moment and occasionally a scene, when the content fits.
 
-## Motion in own sections
+Only a loud hero may use `set-type` or `line-blocks`. A loud section may use the named `lines-rise` detail. Limit the treatment to its marked host.
 
-Let people open, choose, compare or scrub by keyboard, click and touch. A chart can draw once, a feed can show a new row, a bar can fill. One sticky element is allowed inside an own section up to 2.5 screens tall. Keep native scrolling and normal reading order. Never use scroll-jacking, automatic carousels, a tilt, text absolutely positioned over other text, or a timer that advances without a pause control. HTML shows the complete and correct state before script runs.
+## Controls and timing
 
-`data-m-progress` writes `--p` from 0 at the bottom edge of the viewport to 1 as the element leaves at the top. Put it on the small moving element. Its scroll listener is passive and updates at most once per animation frame. Use 1 as the fallback. Reduced motion uses 1.
+Use `--m-ease: cubic-bezier(.4, 0, .2, 1)`. Buttons change background or border colour. A linked card changes its border, ground or title underline. Text links change colour or underline. The navigation chevron turns when its panel is expanded.
 
-```html
-<div class="rail" aria-hidden="true">
-  <span data-m-progress class="fill"></span>
-</div>
-<style>.fill{display:block;height:2px;background:currentColor;transform-origin:left;transform:scaleX(var(--p, 1))}</style>
-```
+- Hover uses `--m-in` (130ms) and `--m-out` (150ms).
+- Press scales the control to .98 over `--m-press` (100ms). Keyboard focus has a visible ring. Reduced motion keeps the control still.
+- Tabs, accordion answers and menus use `--m-state` (180ms). Dialogs and sheets use `--m-sheet` (280ms).
+- Entrances use `--m-fade` (300ms) or `--m-rise` (350ms). The section fade uses `--m-reveal` (400ms).
 
-`data-m-draw` on a path or polyline draws its stroke once on entry over 900ms. A script-free or reduced-motion page shows the finished stroke. Give a meaningful chart a readable label and the underlying values.
+## Show the product working
 
-```html
-<svg viewBox="0 0 100 40" role="img" aria-label="Orders rose from 12 to 19">
-  <title>Orders, 12 to 19</title>
-  <polyline data-m-draw points="2,35 40,24 98,4" fill="none" stroke="currentColor"/>
-</svg>
-```
+Give a visitor an action with a visible result. In a section marked `data-own`, a button can show an order total with `data-m-count` or draw a chart path with `data-m-draw`. Write the complete number and path in HTML. For progress linked to the visitor’s scroll, put `data-m-progress` on the small indicator. It receives `--p` from 0 to 1, with a CSS fallback of 1. Keep prices and headings still.
 
-## Larger pieces
+A loop belongs inside the product window or media frame it explains. A loop lasting over five seconds has a pause button inside that frame’s corner. Keep each chapter’s text in normal flow. Only its small side picture can stick. Phones show the picture beside its own text in reading order.
 
-Deal one moment, with room for a second from seven sections. A page with no matching material gets zero. `--carry` records supplied words, lists, photographs, steps and figures. A text moment can ride an existing heading. A scene is occasional and needs its own material. Leave a plain section between set pieces. Use the eligibility tables and filming rules in [Moments](moments.md) and [Scenes](scenes.md).
+## Never
+
+Avoid rotating words, photo masks, automatic card staggers, hover lifts, zooms and moving arrows. Keep loops off backgrounds, headings and whole cards. Preserve native scrolling, keyboard controls and the finished reduced-motion state.

@@ -16,7 +16,7 @@
     0 1px 2px rgb(0 0 0 / .08),
     0 8px 24px -8px rgb(0 0 0 / .22),
     0 24px 56px -24px rgb(0 0 0 / .32);
-  --cx-ease: cubic-bezier(.2, .7, .2, 1);
+  --cx-ease: var(--m-ease, cubic-bezier(.4, 0, .2, 1));
   --cx-mono: var(--font-mono, ui-monospace, monospace);
   color: var(--ink);
   font-family: var(--font-text);

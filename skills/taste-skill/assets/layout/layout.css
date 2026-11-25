@@ -107,7 +107,7 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
 .ly-float__row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); font-size: var(--t-small); color: var(--muted); }
 .ly-float__title { font-weight: 500; font-size: var(--t-body); }
 .ly-live { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-label); color: var(--ink); }
-.ly-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 50%, transparent); animation: ly-pulse 2.4s ease-out infinite; }
+.ly-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 50%, transparent); }
 @keyframes ly-pulse { 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 /* kind other (a cafe, a shop, a studio) and a place: nothing moves by itself (MO-07) */
 :root:is([data-type="place"], :has(meta[name="site-kind"][content="other"])) .ly-live::before { animation: none; }
@@ -350,10 +350,10 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 .ly-spot > button {
   display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border-radius: 50%; cursor: pointer;
   border: 0; background: var(--p-bg, #fff); color: var(--p-ink, #111); box-shadow: 0 0 0 6px rgb(255 255 255 / .28), 0 6px 18px -6px rgb(0 0 0 / .45);
-  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  transition: background-color var(--m-out) var(--ease);
 }
 .ly-spot > button svg { width: 12px; height: 12px; transition: transform var(--dur) var(--ease); }
-.ly-spot > button:hover, .ly-spot.is-open > button { transform: scale(1.08); box-shadow: 0 0 0 9px rgb(255 255 255 / .32), 0 6px 18px -6px rgb(0 0 0 / .45); }
+.ly-spot > button:hover, .ly-spot.is-open > button { transition-duration: var(--m-in); background-color: var(--surface); }
 .ly-spot.is-open > button svg { transform: rotate(45deg); }
 .ly-spot__card {
   position: absolute; left: calc(100% + 12px); top: 50%; width: 230px; padding: var(--s-3) var(--s-4); border-radius: var(--r-md);
@@ -485,7 +485,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .ly-play__disc { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #111; flex: none;
                  transition: transform var(--dur) var(--ease); }
 .ly-play__disc svg { width: 18px; height: 18px; margin-left: 3px; }
-.ly-play:hover .ly-play__disc, .ly-play:focus-visible .ly-play__disc { transform: scale(1.06); }
+.ly-play:hover .ly-play__disc, .ly-play:focus-visible .ly-play__disc { opacity: .85; }
 @media (max-width: 639px) { .ly-play__disc { width: 52px; height: 52px; } }
 
 /* A statement finishes after its action and terms. */
@@ -695,8 +695,8 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
 
 /* buttons keep the page's one hover (system.css, motion.css: the fill steps, the arrow moves 3px, the
    press sinks 1px; no shadow on a button, ST-105); a text link draws its underline from the left */
-.ly-link { position: relative; font-weight: 500; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .28s var(--ease); }
-.ly-link:hover, .ly-link:focus-visible { background-size: 100% 1px; }
+.ly-link { position: relative; font-weight: 500; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size var(--m-out) var(--ease); }
+.ly-link:hover, .ly-link:focus-visible { transition-duration: var(--m-in); background-size: 100% 1px; }
 
 /* steps inside a piece of UI (layout.js [data-ly-steps]): each arrives in place, nothing travels */
 [data-ly-steps] [data-step] { transition: opacity .35s var(--ease, ease), transform .35s var(--ease, ease); }

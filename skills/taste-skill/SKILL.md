@@ -6,7 +6,7 @@ description: >-
   clean first screen, air in a clear rhythm, equal edges, and sections composed for their content
   (a timeline for a timeline product, a booking bar for a stay) on a dealt frame, so pages differ.
   Pictures show the thing itself: real photographs, the product's own UI, drawings and charts made
-  in code. Motion is quiet, with one or two set pieces dealt by fit. Small
+  in code. Motion is quiet by default. Small
   sub-skills handle single jobs (a mascot, an illustration, a logo mark, a chart, photo direction),
   and a checker and finish gate hold it in a real browser. Use this whenever you build or
   design a landing page, company, product, shop, cafe, hotel, studio, SaaS, AI, developer-tool or
@@ -37,7 +37,7 @@ figma.com and x.ai are the bar (in words: `layout-v4.md`).
   the product's own screen built large. A dealt photo composition is only for content that is
   photographs with words. `compose.md` is the method; the plan's idea seeds push pages apart.
 - **The kit is the floor:** `assets/starter.html` and the kit carry the type scale, the spacing,
-  the grid and edges, the nav and the phone menu, forms, the hero entrance, reveals, hover and
+  the grid and edges, the nav and the phone menu, forms, optional entrances, hover and
   press. Every page is built in a copy of the starter with the kit copied into `assets`; the finish
   gate fails a page built without it.
 - **The gate checks it in a real browser** and blocks what is broken (step 6).
@@ -53,11 +53,7 @@ These nine win over everything else in this skill.
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
 3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone). Change ground where the visitor changes tasks.
 4. **Equal left and right content edges.**
-5. **Quiet motion everywhere, set pieces only where the content carries them.** The motion layer
-   gives every control a hover and a press, every hero its dealt entrance, every section its
-   reveal; never strip or override it. One dealt moment a page (a second from seven sections), a
-   scene on about one page in three, none where nothing fits. No tilt (a lively or loud page's
-   stickers excepted), no carousel or tab that moves by itself, no section that only animates words.
+5. **Almost everything is simply there.** What moves is small, short and answers something the visitor did. Hover changes colour or underline. Keep focus visible. Quiet pages have no moment or scene by default. Use the dealt hero and at most one section fade.
 6. **Show the thing itself.** In this order: the client's own pictures; a picture built for this
    page (the product's UI as live HTML, a drawing of the product or its world in one style, a
    chart from believable data); a stand-in photograph only where its subject is right (a
@@ -184,9 +180,7 @@ world within the limits of `expressive.md`, each naming its source.
      something else; a seed is never a part to paste.
    - **`sub` lines** name a sub-skill for one job on this page (a mascot, an illustration, a logo
      mark, a chart, photo direction). Read the ones printed and use each where its condition holds: `subskills/<name>/SKILL.md`.
-   - **`moment` and `scene`:** what the page's material can carry; `none` is a valid deal.
-     Never write copy or invent a list to feed one. To swap a moment, `moments.mjs pick` again and
-     note it on the plan comment as it says.
+   - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
 
 5. **Build.** Copy the kit into the page once at the start from the installed skill folder, never from a working copy of the skill repository. Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class; copy only the
@@ -199,8 +193,7 @@ world within the limits of `expressive.md`, each naming its source.
      radius; no new font or colour). `assets/own/` holds worked examples of the craft and
      the token use; build for this client's content. Interaction is
      click, tap and keyboard: tabs, a toggle, a slider, a stepper, an accordion, a chart readout.
-     Motion shows the content working (`data-m-progress`, `data-m-draw`, `data-m-count`:
-     `motion.md`); one sticky element in a section of at most 2.5 screens.
+     Show the result of the visitor’s action with `data-m-progress`, `data-m-draw` or `data-m-count` (`motion.md`). Only a small side element sticks.
    - **Photo sections:** the kit's compositions and recipes (`sections-library.md`), directed
      with `subskills/image-direction` when the page has six photographs or more.
    - **Kit parts** (UI fragments, diagram cards, effects, moments, scenes) are mounted exactly as
@@ -297,9 +290,7 @@ For your eyes first, then the gate (its check ids in brackets):
 - **Nothing ships broken:** no console error or failed file, every link lands, forms send to
   their `.example` stand-in with real fields and each error under its field [console-error,
   links, forms, form-fields].
-- **Motion:** every control answers the pointer and the press; the hero enters once; nothing
-  advances by itself without a pause; under reduced motion everything rests and nothing stays
-  hidden [motion-layer, hover, hero-enter, loop-pause, reduced-motion, hidden-content].
+- **Motion.** A still page passes. Check for excessive entrance area, long reveals and moving controls. Keep loops inside a product or media frame with its pause control. Reduced motion shows finished content [entrance-heavy, reveal-heavy, hover-shift, loop-pause, hidden-content].
 - **One system:** one button pair, one card style, one radius scale, one heading scale, text
   contrast [button-styles, card-family, heading-scale, text-contrast].
 - **Story:** the h2s alone read in order; the thread comes back; the close answers the hero
@@ -318,8 +309,7 @@ For your eyes first, then the gate (its check ids in brackets):
 
 Slop bans hold on every page; style limits follow the temper.
 
-- A section that exists only to animate a few words; a card, row or tile that fades in on
-  scroll; parallax on text; scroll-jacking; anything that moves by itself with no pause.
+- Split heading reveals, clipped photographs, staggered cards, moving hover icons, rotating words, ground loops or scroll-jacking. Reserve line entrances for a loud page.
 - A stand-in photograph of the wrong subject; stock passed off as the client's product, people or
   place; two drawing styles on one page; a product page that never shows the product.
 - A drawn look-alike of a real logo; invented reviews, quotes, customers or figures; an assumed

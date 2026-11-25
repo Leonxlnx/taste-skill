@@ -69,7 +69,7 @@ the patterns (`grid-pulse`, `dotted-globe`, `dot-terrain`, `ruled-grounds`, `con
   a big scene the one dealt effect is the only `data-fx` outside a moment (a second FAILs, MO-16,
   MO-23): the card panels take the lit ground (`data-ground`).
 - **Moments and scenes.** Follow the PLAN's host for each. A text moment belongs on an existing heading unless the notes hold the page's main claim. See `moments.md` for carries and counts. Keep a calm section between two scrubbed parts.
-- **One pointer effect** a page: a hover or liquid moment, `fx-button`, `fx-spotlight` or an object
+- **One pointer effect** a page: a hover or liquid moment, `fx-spotlight` or an object
   that turns to the pointer, never two. Never a replaced cursor, never a magnetic button.
 - **At most four live WebGL contexts** at once (house rule): the effect plus the moments' own canvases;
   `perf.mjs` fails above four.

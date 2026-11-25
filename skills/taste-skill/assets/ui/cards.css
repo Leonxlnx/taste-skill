@@ -45,8 +45,8 @@
   display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; width: max-content;
   font-size: 15px; font-weight: 500; line-height: 22px; color: var(--ink); text-decoration: none;
 }
-.card__link svg { width: 14px; height: 14px; transition: transform 200ms cubic-bezier(.2,.7,.2,1); }
-.card__link:hover svg { transform: translateX(2px); }
+.card__link svg { width: 14px; height: 14px; }
+.card__link:hover { text-decoration: underline; }
 
 /* ---------------------------------------------------------------- the inset panel */
 /* Default (x.ai): aligned with the text column and running off the card's bottom edge.
@@ -278,7 +278,7 @@
    canvas (fill 1, wash 0) mounted for that lap only, which paints the same fill under a lit border and
    then fades. Never a light that runs because the plan scrolled into view, never a comet left on one edge */
 .plan.is-featured { border-color: color-mix(in oklab, var(--accent) 48%, transparent); background: var(--card); }
-.plan.is-featured.is-fading > .fx-canvas { opacity: 0 !important; transition: opacity 600ms ease !important; }
+.plan.is-featured.is-fading > .fx-canvas { opacity: 0 !important; transition: opacity var(--m-state, 180ms) var(--ease) !important; }
 .plan.is-featured .plan__badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font: 500 var(--t-label)/1 var(--font-text); color: var(--ink); background: color-mix(in oklab, var(--ink) 7%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent); }
 
 /* on a phone a fragment fits the panel's width (see the placements), so it is only cut at the bottom:
