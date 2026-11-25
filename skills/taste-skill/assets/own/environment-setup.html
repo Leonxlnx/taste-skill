@@ -1,0 +1,131 @@
+<section class="section own" id="environment-setup" data-own="environment-setup" aria-labelledby="environment-setup-title">
+  <div class="wrap">
+    <h2 id="environment-setup-title">Read a rain gauge sample</h2>
+    <p class="t-lead measure">Use an installed runtime to read a station measurement from Silt Meter.</p>
+    <div class="setup" data-assumed>
+      <aside><h3>Before you run</h3><p>Install Python 3, Node or Ruby. Save this sample as <code>reading.json</code>.</p>
+        <pre><code>{"station":"S4","mm":12}</code></pre><p>Run from the directory containing both files.</p></aside>
+      <div class="work"><div role="tablist" aria-label="Runtime" hidden><button type="button" class="press" role="tab" aria-controls="silt-recipe-0" id="silt-tab-0">Python 3</button><button type="button" class="press" role="tab" aria-controls="silt-recipe-1" id="silt-tab-1">Node</button><button type="button" class="press" role="tab" aria-controls="silt-recipe-2" id="silt-tab-2">Ruby</button></div>
+        <article id="silt-recipe-0"><h3>Python 3</h3>
+          <div class="code-head"><span>Source · <code>read.py</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">import json
+print(json.load(open("reading.json"))["mm"])</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">python read.py</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <article id="silt-recipe-1"><h3>Node</h3>
+          <div class="code-head"><span>Source · <code>read.cjs</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">const fs = require("node:fs");
+console.log(JSON.parse(fs.readFileSync("reading.json","utf8")).mm);</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">node read.cjs</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <article id="silt-recipe-2"><h3>Ruby</h3>
+          <div class="code-head"><span>Source · <code>read.rb</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">require "json"
+puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">ruby read.rb</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <p role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="environment-setup"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="environment-setup"] .setup { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="environment-setup"] aside { grid-column: span 4; }
+[data-own="environment-setup"] aside p { margin-top: var(--s-3); max-width: 32ch; }
+[data-own="environment-setup"] aside pre { margin: var(--s-4) 0; padding: var(--s-3); border-left: 1px solid var(--action); background: var(--surface); }
+[data-own="environment-setup"] .work { grid-column: span 8; min-width: 0; }
+[data-own="environment-setup"] [role="tablist"] { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+[data-own="environment-setup"] [role="tab"] { min-height: var(--btn-h); padding: var(--s-2) var(--s-4); color: var(--muted); background: transparent; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+[data-own="environment-setup"] [role="tab"][aria-selected="true"] { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+[data-own="environment-setup"] article { margin-top: var(--s-3); padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); }
+[data-own="environment-setup"] pre { margin: 0; max-width: 100%; overflow-x: auto; padding-block: var(--s-2) var(--s-4); }
+[data-own="environment-setup"] :is(pre,code,samp) { font-family: var(--font-mono); font-size: var(--t-small); }
+[data-own="environment-setup"] .code-head, [data-own="environment-setup"] .output { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; justify-content: space-between; font-size: var(--t-small); }
+[data-own="environment-setup"] .code-head:not(:first-of-type), [data-own="environment-setup"] .output { border-top: 1px solid var(--line); }
+[data-own="environment-setup"] .code-head span, [data-own="environment-setup"] .output span { color: var(--muted); }
+[data-own="environment-setup"] [data-copy] { min-height: var(--btn-h); background: transparent; border: 0; color: var(--action); cursor: pointer; padding: var(--s-1) var(--s-2); }
+[data-own="environment-setup"] .output { justify-content: flex-start; gap: var(--s-4); padding-top: var(--s-3); }
+[data-own="environment-setup"] article h3 { margin-bottom: var(--s-4); }
+[data-own="environment-setup"] [role="status"]:not(:empty) { margin-top: var(--s-2); }
+@media (max-width: 1023px) { [data-own="environment-setup"] .setup { grid-template-columns: 1fr; } [data-own="environment-setup"] aside, [data-own="environment-setup"] .work { grid-column: 1; } [data-own="environment-setup"] aside p { max-width: 60ch; } }
+[data-own="environment-setup"] article pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+[data-own="environment-setup"] .output { align-items: baseline; }
+[data-own="environment-setup"] samp { color: var(--action); font-weight: 600; }
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="environment-setup"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]');
+  const panels = all('article');
+  const status = one('[role="status"]');
+  let current, request = 0;
+  function select(index) {
+    current = index;
+    request++;
+    status.textContent = '';
+    panels.forEach((panel, i) => {
+      panel.hidden = i !== index;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tabs[i].id);
+      panel.querySelector('h3').hidden = true;
+      tabs[i].tabIndex = i === index ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(i === index));
+    });
+  }
+  function bindTabs(tabs, activate) {
+    tabs.forEach((tab, i) => {
+      tab.onclick = () => activate(i);
+      tab.onkeydown = event => {
+        const next = {ArrowLeft:(i + tabs.length - 1) % tabs.length, ArrowRight:(i + 1) % tabs.length, Home:0, End:tabs.length - 1}[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(next);
+        tabs[next].focus();
+      };
+    });
+  }
+  bindTabs(tabs, select);
+  for (const button of all('[data-copy]')) {
+    button.onclick = async () => {
+      const ticket = ++request;
+      const target = panels[current].querySelector('[data-text="' + button.dataset.copy + '"]');
+      try {
+        await navigator.clipboard.writeText(target.textContent);
+        if (ticket === request) status.textContent = button.dataset.copy === 'run' ? 'Run command copied.' : 'Source copied.';
+      } catch {
+        if (ticket === request) status.textContent = 'Select the text and copy it with your keyboard or device menu.';
+      }
+    };
+    button.hidden = false;
+  }
+  select(0);
+  one('[role="tablist"]').hidden = false;
+  root.dataset.ready = '';
+}
+</script>

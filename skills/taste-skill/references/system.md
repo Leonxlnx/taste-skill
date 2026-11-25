@@ -56,6 +56,8 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
   (never "250 / W"); lines at most 62 characters (`.measure`). Nothing under 13px: notes, the legal
   line, dropdown heads, image text.
 - Use one type size per role. An own section may use the page's one off-scale display word or numeral (`compose.md`). Keep text live and legible at 390.
+- A lively or loud page (`expressive.md`) sets its dealt expressive face at that face's own weight, capitals on h1 and h2
+  only in a face drawn for them, an h1 up to 160px and two off-scale words; reading text keeps every rule above.
 
 The centred proof and close deal uses `.section-head--center` on the heading or heading group. A close with a button may combine it with `.section-head--split`.
 

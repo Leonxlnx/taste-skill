@@ -227,6 +227,42 @@ let placePage = page === 'place';
 let techPage = TECH.has(page);
 const setPage = p => { page = p; placePage = p === 'place'; techPage = TECH.has(p); };
 
+// ---------------------------------------------------------------- temper (references/expressive.md)
+// quiet keeps every rule as it is; lively and loud are the expressive pages. Decided in this order: the client's own
+// words for a quiet look win; then loud or lively words in the brief (--brief "<the brief's own words>"); then the kind;
+// then supplied art with a strong style moves it one step toward loud. --temper sets it outright.
+const TEMPERS = ['quiet', 'lively', 'loud'];
+const TEMPER_WORDS = {
+  quiet: /\b(calm|serious|premium|clinical|minimal(?:ist)?|trusted|enterprise|regulated|sober|understated)\b/i,
+  loud: /\b(loud|punk|metal|retro|arcade|pixel(?:[- ]?art)?|pixels|8[- ]?bit|16[- ]?bit|horror|chiptune|comedy)\b/i,
+  lively: /\b(fun|playful|weird|cute|cos[yz]|mascot|kids?|toys?|snacks?|candy|drinks?|soda|music|festival|merch|silly|cartoon)\b/i,
+};
+const ART_STYLE = /\b(pixel|sprites?|hand[- ]?drawn|painted|drawn|cartoon|illustrated)\b/i;
+const briefWords = typeof opt('brief') === 'string' ? opt('brief') : '';
+function decideTemper({ kind, words = '', has = '', forced } = {}) {
+  if (forced !== undefined) return { temper: forced, why: 'set with --temper' };
+  const hit = k => (words.match(TEMPER_WORDS[k]) || [])[0];
+  if (hit('quiet')) return { temper: 'quiet', why: `"${hit('quiet').toLowerCase()}" in the brief: the client's words win` };
+  // a place or a service is quiet whatever its words: only --temper makes one expressive
+  if (['place', 'service'].includes(kind)) return { temper: 'quiet', why: `a ${kind} page` };
+  let t = 'quiet', why = `a ${kind} page`;
+  if (hit('loud')) { t = 'loud'; why = `"${hit('loud').toLowerCase()}" in the brief`; }
+  else if (hit('lively')) { t = 'lively'; why = `"${hit('lively').toLowerCase()}" in the brief`; }
+  else if (kind === 'gaming') {
+    if (/\b(strategy|simulation|management|4x|wargame)\b/i.test(words)) why = 'a strategy or simulation game with a sober brief';
+    else { t = 'lively'; why = 'a game'; }
+  } else if (kind === 'software' && /\b(streaks?|points|badges|habits?|levels?|xp|game)\b/i.test(words)) { t = 'lively'; why = 'an app with a game mechanic'; }
+  else if (kind === 'product' && /\b(drinks?|soda|snacks?|toys?|apparel|sneakers?|music gear|synth|candy|chocolate|beer|cider)\b/i.test(words)) { t = 'lively'; why = 'a drink, snack, toy, apparel or music brand'; }
+  const art = String(has).split(',').map(s => s.trim()).includes('art') && ART_STYLE.test(words);
+  if (art && t !== 'loud' && (t === 'lively' || kind === 'gaming')) { t = t === 'quiet' ? 'lively' : 'loud'; why += `, supplied ${(words.match(ART_STYLE) || [])[0].toLowerCase()} art`; }
+  return { temper: t, why };
+}
+const temperArg = opt('temper');
+if (temperArg !== undefined && !TEMPERS.includes(temperArg)) { console.error(`start: --temper needs ${TEMPERS.join(', ')}`); process.exit(2); }
+const { temper, why: temperWhy } = page ? decideTemper({ kind: page, words: briefWords, has: opt('has', ''), forced: temperArg }) : { temper: 'quiet', why: '' };
+const expressive = temper !== 'quiet';
+const isExpressiveType = t => t.temper === 'expressive';
+
 // the finish gate (scripts/gate.mjs) holds a build open from a deal until its checks pass. Only a deal arms it (a
 // css or brand run restyles a page that may be finished): a folder with an open build keeps it, a folder one or two below
 // an open build joins that one, any other gets a new one. The page is left to gate.mjs to find in this folder (or one
@@ -268,7 +304,8 @@ function suits(t, p) {
   if (p === 'place') return !!t.place;
   return (t.kinds || {})[p] > 0;
 }
-const weightOf = t => techPage ? t.display.tech : 400;
+// a one-weight expressive face (Anton, Lilita One, Press Start 2P) or a heavy one keeps its own designed weight
+const weightOf = t => t.display.fixedWeight || (techPage ? t.display.tech : 400);
 const kindWeight = (t, p) => p === 'place' ? 1 : ((t.kinds || {})[p] || 1);
 // the kind a pairing is first meant for (when a caller leaves --page out of css or brand)
 const inferPage = t => (t.place && !Object.values(t.kinds || {}).some(n => n > 0)) ? 'place'
@@ -296,6 +333,8 @@ function fontLink(t) {
       put('wght', w);
       for (const k of ['wdth', 'opsz', 'SOFT', 'WONK']) if (f[k]) put(k, f[k]);
     } else if (f.s && f.s.length) f.s.forEach(x => e.statics.add(x));
+    // a static face dealt at its own weight loads that weight too
+    if (isDisplay && !f.w && f.s && f.fixedWeight) e.statics.add(f.fixedWeight);
   };
   add(t.display, true); add(t.text, false);
   add(monoOf(t), false);
@@ -311,16 +350,22 @@ function fontLink(t) {
   return 'https://fonts.googleapis.com/css2?' + parts.map(p => 'family=' + p).join('&') + '&display=swap';
 }
 
-const stack = (f, serif) => `"${f.family}", ${serif ? 'Georgia, serif' : 'system-ui, sans-serif'}`;
+// the fallback while the face loads, by its class: a pixel or mono face falls back to a monospace, a hand face to
+// cursive, a slab or blackletter face to a serif
+const FALLBACK = { pixel: 'ui-monospace, monospace', 'mono-voice': 'ui-monospace, monospace', hand: 'cursive, system-ui, sans-serif',
+  slab: 'Georgia, serif', blackletter: 'Georgia, serif', serif: 'Georgia, serif' };
+const stack = (f, cls) => `"${f.family}", ${FALLBACK[cls] || 'system-ui, sans-serif'}`;
 function typeVars(t) {
-  const clamp = v => Math.max(-0.045, Math.min(0, v));
-  const w = Math.max(400, Math.min(techPage ? 500 : 400, weightOf(t) || 400));
-  const serif = t.class === 'serif' || t.class === 'slab';
+  // tracking: 0 or tighter, except a face drawn for capitals or on a pixel grid (up to +0.06em, study section 4)
+  const open = t.display.caps || t.class === 'pixel';
+  const clamp = v => Math.max(-0.045, Math.min(open ? 0.06 : 0, v));
+  const w = t.display.fixedWeight || Math.max(400, Math.min(techPage ? 500 : 400, weightOf(t) || 400));
   return {
     w, tr: clamp(t.display.tracking), trXl: clamp(t.display.trackingXl ?? t.display.tracking),
+    caps: !!t.display.caps, grid: t.display.grid || 0, expressive: isExpressiveType(t), cls: t.class,
     stretch: placePage ? '100%' : (t.display.stretch || '100%'), axes: t.display.axes || '',
     scale: placePage ? 1 : (t.display.scale || 1),
-    display: stack(t.display, serif), text: stack(t.text, false),
+    display: stack(t.display, t.class), text: stack(t.text, 'plain'),
     mono: monoOf(t) ? `"${monoOf(t).family}", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace` : '',
     link: fontLink(t),
   };
@@ -340,6 +385,10 @@ function block(tk, ty, radius) {
     ...(ty.stretch !== '100%' ? [`  --display-stretch: ${ty.stretch};`] : []),
     ...(ty.axes ? [`  --display-axes: ${ty.axes};`] : []),
     ...(ty.scale !== 1 ? [`  --ly-scale: ${ty.scale};`] : []),
+    // an expressive face (assets/expressive/expressive.css reads these): capitals on h1 and h2, sizes on its pixel grid
+    ...(ty.expressive ? [`  --display-class: ${ty.cls};`] : []),
+    ...(ty.caps ? ['  --display-case: uppercase;'] : []),
+    ...(ty.grid ? [`  --display-grid: ${ty.grid}px;`] : []),
   ];
   return `${FONT_TAGS(ty.link)}
 <link rel="stylesheet" href="assets/system.css">
@@ -347,8 +396,8 @@ function block(tk, ty, radius) {
 <link rel="stylesheet" href="assets/motion/motion.css">
 <link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
 <link rel="stylesheet" href="assets/layout/layout.css">
-<link rel="stylesheet" href="assets/icons/icon.css">
-<!-- <html lang="en" data-radius="${radius}">; keep this <style> after the links: layout.css resets --ly-scale -->
+<link rel="stylesheet" href="assets/icons/icon.css">${ty.expressive ? '\n<link rel="stylesheet" href="assets/expressive/expressive.css">' : ''}
+<!-- <html lang="en" data-radius="${radius}"${ty.expressive ? ` data-temper="${temper === 'quiet' ? 'lively' : temper}"` : ''}>; keep this <style> after the links: layout.css resets --ly-scale -->
 <style>
 :root {
   --p-bg: ${tk.bg}; --p-surface: ${tk.surface}; --p-ink: ${tk.ink}; --p-muted: ${tk.muted};${tk.headingInk ? ` --p-heading-ink: ${tk.headingInk};` : ''}
@@ -367,8 +416,12 @@ function wpick(items, wf) {
   for (const x of items) { r -= wf(x); if (r <= 0) return x; }
   return items[items.length - 1];
 }
+// a face whose cues (pixel, arcade, cosy ...) are in the brief's words comes up first on an expressive page
+const cueWeight = t => (t.cues || []).some(c => new RegExp('\\b' + c, 'i').test(briefWords)) ? 30 : 1;
+const temperWeight = t => !t.tempers || t.tempers.includes(temper) ? 1 : 0.2;
 function dealTypes(h, { axis = false } = {}) {
-  const pool = allTypes.filter(t => suits(t, page) && (!axis || t.display.letters));
+  // a quiet page never sees an expressive face; a lively or loud one is dealt two of them and one plain pairing as the exit
+  const pool = allTypes.filter(t => suits(t, page) && (!axis || t.display.letters || isExpressiveType(t)) && (expressive || !isExpressiveType(t)));
   const used = (h.types || []).slice(-3), dealt = (h.dealt || []).slice(-3);
   const out = [];
   if (placePage) {
@@ -389,8 +442,11 @@ function dealTypes(h, { axis = false } = {}) {
   const recency = t => used.includes(t.id) ? 0.15 : dealt.includes(t.id) ? 0.5 : 1;
   let src = pool.slice();
   const cls = new Set();
-  while (out.length < 3 && src.length) {
-    const pick = wpick(src, t => kindWeight(t, page) ** 3 * recency(t) * (cls.has(t.class) ? 0.15 : 1));
+  const want = expressive ? [true, true, false] : [null, null, null];
+  for (const wantExp of want) {
+    const from = src.filter(t => wantExp === null || isExpressiveType(t) === wantExp);
+    if (!from.length) continue;
+    const pick = wpick(from, t => kindWeight(t, page) ** 3 * recency(t) * (cls.has(t.class) ? 0.15 : 1) * (expressive ? cueWeight(t) * temperWeight(t) : 1));
     out.push(pick); cls.add(pick.class);
     src = src.filter(t => t.id !== pick.id);
   }
@@ -403,7 +459,8 @@ function describe(t, withLink) {
   const axis = placePage ? '' : (t.display.letters ? `, axis ${t.display.letters}` : ', static');
   const tag = placePage ? GROUPS[t.place] : t.class;
   const trk = placePage ? '' : `, tracking ${pc(t.display.trackingXl ?? t.display.tracking)} at hero size`;
-  let s = `  ${t.id.padEnd(18)} ${fams}${mono}  (${tag}; display ${weightOf(t) || 400}${trk}${axis}; ${t.moods.join(', ')})\n      suits: ${t.suits}`;
+  const exp = isExpressiveType(t) ? `expressive${t.display.caps ? ', capitals' : ''}${t.display.grid ? `, ${t.display.grid}px grid` : ''}; ` : '';
+  let s = `  ${t.id.padEnd(18)} ${fams}${mono}  (${tag}; ${exp}display ${weightOf(t) || 400}${trk}${axis}; ${t.moods.join(', ')})\n      suits: ${t.suits}${t.avoid ? `\n      avoid: ${t.avoid}` : ''}`;
   if (withLink) s += `\n      ${fontLink(t)}`;
   return s;
 }
@@ -425,6 +482,8 @@ const LISTS = {
   grounds: { software: 'blocks|blocks|alternate|calm|islands', gaming: 'islands|islands|alternate|blocks|calm', tech: 'blocks|blocks|alternate|islands|calm',
     product: 'alternate|alternate|islands|blocks|calm', service: 'calm|calm|blocks|alternate|islands', place: 'calm|calm|islands|alternate|blocks' },
 };
+// an expressive page deals one of the world's button families (assets/expressive/expressive.css), one a page
+const EXPRESSIVE_BUTTONS = 'push|bevel|ribbon|offset';
 // section compositions (system.css, compositions; sections-library.md, Compositions), a pool per section type
 const COMPS = {
   offer: 'list-tall|split-7-5|split-5-7|offset-pair',            // a menu, prices, services, repairs
@@ -506,7 +565,7 @@ function dealLayout(h) {
   const k = page;
   const get = key => LISTS[key][k] || LISTS[key]['*'];
   const out = {};
-  for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, get(key), key === 'close' ? 2 : 1);
+  for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, key === 'buttons' && expressive ? EXPRESSIVE_BUTTONS : get(key), key === 'close' ? 2 : 1);
   out.grounds = groundsFor(pick(`${k}:grounds`, get('grounds'), 2), sections);
   const densities = techPage ? 'compact|regular|compact|regular|open' : page === 'product' ? 'open|regular|compact' : 'open|regular|open|regular|compact';
   out.density = pick(`${k}:density`, densities);
@@ -554,7 +613,8 @@ function dealFrame(h) {
   let palette;
   const tys = dealTypes(h, { axis: !!opt('axis') });
   if (!opt('types-only')) {
-    let pals = palettes;
+    // a loud page may take a flat poster palette (flat-loud): four flat grounds at most, the expressive limit
+    let pals = temper === 'loud' ? lib('palettes.json').filter(p => paletteOk(p) || (p.tags.includes('flat-loud') && !isViolet(p.accent))) : palettes;
     if (!techPage && page) pals = pals.filter(p => !color.isDark(p.bg)); // dark pages are tech only
     if (opt('dark')) pals = pals.filter(p => color.isDark(p.bg));
     if (opt('light')) pals = pals.filter(p => !color.isDark(p.bg));
@@ -588,14 +648,16 @@ function dealFrame(h) {
       writeRecent(recent);
     }
   }
-  console.log(`TYPE for ${page}${placePage && PLACE_GROUP[trade] ? ` (${TRADE_NAME[trade]}: ${GROUPS[PLACE_GROUP[trade]]} first)` : ''} (take the first; all Google Fonts; headlines ${techPage ? '400 or 500' : '400'}, text 400, 500 for buttons and labels; sentence case, sizes come from system.css):`);
+  console.log(expressive && !placePage
+    ? `TYPE for ${page}, ${temper} (take the first; all Google Fonts; two expressive faces and one plain pairing as the exit; the display face at its own weight, capitals only in a face drawn for them, on h1 and h2; reading text stays in the text face at 400; references/expressive.md):`
+    : `TYPE for ${page}${placePage && PLACE_GROUP[trade] ? ` (${TRADE_NAME[trade]}: ${GROUPS[PLACE_GROUP[trade]]} first)` : ''} (take the first; all Google Fonts; headlines ${techPage ? '400 or 500' : '400'}, text 400, 500 for buttons and labels; sentence case, sizes come from system.css):`);
   for (const t of tys) console.log(describe(t, false));
   if (!tys.length) console.log('  (no pairing matches; drop --axis)');
   const layout = dealLayout(h);
   h.dealt = [...(h.dealt || []), ...tys.map(t => t.id)].slice(-30);
   if (cmd === 'deal' && !opt('axis') && !placePage) console.log('  (a word or editorial hero needs a weight or width axis: deal again with --axis)');
   const self = fileURLToPath(import.meta.url).split(path.sep).join('/');
-  if (cmd === 'deal') console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
+  if (cmd === 'deal') console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft${expressive ? ' --temper ' + temper : ''} --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
   return { palette, type: tys[0], layout };
 }
 if (cmd === 'deal') {
@@ -641,7 +703,8 @@ if (cmd === 'deal') {
   const sceneHero = motion.sceneFits.includes('hero');
   const sceneClose = motion.sceneFits.includes('close');
   const effectSlot = page === 'gaming' ? 'band' : 'hero';
-  const effect = techPage && !sceneHero ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
+  // a lively or loud page's one effect is its texture, from its own world (references/expressive.md): no WebGL ground
+  const effect = techPage && !sceneHero && !expressive ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
     color.isDark(palette.bg) ? 'dark' : 'light', '--slots', effectSlot]).picks[0]?.id || null : null;
 
   const h = readHistory(histFile);
@@ -686,7 +749,7 @@ if (cmd === 'deal') {
     if (mascot) sub.mascot = 'give a recurring guide or character one consistent form';
   }
   const plan = {
-    version: '2.5.4', kind: page, pageType, trade: trade || null, sections, palette: palette.id, type: type.id,
+    version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: palette.id, type: type.id,
     hero: hero.id, ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
     align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
@@ -700,8 +763,11 @@ if (cmd === 'deal') {
   console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, grounds, density. Section forms come from the content.) ====');
   const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
+  line('temper', temper + ': ' + temperWhy + (expressive
+    ? '. Set data-temper="' + temper + '" on <html> and enable the expressive.css line in starter.html. Every expressive move names its source in the game or brand on the plan comment ("torn edge: the game\'s menus are paper"); no source, no move. Permissions, limits and the never list: ' + ref + '/references/expressive.md'
+    : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
   line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
-  line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + ' --history ' + histFile.split(path.sep).join('/'));
+  line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --history ' + histFile.split(path.sep).join('/'));
   line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
   if (order) line('order', 'put the configurator or order pad within the first three sections, with delivery and return facts at the close');
@@ -710,7 +776,7 @@ if (cmd === 'deal') {
   line('nav', plan.nav + ' (starter.html NAV comment)');
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
   line('footer', plan.footer + (plan.footer === 'footer-visit' ? ' (links-visit template)' : ''));
-  line('buttons', 'data-buttons="' + plan.buttons + '" on <html> · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
+  line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');
   line('align', plan.align + (plan.align === 'left' ? '' : ': use .section-head--center on those headings'));
@@ -729,7 +795,8 @@ if (cmd === 'deal') {
     line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
-  line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
+  if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');
+  else line('effect', effect ? effect + ' on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
   line('hover layer', 'motion.js handles buttons, links, linked cards and photographs (references/motion.md)');
   line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
   line('then', 'record this plan in the comment at the top of <body>, build in index.html from starter.html, then run node ' + ref + '/scripts/gate.mjs index.html');

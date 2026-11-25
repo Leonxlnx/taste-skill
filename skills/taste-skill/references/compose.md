@@ -67,6 +67,8 @@ Use any layout on the wrap lines and `.grid` where twelve columns help. Tabs, a 
 
 Use motion tokens for a working feed or a bar filling once. Anything timed needs a pause. Never auto-advance a carousel, hijack scrolling, tilt an element or position text absolutely over other text. Without script the still must be complete and correct.
 
+On a lively or loud page (`expressive.md`) the world's own forms join the table: a log as a field document, items as collectibles, a character's line in a dialogue box, art crossing a ground edge. Each names its source in the plan.
+
 Count hero and close. Compose at least two own sections from six sections up, one on shorter pages. No maximum. Keep the dealt nav, hero, close and footer.
 
 General checks still cover edges, overflow, collisions, contrast, tap targets, headings, empty space, visibility and reduced motion.

@@ -1599,5 +1599,930 @@
   },
   "suits": "cafes, bakeries, kids and wellbeing: rounded and easy",
   "place": "soft"
+ },
+ {
+  "id": "pixelify",
+  "class": "pixel",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 3,
+   "software": 1,
+   "product": 1
+  },
+  "moods": [
+   "retro",
+   "friendly",
+   "crafted"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Pixelify Sans",
+   "s": [
+    400,
+    600
+   ],
+   "fixedWeight": 600,
+   "grid": 8,
+   "tracking": 0,
+   "trackingXl": 0,
+   "tech": 600
+  },
+  "text": {
+   "family": "Figtree",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "pixel-art games and cosy retro apps: headings 32 to 120px, card titles from 24px",
+  "avoid": "body text; weights between its named steps",
+  "cues": [
+   "pixel",
+   "sprite",
+   "8-bit",
+   "16-bit",
+   "retro",
+   "cos"
+  ]
+ },
+ {
+  "id": "silkscreen",
+  "class": "pixel",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 3
+  },
+  "moods": [
+   "retro",
+   "blunt"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Silkscreen",
+   "s": [
+    400,
+    700
+   ],
+   "fixedWeight": 400,
+   "caps": true,
+   "grid": 8,
+   "tracking": 0.02,
+   "trackingXl": 0,
+   "tech": 400
+  },
+  "text": {
+   "family": "Onest",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "names and short headings on an 8px-grid pixel page: 24, 32, 48, 64, 96px",
+  "avoid": "anything under 24px; a tracked label over every heading",
+  "cues": [
+   "pixel",
+   "8-bit",
+   "arcade",
+   "retro"
+  ]
+ },
+ {
+  "id": "press-start",
+  "class": "pixel",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 3
+  },
+  "moods": [
+   "arcade",
+   "loud"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 0.72,
+   "letters": null,
+   "family": "Press Start 2P",
+   "fixedWeight": 400,
+   "caps": true,
+   "grid": 8,
+   "tracking": 0,
+   "trackingXl": 0,
+   "tech": 400
+  },
+  "text": {
+   "family": "Work Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "arcade titles and score lines on an 8-bit page: 24 to 64px, five words a line at most",
+  "avoid": "paragraphs; long headings (very wide)",
+  "cues": [
+   "arcade",
+   "8-bit",
+   "pixel",
+   "chiptune",
+   "score"
+  ]
+ },
+ {
+  "id": "vt323",
+  "class": "pixel",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "software": 1,
+   "tech": 1
+  },
+  "moods": [
+   "terminal",
+   "retro"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.2,
+   "letters": null,
+   "family": "VT323",
+   "fixedWeight": 400,
+   "grid": 4,
+   "tracking": 0,
+   "trackingXl": 0,
+   "tech": 400
+  },
+  "text": {
+   "family": "IBM Plex Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "terminal and CRT looks, in-game logs: 24 to 72px",
+  "avoid": "small sizes (thin); a whole page of it",
+  "cues": [
+   "terminal",
+   "crt",
+   "hacker",
+   "console",
+   "retro"
+  ]
+ },
+ {
+  "id": "bungee",
+  "class": "arcade",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 2
+  },
+  "moods": [
+   "loud",
+   "signage"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 0.86,
+   "letters": null,
+   "family": "Bungee",
+   "fixedWeight": 400,
+   "caps": true,
+   "tracking": 0,
+   "trackingXl": 0,
+   "tech": 400
+  },
+  "text": {
+   "family": "Work Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "signage, arcade fronts and loud consumer brands: capitals by design, 40 to 140px",
+  "avoid": "more than two lines",
+  "cues": [
+   "arcade",
+   "neon",
+   "street",
+   "soda",
+   "skate"
+  ]
+ },
+ {
+  "id": "unbounded",
+  "class": "arcade",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "software": 2,
+   "product": 1
+  },
+  "moods": [
+   "wide",
+   "bold",
+   "modern"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 0.86,
+   "letters": null,
+   "family": "Unbounded",
+   "w": [
+    400,
+    800
+   ],
+   "fixedWeight": 700,
+   "tracking": -0.02,
+   "trackingXl": -0.03,
+   "tech": 700
+  },
+  "text": {
+   "family": "Onest",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "chat, community and music apps, a heavy extended display: 40 to 120px",
+  "avoid": "under 24px; tracking above 0",
+  "cues": [
+   "community",
+   "music",
+   "festival",
+   "chat"
+  ]
+ },
+ {
+  "id": "fredoka",
+  "class": "rounded",
+  "temper": "expressive",
+  "tempers": [
+   "lively"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "software": 2,
+   "product": 2
+  },
+  "moods": [
+   "friendly",
+   "soft",
+   "playful"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Fredoka",
+   "w": [
+    400,
+    600
+   ],
+   "fixedWeight": 600,
+   "tracking": -0.01,
+   "trackingXl": -0.02,
+   "tech": 600
+  },
+  "text": {
+   "family": "Nunito Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "mascot apps, kids and cosy games: lowercase rounded heavy at 32 to 96px",
+  "avoid": "thin weights for display; capitals",
+  "cues": [
+   "mascot",
+   "kid",
+   "cos",
+   "cute",
+   "habit",
+   "pet"
+  ]
+ },
+ {
+  "id": "baloo",
+  "class": "rounded",
+  "temper": "expressive",
+  "tempers": [
+   "lively"
+  ],
+  "kinds": {
+   "gaming": 1,
+   "software": 2,
+   "product": 2
+  },
+  "moods": [
+   "friendly",
+   "warm"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Baloo 2",
+   "w": [
+    400,
+    700
+   ],
+   "fixedWeight": 700,
+   "tracking": -0.015,
+   "trackingXl": -0.02,
+   "tech": 700
+  },
+  "text": {
+   "family": "Figtree",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "friendly product and app pages, wide script support: 32 to 96px",
+  "avoid": "italic or synthesised styles; under 20px at its heavy weight",
+  "cues": [
+   "friendly",
+   "family",
+   "snack",
+   "kid"
+  ]
+ },
+ {
+  "id": "lilita",
+  "class": "rounded",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 3,
+   "product": 2
+  },
+  "moods": [
+   "chunky",
+   "playful"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Lilita One",
+   "fixedWeight": 400,
+   "tracking": 0,
+   "trackingXl": -0.01,
+   "tech": 400
+  },
+  "text": {
+   "family": "Figtree",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "chunky game titles and labels on stickers: 40 to 120px",
+  "avoid": "long headings; small text",
+  "cues": [
+   "cartoon",
+   "party",
+   "candy",
+   "toy",
+   "platformer"
+  ]
+ },
+ {
+  "id": "alfa-slab",
+  "class": "slab",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 2
+  },
+  "moods": [
+   "sturdy",
+   "western",
+   "warm"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Alfa Slab One",
+   "fixedWeight": 400,
+   "tracking": -0.01,
+   "trackingXl": -0.015,
+   "tech": 400
+  },
+  "text": {
+   "family": "Libre Franklin",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "westerns, farms, harbours and workshop brands: 40 to 120px",
+  "avoid": "under 24px; capitals over two lines",
+  "cues": [
+   "farm",
+   "harbour",
+   "harbor",
+   "western",
+   "fishing",
+   "ranch"
+  ]
+ },
+ {
+  "id": "zilla-heavy",
+  "class": "slab",
+  "temper": "expressive",
+  "tempers": [
+   "lively"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 2
+  },
+  "moods": [
+   "warm",
+   "sturdy"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.02,
+   "letters": null,
+   "family": "Zilla Slab",
+   "s": [
+    700
+   ],
+   "fixedWeight": 700,
+   "tracking": -0.015,
+   "trackingXl": -0.02,
+   "tech": 700
+  },
+  "text": {
+   "family": "Rethink Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "a friendly slab at its bold weight for lively games and goods",
+  "avoid": "thin weights; long paragraphs",
+  "cues": [
+   "boat",
+   "sea",
+   "craft",
+   "workshop"
+  ]
+ },
+ {
+  "id": "big-shoulders",
+  "class": "condensed",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 3,
+   "tech": 1
+  },
+  "moods": [
+   "industrial",
+   "loud",
+   "sporty"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.25,
+   "letters": null,
+   "family": "Big Shoulders Display",
+   "w": [
+    700,
+    800
+   ],
+   "fixedWeight": 800,
+   "caps": true,
+   "tracking": 0.02,
+   "trackingXl": 0.01,
+   "tech": 800
+  },
+  "text": {
+   "family": "Hanken Grotesk",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "industrial, sci-fi, sports and drinks: capitals at 48 to 180px",
+  "avoid": "light weights for display; lowercase paragraphs",
+  "cues": [
+   "drink",
+   "energy",
+   "sport",
+   "industrial",
+   "can",
+   "soda"
+  ]
+ },
+ {
+  "id": "anton",
+  "class": "condensed",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 3
+  },
+  "moods": [
+   "poster",
+   "loud"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.2,
+   "letters": null,
+   "family": "Anton",
+   "fixedWeight": 400,
+   "caps": true,
+   "tracking": 0.02,
+   "trackingXl": 0.01,
+   "tech": 400
+  },
+  "text": {
+   "family": "Work Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "poster headlines, merch and hard-edged drinks: 48 to 160px",
+  "avoid": "small sizes; a whole page of capitals",
+  "cues": [
+   "poster",
+   "drink",
+   "punk",
+   "metal",
+   "merch",
+   "soda"
+  ]
+ },
+ {
+  "id": "saira",
+  "class": "condensed",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 3,
+   "tech": 1
+  },
+  "moods": [
+   "sci-fi",
+   "technical"
+  ],
+  "display": {
+   "stretch": "75%",
+   "scale": 1.1,
+   "letters": null,
+   "family": "Saira",
+   "w": [
+    400,
+    700
+   ],
+   "wdth": [
+    75,
+    75
+   ],
+   "fixedWeight": 700,
+   "caps": true,
+   "tracking": 0.03,
+   "trackingXl": 0.02,
+   "tech": 700
+  },
+  "text": {
+   "family": "IBM Plex Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "sci-fi games, mission briefings and HUD headings: 32 to 120px",
+  "avoid": "the extra-light end; mixing several widths",
+  "cues": [
+   "sci-fi",
+   "space",
+   "mission",
+   "mech",
+   "racing",
+   "shooter"
+  ]
+ },
+ {
+  "id": "shantell",
+  "class": "hand",
+  "temper": "expressive",
+  "tempers": [
+   "lively"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "software": 1,
+   "product": 1
+  },
+  "moods": [
+   "handmade",
+   "warm",
+   "playful"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Shantell Sans",
+   "w": [
+    400,
+    700
+   ],
+   "fixedWeight": 600,
+   "tracking": -0.01,
+   "trackingXl": -0.015,
+   "tech": 600
+  },
+  "text": {
+   "family": "Figtree",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "notebooks, kids, devlogs written by hand, cosy games: 24 to 72px",
+  "avoid": "full paragraphs",
+  "cues": [
+   "notebook",
+   "diary",
+   "devlog",
+   "cos",
+   "kid",
+   "doodle"
+  ]
+ },
+ {
+  "id": "gaegu",
+  "class": "hand",
+  "temper": "expressive",
+  "tempers": [
+   "lively"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 1
+  },
+  "moods": [
+   "soft",
+   "handmade"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.15,
+   "letters": null,
+   "family": "Gaegu",
+   "s": [
+    400,
+    700
+   ],
+   "fixedWeight": 700,
+   "tracking": 0,
+   "trackingXl": -0.01,
+   "tech": 700
+  },
+  "text": {
+   "family": "Nunito Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "soft hand-lettered titles and stickers: 32 to 80px",
+  "avoid": "prices, forms, under 24px",
+  "cues": [
+   "cute",
+   "cos",
+   "garden",
+   "sticker",
+   "pet"
+  ]
+ },
+ {
+  "id": "grenze",
+  "class": "blackletter",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 2
+  },
+  "moods": [
+   "dark",
+   "craft"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.05,
+   "letters": null,
+   "family": "Grenze Gotisch",
+   "w": [
+    400,
+    700
+   ],
+   "fixedWeight": 600,
+   "tracking": -0.01,
+   "trackingXl": -0.015,
+   "tech": 600
+  },
+  "text": {
+   "family": "Instrument Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "metal, horror, punk roasters and dark fantasy, lowercase: 48 to 140px",
+  "avoid": "capitals (illegible); anything under 32px",
+  "cues": [
+   "horror",
+   "metal",
+   "gothic",
+   "dark fantasy",
+   "occult",
+   "punk"
+  ]
+ },
+ {
+  "id": "pirata",
+  "class": "blackletter",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 1
+  },
+  "moods": [
+   "adventurous",
+   "old"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.1,
+   "letters": null,
+   "family": "Pirata One",
+   "fixedWeight": 400,
+   "tracking": 0,
+   "trackingXl": -0.01,
+   "tech": 400
+  },
+  "text": {
+   "family": "Work Sans",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "piracy, taverns, ship games and bars: 40 to 120px, four words at most",
+  "avoid": "long headings",
+  "cues": [
+   "pirate",
+   "tavern",
+   "ship",
+   "sail",
+   "rum"
+  ]
+ },
+ {
+  "id": "jacquard",
+  "class": "blackletter",
+  "temper": "expressive",
+  "tempers": [
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2
+  },
+  "moods": [
+   "dark",
+   "retro"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1.2,
+   "letters": null,
+   "family": "Jacquard 12",
+   "fixedWeight": 400,
+   "grid": 12,
+   "tracking": 0,
+   "trackingXl": 0,
+   "tech": 400
+  },
+  "text": {
+   "family": "Onest",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "dark-fantasy pixel games, the two worlds in one face: 48 to 120px on its 12px grid",
+  "avoid": "under 40px; beside another pixel face",
+  "cues": [
+   "dungeon",
+   "dark fantasy",
+   "pixel",
+   "knight",
+   "roguelike"
+  ]
+ },
+ {
+  "id": "courier-prime",
+  "class": "mono-voice",
+  "temper": "expressive",
+  "tempers": [
+   "lively",
+   "loud"
+  ],
+  "kinds": {
+   "gaming": 2,
+   "product": 1
+  },
+  "moods": [
+   "dry",
+   "document"
+  ],
+  "display": {
+   "stretch": "100%",
+   "scale": 1,
+   "letters": null,
+   "family": "Courier Prime",
+   "s": [
+    400,
+    700
+   ],
+   "fixedWeight": 700,
+   "tracking": -0.01,
+   "trackingXl": -0.02,
+   "tech": 700
+  },
+  "text": {
+   "family": "Hanken Grotesk",
+   "w": [
+    400,
+    600
+   ]
+  },
+  "suits": "memos, mission debriefs and dossiers as the page's voice: headings from 32px",
+  "avoid": "uppercase labels; using it only as decoration",
+  "cues": [
+   "memo",
+   "dossier",
+   "debrief",
+   "detective",
+   "noir",
+   "case file"
+  ]
  }
 ]

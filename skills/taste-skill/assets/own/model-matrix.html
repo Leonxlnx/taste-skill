@@ -1,0 +1,93 @@
+<section class="section own" id="model-matrix" data-own="model-matrix" aria-labelledby="model-matrix-title" data-assumed>
+  <div class="wrap">
+    <h2 id="model-matrix-title">Compare field recorders</h2>
+    <p class="t-lead measure">Fenwick Field Audio compares inputs, battery life and timecode across its three recorders.</p>
+<div class="matrix">
+      <div class="filters" hidden><label class="diff"><input type="checkbox"> Show differences</label>
+        <label class="field partner">Compare with Reed<select><option>Marsh</option><option>Tarn</option></select></label></div>
+      <div class="table-frame" role="region" aria-label="Recorder comparison" tabindex="0">
+        <table><caption>Field recorder specifications</caption><thead>
+          <tr class="pictures" aria-hidden="true"><td></td><td data-model="Reed"><svg viewBox="32 0 77 85" role="img" aria-label="Reed field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(13 0)"><rect x="36" y="11" rx="3" width="36" height="66"/><path d="M40 10V6h7v4m10 0V6h7v4"/><rect x="41" y="20" width="26" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h15m-15 4h10"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/></g></g></svg></td><td data-model="Marsh"><svg viewBox="32 0 77 85" role="img" aria-label="Marsh field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(3 0)"><rect x="36" y="11" rx="3" width="47" height="66"/><path d="M40 10V6h7v4m18 0V6h7v4"/><rect x="41" y="20" width="37" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h21m-21 4h16"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><circle cx="66" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/><circle cx="68" cy="64" r="5" fill="var(--action)"/></g></g></svg></td><td data-model="Tarn"><svg viewBox="32 0 77 85" role="img" aria-label="Tarn field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(0 0)"><rect x="36" y="11" rx="3" width="58" height="66"/><path d="M40 10V6h7v4m26 0V6h7v4"/><rect x="41" y="20" width="48" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h27m-27 4h22"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><circle cx="66" cy="49" r="3" fill="var(--surface)"/><circle cx="77" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/><circle cx="76" cy="64" r="5" fill="var(--action)"/></g></g></svg></td></tr>
+          <tr class="names"><th scope="col">Property</th><th scope="col" data-model="Reed"><span>Reed</span><a href="#recorder-reed">Specs<span class="sr-only"> for Reed</span></a></th><th scope="col" data-model="Marsh"><span>Marsh</span><a href="#recorder-marsh">Specs<span class="sr-only"> for Marsh</span></a></th><th scope="col" data-model="Tarn"><span>Tarn</span><a href="#recorder-tarn">Specs<span class="sr-only"> for Tarn</span></a></th></tr></thead>
+          <tbody><tr><th scope="row">Inputs</th><td data-model="Reed">2</td><td data-model="Marsh">4</td><td data-model="Tarn">4</td></tr>
+          <tr><th scope="row">Battery life</th><td data-model="Reed">10 h</td><td data-model="Marsh">8 h</td><td data-model="Tarn">12 h</td></tr>
+          <tr><th scope="row">Weight</th><td data-model="Reed">180 g</td><td data-model="Marsh">265 g</td><td data-model="Tarn">310 g</td></tr>
+          <tr><th scope="row">Timecode</th><td data-model="Reed">None</td><td data-model="Marsh">Input</td><td data-model="Tarn">Input/output</td></tr>
+          <tr data-shared><th scope="row">Bit depth</th><td data-model="Reed">24-bit</td><td data-model="Marsh">24-bit</td><td data-model="Tarn">24-bit</td></tr></tbody>
+        </table></div>
+      <article class="local-note" id="recorder-reed" tabindex="-1"><h3>Reed specifications</h3><p>2 inputs · 10 h battery · 180 g · No timecode · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+      <article class="local-note" id="recorder-marsh" tabindex="-1"><h3>Marsh specifications</h3><p>4 inputs · 8 h battery · 265 g · Timecode input · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+      <article class="local-note" id="recorder-tarn" tabindex="-1"><h3>Tarn specifications</h3><p>4 inputs · 12 h battery · 310 g · Timecode input/output · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="model-matrix"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="model-matrix"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="model-matrix"] .filters { display: flex; align-items: center; flex-wrap: wrap; gap: var(--gutter); margin-bottom: var(--s-4); }
+[data-own="model-matrix"] .diff { display: inline-flex; gap: var(--s-2); min-height: var(--btn-h); align-items: center; cursor: pointer; }
+[data-own="model-matrix"] input { accent-color: var(--action); }
+[data-own="model-matrix"] .partner { display: none; }
+[data-own="model-matrix"] table { width: 100%; border-spacing: 0; table-layout: fixed; text-align: left; font-variant-numeric: tabular-nums; }
+[data-own="model-matrix"] caption { text-align: left; font-size: var(--t-small); color: var(--muted); padding-bottom: var(--s-2); }
+[data-own="model-matrix"] :is(th,td) { padding: var(--s-4); border-bottom: 1px solid var(--line); font-weight: 400; vertical-align: baseline; }
+[data-own="model-matrix"] .pictures td { padding-block: var(--s-2); background: var(--surface); border: 0; }
+[data-own="model-matrix"] .pictures svg { width: auto; height: var(--s-9); max-width: 100%; }
+[data-own="model-matrix"] .names { position: sticky; top: var(--nav); z-index: 1; }
+[data-own="model-matrix"] .names th { background: var(--bg); }
+[data-own="model-matrix"] .names th > span { display: block; font-size: var(--t-h3); }
+[data-own="model-matrix"] tbody th, [data-own="model-matrix"] .names th:first-child { color: var(--muted); }
+[data-own="model-matrix"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="model-matrix"] .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="model-matrix"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="model-matrix"] .local-note:target { display: block; }
+[data-own="model-matrix"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  [data-own="model-matrix"] .filters { justify-content: space-between; gap: var(--s-2); }
+  [data-own="model-matrix"] .partner { display: grid; }
+  [data-own="model-matrix"] .table-frame { overflow-x: auto; }
+  [data-own="model-matrix"] table { min-width: calc(var(--s-10) * 4); }
+  [data-own="model-matrix"][data-bound] table { min-width: 0; }
+  [data-own="model-matrix"] :is(th,td) { padding: var(--s-3) var(--s-1); overflow-wrap: anywhere; }
+  [data-own="model-matrix"] .names { position: static; }
+  [data-own="model-matrix"]:not([data-bound]) tr > :first-child { position: sticky; left: 0; background: var(--bg); }
+  [data-own="model-matrix"] .pictures td:first-child { background: var(--surface); }
+  [data-own="model-matrix"] .pictures svg { height: var(--s-8); }
+  [data-own="model-matrix"] .names th > span { font-size: var(--t-card); }
+  [data-own="model-matrix"] [data-other] { display: none; }
+}
+@media (max-height: 620px) { [data-own="model-matrix"] .names { position: static; } }
+</style>
+
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="model-matrix"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const controls = root.querySelector('.filters');
+  const shared = root.querySelector('[data-shared]');
+  const difference = controls.querySelector('input');
+  const partner = controls.querySelector('select');
+  const frame = root.querySelector('.table-frame');
+  function compare() {
+    shared.hidden = difference.checked;
+    root.querySelectorAll('[data-model]').forEach(cell => {
+      cell.toggleAttribute('data-other', !['Reed', partner.value].includes(cell.dataset.model));
+    });
+  }
+  controls.addEventListener('change', compare);
+  compare();
+  frame.removeAttribute('tabindex');
+  controls.hidden = false;
+  root.dataset.bound = "";
+}
+</script>

@@ -32,15 +32,15 @@ figma.com and x.ai are the bar (in words: `layout-v4.md`).
 
 - **The frame is dealt**, so two pages never come out alike and none falls back on a model's
   habits: palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, the rhythm of
-  grounds, the density. One command deals it (step 4). Build the frame as dealt.
+  grounds, the density (step 4). Build the frame as dealt.
 - **The content is yours.** Every section takes the form its content asks for: a timeline for a
   timeline product, a booking bar for a stay, a slider over the plans, a comparison as two bars,
   the product's own screen built large. A dealt photo composition is only for content that is
   photographs with words. `compose.md` is the method; the plan's idea seeds push pages apart.
 - **The kit is the floor:** `assets/starter.html` and the kit carry the type scale, the spacing,
   the grid and edges, the nav and the phone menu, forms, the hero entrance, reveals, hover and
-  press. Every page is built in a copy of the starter with the kit copied into `assets`, however
-  small the brief; the finish gate fails a page built without it.
+  press. Every page is built in a copy of the starter with the kit copied into `assets`; the finish
+  gate fails a page built without it.
 - **The gate checks it in a real browser** and blocks what is broken (step 6).
 
 ## House rules
@@ -61,16 +61,15 @@ These nine win over everything else in this skill.
 5. **Quiet motion everywhere, set pieces only where the content carries them.** The motion layer
    gives every control a hover and a press, every hero its dealt entrance, every section its
    reveal; never strip or override it. One dealt moment a page (a second from seven sections), a
-   scene on about one page in three, none where nothing fits. No tilt, no carousel or tab that
-   moves by itself, no section that exists only to animate a few words.
+   scene on about one page in three, none where nothing fits. No tilt (a lively or loud page's
+   stickers excepted), no carousel or tab that moves by itself, no section that only animates words.
 6. **Show the thing itself.** In this order: the client's own pictures; a picture built for this
    page (the product's UI as live HTML, a drawing of the product or its world in one style, a
    chart from believable data); a stand-in photograph only where its subject is right (a
    landscape, a material, a street, hands at work, a room of the right kind). Never another
    maker's product, never a detail standing for the whole, never a mood picture beside a price.
 7. **Real full-colour icons** (a known product's real icon, never a drawn look-alike); small
-   diagram visuals in cards (a hub with branches; one input, a main processor, three parallel
-   lanes; pulses running along the lines).
+   diagram visuals in cards (`diagrams.md`).
 8. **At least two sections are your own design for this content** (one on a page under six
    sections), marked `data-own`. What the brief names becomes an element on the page, never a
    mailto in its place, and the main action comes early: a booking bar on the hero for a stay or a
@@ -100,8 +99,7 @@ the door. "Tech" below means site-kind software, gaming or tech; "other" is ever
 
 What each kind leads with (the full plans: `sections.md` section 3):
 
-- **Software:** its own UI as live HTML showing what it works on (a code-review tool: a red and
-  green diff with its Accept action), the central view built large, real tool icons, a chart
+- **Software:** its own UI as live HTML showing what it works on, the central view built large, real tool icons, a chart
   where the copy holds a figure. Never a generic dashboard.
 - **Gaming:** the game's name and its world. With the client's art, that art everywhere; without
   it, the world drawn in one style (`subskills/illustrate`), never a stock coastline in its place.
@@ -115,6 +113,11 @@ What each kind leads with (the full plans: `sections.md` section 3):
 - **Shader grounds, WebGL effects and dark pages are tech only.** A place, service or product
   page takes none (`effects-usage.md`); its richness comes from pictures, grounds, type and its
   own sections.
+
+**The temper.** The plan deals `quiet`, `lively` or `loud` from the brief's words, the kind and the
+art. A quiet page keeps every rule as written. A lively or loud one (a game, a mascot app, a drink
+or toy brand) sets `<html data-temper>` and may take a face, frames, edges and stickers from its own
+world within the limits of `expressive.md`, each naming its source.
 
 ## 2. The run
 
@@ -171,6 +174,8 @@ What each kind leads with (the full plans: `sections.md` section 3):
    It ends with a PLAN block and writes `.taste-skill/plan.json`. Copy the PLAN into the comment
    at the top of `<body>` and onto plan line 2.
 
+   - **Temper:** pass the brief's words with `--brief "<words>"`; a lively or loud PLAN names
+     `expressive.md`.
    - **Built as dealt:** palette and type (the `start.mjs css` line it prints; the client's own
      colours go through `start.mjs brand`), hero and its entrance, nav, footer, close, buttons,
      mark, the ground of each section (`grounds`), `data-density`, heading alignment, picture
@@ -192,8 +197,8 @@ What each kind leads with (the full plans: `sections.md` section 3):
 
    - **Own sections:** `<section class="section own" id="…" data-own="<what it is>">`, styled in
      the one `<style id="own-css">` block with the kit's tokens only (spacing, type, colour,
-     radius; no new font or colour). `assets/own/` holds twelve worked examples: learn the level
-     of craft and the token use from them, then build for this client's content. Interaction is
+     radius; no new font or colour). `assets/own/` holds twelve worked examples of the craft and
+     the token use; build for this client's content. Interaction is
      click, tap and keyboard: tabs, a toggle, a slider, a stepper, an accordion, a chart readout.
      Motion shows the content working (`data-m-progress`, `data-m-draw`, `data-m-count`:
      `motion.md`); one sticky element in a section of at most 2.5 screens.
@@ -219,10 +224,10 @@ What each kind leads with (the full plans: `sections.md` section 3):
    node <skill>/scripts/gate.mjs index.html
    ```
 
-   **Look at the screenshots before the gate,** section by section, at both widths: is this
+   **Look at the screenshots before the gate,** section by section, at both widths: is each
    section's form the one its content asks for; does every picture show what its heading says;
-   where is the page empty, where cramped; what would a designer at a good company change? Fix
-   that first: the gate measures geometry, your eyes judge the page. Then the gate, which runs
+   where is the page empty or cramped? Fix that first: the gate measures geometry, your eyes judge
+   the page. Then the gate, which runs
    the checker at 1440 and 390, walks the page at 320, and runs copy-lint, motion-lint and the
    last `perf.mjs` result. Fix what it lists and run it again until its last line is `GATE: PASS`
    or `GATE: OPEN`, three rounds at most (in Claude Code it also runs when you finish). Between
@@ -251,6 +256,7 @@ Before the first page, in full: `compose.md`, `sections.md`, `layout-v4.md`, `sy
 |---|---|---|
 | Composing a section from its content, the idea seeds, the worked examples | `compose.md` | `assets/own`, `library/ideas.json` |
 | The plan by kind, the deal, compositions and recipes | `sections.md`, `sections-library.md` | `assets/starter.html` |
+| A lively or loud page: its moves, limits and type | `expressive.md` | `assets/expressive` |
 | Air, grounds, heroes, edges, type | `layout-v4.md` | `assets/system.css`, `assets/layout` |
 | Tokens, nav, footer, forms, head tags | `system.md` | `assets/system.css`, `assets/system.js` |
 | Copy, voice, registers, hero forms, tells | `copy.md`, `copy-voice.md`, `copy-registers.md`, `copy-moves.md`, `copy-tells.md` | `scripts/copy-lint.mjs` |
@@ -310,6 +316,8 @@ For your eyes first, then the gate (its check ids in brackets):
 
 ## 5. Never
 
+Slop bans hold on every page; style limits follow the temper.
+
 - A section that exists only to animate a few words; a card, row or tile that fades in on
   scroll; parallax on text; scroll-jacking; anything that moves by itself with no pause.
 - A stand-in photograph of the wrong subject; stock passed off as the client's product, people or
@@ -318,6 +326,10 @@ For your eyes first, then the gate (its check ids in brackets):
   fact that contradicts the brief; a fake success message.
 - Monospace uppercase labels, a kicker line above every heading, check-icon lists, a row of big
   stat numbers as filler.
-- Violet or lavender in the page's own design (a real third-party logo keeps its colours).
+- Violet or lavender the page invents (a real logo or the client's own art keeps its colours).
+- Reading text in a pixel, hand, blackletter or condensed face or in capitals; text on busy art
+  without a plate; a turned paragraph or control; three turned things on a screen.
+- Tilt, capitals, a heavy display weight, a fourth ground or a game's frames on a quiet page; past
+  its limit or without its source on a lively or loud one.
 - Copying a reference site's code, copy, pictures or signature effect.
 - Deleting or editing the kit's own files (`assets/`, `scripts/`) to clear a check.

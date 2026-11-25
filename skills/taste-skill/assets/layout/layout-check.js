@@ -477,7 +477,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     }
     return { top: t, bottom: b, left: l, right: rr };
   };
-  const inkOf = sec => [...sec.querySelectorAll('*')].filter(e => (e.matches(INK) || ownText(e)) && shown(e) && !e.closest('[data-edge-free]')).map(e => doc(clipped(e, sec))).filter(r => r.bottom - r.top > 1 && r.right > 0 && r.left < vw && r.right - r.left > 1);
+  const inkOf = sec => [...sec.querySelectorAll('*')].filter(e => (e.matches(INK) || ownText(e)) && shown(e) && !e.closest('[data-edge-free], [data-crossing], [data-sticker]')).map(e => doc(clipped(e, sec))).filter(r => r.bottom - r.top > 1 && r.right > 0 && r.left < vw && r.right - r.left > 1);
   // a section that holds its stage at the height its own module sets (a scene, or a moment that pins while it plays),
   // and a section its own layer (a photograph or ground behind its words) fills
   const holds = window.lyRules.holdsStage;

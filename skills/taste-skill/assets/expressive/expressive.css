@@ -1,0 +1,253 @@
+/* tasteskill expressive kit (references/expressive.md). Linked only on a lively or loud page, after the kit's
+   stylesheets, with <html data-temper="lively|loud">. Every part is built from the kit's tokens, reads complete without
+   script, and moves only by transform and opacity (the sprite strip steps its background, which is its nature).
+   Every move here names its source in the game or brand on the plan comment; no source, no move.
+
+   Parts:  sticker [data-sticker], edge <html data-edge>, dialogue box [data-dialogue], collectible [data-collectible],
+           buttons <html data-buttons="push|bevel|ribbon|offset">, lettering [data-lettering], texture <html data-texture>,
+           plate [data-plate], crossing [data-crossing], sprite strip [data-sprite], field document [data-field-doc],
+           ornament frame [data-ornament] */
+
+/* ---------------------------------------------------------------- type
+   The dealt expressive face at its own weight (start.mjs prints --display-weight); capitals only where the face is
+   drawn for them (--display-case: uppercase), on h1 and h2 only; a pixel face's sizes snap to its grid
+   (--display-grid) so its pixels stay whole. Reading text stays in the text face. */
+html:is([data-temper="lively"], [data-temper="loud"]) {
+  --ex-grid: var(--display-grid, 1px);
+  --t-h1: round(nearest, clamp(38px, 3.24vw + 25.4px, 72px), var(--ex-grid));
+  --t-h2: round(nearest, clamp(30px, 1.72vw + 23.3px, 48px), var(--ex-grid));
+  --ly-h1: round(nearest, calc(var(--ly-scale) * clamp(40px, 3.048vw + 28.11px, 72px)), var(--ex-grid));
+  --ly-h1-xl: round(nearest, calc(var(--ly-scale) * clamp(44px, 3.429vw + 30.63px, 80px)), var(--ex-grid));
+  /* the world's paper and the world's ink for the parts below; a page may set them from its art */
+  --ex-paper: var(--p-bg, #fff);
+  --ex-ink: var(--p-ink, #111);
+  --ex-edge-h: 16px;
+}
+html:is([data-temper="lively"], [data-temper="loud"]) :is(h1, h2) { text-transform: var(--display-case, none); }
+/* no ligatures in a display face with character: a pixel face's "fi" ligature reads as another letter ("fish" as "Ash").
+   Off for the whole page as well, because the display face also sets logos, taglines and labels. */
+html:is([data-temper="lively"], [data-temper="loud"]) { font-variant-ligatures: no-common-ligatures; }
+html:is([data-temper="lively"], [data-temper="loud"]) :is(h1, h2, h3, h4, [data-lettering], [data-sticker], .nav__logo, [class*="ex-"]) { font-synthesis: none; font-variant-ligatures: none; font-feature-settings: "liga" 0, "clig" 0, "dlig" 0; }
+html:is([data-temper="lively"], [data-temper="loud"]) :is(h1, h2) { letter-spacing: var(--display-tracking); }
+
+/* ---------------------------------------------------------------- lettering
+   The name in the display face with one treatment from the world; the hero and the close only (the page's two
+   off-scale words), up to 160px. The plain name stays the h1's text. data-lettering="shadow|outline|reflect". */
+[data-lettering] {
+  display: block; font-family: var(--font-display); font-weight: var(--display-weight); text-transform: var(--display-case, none);
+  font-size: round(nearest, var(--lettering-size, calc(var(--ly-scale, 1) * clamp(48px, 5vw + 24px, 160px))), var(--display-grid, 1px));
+  line-height: .92; letter-spacing: var(--display-tracking-xl, var(--display-tracking)); max-width: 100%; text-wrap: balance;
+}
+[data-lettering="shadow"] { text-shadow: .055em .055em 0 var(--accent); }
+[data-lettering="outline"] { -webkit-text-stroke: .025em var(--ink); paint-order: stroke fill; text-shadow: .05em .05em 0 var(--accent); }
+/* a stepped reflection under the name (one line), drawn by the pseudo-element from the same words (data-text) */
+[data-lettering="reflect"] { position: relative; width: fit-content; white-space: nowrap; margin-bottom: .45em; }
+[data-lettering="reflect"]::after {
+  content: attr(data-text); position: absolute; left: 0; top: 100%; transform-origin: top; transform: scaleY(-.5) translateY(-100%);
+  color: var(--accent); opacity: .45; pointer-events: none;
+  -webkit-mask: repeating-linear-gradient(180deg, #000 0 .08em, transparent .08em .16em); mask: repeating-linear-gradient(180deg, #000 0 .08em, transparent .08em .16em);
+}
+
+/* ---------------------------------------------------------------- sticker
+   A die-cut label from the world, rotated by --tilt within 8 degrees; two a screen at most, never on a control,
+   never a paragraph. 2 to 4 words in the display face, aria-hidden, with the same words as real text nearby. */
+[data-sticker] {
+  --tilt: -4deg;
+  display: inline-grid; place-items: center; padding: .5em .8em; border-radius: var(--r-md);
+  font: var(--display-weight) var(--t-card)/1.05 var(--font-display); text-transform: var(--display-case, none); text-align: center;
+  background: var(--sticker-bg, var(--accent)); color: var(--sticker-ink, var(--accent-ink));
+  box-shadow: 0 0 0 3px var(--ex-paper), 0 6px 14px color-mix(in oklab, var(--ex-ink) 22%, transparent);
+  rotate: clamp(-8deg, var(--tilt), 8deg); pointer-events: none; user-select: none; max-width: 14ch;
+}
+/* on the brand ground the accent is the ground itself: the sticker takes the ink */
+.ground-brand [data-sticker]:not([data-sticker="stamp"]) { background: var(--sticker-bg, var(--ink)); color: var(--sticker-ink, var(--bg)); }
+[data-sticker="round"] { border-radius: 50%; aspect-ratio: 1; padding: 1em; }
+[data-sticker="tag"] { border-radius: var(--r-sm); clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%); padding-left: 1.4em; }
+[data-sticker="stamp"] { background: none; color: var(--sticker-ink, color-mix(in oklab, var(--accent) 70%, var(--ink))); box-shadow: inset 0 0 0 3px currentColor; border-radius: var(--r-sm); }
+/* placed on a picture's corner, inside its frame (the parent is position: relative), never past the wrap */
+[data-sticker][data-at] { position: absolute; z-index: 2; }
+[data-sticker][data-at~="top"] { top: var(--s-4); }
+[data-sticker][data-at~="bottom"] { bottom: var(--s-4); }
+[data-sticker][data-at~="left"] { left: var(--s-4); }
+[data-sticker][data-at~="right"] { right: var(--s-4); }
+@media (max-width: 639px) { [data-sticker][data-at] { font-size: var(--t-small); } [data-sticker="round"][data-at] { padding: .7em; } }
+
+/* ---------------------------------------------------------------- edge
+   One edge between grounds a page, set once on <html data-edge="pixel|torn|wave|scallop|saw|diagonal">: every section
+   that changes ground, and the one after it, draws its top in its own ground over the 16px of padding above. Nothing
+   is cut; the edge is a pseudo-element in the ground's colour. */
+html[data-edge] main > :is(section, .section):is(.ground-surface, .ground-inverse, .ground-brand),
+html[data-edge] main > :is(.ground-surface, .ground-inverse, .ground-brand) + :is(section, .section):not(.ground-surface, .ground-inverse, .ground-brand),
+html[data-edge] main > :is(.ground-surface, .ground-inverse, .ground-brand):last-child ~ footer,
+html[data-edge] main:has(> :is(.ground-surface, .ground-inverse, .ground-brand):last-child) + footer { position: relative; }
+html[data-edge] main > :is(section, .section):is(.ground-surface, .ground-inverse, .ground-brand)::before,
+html[data-edge] main > :is(.ground-surface, .ground-inverse, .ground-brand) + :is(section, .section):not(.ground-surface, .ground-inverse, .ground-brand)::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: var(--ex-edge-h); background: var(--bg);
+  pointer-events: none; -webkit-mask: var(--ex-edge) 0 100% / var(--ex-edge-w, 32px) 100% repeat-x; mask: var(--ex-edge) 0 100% / var(--ex-edge-w, 32px) 100% repeat-x;
+}
+html[data-edge="pixel"] { --ex-edge-w: 64px; --ex-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 16' preserveAspectRatio='none'%3E%3Cpath d='M0 8h8V0h8v8h8v8h8V8h8V0h16v8h8v8H0z'/%3E%3C/svg%3E"); }
+html[data-edge="torn"] { --ex-edge-w: 180px; --ex-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 16' preserveAspectRatio='none'%3E%3Cpath d='M0 9 11 5l9 6 13-8 10 7 9-4 14 6 8-9 12 8 11-3 9 5 13-6 9 7 12-5 10 4 10-6 10 5V16H0z'/%3E%3C/svg%3E"); }
+html[data-edge="wave"] { --ex-edge-w: 96px; --ex-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 16' preserveAspectRatio='none'%3E%3Cpath d='M0 8C16 0 32 0 48 8s32 8 48 0v8H0z'/%3E%3C/svg%3E"); }
+html[data-edge="scallop"] { --ex-edge-w: 32px; --ex-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 16' preserveAspectRatio='none'%3E%3Cpath d='M0 16A16 16 0 0 1 32 16z'/%3E%3C/svg%3E"); }
+html[data-edge="saw"] { --ex-edge-w: 24px; --ex-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16' preserveAspectRatio='none'%3E%3Cpath d='M0 16 12 0l12 16z'/%3E%3C/svg%3E"); }
+/* a diagonal of at most 6 degrees: 2.5 degrees at any width */
+html[data-edge="diagonal"] { --ex-edge-h: clamp(16px, 4.4vw, 64px); }
+html[data-edge="diagonal"] main > :is(section, .section)::before { -webkit-mask: none; mask: none; clip-path: polygon(0 100%, 100% 0, 100% 100%); }
+@media (max-width: 639px) { html:not([data-edge="diagonal"])[data-edge] { --ex-edge-h: 12px; } }
+
+/* ---------------------------------------------------------------- texture
+   One page-wide texture at low contrast, set on <html data-texture="scanlines|grain|dither">: a fixed layer under the
+   nav that never takes a pointer and never moves. It counts as the page's one effect. */
+html[data-texture] body::after {
+  content: ""; position: fixed; inset: 0; z-index: 9; pointer-events: none; opacity: var(--ex-texture-o, .06);
+}
+html[data-texture="scanlines"] body::after { background: repeating-linear-gradient(180deg, var(--ex-ink) 0 1px, transparent 1px 4px); }
+html[data-texture="grain"] body::after { --ex-texture-o: .07; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -.4'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+html[data-texture="dither"] body::after { --ex-texture-o: .05; background: conic-gradient(var(--ex-ink) 25%, transparent 0 50%, var(--ex-ink) 0 75%, transparent 0) 0 0 / 4px 4px; }
+/* a plate and a dialogue box sit above the texture (the fixed nav already does) */
+html[data-texture] :is([data-plate], [data-dialogue]) { position: relative; z-index: 10; }
+
+/* ---------------------------------------------------------------- plate
+   Text over busy art sits on a plate: one box per line (data-plate) or one calm panel (data-plate="panel"). */
+[data-plate] { background: var(--plate, var(--ex-ink)); color: var(--plate-ink, var(--ex-paper)); padding: .08em .32em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; line-height: 1.32; }
+:is(h1, h2, h3, p) > [data-plate]:only-child { display: inline; }
+[data-plate="panel"] { display: block; padding: var(--s-5); border-radius: var(--r-md); line-height: inherit; max-width: 36rem; }
+
+/* ---------------------------------------------------------------- crossing
+   Art that crosses a ground edge (a boat on the wave, a creature on a frame's corner): one a boundary, drawn in the
+   page's one style, aria-hidden, anchored to a column line, never over text, a control or a price.
+   data-crossing="top|bottom": which edge of its section it sits on; --crossing-w its width, --crossing-x its left. */
+main > :is(section, .section):has(> [data-crossing]) { position: relative; }
+[data-crossing] {
+  position: absolute; z-index: 3; width: var(--crossing-w, clamp(96px, 12vw, 180px)); height: auto; pointer-events: none;
+  left: var(--crossing-x, auto); right: var(--crossing-r, var(--gut, 80px));
+}
+[data-crossing="top"] { top: 0; translate: 0 -55%; }
+[data-crossing="bottom"] { bottom: 0; translate: 0 55%; }
+@media (max-width: 639px) { [data-crossing] { --crossing-w: 88px; } }
+
+/* ---------------------------------------------------------------- dialogue box
+   A text panel shaped like the game's speech box: a thick border in the ink, an inner hairline, a name tab on the top
+   edge ([data-dialogue-name]) and a caret at the end that blinks four times and rests (none under reduced motion).
+   data-dialogue="pixel" steps its corners. */
+[data-dialogue] {
+  position: relative; background: var(--surface); color: var(--ink); border: 4px solid var(--ink); border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 4px var(--surface), inset 0 0 0 5px color-mix(in oklab, var(--ink) 40%, transparent);
+  padding: var(--s-6) var(--s-6) var(--s-5); max-width: 44rem; font-size: var(--t-lead); line-height: 1.55;
+}
+[data-dialogue] > p { max-width: 58ch; }
+[data-dialogue]::after { content: "\25BC"; position: absolute; right: var(--s-4); bottom: var(--s-2); font-size: 12px; line-height: 1; color: var(--ink);
+  animation: ex-caret 1s steps(1, end) 4; }
+@keyframes ex-caret { 50% { opacity: 0; } }
+[data-dialogue-name] {
+  position: absolute; left: var(--s-5); top: 0; translate: 0 -60%; padding: var(--s-1) var(--s-3); border-radius: var(--r-sm);
+  background: var(--ink); color: var(--bg); font: var(--display-weight) var(--t-body)/1.2 var(--font-display); text-transform: none;
+}
+[data-dialogue="pixel"] { border-radius: 0;
+  clip-path: polygon(0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
+    100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%,
+    8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px)); }
+[data-dialogue="pixel"] [data-dialogue-name] { translate: 0 0; top: var(--s-2); }
+[data-dialogue="pixel"]:has([data-dialogue-name]) { padding-top: calc(var(--s-6) + var(--s-5)); }
+@media (max-width: 639px) { [data-dialogue] { padding: var(--s-5) var(--s-4) var(--s-5); font-size: var(--t-body); } }
+
+/* ---------------------------------------------------------------- collectible
+   A card with a collectible's anatomy: a name bar (h3), an art window, a type line, one or two stat chips, flavour text
+   in italic and a set number (markup: .ex-name > h3 + .ex-set, .ex-art, .ex-type, ul.ex-stats, .ex-flavour). For the game's own characters, cards, fish or items (the card-set seed). */
+[data-collectible] {
+  display: grid; gap: var(--s-3); align-content: start; padding: var(--s-3); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--ink); border: 3px solid var(--ink);
+  box-shadow: inset 0 0 0 3px var(--surface), inset 0 0 0 4px color-mix(in oklab, var(--ink) 30%, transparent);
+}
+[data-collectible] > .ex-name { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2);
+  padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); background: var(--bg); }
+[data-collectible] > .ex-name > h3 { font-size: var(--t-card); line-height: 1.2; }
+[data-collectible] .ex-art { aspect-ratio: 4 / 3; border-radius: var(--r-sm); overflow: hidden; background: var(--bg); border: 2px solid var(--ink); }
+[data-collectible] .ex-art > :is(img, svg, canvas) { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+[data-collectible] .ex-type { font-size: var(--t-small); font-weight: 500; padding-inline: var(--s-2); }
+[data-collectible] .ex-stats { display: flex; flex-wrap: wrap; gap: var(--s-2); padding-inline: var(--s-2); }
+[data-collectible] .ex-stats > * { padding: 2px var(--s-2); border-radius: 999px; background: var(--bg); border: 1px solid var(--line-strong); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+[data-collectible] .ex-flavour { font-style: italic; font-size: var(--t-body); line-height: 1.5; padding-inline: var(--s-2); }
+[data-collectible] .ex-set { font-size: var(--t-label); color: var(--muted); padding-inline: var(--s-2); font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- field document
+   An in-world document for content the brief gives (a captain's log, a mission debrief, a manifest): typed fields,
+   label and value, sentence case, in the voice face; one stamp ([data-sticker="stamp"]) at most. */
+[data-field-doc] {
+  position: relative; background: var(--surface); color: var(--ink); padding: var(--s-6); border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong); max-width: 46rem;
+}
+/* the ruled lines run under the fields only, never through the heading */
+[data-field-doc] dl { display: grid; grid-template-columns: minmax(8rem, max-content) 1fr; gap: 0 var(--s-5); margin: var(--s-5) 0 0; }
+[data-field-doc] :is(dt, dd) { padding-block: var(--s-2); border-bottom: 1px solid var(--line); }
+[data-field-doc] dt { font: 500 var(--t-small)/1.6 var(--font-mono, var(--font-text)); color: var(--muted); }
+[data-field-doc] dd { margin: 0; font: 400 var(--t-body)/1.6 var(--font-mono, var(--font-text)); }
+[data-field-doc] [data-sticker="stamp"] { position: absolute; right: var(--s-5); top: var(--s-5); }
+/* the heading keeps clear of the stamp; on a phone the stamp drops under it */
+[data-field-doc]:has(> [data-sticker="stamp"]) > :is(h2, h3) { padding-right: 9rem; }
+@media (max-width: 639px) { [data-field-doc]:has(> [data-sticker="stamp"]) > :is(h2, h3) { padding-right: 0; }
+  [data-field-doc] [data-sticker="stamp"] { position: static; margin-top: var(--s-3); } }
+@media (max-width: 639px) { [data-field-doc] { padding: var(--s-5) var(--s-4); } [data-field-doc] dl { grid-template-columns: 1fr; gap: 0; } [data-field-doc] dd { margin-bottom: var(--s-3); } }
+
+/* ---------------------------------------------------------------- ornament frame
+   A panel with drawn corners in the world's material: rivet, corner or filigree. One material a page; the corners
+   shrink to 60% on a phone and go under 360px. */
+[data-ornament] {
+  --orn: var(--accent); --orn-size: 40px;
+  position: relative; border: 2px solid var(--orn); border-radius: 0; padding: var(--s-6); background: var(--surface);
+}
+/* the four corners from one drawing, sliced by mask-border so each sits mirrored in its own corner */
+[data-ornament]::before { content: ""; position: absolute; inset: 4px; pointer-events: none; background: var(--orn);
+  -webkit-mask-box-image: var(--orn-svg) 40 / var(--orn-size); mask-border: var(--orn-svg) 40 / var(--orn-size); }
+[data-ornament="rivet"] { --orn-size: 32px; --orn-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Ccircle id='c' cx='12' cy='12' r='6'/%3E%3C/defs%3E%3Cuse href='%23c'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 1 120 0)'/%3E%3Cuse href='%23c' transform='matrix(1 0 0 -1 0 120)'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 -1 120 120)'/%3E%3C/svg%3E"); }
+[data-ornament="corner"] { --orn-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cpath id='c' d='M0 0h40v6H6v34H0zM12 12h16v4H16v12h-4z'/%3E%3C/defs%3E%3Cuse href='%23c'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 1 120 0)'/%3E%3Cuse href='%23c' transform='matrix(1 0 0 -1 0 120)'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 -1 120 120)'/%3E%3C/svg%3E"); }
+[data-ornament="filigree"] { --orn-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cpath id='c' fill='none' stroke='black' stroke-width='3' d='M2 40V14C2 7 7 2 14 2h26M10 32c0-12 10-22 22-22M18 24a6 6 0 1 1 6-6'/%3E%3C/defs%3E%3Cuse href='%23c'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 1 120 0)'/%3E%3Cuse href='%23c' transform='matrix(1 0 0 -1 0 120)'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 -1 120 120)'/%3E%3C/svg%3E"); }
+@media (max-width: 639px) { [data-ornament] { --orn-size: 24px; padding: var(--s-5); } [data-ornament="rivet"] { --orn-size: 20px; } }
+@media (max-width: 359px) { [data-ornament]::before { display: none; } }
+
+/* ---------------------------------------------------------------- sprite strip
+   A sprite sheet stepped through its frames with steps(n) on its background position: --frames, --frame-w and
+   --frame-h in sheet pixels, --px the whole-number scale, --sheet the sheet (an inline SVG drawn in pixels). It plays
+   three times when the page opens and again on hover or focus of its host ([data-sprite-host]); under reduced motion
+   it shows frame one. */
+[data-sprite] {
+  --px: 4; display: block; width: calc(var(--frame-w) * var(--px) * 1px); height: calc(var(--frame-h) * var(--px) * 1px);
+  background: var(--sheet) 0 0 / calc(var(--frame-w) * var(--frames) * var(--px) * 1px) 100% no-repeat; image-rendering: pixelated;
+  animation: ex-sprite calc(var(--frames) * 140ms) steps(var(--frames)) 3;
+}
+[data-sprite-host]:is(:hover, :focus-within) [data-sprite] { animation-name: ex-sprite-again; }
+@keyframes ex-sprite { to { background-position: calc(var(--frame-w) * var(--frames) * var(--px) * -1px) 0; } }
+@keyframes ex-sprite-again { to { background-position: calc(var(--frame-w) * var(--frames) * var(--px) * -1px) 0; } }
+@media (max-width: 639px) { [data-sprite] { --px: 3; } }
+
+/* ---------------------------------------------------------------- buttons
+   One dealt family a page on <html data-buttons>: push (a darker bottom edge that presses), bevel (the game menu's
+   light and shadow lines), ribbon (notched ends; the secondary is a text link), offset (a hard 3px shadow). Same 44px
+   height, label and focus ring as every kit button. */
+html[data-buttons="push"] { --r-btn: 12px; }
+html[data-buttons="push"] .btn { box-shadow: 0 4px 0 var(--ex-push, color-mix(in oklab, var(--action) 60%, #000)); }
+html[data-buttons="push"] .btn--secondary { --ex-push: color-mix(in oklab, var(--ink) 35%, transparent); }
+html[data-buttons="push"] .btn:active { translate: 0 3px; box-shadow: 0 1px 0 var(--ex-push, color-mix(in oklab, var(--action) 60%, #000)); }
+
+html[data-buttons="bevel"] { --r-btn: 2px; }
+html[data-buttons="bevel"] .btn--primary { box-shadow: inset 0 2px 0 color-mix(in oklab, #fff 35%, transparent), inset 0 -3px 0 color-mix(in oklab, #000 30%, transparent); }
+html[data-buttons="bevel"] .btn--secondary { border-width: 2px; border-color: var(--ink); box-shadow: inset 0 2px 0 color-mix(in oklab, #fff 50%, transparent), inset 0 -3px 0 color-mix(in oklab, var(--ink) 18%, transparent); }
+html[data-buttons="bevel"] .btn:active { box-shadow: inset 0 3px 0 color-mix(in oklab, #000 25%, transparent); }
+
+html[data-buttons="ribbon"] { --r-btn: 0px; }
+html[data-buttons="ribbon"] .btn--primary { padding-inline: var(--s-6); clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 50%, 100% 100%, 0 100%, 12px 50%); }
+html[data-buttons="ribbon"] .btn--primary:focus-visible { clip-path: none; }
+html[data-buttons="ribbon"] .btn--secondary { background: none; border-color: transparent; padding-inline: var(--s-2);
+  text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--line-strong); }
+html[data-buttons="ribbon"] .btn--secondary:hover { background: none; border-color: transparent; text-decoration-color: currentColor; }
+
+html[data-buttons="offset"] { --r-btn: var(--r-sm); }
+html[data-buttons="offset"] .btn { border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+html[data-buttons="offset"] .btn:active { translate: 3px 3px; box-shadow: 0 0 0 var(--ink); }
+
+/* ---------------------------------------------------------------- reduced motion: every part rests on its first frame */
+@media (prefers-reduced-motion: reduce) {
+  [data-dialogue]::after, [data-sprite] { animation: none; }
+  html[data-buttons] .btn:active { translate: none; }
+}

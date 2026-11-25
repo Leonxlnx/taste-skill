@@ -156,7 +156,7 @@ function lintCss(src, where, base, F, ctx) {
           const inf = /infinite/i.test(it.count) || /animation-iteration-count\s*:\s*infinite/i.test(r.decls);
           if (inf && !LOOP_SEL.test(r.sel) && !/data-m-loop|data-ui-loop/.test(r.sel)) ctx.endless.push({ at: `${r.where}:${r.line}`, code: show });
           const f = named.get(it.first);
-          if (f) f.used = true;
+          if (f) { f.used = true; (f.users ||= []).push(r.sel); }
         }
       }
       // a positive delay per nth-child on something that plays once (a negative one, or one on a loop, only sets a loop's phase)
@@ -176,6 +176,8 @@ function lintCss(src, where, base, F, ctx) {
     f.body.replace(/\{([^}]*)\}/g, (_, d) => { ds.push(...declsOf(d)); return ''; });
     const bad = [...new Set(ds.filter(([k]) => LAYOUT.test(k)).map(([k]) => k))];
     if (bad.length) F('motion-layout', `${f.where}:${f.line}`, `@keyframes ${f.name} animates ${bad.join(', ')}`);
+    // a sprite strip steps its sheet's background position (its nature); anything else moves by transform and opacity
+    if (ds.some(([k]) => /^background-position/.test(k)) && (f.users || []).some((u) => !/\[data-sprite/.test(u))) F('motion-background', `${f.where}:${f.line}`, `@keyframes ${f.name} animates background-position`);
     if (ds.some(([k, v]) => (k === 'transform' && isZeroScale(v)) || (k === 'scale' && /^0(\.0+)?$/.test(v.trim())))) F('motion-scale-zero', `${f.where}:${f.line}`, `@keyframes ${f.name} starts or ends at scale 0`);
     for (const [k, v] of ds) if (k === 'animation-timing-function') { const c = curve(v); if (c === 'in') F('motion-ease-in', `${f.where}:${f.line}`, `@keyframes ${f.name}: ${k}: ${v}`); }
   }
@@ -280,6 +282,7 @@ const RULES = {
   'motion-endless': ['WARN', 'an animation that never ends, outside a card loop, and no pause button on the page', 'run it 1 to 2 times, or put it in a [data-m-loop] panel (motion.js adds its pause button)'],
   'motion-endless-info': ['INFO', 'an animation that never ends (judged on the page that links this file: a pause button, or a card loop)', ''],
   'motion-no-reduced-info': ['INFO', 'no prefers-reduced-motion rule in this file (judged on the page that links it)', ''],
+  'motion-background': ['WARN', 'an animation steps or slides a background position: only a sprite strip ([data-sprite], assets/expressive) moves its background, frame by frame', 'move it with transform and opacity; a sprite sheet goes on a [data-sprite] element with steps(n)'],
   'motion-stagger': ['WARN', 'a list that comes in item after item (a delay per nth-child or per index)', 'one entrance per group: the heading rises (motion.js does it), the list is simply there'],
 };
 function lint(file) {

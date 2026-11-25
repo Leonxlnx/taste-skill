@@ -25,7 +25,7 @@ const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-ri
 for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
   assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
 }
-const keys = 'version kind pageType trade sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect'.split(' ');
+const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
 const hasByKind = { software: 'ui,logo', gaming: 'setting', tech: 'ui', product: 'object', service: 'photo', place: 'photo' };
@@ -81,6 +81,8 @@ for (const kind of kindsToRun) {
     if (p.hero === 'place') assert.ok(['band','bleed','split','name','foot'].includes(p.heroForm));
     assert.equal(p.version, '2.5.4');
     assert.equal(p.kind, kind);
+    // no brief words: a game is lively, every other kind quiet (references/expressive.md)
+    assert.equal(p.temper, kind === 'gaming' ? 'lively' : 'quiet');
     assert.equal(p.sections, sections);
     assert.equal(p.own, sections < 6 ? 1 : 2);
     // The retired no-material effects used to fill every slot. Check the actual remaining pool.
@@ -159,7 +161,7 @@ for (const kind of kindsToRun) {
     }
     for (const ride of Object.values(p.rides)) count('rides', ride);
     for (const [k, v] of Object.entries(p)) {
-      if (['version', 'kind', 'trade', 'rides', 'compositions'].includes(k)) continue;
+      if (['version', 'kind', 'trade', 'rides', 'compositions', 'temperWhy'].includes(k)) continue;
       const values = k === 'grounds' ? [v.pattern] : [].concat(v);
       for (const value of values) count(k, value);
     }

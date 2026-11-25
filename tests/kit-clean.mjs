@@ -53,7 +53,8 @@ const DEMOS = argv.includes('--demos');
 const pages = [];
 const layout = join(SKILL, 'assets', 'layout');
 for (const f of readdirSync(layout).sort()) if (/^hero-.+\.html$/.test(f)) pages.push(join(layout, f));
-pages.push(join(layout, 'compositions.html'), join(SKILL, 'assets', 'starter.html'), join(SKILL, 'assets', 'own', 'index.html'));
+pages.push(join(layout, 'compositions.html'), join(SKILL, 'assets', 'starter.html'), join(SKILL, 'assets', 'own', 'index.html'),
+  join(SKILL, 'assets', 'expressive', 'demo.html'));   // the expressive kit on a loud page (references/expressive.md)
 const moments = join(SKILL, 'assets', 'moments');
 for (const f of readdirSync(join(moments, '_demo')).sort()) if (/^in-page.*\.html$/.test(f)) pages.push(join(moments, '_demo', f));
 if (DEMOS) for (const d of readdirSync(moments).sort()) {

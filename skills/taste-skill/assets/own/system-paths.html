@@ -1,0 +1,105 @@
+<section class="section own" id="system-paths" data-own="system-paths" aria-labelledby="system-paths-title" data-assumed>
+  <div class="wrap">
+    <h2 id="system-paths-title">Where rainfall readings go</h2>
+    <p class="t-lead measure">Ash Basin checks every station reading before adding it to the daily ledger.</p>
+<div class="routing"><figure class="network" aria-label="Both sources feed one validator. Its range check determines the destination.">
+      <div class="node input-0" data-station="N"><small>Station N</small><strong>North gauge</strong></div><div class="node input-1" data-station="S"><small>Station S</small><strong>Volunteer sheet</strong></div>
+      <svg class="edges incoming" viewBox="0 0 100 200" preserveAspectRatio="none" aria-hidden="true"><path data-station="N" d="M0 50H29Q50 50 50 70V80Q50 100 70 100H100"/><path data-station="S" d="M0 150H29Q50 150 50 130V120Q50 100 70 100H100"/></svg><div class="node validator"><strong>Validator</strong><span>0–200 mm inclusive</span></div><svg class="edges outgoing" viewBox="0 0 100 200" preserveAspectRatio="none" aria-hidden="true"><path data-station="N" d="M0 100H29Q50 100 50 80V70Q50 50 70 50H100"/><path data-station="S" d="M0 100H29Q50 100 50 120V130Q50 150 70 150H100"/></svg>
+      <div class="node end-0" data-station="N"><small>Within range</small><strong>Daily ledger</strong></div><div class="node end-1" data-station="S"><small>Outside range</small><strong>Review tray</strong></div>
+      <figcaption>Each input supplies station, time and rainfall in millimetres.</figcaption></figure>
+      <div class="samples"><fieldset hidden><legend>Trace a sample</legend><div><label class="press"><input type="radio" value="N" checked> Station N</label><label class="press"><input type="radio" value="S"> Station S</label></div></fieldset>
+        <ol><li data-station="N"><h3>Station N <time>08:00</time></h3><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><h3>Station S <time>08:15</time></h3><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
+        <p class="spoken" role="status" aria-live="polite"></p></div>
+      <div class="mobile-routes"><article data-station="N"><h3>Station N <time>08:00</time></h3>
+        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><h3>Station S <time>08:15</time></h3>
+        <ol><li><strong>Volunteer sheet</strong><span>230 mm</span></li><li><strong>Validator</strong><span>Outside range · 0–200 mm inclusive</span></li><li><strong>Review tray</strong></li></ol></article></div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="system-paths"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="system-paths"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="system-paths"] .routing { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; font-variant-numeric: tabular-nums; }
+[data-own="system-paths"] .network { grid-column: span 8; display: grid; grid-template-columns: minmax(0,1fr) var(--s-6) minmax(0,1fr) var(--s-6) minmax(0,1fr); grid-template-rows: repeat(2,minmax(calc(var(--s-9) + var(--s-4)),auto)) auto; padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); align-items: center; }
+[data-own="system-paths"] .node { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); padding: var(--s-3); position: relative; }
+[data-own="system-paths"] .node :is(small,strong,span) { display: block; }
+[data-own="system-paths"] .node small, [data-own="system-paths"] .node span, [data-own="system-paths"] figcaption { font-size: var(--t-small); color: var(--muted); }
+[data-own="system-paths"] .node strong { font-size: var(--t-card); font-weight: 500; }
+[data-own="system-paths"] :is(.input-0,.input-1) { grid-column: 1; }
+[data-own="system-paths"] :is(.end-0,.end-1) { grid-column: 5; }
+[data-own="system-paths"] :is(.input-0,.end-0) { grid-row: 1; }
+[data-own="system-paths"] :is(.input-1,.end-1) { grid-row: 2; }
+[data-own="system-paths"] .validator { grid-column: 3; grid-row: 1/3; background: var(--ink); color: var(--bg); }
+[data-own="system-paths"] .validator span { color: inherit; }
+[data-own="system-paths"] .edges { grid-row: 1/3; width: 100%; height: 100%; }
+[data-own="system-paths"] .incoming { grid-column: 2; }
+[data-own="system-paths"] .outgoing { grid-column: 4; }
+[data-own="system-paths"] .edges path { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
+[data-own="system-paths"] .edges path[data-active] { stroke: var(--action); stroke-width: 3; stroke-dasharray: none; }
+[data-own="system-paths"] .node[data-active] { border-color: var(--action); }
+[data-own="system-paths"] figcaption { grid-column: 1/-1; padding-top: var(--s-3); }
+[data-own="system-paths"] .samples { grid-column: span 4; }
+[data-own="system-paths"] fieldset { border: 0; padding: 0; margin: 0 0 var(--s-4); }
+[data-own="system-paths"] legend { padding: 0; font-weight: 500; font-size: var(--t-card); }
+[data-own="system-paths"] fieldset > div { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+[data-own="system-paths"] fieldset label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); cursor: pointer; }
+[data-own="system-paths"] input { margin: 0; accent-color: var(--action); }
+[data-own="system-paths"] .samples li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="system-paths"] .routing h3 { font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
+[data-own="system-paths"] time { font-size: var(--t-small); color: var(--muted); }
+[data-own="system-paths"] .sample-value { font-size: var(--t-h3); }
+[data-own="system-paths"] .samples li > span { color: var(--muted); }
+[data-own="system-paths"] .samples li[data-active] .sample-value { font-weight: 600; }
+[data-own="system-paths"] .mobile-routes { display: none; }
+[data-own="system-paths"] .spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 1023px) {
+  [data-own="system-paths"] :is(.network,.samples) { grid-column: 1/-1; }
+}
+@media (max-width: 639px) {
+  [data-own="system-paths"] .network, [data-own="system-paths"] .samples ol { display: none; }
+  [data-own="system-paths"] .samples:has(fieldset[hidden]) { display: none; }
+  [data-own="system-paths"] fieldset { margin-bottom: 0; }
+  [data-own="system-paths"] .mobile-routes { display: grid; grid-column: 1/-1; gap: var(--s-4); }
+  [data-own="system-paths"] .mobile-routes article { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  [data-own="system-paths"] .mobile-routes article[data-active] { border-color: var(--action); background: var(--surface); }
+  [data-own="system-paths"] .mobile-routes ol { margin: var(--s-3) 0 0 var(--s-1); border-left: 1px dashed var(--muted); }
+  [data-own="system-paths"] .mobile-routes article[data-active] ol { border-left: var(--s-1) solid var(--action); }
+  [data-own="system-paths"] .mobile-routes li { display: grid; margin-left: var(--s-3); }
+  [data-own="system-paths"] .mobile-routes li + li { margin-top: var(--s-3); }
+  [data-own="system-paths"] .mobile-routes li span { font-size: var(--t-small); color: var(--muted); }
+}
+</style>
+
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="system-paths"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const field = root.querySelector('fieldset');
+  for (const radio of field.querySelectorAll('input')) radio.name = root.id + '-choice';
+  const samples = [...root.querySelectorAll('.samples li')];
+  function select(station, announce) {
+    root.querySelectorAll('[data-station]').forEach(el => {
+      el.toggleAttribute('data-active', el.dataset.station === station);
+    });
+    if (announce) {
+      const sample = samples.find(el => el.dataset.station === station);
+      root.querySelector('.spoken').textContent = 'Station ' + station + ', ' +
+        sample.querySelector('.sample-value').textContent + ', ' + sample.querySelector('span').textContent;
+    }
+  }
+  field.addEventListener('change', event => select(event.target.value, true));
+  select(field.querySelector(':checked').value, false);
+  field.hidden = false;
+  root.dataset.bound = "";
+}
+</script>

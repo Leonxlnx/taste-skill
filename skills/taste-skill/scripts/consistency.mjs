@@ -2286,6 +2286,8 @@ function measure(opt) {
   for (const el of allEls) {
     const tag = TU(el);
     if (el instanceof SVGElement && tag !== 'SVG') continue;
+    // an expressive page's art over an edge (a crossing, a sticker) is no box of its section (references/expressive.md)
+    if (el.closest('[data-crossing], [data-sticker]')) continue;
     const z = zoneOf(el); if (z === null) continue;
     if (typeof z === 'number' && (el === S[z].el || inFixed(el, S[z].el))) continue;
     if (!visible(el) || srOnly(el)) continue;
@@ -2766,7 +2768,8 @@ function measure(opt) {
       if (!c.matches('header.nav, main, footer.closing, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `One <${c.tagName.toLowerCase()}> sits outside the four allowed page containers, so move it into the header, main, footer or action bar.`));
     }
     for (const s of S) {
-      const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k));
+      // (an expressive page's crossing art is no layer of the section: references/expressive.md)
+      const kids = [...s.el.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && !k.matches('[data-crossing], [data-sticker]'));
       // (2.5.2: the place hero's photograph is in the flow in its band, split and name forms: layout.css 0b)
       const inflow = kids.filter((k) => !/absolute|fixed/.test(cs(k).position) && !picImg(k) && !window.lyRules.edgePicture(k) && !(k.matches('.hero__bg') && s.el.matches('.hero--place')));
       const wraps = inflow.filter((k) => k.classList.contains('wrap'));
@@ -4699,6 +4702,11 @@ function lib(itemContext) {
   const SKIP = new Set(['SCRIPT', 'STYLE', 'LINK', 'META', 'NOSCRIPT', 'TEMPLATE', 'BR', 'WBR', 'SOURCE', 'TRACK', 'HEAD', 'TITLE', 'PARAM', 'AREA', 'MAP', 'DATALIST', 'OPTION', 'OPTGROUP']);
   const INTER = 'a[href], button, [role="button"], input[type="submit"], input[type="button"], input[type="reset"], summary';
   const LOOK_TAGS = new Set(['SPAN', 'DIV', 'P', 'B', 'STRONG', 'EM', 'SMALL', 'LABEL', 'I', 'MARK']);
+  // an expressive page (<html data-temper="lively|loud">, references/expressive.md) and its art: a sticker or a
+  // crossing is a picture over the layout, judged by tilt, overlap-text and contrast, never as a box of the layout
+  const isArt = (el) => !!(el && el.closest && el.closest('[data-crossing], [data-sticker]'));
+  const TEMPER = () => String(document.documentElement.getAttribute('data-temper') || '').toLowerCase();
+  const EXPRESSIVE = () => /^(lively|loud)$/.test(TEMPER());
   let nextId = 1; const ids = new WeakMap(); const els = new Map();
   const idOf = (el) => { let i = ids.get(el); if (!i) { i = nextId++; ids.set(el, i); els.set(i, el); } return i; };
   const seen = { tilt: new WeakSet(), spill: new WeakSet(), cut: new WeakSet(), grid: new WeakSet(), stagger: new WeakSet(), contrast: new WeakSet(), rows: new WeakSet() };
@@ -5107,7 +5115,7 @@ function lib(itemContext) {
   function extent(sec, vw) {
     let top = Infinity, bottom = -Infinity;
     for (const e of sec.querySelectorAll('*')) {
-      if (SKIP.has(e.tagName) || isSvgPart(e)) continue;
+      if (SKIP.has(e.tagName) || isSvgPart(e) || isArt(e)) continue;
       const r = e.getBoundingClientRect();
       if (r.width < 2 || r.height < 2 || !shown(e, r)) continue;
       if (inFixed(e)) continue;
@@ -5192,27 +5200,93 @@ function lib(itemContext) {
   }
 
   // ------------------------------------------------ checks, each element judged once, when it is first seen whole
+  // reading-face (every page): reading text (a paragraph, an item, an answer of 10 words or more) never in a pixel, hand,
+  // blackletter, condensed or arcade display face, never in capitals. display-type: capitals on a heading only as an h1
+  // or h2 in a display face drawn for them (start.mjs prints --display-case) at 24px and up on a lively or loud page;
+  // a heading at 700 or more only in an expressive face at its own weight there; an expressive h1 160px at most, and
+  // two [data-lettering] words a page at most (references/expressive.md)
+  let letteringTold = false;
+  function checkTypeTemper(view, first, out) {
+    const root = CS(document.documentElement), exp = EXPRESSIVE();
+    const cls = root.getPropertyValue('--display-class').trim(), capsFace = root.getPropertyValue('--display-case').trim() === 'uppercase';
+    const famOf = (v) => String(v || '').split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+    const dfam = famOf(root.getPropertyValue('--font-display')), dw = parseInt(root.getPropertyValue('--display-weight'), 10) || 400;
+    const loudFace = /^(pixel|hand|blackletter|condensed|arcade)$/.test(cls);
+    const upperOf = (c, txt) => c.textTransform === 'uppercase' || (/\p{Lu}/u.test(txt) && txt === txt.toUpperCase() && !/\p{Ll}/u.test(txt));
+    for (const [el, r] of view) {
+      const head = el.matches(HEADS), read = !head && el.matches('p, li, dd, blockquote, td, figcaption, label');
+      if (!head && !read) continue;
+      if (inDrawn(el) || el.closest('[aria-hidden="true"], header, nav, [data-ui], .ui[class*=ui-], [data-sticker], [data-moment]') || (read && el.closest('[data-lettering]'))) continue;
+      if (!first(seen.read, el, r)) continue;
+      const c = CS(el), txt = String(el.innerText || '').trim().replace(/\s+/g, ' '), words = txt ? txt.split(' ').length : 0, fam = famOf(c.fontFamily);
+      if (read) {
+        if (el.closest(HEADS) || words < 10) continue;
+        if (loudFace && fam === dfam) add(out, 'reading-face', 'FAIL', el, `${words} words of reading text in the display face (${fam}, a ${cls} face): a display face stops at the heading; set it in the text face`, [r]);
+        else if (upperOf(c, txt)) add(out, 'reading-face', 'FAIL', el, `${words} words of reading text in capitals: reading text stays in sentence case`, [r]);
+        continue;
+      }
+      const fs = parseFloat(c.fontSize) || 0, wt = parseInt(c.fontWeight, 10) || 400;
+      if (txt.length >= 2 && upperOf(c, txt) && /\p{L}{2}/u.test(txt)) {
+        const ok = exp && capsFace && el.matches('h1, h2') && fs >= 24 && fam === dfam;
+        if (!ok) add(out, 'display-type', 'WARN', el, `"${txt.slice(0, 30)}" is set in capitals: sentence case, except an h1 or h2 in a display face drawn for capitals, 24px and up, on a lively or loud page`, [r]);
+      }
+      if (wt >= 700 && fs >= 24 && !(exp && cls && fam === dfam && wt === dw)) add(out, 'display-type', 'WARN', el, `a ${Math.round(fs)}px heading at weight ${wt}: headings take 400 or 500, or an expressive face's own weight on a lively or loud page`, [r]);
+      if (exp && el.matches('h1') && fs > 160.5) add(out, 'display-type', 'FAIL', el, `the h1 is ${Math.round(fs)}px: an expressive page's h1 reaches 160px at most`, [r]);
+    }
+    if (!letteringTold) {
+      const L = [...document.querySelectorAll('[data-lettering]')].filter((e) => { const q = e.getBoundingClientRect(); return q.width > 2 && q.height > 2; });
+      if (L.length && !exp) { letteringTold = true; add(out, 'display-type', 'WARN', L[0], `lettering ([data-lettering]) on a quiet page: the name set as lettering is a lively or loud page's move`, [L[0].getBoundingClientRect()]); }
+      else if (L.length > 2) { letteringTold = true; add(out, 'display-type', 'FAIL', L[2], `${L.length} off-scale lettering words ([data-lettering]): two a page at most, the hero and the close`, L.map((e) => e.getBoundingClientRect())); }
+    }
+  }
+
+  // tilt: nothing turns on a quiet page. On a lively or loud one (<html data-temper>, references/expressive.md) a
+  // [data-sticker] may turn up to 8 degrees, two a screen, never over a control; a paragraph or a control never turns,
+  // and no page shows more than two turned things on one screen
+  const tiltSeen = new Set();
   function checkTilt(view, first, out) {
     const bent = new Map(); // letters or words of one block turned one by one (text set on an arc)
+    const exp = EXPRESSIVE(), vh = innerHeight, turned = [];
+    const READ = 'p, li, blockquote, dd, label, td, a[href], button, input, select, textarea, [role="button"]';
+    const controls = view.filter(([e]) => e.matches(INTER + ', input, select, textarea')).map(([, q]) => q);
     for (const [el, r] of view) {
-      if (!first(seen.tilt, el, r)) continue;
       const t = tiltC(el); if (!tilted(t)) continue;
       let up = false; for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) if (tilted(tiltC(a))) { up = true; break; }
       if (up) continue;
       // a letter or word of a dealt moment's split statement turned on its way into the line (letters-assemble) is the
       // moment's own motion, wherever a stop caught it; its still is judged under reduced motion
       if (el.closest('[data-moment][data-moment-mounted] .mo-w')) continue;
+      const sticker = el.matches('[data-sticker]');
+      const onScreen = (r.top + r.bottom) / 2 > 0 && (r.top + r.bottom) / 2 < vh;
+      if (sticker) {
+        if (onScreen) turned.push([el, r]);
+        if (!first(seen.tilt, el, r)) continue;
+        const ang = Math.abs(t.ang);
+        if (!exp) add(out, 'tilt', 'FAIL', el, `rotated ${t.ang.toFixed(1)}°: a sticker turns only on a lively or loud page (<html data-temper>, references/expressive.md); a quiet page keeps everything straight`, [r]);
+        else if (t.d3 || Math.abs(t.skew) > 0.5 || ang > 8.5) add(out, 'tilt', 'FAIL', el, `${t.d3 ? 'turned in 3D' : Math.abs(t.skew) > 0.5 ? `skewed ${t.skew.toFixed(1)}°` : `rotated ${t.ang.toFixed(1)}°`}: a sticker turns in the plane, 8° at most`, [r]);
+        else if (el.querySelector(READ) || String(el.textContent || '').trim().split(/\s+/).length > 6) add(out, 'tilt', 'FAIL', el, `a turned sticker holds reading text or a control: a sticker is 2 to 4 words of art, its words repeated as real text nearby`, [r]);
+        else { const hit = controls.find((q) => Math.min(q.right, r.right) - Math.max(q.left, r.left) > 4 && Math.min(q.bottom, r.bottom) - Math.max(q.top, r.top) > 4); if (hit) add(out, 'tilt', 'FAIL', el, `a turned sticker lies over a control's hit area: move it off the button or link`, [r, Object.assign({}, hit, { ref: true })]); }
+        continue;
+      }
       // letters of a word set one by one (aria-hidden copies of a heading count: they are what shows)
-      if (r.width < 48 && r.height < 48 && ownText(el) && !el.closest('[data-ui], .ui[class*=ui-], [data-fx], [data-fx-mounted], [role="img"]')) { const b = el.closest(HEADS + ', p') || el.parentElement; if (!bent.has(b)) bent.set(b, []); bent.get(b).push(r); continue; }
+      if (r.width < 48 && r.height < 48 && ownText(el) && !el.closest('[data-ui], .ui[class*=ui-], [data-fx], [data-fx-mounted], [role="img"]')) { if (!first(seen.tilt, el, r)) continue; const b = el.closest(HEADS + ', p') || el.parentElement; if (!bent.has(b)) bent.set(b, []); bent.get(b).push(r); continue; }
       if (r.width < 48 && r.height < 48) continue; // an icon or an arrow
       const btn = el.matches(INTER) ? el : null;
       if ((btn && buttonLook(btn, true)) || (LOOK_TAGS.has(el.tagName) && buttonLook(el, false))) continue; // judged as a button
       if (el.getAnimations && el.getAnimations().some((a) => { try { return a.effect.getComputedTiming().iterations === Infinity; } catch { return false; } })) continue; // a spinner
       const quarter = !t.d3 && Math.abs(t.skew) <= 0.5 && Math.abs(Math.abs(t.ang) % 90) < 0.5;
+      if (onScreen && !quarter) turned.push([el, r]);
+      if (!first(seen.tilt, el, r)) continue;
       const how = t.d3 ? 'turned in 3D' : Math.abs(t.skew) > 0.5 ? `skewed ${t.skew.toFixed(1)}°` : `rotated ${t.ang.toFixed(1)}°`;
-      add(out, 'tilt', quarter ? 'WARN' : 'FAIL', el, how, [r]);
+      const reading = el.matches(READ) || !!el.querySelector(READ);
+      add(out, 'tilt', quarter ? 'WARN' : 'FAIL', el, how + (reading && !quarter ? ': a paragraph or a control never turns, on any page' : exp && !quarter ? ': on a lively or loud page only a [data-sticker] turns' : ''), [r]);
     }
     for (const [b, rs] of bent) if (rs.length >= 3) add(out, 'tilt', 'FAIL', b, `${rs.length} letters or words of this text are turned one by one (text set on a curve or a slant)`, rs.slice(0, 12));
+    // more than two turned things on one screen: never, on any page
+    if (turned.length > 2) {
+      const key = turned.map(([e]) => idOf(e)).sort().join(',');
+      if (!tiltSeen.has(key)) { tiltSeen.add(key); add(out, 'tilt', 'FAIL', turned[2][0], `${turned.length} turned things on one screen: two at most (stickers, tags or cards), never more`, turned.map(([, q]) => q)); }
+    }
     // text set on a curve as an SVG textPath (a heading on an arch, a rotating badge), outside the nav and drawn mocks
     for (const [el, r] of view) {
       if (el.tagName.toLowerCase() !== 'svg' || seen.curve.has(el) || el.closest('[data-ui], .ui[class*=ui-], [data-fx], [data-fx-mounted]') || inFixed(el) || inChrome(el)) continue;
@@ -5820,7 +5894,7 @@ function lib(itemContext) {
   const endless = (a) => !!(a.getAnimations && a.getAnimations().some((x) => { try { return x.effect.getComputedTiming().iterations === Infinity; } catch { return false; } }));
   const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b); };
   const told = { piece: new WeakSet(), box: new WeakSet(), btn: new WeakSet(), panel: new WeakSet() };
-  Object.assign(seen, { overlap: new WeakSet(), tops: new WeakSet(), orphan: new WeakSet(), cards: new WeakSet(), frag: new WeakSet(), photo: new WeakSet(), centre: new WeakSet(), hlines: new WeakSet(), curve: new WeakSet() });
+  Object.assign(seen, { read: new WeakSet(), overlap: new WeakSet(), tops: new WeakSet(), orphan: new WeakSet(), cards: new WeakSet(), frag: new WeakSet(), photo: new WeakSet(), centre: new WeakSet(), hlines: new WeakSet(), curve: new WeakSet() });
   // a side neighbour: a sibling box next to it that shares at least half its height (a column of a split or a grid)
   function sideBy(a) {
     const p = a.parentElement; if (!p) return false;
@@ -5925,6 +5999,22 @@ function lib(itemContext) {
       if (!hit || told.box.has(hit.box)) continue;
       told.box.add(hit.box);
       add(out, 'overlap-text', 'FAIL', hit.box, `lies over the text "${label(el).slice(0, 40)}" (${sel(el).split(' > ').slice(-2).join(' > ')})`, [hit.box.getBoundingClientRect(), Object.assign({}, hit.L, { ref: true })]);
+    }
+    // an expressive page's art takes no pointer, so the probe above never finds it: a crossing or a sticker is laid
+    // against every line of text and every control on the screen (references/expressive.md: never over text or a control)
+    for (const [art, ar] of view) {
+      if (!art.matches('[data-crossing], [data-sticker]') || told.box.has(art) || inFixed(art)) continue;
+      for (const [el, r] of view) {
+        if (art.contains(el) || el.contains(art) || inFixed(el) || inDrawn(el) || el.closest('[data-crossing], [data-sticker]')) continue;
+        const ctl = el.matches(INTER + ', input, select, textarea');
+        if (!ctl && !ownText(el)) continue;
+        const boxes = ctl ? [r] : lines(el);
+        const hit = boxes.find((L) => Math.min(ar.right, L.right) - Math.max(ar.left, L.left) >= 4 && Math.min(ar.bottom, L.bottom) - Math.max(ar.top, L.top) >= 4);
+        if (!hit) continue;
+        told.box.add(art);
+        add(out, 'overlap-text', 'FAIL', art, `${art.matches('[data-crossing]') ? 'crossing art' : 'a sticker'} lies over ${ctl ? 'the control' : 'the text'} "${label(el).slice(0, 40)}": art crosses a ground edge, never text, a control or a price`, [ar, Object.assign({}, hit, { ref: true })]);
+        break;
+      }
     }
   }
 
@@ -6457,7 +6547,7 @@ function lib(itemContext) {
     fresh();
     const vw = vwNow(), vh = innerHeight;
     const out = { stop, scrollY: Math.round(scrollY), vw, vh, maxScroll: Math.max(0, Math.round(document.scrollingElement.scrollHeight - vh)), docWidth: document.documentElement.scrollWidth, findings: [], grid: [], buttons: [], contrast: [], sections: [], pairs: [], nav: null, navSig: null, grounds: [], photos: [], credits: [], fakes: [], centred: [], ink: [], body: [], visuals: [], errors: [] };
-    const view = [];
+    let view = [];
     for (const el of document.body.querySelectorAll('*')) {
       if (SKIP.has(el.tagName) || isSvgPart(el)) continue;
       const r = el.getBoundingClientRect();
@@ -6467,7 +6557,12 @@ function lib(itemContext) {
     }
     const first = (set, el, r) => { if (set.has(el)) return false; if ((r.top >= -1 && r.bottom <= vh + 1) || r.top <= vh * 0.5) { set.add(el); return true; } return false; };
     const run = (name, fn) => { try { fn(); } catch (e) { out.errors.push(name + ': ' + (e && e.stack ? e.stack.split('\n').slice(0, 2).join(' ') : e)); } };
-    run('tilt', () => checkTilt(view, first, out));
+    // an expressive page's art (references/expressive.md): a sticker and a crossing are pictures laid over the layout,
+    // so the layout's own checks (edges, spill, grid, buttons) read the page without them; tilt, overlap-text and the
+    // contrast checks still read them
+    const full = view;
+    run('tilt', () => checkTilt(full, first, out));
+    view = view.filter(([el]) => !isArt(el));
     run('spill', () => checkSpill(view, first, out, vw));
     run('marquee', () => checkMarquee(view, out, vw, vh));
     run('cut', () => checkCut(view, first, out, vw, vh));
@@ -6476,23 +6571,24 @@ function lib(itemContext) {
     run('heading-lines', () => checkHeadingLines(view, first, out, vw));
     run('rows', () => checkRows(view, first, out, vw));
     run('buttons', () => collectButtons(view, out, vw, vh));
-    run('contrast', () => contrastCands(view, first, out, vw, vh));
+    run('contrast', () => contrastCands(full, first, out, vw, vh));
     run('sections', () => sectionData(out, vw, vh));
     if (stop <= 1) run('nav', () => { out.nav = navInfo(vw, vh); });
     run('nav-sig', () => { out.navSig = navSig(vw, vh, stop); });
     run('fold', () => { if (stop === 0) checkFold(view, out, vw, vh); });
-    run('overlap', () => checkOverlap(view, first, out, vw, vh));
+    run('overlap', () => checkOverlap(full, first, out, vw, vh));
     run('under-chrome', () => checkUnderChrome(view, out, vw, vh));
     run('collide', () => checkCollide(view, out, vw, vh));
     run('tap-size', () => checkTaps(view, out, vw, vh));
     run('top-stagger', () => checkTopStagger(view, first, out));
+    run('reading-face', () => checkTypeTemper(view, first, out));
     run('orphan', () => checkOrphans(view, first, out));
     run('card-visual', () => checkCardGroups(view, first, out, vw));
     run('fragments', () => checkFragments(view, first, out, vw, vh));
     run('photos', () => collectPhotos(view, first, out, vw, vh));
     run('fakes', () => collectFakes(view, out, vw, vh));
     run('centre', () => checkCentre(view, first, out, vw));
-    run('ink', () => inkCands(view, out, vw, vh));
+    run('ink', () => inkCands(full, out, vw, vh));
     run('visuals', () => { out.visuals = visualCands(view, vw, vh); });
     run('fades', () => { out.fades = fadeCands(view, vw, vh); });
     return out;
@@ -8054,7 +8150,7 @@ function lib(itemContext) {
       // what ends the section: the lowest box or line in it, and whether it bleeds (a picture the width of the page)
       let best = null, bd = -1e9;
       for (const e of sec.querySelectorAll('*')) {
-        if (SKIP.has(e.tagName) || isSvgPart(e) || inFixed(e)) continue;
+        if (SKIP.has(e.tagName) || isSvgPart(e) || inFixed(e) || isArt(e)) continue;
         let q = e.getBoundingClientRect(); if (q.width < 2 || q.height < 2 || !shown(e, q)) continue;
         if (!(MEDIA.has(e.tagName) || ownText(e) || e.matches(INTER) || quickKind(e))) continue;
         // measured as the extent measures it: a line of words by its line box, a box by its edge
@@ -8671,7 +8767,7 @@ function lib(itemContext) {
     fresh(); notePrints();
     const vw = vwNow(), vh = innerHeight, S = sectionsList();
     const visible = (e) => { const r = e.getBoundingClientRect(); return r.width >= 1 && r.height >= 1 && shown(e, r); };
-    const out = { prints: [...prints.values()], grounds: [], splits: [], hours: [], toggle: null };
+    const out = { prints: [...prints.values()], grounds: [], splits: [], hours: [], toggle: null, temper: TEMPER() };
     // grounds: the flat grounds the page lays across its width (a section, a band, a footer); a picture, a gradient or an
     // effect is the lit ground of its visual, not one more ground
     { const seen = [];
@@ -9262,7 +9358,10 @@ const FIX = {
   'progress-bar': 'show the figure in words or as a number ("2 of 5 done"), not as a bar that fills',
   'nav-current': 'mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls',
   'photo-print': 'show the photograph plain (in colour, or greyed into the palette with CSS): no halftone, dither or engraving over it',
-  grounds: 'three flat grounds at most (the base, one surface, one inverse): lay the other bands on one of them',
+  grounds: 'three flat grounds at most (the base, one surface, one inverse), four on a lively or loud page: lay the other bands on one of them',
+  'reading-face': 'set reading text in the text face, in sentence case: a display face and capitals stop at the heading',
+  'display-type': 'headings in sentence case at 400 or 500; capitals, a heavy weight and lettering only on a lively or loud page in the dealt expressive face (references/expressive.md)',
+  temper: 'take the expressive move off this quiet page, or deal the page lively or loud (start.mjs plan --temper) and name the move\'s source',
   'split-align': 'set every split one way: the text to the top of its visual, or every one centred on it',
   'fact-agree': 'say each fact once, or the same everywhere: one opening time per day, one price per thing',
   'font-load': 'load every family the type asks for: name it in the font link as start.mjs prints it, spelt as Google Fonts spells it, or ask for a family the page loads',
@@ -9513,6 +9612,12 @@ function moreFindings(M, PG, first, later, vw, vh, T) {
     }
   }
   if (!M) return;
+  // grounds: three flat grounds at most on a quiet page (the base, one surface, one inverse); four on a lively or loud
+  // one, a chapter palette's fields included (references/expressive.md)
+  if (first && Array.isArray(M.grounds)) {
+    const exp = /^(lively|loud)$/.test(M.temper || ''), lim = exp ? 4 : 3;
+    if (M.grounds.length > lim) push('grounds', 'WARN', M.grounds[lim], `${M.grounds.length} flat grounds across the page (${M.grounds.map((g) => g.hex).join(', ')}): ${lim} at most${exp ? ' on a lively or loud page' : ' on a quiet page (four on a lively or loud one)'}`, { fix: FIX.grounds });
+  }
   // product-shown (house rule: a product page never hides its product): on a product page, no picture says it shows the product
   // (no alt text, picture label, object or print names its noun or a product name): mood stock stands in for it
   // words a screen (house rule: professional sites say little; the inspector counted 117 on a fintech page): on a tech, gaming or software page, a
@@ -10811,7 +10916,20 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       const t = EX.tabs.find((x) => fills.length >= 1 && !fills.some((f) => near(f, x.fill)));
       if (t) F.push(Object.assign({ check: 'button-styles', sev: 'WARN', id: t.id, sel: t.sel, text: t.text, msg: `the selected tab "${t.text.slice(0, 24)}" is drawn as a filled ${t.shape} in ${t.fill}${t.via ? ` (${t.via})` : ''}, a fill none of the page's buttons use (${fills.slice(0, 3).join(', ')}): it reads as one more button style`, fix: 'draw the selected tab as a line under its word, or in the primary button\'s fill' }, place(t.doc)));
     }
-    for (const st of clusterLooks(all.filter((b) => b.slant))) {
+    // an expressive page's dealt button family (references/expressive.md): the ribbon's notched ends are its shape
+    const XP = await tab.eval(`(() => { const h = document.documentElement, a = (k) => h.getAttribute(k) || '';
+      const S = [...document.querySelectorAll('main > section, main > .section')];
+      return { temper: a('data-temper'), buttons: a('data-buttons'), edge: a('data-edge'), texture: a('data-texture'),
+        crossing: document.querySelectorAll('[data-crossing]').length, lettering: document.querySelectorAll('[data-lettering]').length,
+        crowded: S.filter((s) => s.querySelectorAll(':scope > [data-crossing], :scope > .wrap [data-crossing]').length > 1).map((s) => s.id || s.className).slice(0, 3) }; })()`).catch(() => ({}));
+    const xpOn = /^(lively|loud)$/.test(XP.temper || '');
+    if (first) {
+      const moves = [XP.edge && `data-edge="${XP.edge}"`, XP.texture && `data-texture="${XP.texture}"`, /^(push|bevel|ribbon|offset)$/.test(XP.buttons || '') && `data-buttons="${XP.buttons}"`, XP.crossing && `${XP.crossing} [data-crossing]`].filter(Boolean);
+      if (!xpOn && moves.length) F.push({ check: 'temper', sev: 'WARN', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `expressive moves on a quiet page (no data-temper="lively|loud" on <html>): ${moves.join(', ')}` });
+      if (xpOn && XP.edge && !/^(pixel|torn|wave|scallop|saw|diagonal)$/.test(XP.edge)) F.push({ check: 'temper', sev: 'WARN', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `data-edge="${XP.edge}" is no edge of the kit: pixel, torn, wave, scallop, saw or diagonal, one a page` });
+      if (xpOn && XP.crowded && XP.crowded.length) F.push({ check: 'temper', sev: 'WARN', id: 0, sel: '(the page)', text: '', stop: null, rects: [], msg: `more than one crossing in a section (${XP.crowded.join(', ')}): one crossing a boundary at most` });
+    }
+    for (const st of clusterLooks(all.filter((b) => b.slant && !(xpOn && XP.buttons === 'ribbon' && b.slant === 'cut by clip-path')))) {
       const e1 = st.items[0];
       F.push({ check: 'button-shape', sev: 'FAIL', id: e1.id, sel: e1.sel, text: e1.text, stop: e1.stop, rects: [e1.rect], msg: `${st.slant} button${st.items.length > 1 ? ` (${st.items.length} like it: ${[...new Set(st.items.map((i) => `"${i.text}"`))].slice(0, 4).join(', ')})` : ''}` });
     }

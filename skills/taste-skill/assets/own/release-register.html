@@ -1,0 +1,67 @@
+<section class="section own" id="release-register" data-own="release-register" aria-labelledby="release-register-title" data-assumed>
+  <div class="wrap">
+    <h2 id="release-register-title">Survey changes and files</h2>
+    <p class="t-lead measure">North Quay Chart Office publishes a notice for each chart revision.</p>
+<div class="register"><h3>2026</h3><ol>
+      <li id="quay-1-4" tabindex="-1"><time datetime="2026-11-12">12 Nov</time>
+        <div class="change"><span>Edition 1.4</span><h4>Buoy B7</h4><p>Moved 30 m east.</p></div>
+        <div class="documents"><a href="#quay-1-4-notice">Notice 1.4 <span>HTML</span></a><a download="north-quay-1.4.csv" href="data:text/csv;charset=utf-8,edition%2Cobject%2Cchange%0D%0A1.4%2Cbuoy%20B7%2Cshifted%2030%20m%20east%0D%0A">Data 1.4 <span>CSV</span></a></div></li>
+      <li id="quay-1-3" tabindex="-1"><time datetime="2026-09-04">4 Sep</time>
+        <div class="change"><span>Edition 1.3</span><h4>West pier light</h4><p>Removed from the chart.</p></div>
+        <div class="documents"><a href="#quay-1-3-notice">Notice 1.3 <span>HTML</span></a><p>No data file issued</p></div></li>
+      <li id="quay-1-2" tabindex="-1"><time datetime="2026-06-18">18 Jun</time>
+        <div class="change"><span>Edition 1.2</span><h4>Seasonal mooring</h4><p>Marked on the chart.</p></div>
+        <div class="documents"><a href="#quay-1-2-notice">Notice 1.2 <span>HTML</span></a><a download="north-quay-1.2.csv" href="data:text/csv;charset=utf-8,edition%2Cobject%2Cchange%0D%0A1.2%2Cseasonal%20mooring%2Cmarked%20on%20chart%0D%0A">Data 1.2 <span>CSV</span></a></div></li>
+    </ol></div>
+    <article class="local-note" tabindex="-1" id="quay-1-4-notice"><h3>Chart notice 1.4</h3><p><time datetime="2026-11-12">12 Nov 2026</time> · Edition 1.4</p><p>Buoy B7 moved 30 m east.</p><a href="#quay-1-4">Back to edition 1.4</a></article>
+    <article class="local-note" tabindex="-1" id="quay-1-3-notice"><h3>Chart notice 1.3</h3><p><time datetime="2026-09-04">4 Sep 2026</time> · Edition 1.3</p><p>West pier light removed from the chart.</p><a href="#quay-1-3">Back to edition 1.3</a></article>
+    <article class="local-note" tabindex="-1" id="quay-1-2-notice"><h3>Chart notice 1.2</h3><p><time datetime="2026-06-18">18 Jun 2026</time> · Edition 1.2</p><p>Seasonal mooring marked on the chart.</p><a href="#quay-1-2">Back to edition 1.2</a></article>
+  </div>
+</section>
+
+<style>
+[data-own="release-register"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="release-register"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="release-register"] .register { font-variant-numeric: tabular-nums; }
+[data-own="release-register"] .wrap > p + .register { margin-top: var(--s-6); }
+[data-own="release-register"] .register h3 { margin-bottom: var(--s-4); }
+[data-own="release-register"] ol { border-bottom: 1px solid var(--line); }
+[data-own="release-register"] li { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); padding-block: var(--s-4); border-top: 1px solid var(--line); }
+[data-own="release-register"] li time { grid-column: span 2; }
+[data-own="release-register"] .change { grid-column: span 6; }
+[data-own="release-register"] .change > span { font-size: var(--t-small); color: var(--muted); }
+[data-own="release-register"] .change h4 { font-size: var(--t-h3); margin-block: var(--s-1); }
+[data-own="release-register"] .documents { grid-column: span 4; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-content: center; gap: var(--s-2); }
+[data-own="release-register"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="release-register"] .documents a { gap: var(--s-2); width: fit-content; }
+[data-own="release-register"] .documents span { font-size: var(--t-small); }
+[data-own="release-register"] .documents p { color: var(--muted); font-size: var(--t-small); }
+[data-own="release-register"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="release-register"] .local-note:target { display: block; }
+[data-own="release-register"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  [data-own="release-register"] li { grid-template-columns: auto 1fr; gap: var(--s-1) var(--s-3); align-items: baseline; }
+  [data-own="release-register"] li time { grid-column: 1; }
+  [data-own="release-register"] .change { display: contents; }
+  [data-own="release-register"] .change > span { grid-column: 2; }
+  [data-own="release-register"] .change h4, [data-own="release-register"] .change p, [data-own="release-register"] .documents { grid-column: 1 / -1; }
+  [data-own="release-register"] .documents { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+}
+</style>
+
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="release-register"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  root.dataset.bound = "";
+}
+</script>

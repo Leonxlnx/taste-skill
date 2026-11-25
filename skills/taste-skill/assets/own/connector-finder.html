@@ -1,0 +1,117 @@
+<section class="section own" id="connector-finder" data-own="connector-finder" aria-labelledby="connector-finder-title" data-assumed>
+  <div class="wrap">
+    <h2 id="connector-finder-title">Find an instrument connector</h2>
+    <p class="t-lead measure">Wharf Ledger imports readings from scales, temperature loggers and counters.</p>
+<div class="directory">
+      <div class="filter-box" hidden><label class="field">Instrument name<input type="search" placeholder="Search by name"></label>
+        <label class="field">Instrument type<select><option>All types</option><option>Scale</option><option>Temperature logger</option><option>Counter</option></select></label>
+        <button class="clear press" type="button">Clear filters</button></div>
+      <div class="matches"><p class="count" role="status" aria-live="polite">6 connectors</p>
+        <ul><li data-name="Kiln" data-type="Scale"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Scale"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><path d="M7 17h34l-4 5H11Zm6 5 -5 13h32l-5 -13M17 27h14v5H17Z"/></g></svg><h3>Kiln</h3></div><dl><div><dt>Type</dt><dd>Scale</dd></div><div><dt>Connection</dt><dd>USB</dd></div></dl><a id="connector-kiln" href="#setup-kiln">Kiln setup</a></li>
+          <li data-name="Pike" data-type="Scale"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Scale"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><path d="M7 17h34l-4 5H11Zm6 5 -5 13h32l-5 -13M17 27h14v5H17Z"/></g></svg><h3>Pike</h3></div><dl><div><dt>Type</dt><dd>Scale</dd></div><div><dt>Connection</dt><dd>Serial</dd></div></dl><a id="connector-pike" href="#setup-pike">Pike setup</a></li>
+          <li data-name="Wren" data-type="Temperature logger"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Temperature logger"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="12" y="7" width="25" height="32" rx="3"/><path d="M17 12h15v9H17Zm2 16h4m-4 4h9m7 -5h8v8"/></g></svg><h3>Wren</h3></div><dl><div><dt>Type</dt><dd>Temperature logger</dd></div><div><dt>Connection</dt><dd>USB</dd></div></dl><a id="connector-wren" href="#setup-wren">Wren setup</a></li>
+          <li data-name="Heron" data-type="Temperature logger"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Temperature logger"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="12" y="7" width="25" height="32" rx="3"/><path d="M17 12h15v9H17Zm2 16h4m-4 4h9m7 -5h8v8"/></g></svg><h3>Heron</h3></div><dl><div><dt>Type</dt><dd>Temperature logger</dd></div><div><dt>Connection</dt><dd>CSV</dd></div></dl><a id="connector-heron" href="#setup-heron">Heron setup</a></li>
+          <li data-name="Sedge" data-type="Counter"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Counter"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="4" y="12" width="40" height="25" rx="4"/><path d="M9 18h23v12H9Zm8 0v12m8 -12v12M36 20h3m-3 6h3M17 12V8h12v4"/></g></svg><h3>Sedge</h3></div><dl><div><dt>Type</dt><dd>Counter</dd></div><div><dt>Connection</dt><dd>Serial</dd></div></dl><a id="connector-sedge" href="#setup-sedge">Sedge setup</a></li>
+          <li data-name="Flint" data-type="Counter"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Counter"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="4" y="12" width="40" height="25" rx="4"/><path d="M9 18h23v12H9Zm8 0v12m8 -12v12M36 20h3m-3 6h3M17 12V8h12v4"/></g></svg><h3>Flint</h3></div><dl><div><dt>Type</dt><dd>Counter</dd></div><div><dt>Connection</dt><dd>CSV</dd></div></dl><a id="connector-flint" href="#setup-flint">Flint setup</a></li></ul>
+        <div class="empty" hidden><p>No connectors match these filters.</p><button class="clear press" type="button">Clear filters</button></div>
+      </div>
+    </div>
+    <article class="local-note" id="setup-kiln" tabindex="-1"><h3>Kiln setup</h3><p>Connect the scale over USB. Tare the platform, then import the stable weight in grams.</p><a href="#connector-kiln">Back to Kiln</a></article>
+    <article class="local-note" id="setup-pike" tabindex="-1"><h3>Pike setup</h3><p>Connect the serial lead and select the scale port. Import one weight in grams per reading.</p><a href="#connector-pike">Back to Pike</a></article>
+    <article class="local-note" id="setup-wren" tabindex="-1"><h3>Wren setup</h3><p>Connect USB and import the timestamp and temperature in °C.</p><a href="#connector-wren">Back to Wren</a></article>
+    <article class="local-note" id="setup-heron" tabindex="-1"><h3>Heron setup</h3><p>Export a CSV from the logger. Map its timestamp and temperature in °C before importing.</p><a href="#connector-heron">Back to Heron</a></article>
+    <article class="local-note" id="setup-sedge" tabindex="-1"><h3>Sedge setup</h3><p>Attach the serial lead. Select the counter port and import its cumulative pulse count.</p><a href="#connector-sedge">Back to Sedge</a></article>
+    <article class="local-note" id="setup-flint" tabindex="-1"><h3>Flint setup</h3><p>Choose the counter CSV and map its time and whole-number count columns.</p><a href="#connector-flint">Back to Flint</a></article>
+  </div>
+</section>
+
+<style>
+[data-own="connector-finder"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="connector-finder"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="connector-finder"] .directory { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
+[data-own="connector-finder"] .filter-box { grid-column: span 3; display: grid; gap: var(--s-4); }
+[data-own="connector-finder"] .matches { grid-column: 1 / -1; }
+[data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: span 9; }
+[data-own="connector-finder"] .count { font-size: var(--t-small); color: var(--muted); margin-bottom: var(--s-2); }
+[data-own="connector-finder"] .matches ul { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--card-gap); }
+[data-own="connector-finder"] li { min-width: 0; padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+[data-own="connector-finder"] .instrument { display: flex; gap: var(--s-3); align-items: center; }
+[data-own="connector-finder"] svg { width: var(--s-7); background: var(--surface); border-radius: var(--r-sm); }
+[data-own="connector-finder"] dl { margin: var(--s-4) 0 var(--s-1); }
+[data-own="connector-finder"] dl > div { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); justify-content: space-between; border-top: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="connector-finder"] dt { color: var(--muted); }
+[data-own="connector-finder"] dd { margin: 0; }
+[data-own="connector-finder"] .clear { justify-self: start; padding: 0 var(--s-3); min-height: var(--btn-h); border: 1px solid var(--line-strong); border-radius: var(--r-btn); background: var(--bg); cursor: pointer; }
+[data-own="connector-finder"] .empty { padding: var(--s-5); background: var(--surface); }
+[data-own="connector-finder"] .empty .clear { margin-top: var(--s-3); }
+[data-own="connector-finder"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="connector-finder"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="connector-finder"] .local-note:target { display: block; }
+[data-own="connector-finder"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 1023px) {
+  [data-own="connector-finder"] .matches ul { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  [data-own="connector-finder"] .filter-box { grid-column: span 4; }
+  [data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: span 8; }
+}
+@media (max-width: 639px) {
+  [data-own="connector-finder"] .filter-box, [data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: 1 / -1; }
+  [data-own="connector-finder"] .matches ul { grid-template-columns: minmax(0,1fr); gap: 0; border-top: 1px solid var(--line); }
+  [data-own="connector-finder"] li { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 0 var(--s-2); padding: var(--s-3) 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+  [data-own="connector-finder"] .instrument { grid-column: 1; }
+  [data-own="connector-finder"] li > a { grid-column: 2; grid-row: 1; }
+  [data-own="connector-finder"] dl { grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-block: var(--s-2) 0; }
+  [data-own="connector-finder"] dl > div { justify-content: flex-start; padding: 0; border: 0; font-size: var(--t-small); }
+  [data-own="connector-finder"] .filter-box { gap: var(--s-3); }
+}
+</style>
+
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="connector-finder"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const filters = root.querySelector('.filter-box');
+  const search = filters.querySelector('input');
+  const type = filters.querySelector('select');
+  const entries = [...root.querySelectorAll('[data-name]')];
+  const count = root.querySelector('.count');
+  function filter() {
+    const query = search.value.trim().toLowerCase();
+    let found = 0;
+    for (const entry of entries) {
+      const nameFits = entry.dataset.name.toLowerCase().includes(query);
+      const typeFits = type.selectedIndex === 0 || entry.dataset.type === type.value;
+      entry.hidden = !(nameFits && typeFits);
+      if (!entry.hidden) found++;
+    }
+    count.textContent = found + (found === 1 ? ' connector' : ' connectors');
+    root.querySelector('.empty').hidden = found > 0;
+  }
+  function clearFilters() {
+    search.value = '';
+    type.selectedIndex = 0;
+    filter();
+    search.focus();
+  }
+  search.addEventListener('input', filter);
+  type.addEventListener('change', filter);
+  search.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    search.value = '';
+    filter();
+  });
+  root.querySelectorAll('.clear').forEach(button => button.addEventListener('click', clearFilters));
+  filters.hidden = false;
+  filter();
+  root.dataset.bound = "";
+}
+</script>

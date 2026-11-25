@@ -1,0 +1,119 @@
+<section class="section own" id="edition-outlets" data-own="edition-outlets" aria-labelledby="edition-outlets-title">
+  <div class="wrap">
+    <h2 id="edition-outlets-title">Choose your edition of The Moss Signal</h2>
+    <p class="t-lead measure">Windglass Games offers a download and two boxed editions.</p>
+    <div class="picker" id="moss-editions" tabindex="-1" data-assumed>
+      <div class="choices" hidden>
+        <fieldset><legend>Edition</legend><div><label><input type="radio" name="moss-Edition" value="Download" checked><span>Download</span></label><label><input type="radio" name="moss-Edition" value="Boxed" ><span>Boxed</span></label><label><input type="radio" name="moss-Edition" value="Studio Box" ><span>Studio Box</span></label></div></fieldset>
+        <fieldset><legend>Platform</legend><div><label><input type="radio" name="moss-Platform" value="Computer" checked><span>Computer</span><small hidden>Unavailable</small></label><label><input type="radio" name="moss-Platform" value="Handheld" ><span>Handheld</span><small hidden>Unavailable</small></label></div><p class="availability"></p></fieldset>
+      </div>
+      <div class="packs">
+        <article data-price="18"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Drawstring game pouch"><path d="M77 53l14-9-4-14 20 5 17-6 4 13 13 8-7 13 15 57q1 13-16 15H64q-16-4-12-18l21-57z" fill="var(--ink)"/><path d="M78 53q21 9 55 1m-5 1q19 5 28 21" fill="none" stroke="var(--bg)" stroke-width="2"/><g transform="translate(81 89)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g></svg></div><div><h3>Download</h3><p>Game download</p>
+          <div class="fallback"><strong>€18</strong> <a href="#moss-order-0-computer">View Computer order</a> <a href="#moss-order-0-handheld">View Handheld order</a></div></div></article>
+        <article data-price="32"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Game carton"><path d="M57 37l75-12 19 12-73 14z" fill="var(--muted)"/><path d="M57 37l21 14v88l-21-16z" fill="var(--action)"/><path d="M78 51l73-14v87l-73 15z" fill="var(--ink)"/><g transform="translate(95 87) skewY(-10)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g></svg></div><div><h3>Boxed</h3><p>Game and folded map</p>
+          <div class="fallback"><strong>€32</strong> <a href="#moss-order-1-handheld">View Handheld order</a></div></div></article>
+        <article data-price="46"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Game carton and score booklet"><path d="M36 40l66-14 23 10-65 16z" fill="var(--muted)"/><path d="M36 40l24 12v84l-24-14z" fill="var(--action)"/><path d="M60 52l65-16v85l-65 15z" fill="var(--ink)"/><g transform="translate(74 85) skewY(-12)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g><path d="M124 77l42 6-7 54-42-8z" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.4"/><g fill="none" stroke="var(--muted)" stroke-width="1.4"><path d="M128 95l30 4m-31 1 30 4m-31 1 30 4m-31 1 30 4"/></g><path d="M137 108v-16l9 1" fill="none" stroke="var(--ink)" stroke-width="2"/><ellipse cx="134" cy="109" rx="4" ry="2.6" fill="var(--ink)"/></svg></div><div><h3>Studio Box</h3><p>Game, folded map and score booklet</p>
+          <div class="fallback"><strong>€46</strong> <a href="#moss-order-2-computer">View Computer order</a></div></div></article>
+      </div>
+      <div class="checkout" hidden><strong class="t-stat"></strong><a class="btn btn--primary" href="#moss-order-0-computer">View order</a><p class="sr" role="status"></p></div>
+    </div>
+    <div class="receipts">
+      <article tabindex="-1" id="moss-order-0-computer"><h3>Download order summary</h3><p>The Moss Signal for Computer · Game download</p><strong>€18</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-0-handheld"><h3>Download order summary</h3><p>The Moss Signal for Handheld · Game download</p><strong>€18</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-1-handheld"><h3>Boxed order summary</h3><p>The Moss Signal for Handheld · Game and folded map</p><strong>€32</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-2-computer"><h3>Studio Box order summary</h3><p>The Moss Signal for Computer · Game, folded map and score booklet</p><strong>€46</strong><a href="#moss-editions">Back to editions</a></article>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="edition-outlets"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="edition-outlets"] .picker { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="edition-outlets"] .packs { grid-column: 1 / -1; }
+[data-own="edition-outlets"] .packs article { margin-bottom: var(--s-4); }
+[data-own="edition-outlets"] .art { background: var(--surface); border-radius: var(--r-md); }
+[data-own="edition-outlets"] svg { width: 100%; max-height: calc(var(--s-10) * 2); }
+[data-own="edition-outlets"] .art + div { padding-block: var(--s-4); }
+[data-own="edition-outlets"] .packs h3 { font-size: var(--t-card); }
+[data-own="edition-outlets"] .packs p { color: var(--muted); }
+[data-own="edition-outlets"] .choices, [data-own="edition-outlets"] .checkout { grid-column: 6 / -1; }
+[data-own="edition-outlets"] .choices { grid-row: 1; }
+[data-own="edition-outlets"][data-ready] .packs { grid-column: 1 / span 5; grid-row: 1 / span 2; }
+[data-own="edition-outlets"] .checkout { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: var(--s-4); }
+[data-own="edition-outlets"] fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+[data-own="edition-outlets"] fieldset + fieldset { margin-top: var(--s-5); }
+[data-own="edition-outlets"] legend { padding: 0; margin-bottom: var(--s-2); font-size: var(--t-card); }
+[data-own="edition-outlets"] fieldset > div { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+[data-own="edition-outlets"] label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); padding: var(--s-2) var(--s-3); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; }
+[data-own="edition-outlets"] label:has(:checked) { border-color: var(--ink); }
+[data-own="edition-outlets"] input { margin: 0; accent-color: var(--ink); }
+[data-own="edition-outlets"] label:has(:disabled) { color: var(--muted); cursor: default; }
+[data-own="edition-outlets"] small { font-size: var(--t-small); }
+[data-own="edition-outlets"] .receipts article { display: none; scroll-margin-top: var(--nav); }
+[data-own="edition-outlets"] .receipts article:target { display: grid; gap: var(--s-2); border-top: 1px solid var(--line); padding-top: var(--s-5); margin-top: var(--s-5); }
+[data-own="edition-outlets"] :is(.fallback,.receipts) a { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; color: var(--action); }
+[data-own="edition-outlets"] .sr { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+@media (max-width: 639px) {
+  [data-own="edition-outlets"] .picker { grid-template-columns: 1fr; gap: var(--s-5); }
+  [data-own="edition-outlets"] .choices, [data-own="edition-outlets"] .checkout, [data-own="edition-outlets"][data-ready] .packs { grid-column: 1; grid-row: auto; }
+  [data-own="edition-outlets"] .packs article { display: grid; grid-template-columns: 1fr 1.4fr; align-items: center; gap: var(--s-4); margin: 0; }
+}
+[data-own="edition-outlets"] .checkout { justify-content: flex-start; gap: var(--s-5); }
+[data-own="edition-outlets"] .packs article { margin-bottom: 0; }
+@media (max-width: 639px) { [data-own="edition-outlets"] .checkout { justify-content: space-between; } }
+[data-own="edition-outlets"] .picker { scroll-margin-top: calc(var(--nav) + var(--s-2)); }
+[data-own="edition-outlets"] .availability:not(:empty) { margin-top: var(--s-2); font-size: var(--t-small); color: var(--muted); }
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="edition-outlets"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const [editions, platforms] = all('fieldset').map(set => [...set.querySelectorAll('input')]);
+  const articles = all('.packs article');
+  const name = crypto.randomUUID();
+  for (const input of [...editions, ...platforms]) input.name += name;
+  function update(announce) {
+    const article = articles[editions.findIndex(input => input.checked)];
+    articles.forEach(pack => pack.hidden = pack !== article);
+    const links = [...article.querySelectorAll('a')];
+    platforms.forEach(input => {
+      input.disabled = !links.some(link => link.hash.endsWith('-' + input.value.toLowerCase()));
+      input.closest('label').querySelector('small').hidden = !input.disabled;
+    });
+    let selected = platforms.find(input => input.checked && !input.disabled);
+    if (!selected) {
+      selected = platforms.find(input => !input.disabled);
+      selected.checked = true;
+    }
+    one('.availability').textContent = links.length === 1
+      ? article.querySelector('h3').textContent + ' is available for ' + selected.value + ' only.'
+      : '';
+    const link = links.find(a => a.hash.endsWith('-' + selected.value.toLowerCase()));
+    one('.checkout a').href = link.href;
+    one('.checkout strong').textContent = '€' + article.dataset.price;
+    if (announce) one('[role="status"]').textContent = article.querySelector('h3').textContent + ' for ' + selected.value + ', €' + article.dataset.price + '.';
+  }
+  one('.choices').onchange = () => update(true);
+  for (const fallback of all('.fallback')) fallback.hidden = true;
+  update(false);
+  one('.choices').hidden = false;
+  one('.checkout').hidden = false;
+  root.dataset.ready = '';
+}
+</script>

@@ -206,7 +206,9 @@ try {
     if (!opt('no-stress')) {
       const id = await ev(`(document.querySelector('main > section')?.className.match(/hero--([a-z]+)/) || [])[1] || ''`);
       const h = heroes.find(x => x.id === id);
-      if (h) {
+      // an h1 set as lettering is the name itself (references/expressive.md): no test headline stands in for it
+      const lettering = await ev(`!!document.querySelector('main > section h1[data-lettering], main > section h1 > [data-lettering]')`);
+      if (h && !lettering) {
         const st = await ev(`${STRESS}(${h.h1.maxChars})`);
         if (st) {
           const sev = kitDemo ? 'FAIL' : 'WARN';

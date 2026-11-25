@@ -1,0 +1,115 @@
+<section class="section own" id="fee-comparison" data-own="fee-comparison" aria-labelledby="fee-comparison-title">
+  <div class="wrap">
+    <h2 id="fee-comparison-title">Compare postcard print runs</h2>
+    <p class="t-lead measure">Juniper Print Co-op offers two schedules on the same uncoated stock.</p>
+    <div class="sheet" data-assumed>
+      <div class="quantity">
+        <h3>Postcard quantity</h3>
+        <p>Print 25 to 500 cards. Both prices include all charges for collection.</p>
+        <form hidden novalidate><label for="juniper-qty">Number of cards</label>
+          <div class="entry"><input id="juniper-qty" name="cards" type="number" min="25" max="500" step="1" value="100" required aria-describedby="juniper-error"><button class="btn btn--primary press">Compare</button></div>
+          <p id="juniper-error" role="alert"></p><p class="announcement" role="status"></p>
+        </form>
+      </div>
+      <div class="quotes">
+        <h3 class="quantity-title">Print schedules</h3>
+        <div class="quote" data-setup="1200" data-rate="30">
+          <div class="amount"><h4>Short run</h4><strong class="t-stat" hidden></strong></div>
+          <p>€12 setup + €0.30 per card<span></span></p>
+          <div class="bar" hidden><i></i></div>
+        </div>
+        <div class="quote" data-setup="3600" data-rate="10">
+          <div class="amount"><h4>Press run</h4><strong class="t-stat" hidden></strong></div>
+          <p>€36 setup + €0.10 per card<span></span></p>
+          <div class="bar" hidden><i></i></div>
+        </div>
+        <p class="difference"></p>
+        <table><caption>Collection prices by quantity</caption><thead><tr><th scope="col">Cards</th><th scope="col">Short run</th><th scope="col">Press run</th></tr></thead>
+          <tbody><tr><th scope="row">100</th><td>€42</td><td>€46</td></tr><tr><th scope="row">120</th><td>€48</td><td>€48</td></tr><tr><th scope="row">200</th><td>€72</td><td>€56</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="fee-comparison"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="fee-comparison"] .sheet { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; align-items: start; }
+[data-own="fee-comparison"] .quantity { grid-column: span 4; }
+[data-own="fee-comparison"] .quantity > p { margin-top: var(--s-3); max-width: 32ch; }
+[data-own="fee-comparison"] form { margin-top: var(--s-5); }
+[data-own="fee-comparison"] form label { display: block; margin-bottom: var(--s-2); }
+[data-own="fee-comparison"] .entry { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+[data-own="fee-comparison"] input { min-height: var(--btn-h); width: 8ch; border: 1px solid var(--muted); border-radius: var(--r-btn); font: inherit; color: var(--ink); background: var(--surface); padding-inline: var(--s-3); }
+[data-own="fee-comparison"] .quotes { grid-column: span 8; padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); }
+[data-own="fee-comparison"] .quote { margin-top: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="fee-comparison"] .amount { display: flex; gap: var(--s-3); justify-content: space-between; align-items: baseline; }
+[data-own="fee-comparison"] .quote p { font-size: var(--t-small); color: var(--muted); margin-block: var(--s-1) var(--s-3); }
+[data-own="fee-comparison"] .bar { background: var(--line); height: var(--s-2); }
+[data-own="fee-comparison"] .bar i { display: block; height: 100%; background: var(--action); }
+[data-own="fee-comparison"] .quote + .quote .bar i { background: var(--ink); }
+[data-own="fee-comparison"] .difference { font-weight: 500; margin-top: var(--s-4); }
+[data-own="fee-comparison"] .announcement { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="fee-comparison"] table { width: 100%; border-collapse: collapse; margin-top: var(--s-5); }
+[data-own="fee-comparison"] caption { text-align: left; }
+[data-own="fee-comparison"] :is(td,th) { text-align: right; border-bottom: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="fee-comparison"] th:first-child { text-align: left; }
+@media (max-width: 1023px) { [data-own="fee-comparison"] .sheet { grid-template-columns: 1fr; } [data-own="fee-comparison"] .quantity, [data-own="fee-comparison"] .quotes { grid-column: 1; } }
+[data-own="fee-comparison"] .quote p { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
+[data-own="fee-comparison"] .quote p span { color: var(--ink); }
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="fee-comparison"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const rows = all('.quote');
+  const input = one('input');
+  const euros = cents => '€' + (cents / 100).toFixed(cents % 100 ? 2 : 0);
+  function compare(announce) {
+    const qty = input.valueAsNumber;
+    const totals = rows.map(row => Number(row.dataset.setup) + qty * Number(row.dataset.rate));
+    one('.quantity-title').textContent = 'Quote for ' + qty + ' cards';
+    rows.forEach((row, i) => {
+      const total = row.querySelector('strong');
+      total.textContent = euros(totals[i]);
+      total.hidden = false;
+      row.querySelector('p span').textContent = 'Print charge ' + euros(qty * Number(row.dataset.rate));
+      row.querySelector('.bar').hidden = false;
+      row.querySelector('i').style.width = totals[i] / Math.max(...totals) * 100 + '%';
+    });
+    const difference = Math.abs(totals[0] - totals[1]);
+    const cheaper = rows[totals[0] < totals[1] ? 0 : 1].querySelector('h4').textContent;
+    const verdict = difference ? cheaper + ' costs ' + euros(difference) + ' less.' : 'Same price';
+    one('.difference').textContent = verdict;
+    if (announce) one('[role="status"]').textContent = qty + ' cards. Short run ' + euros(totals[0]) + '. Press run ' + euros(totals[1]) + '. ' + verdict;
+  }
+  one('form').onsubmit = event => {
+    event.preventDefault();
+    const valid = input.validity.valid && Number.isInteger(input.valueAsNumber);
+    one('[role="alert"]').textContent = valid ? '' : 'Enter a whole number from 25 to 500.';
+    input.setAttribute('aria-invalid', String(!valid));
+    if (valid) compare(true);
+    else input.focus();
+  };
+  compare(false);
+  one('table').hidden = true;
+  one('form').hidden = false;
+  root.dataset.ready = '';
+}
+</script>

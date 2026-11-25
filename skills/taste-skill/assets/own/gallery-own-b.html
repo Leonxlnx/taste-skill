@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="sharp" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Complex section gallery · Taste skill</title>
+<meta name="description" content="Ten working examples of press collections, local routes, product choices and field guides.">
+<meta name="twitter:card" content="summary">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Complex section gallery · Taste skill">
+<meta property="og:description" content="Ten working examples of press collections, local routes, product choices and field guides.">
+<meta name="theme-color" content="#f7f9fa">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../motion/motion.css">
+<link rel="stylesheet" href="../backgrounds/backgrounds.css">
+<link rel="stylesheet" href="../layout/layout.css">
+<link rel="stylesheet" href="../icons/icon.css">
+<style>
+:root {
+  --p-bg: #f7f9fa; --p-surface: #e3e5e6; --p-ink: #1f3038; --p-muted: #58666d;
+  --p-accent: #0c6e79; --p-accent-ink: #ffffff; --p-action: #0c6e79; --p-action-ink: #ffffff;
+  --p-inv-bg: #1f3038; --p-inv-surface: #2c3c44; --p-inv-ink: #f7f9fa; --p-inv-muted: #9ea7ab;
+  --p-inv-accent: #f7f9fa; --p-inv-accent-ink: #1f3038; --p-inv-action: #f7f9fa; --p-inv-action-ink: #1f3038;
+}
+.gallery-head { position: relative; background: var(--ink); color: var(--bg); }
+.gallery-head .wrap { padding-block: var(--s-6); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); justify-content: space-between; }
+.gallery-head h1 { font-size: var(--t-h1); }
+.gallery-head a:focus-visible { outline-color: var(--bg); }
+.gallery-head a:not(.skip-link) { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: var(--s-1); }
+</style>
+<script src="../backgrounds/backgrounds.js"></script>
+<style>.gallery-head { position: sticky; top: 0; z-index: 5; } .gallery-head .wrap { min-height: var(--nav); padding-block: 0; align-items: center; } .gallery-head h1 { font-size: var(--t-card); } .gallery-head a { font-size: var(--t-small); } @media (max-width: 639px) { .gallery-head h1 { font-size: var(--t-body); } .gallery-head .wrap { gap: var(--s-2); } }</style>
+<style id="own-css">
+
+[data-own="media-desk"] {
+  & .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+  & svg[width="0"] { position: absolute; }
+  & button { background: transparent; border: 0; cursor: pointer; min-height: var(--btn-h); }
+  & [role="tab"] { padding: var(--s-2) var(--s-4); border-bottom: 1px solid var(--line); }
+  & [aria-selected="true"] { border-color: var(--ink); font-weight: 600; }
+  & .format { margin-top: var(--s-4); }
+  &[data-ready] .format { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
+  & figure { grid-area: 1 / 1 / auto / span 8; }
+  & .well { position: relative; display: grid; place-items: center; aspect-ratio: 16/9; background: var(--surface); border-radius: var(--r-md); overflow: hidden; }
+  & .well svg, & video { width: 100%; height: 100%; }
+  & .well:has([viewBox="0 0 64 80"]) { background: var(--ink); }
+  & .well [viewBox="0 0 64 80"] { width: auto; aspect-ratio: 4/5; background: var(--surface); }
+  & video { position: absolute; inset: 0; }
+  & figcaption { margin-top: var(--s-4); }
+  & figcaption b { font-size: var(--t-h3); font-weight: 500; }
+  & small { display: block; font-size: var(--t-small); color: var(--muted); }
+  & .choices { grid-area: 1 / 9 / auto / -1; display: grid; gap: var(--s-2); }
+  & .choices button { display: grid; grid-template-columns: 36% 1fr; text-align: left; align-items: center; gap: var(--s-3); padding: var(--s-2); border-top: 1px solid var(--line); }
+  & .choices svg { width: 100%; height: auto; aspect-ratio: 16/9; }
+  & [aria-pressed="true"] { background: var(--surface); border-color: var(--ink); }
+  & summary, & .download { min-height: var(--btn-h); align-content: center; color: var(--action); cursor: pointer; }
+  & .download { display: inline-flex; align-items: center; text-decoration: underline; }
+  & details p { font-variant-numeric: tabular-nums; }
+  @media (max-width: 639px) {
+    &[data-ready] .format { grid-template-columns: minmax(0,1fr); }
+    & figure { grid-area: 1 / 1; }
+    & .choices { grid-area: 2 / 1; grid-template-columns: repeat(2,minmax(0,1fr)); }
+    & .choices button { grid-template-columns: 1fr; align-content: start; }
+  }
+}
+
+
+[data-own="coverage-map"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="coverage-map"] .route { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; font-variant-numeric: tabular-nums; }
+[data-own="coverage-map"] figure { grid-column: span 7; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="coverage-map"] svg { width: 100%; }
+[data-own="coverage-map"] .map-name { position: absolute; transform: translate(-50%, 0); padding: var(--s-1) var(--s-2); font-size: var(--t-small); background: var(--ink); color: var(--bg); border-radius: var(--r-sm); white-space: nowrap; }
+[data-own="coverage-map"] fieldset { grid-column: span 5; min-width: 0; padding: 0; margin: 0; border: 0; }
+[data-own="coverage-map"] legend { font-size: var(--t-card); margin-bottom: var(--s-3); padding: 0; }
+[data-own="coverage-map"] label { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: var(--s-3); border-top: 1px solid var(--line); padding-block: var(--s-4); position: relative; }
+[data-own="coverage-map"] .number { display: grid; place-content: center; width: var(--s-5); height: var(--s-5); border: 1px solid var(--ink); border-radius: 50%; font-size: var(--t-small); }
+[data-own="coverage-map"] input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+[data-own="coverage-map"] label:has(:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+[data-own="coverage-map"] label:has(:checked) .number { background: var(--ink); color: var(--bg); }
+[data-own="coverage-map"] strong, [data-own="coverage-map"] .stop span, [data-own="coverage-map"] small, [data-own="coverage-map"] .books b { display: block; }
+[data-own="coverage-map"] .stop strong { font-size: var(--t-card); font-weight: 500; }
+[data-own="coverage-map"] .stop span, [data-own="coverage-map"] .books, [data-own="coverage-map"] small { font-size: var(--t-small); color: var(--muted); }
+[data-own="coverage-map"] .books { text-align: right; }
+[data-own="coverage-map"] .books b { font-size: var(--t-card); font-weight: 500; color: var(--ink); }
+[data-own="coverage-map"] [data-pin].current circle:not(.hit) { fill: var(--ink); }
+[data-own="coverage-map"] [data-pin].current text { fill: var(--bg); }
+[data-own="coverage-map"][data-ready] :is([data-pin], label) { cursor: pointer; }
+@media (max-width: 1023px) { [data-own="coverage-map"] .route { grid-template-columns: 1fr; gap: var(--s-5); } [data-own="coverage-map"] figure, [data-own="coverage-map"] fieldset { grid-column: 1; } }
+[data-own="coverage-map"] .stop small { margin-top: var(--s-1); }
+[data-own="coverage-map"] .books b { line-height: 1.2; }
+[data-own="coverage-map"] .route { column-gap: var(--s-5); }
+
+
+[data-own="answer-finder"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="answer-finder"] .answers { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="answer-finder"] nav { grid-column: span 3; display: grid; }
+[data-own="answer-finder"] nav a { border-bottom: 1px solid var(--line); color: var(--action); min-height: var(--btn-h); padding-block: var(--s-3); }
+[data-own="answer-finder"] nav a:hover { text-decoration: underline; }
+[data-own="answer-finder"] .topics { grid-column: span 8; }
+[data-own="answer-finder"] .topic + .topic { margin-top: var(--s-7); }
+[data-own="answer-finder"] h3 { margin-bottom: var(--s-3); }
+[data-own="answer-finder"] :is(h3,details) { scroll-margin-top: calc(var(--nav) + var(--s-3)); }
+[data-own="answer-finder"] details { border-top: 1px solid var(--line); }
+[data-own="answer-finder"] summary { min-height: var(--btn-h); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-4); cursor: pointer; list-style: none; }
+[data-own="answer-finder"] summary::-webkit-details-marker { display: none; }
+[data-own="answer-finder"] summary::after { content: "+"; color: var(--muted); }
+[data-own="answer-finder"] details[open] > summary::after { content: "−"; }
+[data-own="answer-finder"] details p { max-width: 56ch; padding-bottom: var(--s-4); color: var(--muted); }
+@media (max-width: 639px) {
+  [data-own="answer-finder"] .answers { grid-template-columns: 1fr; gap: var(--s-6); }
+  [data-own="answer-finder"] nav, [data-own="answer-finder"] .topics { grid-column: 1; }
+  [data-own="answer-finder"] nav { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+  [data-own="answer-finder"] .topic + .topic { margin-top: var(--s-6); }
+}
+[data-own="answer-finder"] .finder { grid-column: span 3; min-width: 0; }
+[data-own="answer-finder"] .search { margin-bottom: var(--s-4); }
+[data-own="answer-finder"] .search label { display: block; margin-bottom: var(--s-2); font-weight: 500; }
+[data-own="answer-finder"] input { width: 100%; min-height: var(--btn-h); padding-inline: var(--s-3); background: var(--bg); color: var(--ink); font: inherit; border: 1px solid var(--muted); border-radius: var(--r-sm); }
+[data-own="answer-finder"] .search button { background: none; border: 0; min-height: var(--btn-h); padding: 0; color: var(--action); text-decoration: underline; cursor: pointer; }
+[data-own="answer-finder"] [role="status"] { font-size: var(--t-small); }
+@media (max-width: 639px) { [data-own="answer-finder"] .finder { grid-column: 1; } }
+
+
+[data-own="edition-outlets"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="edition-outlets"] .picker { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="edition-outlets"] .packs { grid-column: 1 / -1; }
+[data-own="edition-outlets"] .packs article { margin-bottom: var(--s-4); }
+[data-own="edition-outlets"] .art { background: var(--surface); border-radius: var(--r-md); }
+[data-own="edition-outlets"] svg { width: 100%; max-height: calc(var(--s-10) * 2); }
+[data-own="edition-outlets"] .art + div { padding-block: var(--s-4); }
+[data-own="edition-outlets"] .packs h3 { font-size: var(--t-card); }
+[data-own="edition-outlets"] .packs p { color: var(--muted); }
+[data-own="edition-outlets"] .choices, [data-own="edition-outlets"] .checkout { grid-column: 6 / -1; }
+[data-own="edition-outlets"] .choices { grid-row: 1; }
+[data-own="edition-outlets"][data-ready] .packs { grid-column: 1 / span 5; grid-row: 1 / span 2; }
+[data-own="edition-outlets"] .checkout { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; border-top: 1px solid var(--line); padding-top: var(--s-4); }
+[data-own="edition-outlets"] fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+[data-own="edition-outlets"] fieldset + fieldset { margin-top: var(--s-5); }
+[data-own="edition-outlets"] legend { padding: 0; margin-bottom: var(--s-2); font-size: var(--t-card); }
+[data-own="edition-outlets"] fieldset > div { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+[data-own="edition-outlets"] label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); padding: var(--s-2) var(--s-3); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; }
+[data-own="edition-outlets"] label:has(:checked) { border-color: var(--ink); }
+[data-own="edition-outlets"] input { margin: 0; accent-color: var(--ink); }
+[data-own="edition-outlets"] label:has(:disabled) { color: var(--muted); cursor: default; }
+[data-own="edition-outlets"] small { font-size: var(--t-small); }
+[data-own="edition-outlets"] .receipts article { display: none; scroll-margin-top: var(--nav); }
+[data-own="edition-outlets"] .receipts article:target { display: grid; gap: var(--s-2); border-top: 1px solid var(--line); padding-top: var(--s-5); margin-top: var(--s-5); }
+[data-own="edition-outlets"] :is(.fallback,.receipts) a { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; color: var(--action); }
+[data-own="edition-outlets"] .sr { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; }
+@media (max-width: 639px) {
+  [data-own="edition-outlets"] .picker { grid-template-columns: 1fr; gap: var(--s-5); }
+  [data-own="edition-outlets"] .choices, [data-own="edition-outlets"] .checkout, [data-own="edition-outlets"][data-ready] .packs { grid-column: 1; grid-row: auto; }
+  [data-own="edition-outlets"] .packs article { display: grid; grid-template-columns: 1fr 1.4fr; align-items: center; gap: var(--s-4); margin: 0; }
+}
+[data-own="edition-outlets"] .checkout { justify-content: flex-start; gap: var(--s-5); }
+[data-own="edition-outlets"] .packs article { margin-bottom: 0; }
+@media (max-width: 639px) { [data-own="edition-outlets"] .checkout { justify-content: space-between; } }
+[data-own="edition-outlets"] .picker { scroll-margin-top: calc(var(--nav) + var(--s-2)); }
+[data-own="edition-outlets"] .availability:not(:empty) { margin-top: var(--s-2); font-size: var(--t-small); color: var(--muted); }
+
+
+[data-own="environment-setup"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="environment-setup"] .setup { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="environment-setup"] aside { grid-column: span 4; }
+[data-own="environment-setup"] aside p { margin-top: var(--s-3); max-width: 32ch; }
+[data-own="environment-setup"] aside pre { margin: var(--s-4) 0; padding: var(--s-3); border-left: 1px solid var(--action); background: var(--surface); }
+[data-own="environment-setup"] .work { grid-column: span 8; min-width: 0; }
+[data-own="environment-setup"] [role="tablist"] { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+[data-own="environment-setup"] [role="tab"] { min-height: var(--btn-h); padding: var(--s-2) var(--s-4); color: var(--muted); background: transparent; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+[data-own="environment-setup"] [role="tab"][aria-selected="true"] { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+[data-own="environment-setup"] article { margin-top: var(--s-3); padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); }
+[data-own="environment-setup"] pre { margin: 0; max-width: 100%; overflow-x: auto; padding-block: var(--s-2) var(--s-4); }
+[data-own="environment-setup"] :is(pre,code,samp) { font-family: var(--font-mono); font-size: var(--t-small); }
+[data-own="environment-setup"] .code-head, [data-own="environment-setup"] .output { display: flex; gap: var(--s-2); flex-wrap: wrap; align-items: center; justify-content: space-between; font-size: var(--t-small); }
+[data-own="environment-setup"] .code-head:not(:first-of-type), [data-own="environment-setup"] .output { border-top: 1px solid var(--line); }
+[data-own="environment-setup"] .code-head span, [data-own="environment-setup"] .output span { color: var(--muted); }
+[data-own="environment-setup"] [data-copy] { min-height: var(--btn-h); background: transparent; border: 0; color: var(--action); cursor: pointer; padding: var(--s-1) var(--s-2); }
+[data-own="environment-setup"] .output { justify-content: flex-start; gap: var(--s-4); padding-top: var(--s-3); }
+[data-own="environment-setup"] article h3 { margin-bottom: var(--s-4); }
+[data-own="environment-setup"] [role="status"]:not(:empty) { margin-top: var(--s-2); }
+@media (max-width: 1023px) { [data-own="environment-setup"] .setup { grid-template-columns: 1fr; } [data-own="environment-setup"] aside, [data-own="environment-setup"] .work { grid-column: 1; } [data-own="environment-setup"] aside p { max-width: 60ch; } }
+[data-own="environment-setup"] article pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+[data-own="environment-setup"] .output { align-items: baseline; }
+[data-own="environment-setup"] samp { color: var(--action); font-weight: 600; }
+
+
+[data-own="fee-comparison"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="fee-comparison"] .sheet { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; align-items: start; }
+[data-own="fee-comparison"] .quantity { grid-column: span 4; }
+[data-own="fee-comparison"] .quantity > p { margin-top: var(--s-3); max-width: 32ch; }
+[data-own="fee-comparison"] form { margin-top: var(--s-5); }
+[data-own="fee-comparison"] form label { display: block; margin-bottom: var(--s-2); }
+[data-own="fee-comparison"] .entry { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+[data-own="fee-comparison"] input { min-height: var(--btn-h); width: 8ch; border: 1px solid var(--muted); border-radius: var(--r-btn); font: inherit; color: var(--ink); background: var(--surface); padding-inline: var(--s-3); }
+[data-own="fee-comparison"] .quotes { grid-column: span 8; padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); }
+[data-own="fee-comparison"] .quote { margin-top: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="fee-comparison"] .amount { display: flex; gap: var(--s-3); justify-content: space-between; align-items: baseline; }
+[data-own="fee-comparison"] .quote p { font-size: var(--t-small); color: var(--muted); margin-block: var(--s-1) var(--s-3); }
+[data-own="fee-comparison"] .bar { background: var(--line); height: var(--s-2); }
+[data-own="fee-comparison"] .bar i { display: block; height: 100%; background: var(--action); }
+[data-own="fee-comparison"] .quote + .quote .bar i { background: var(--ink); }
+[data-own="fee-comparison"] .difference { font-weight: 500; margin-top: var(--s-4); }
+[data-own="fee-comparison"] .announcement { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="fee-comparison"] table { width: 100%; border-collapse: collapse; margin-top: var(--s-5); }
+[data-own="fee-comparison"] caption { text-align: left; }
+[data-own="fee-comparison"] :is(td,th) { text-align: right; border-bottom: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="fee-comparison"] th:first-child { text-align: left; }
+@media (max-width: 1023px) { [data-own="fee-comparison"] .sheet { grid-template-columns: 1fr; } [data-own="fee-comparison"] .quantity, [data-own="fee-comparison"] .quotes { grid-column: 1; } }
+[data-own="fee-comparison"] .quote p { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); }
+[data-own="fee-comparison"] .quote p span { color: var(--ink); }
+
+
+[data-own="chapter-links"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="chapter-links"] .guide-bar { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; background: var(--bg); border-block: 1px solid var(--line); padding-block: var(--s-2); z-index: 2; }
+[data-own="chapter-links"] .guide-bar b { grid-column: span 3; }
+[data-own="chapter-links"] .links { grid-column: span 6; display: flex; flex-wrap: wrap; gap: var(--s-4); }
+[data-own="chapter-links"] .chart-link { grid-column: span 3; justify-self: end; }
+[data-own="chapter-links"] .guide-bar :is(a,summary), [data-own="chapter-links"] .chart a { display: inline-flex; align-items: center; min-height: var(--btn-h); }
+[data-own="chapter-links"] .chart-link, [data-own="chapter-links"] a[aria-current], [data-own="chapter-links"] .chart a { text-decoration: underline; text-underline-offset: var(--s-1); color: var(--action); }
+[data-own="chapter-links"] .chapter { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; padding-block: var(--s-5); border-bottom: 1px solid var(--line); }
+[data-own="chapter-links"] .chapter > div { grid-column: 1 / span 5; }
+[data-own="chapter-links"] .chapter svg { grid-column: 7 / span 6; width: 100%; background: var(--surface); border-radius: var(--r-md); }
+[data-own="chapter-links"] .chapter p, [data-own="chapter-links"] .chart p { margin-top: var(--s-3); }
+[data-own="chapter-links"] [id] { scroll-margin-top: calc(var(--nav) + var(--guide-height, var(--btn-h)) + var(--s-2)); }
+[data-own="chapter-links"] .chart { display: none; }
+[data-own="chapter-links"] .chart:target { display: block; margin-top: var(--s-6); }
+[data-own="chapter-links"] table { width: min(100%, 55ch); border-collapse: collapse; font-variant-numeric: tabular-nums; }
+[data-own="chapter-links"] :is(caption,th,td) { text-align: left; padding: var(--s-2); border-bottom: 1px solid var(--line); }
+[data-own="chapter-links"] caption { padding-top: var(--s-4); }
+[data-own="chapter-links"] .compact { display: none; position: relative; }
+@media (min-height: 601px) and (prefers-reduced-motion: no-preference) { [data-own="chapter-links"][data-ready] .guide-bar { position: sticky; top: var(--nav); } }
+@media (max-width: 639px) {
+  [data-own="chapter-links"] .guide-bar { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: space-between; }
+  [data-own="chapter-links"] .guide-bar b { display: none; }
+  [data-own="chapter-links"] .links { flex-wrap: wrap; gap: var(--s-3); }
+  [data-own="chapter-links"][data-ready] .guide-bar > .links { display: none; }
+  [data-own="chapter-links"] .compact { display: block; }
+  [data-own="chapter-links"] .compact .links { display: grid; gap: 0; position: absolute; top: 100%; left: 0; padding: var(--s-2) var(--s-4); background: var(--surface); border: 1px solid var(--line); }
+  [data-own="chapter-links"] summary { gap: var(--s-2); cursor: pointer; } [data-own="chapter-links"] summary::after { content: "⌄"; }
+  [data-own="chapter-links"] .chapter { grid-template-columns: 1fr; } [data-own="chapter-links"] .chapter > div, [data-own="chapter-links"] .chapter svg { grid-column: 1; }
+}
+@media print {
+  [data-own="chapter-links"] .guide-bar, [data-own="chapter-links"] .chart a { display: none; }
+  [data-own="chapter-links"] .chart { display: block; break-inside: avoid; }
+  body:has([data-own="chapter-links"] .chart:target) :not(:has([data-own="chapter-links"] .chart:target), [data-own="chapter-links"], [data-own="chapter-links"] .wrap, [data-own="chapter-links"] .chart:target, [data-own="chapter-links"] .chart:target *) { display: none !important; }
+  [data-own="chapter-links"]:has(.chart:target) { padding: 0; }
+  [data-own="chapter-links"] .chart:target { position: static; width: 100%; margin: 0; }
+}
+
+
+[data-own="witness-selector"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="witness-selector"] .records { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); }
+[data-own="witness-selector"] .records > * { grid-column: 3 / span 8; min-width: 0; }
+[data-own="witness-selector"] .account-stage { grid-row: 1; }
+[data-own="witness-selector"] figure { border-top: 1px solid var(--line); padding-block: var(--s-6) var(--s-3); }
+[data-own="witness-selector"] blockquote { font-family: var(--font-display); font-size: var(--t-h3); line-height: 1.28; letter-spacing: var(--display-tracking); max-width: 30ch; min-height: 2.56em; }
+[data-own="witness-selector"] figcaption { margin-top: var(--s-3); }
+[data-own="witness-selector"] figcaption b { font-weight: 600; }
+[data-own="witness-selector"] dl { display: flex; gap: var(--s-2) var(--s-4); flex-wrap: wrap; align-items: baseline; font-size: var(--t-small); margin: var(--s-5) 0 0; }
+[data-own="witness-selector"] dt { color: var(--muted); } [data-own="witness-selector"] dd { margin: 0; font-variant-numeric: tabular-nums; }
+[data-own="witness-selector"] .choices { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--s-3); }
+[data-own="witness-selector"] button { display: flex; gap: var(--s-2); align-items: center; min-height: var(--btn-h); padding: var(--s-2) 0; text-align: left; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+[data-own="witness-selector"] .initial { flex: none; display: grid; place-items: center; width: var(--s-6); height: var(--s-6); border: 1px solid var(--line-strong); border-radius: 50%; font-size: var(--t-small); }
+[data-own="witness-selector"] button[aria-selected="true"] { color: var(--ink); border-top-color: var(--ink); }
+[data-own="witness-selector"] button[aria-selected="true"] span:last-child { text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="witness-selector"] button[aria-selected="true"] .initial { background: var(--ink); color: var(--bg); }
+@media (max-width: 1023px) { [data-own="witness-selector"] .records > * { grid-column: 1 / -1; } }
+@media (max-width: 639px) {
+  [data-own="witness-selector"] .account-stage { grid-row: auto; } [data-own="witness-selector"] .choices { grid-row: 1; }
+  [data-own="witness-selector"] button { align-items: flex-start; flex-direction: column; }
+  [data-own="witness-selector"] figure { padding-top: var(--s-5); }
+}
+
+
+[data-own="lead-digest"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="lead-digest"] .digest { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); row-gap: 0; }
+[data-own="lead-digest"] .lead { grid-column: span 7; grid-row: 1 / span 3; }
+[data-own="lead-digest"] svg { width: 100%; aspect-ratio: 3 / 2; border-radius: var(--r-md); }
+[data-own="lead-digest"] time { display: block; color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+[data-own="lead-digest"] .lead time { margin-top: var(--s-4); }
+[data-own="lead-digest"] .digest h3 { margin-block: var(--s-1); }
+[data-own="lead-digest"] .digest a, [data-own="lead-digest"] .stories a { display: inline-flex; align-items: center; min-height: var(--btn-h); }
+[data-own="lead-digest"] a:hover, [data-own="lead-digest"] a:focus-visible, [data-own="lead-digest"] .stories a { text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="lead-digest"] .dispatch { grid-column: span 5; padding-block: var(--s-4); border-top: 1px solid var(--line); }
+[data-own="lead-digest"] .dispatch h3 { font-size: var(--t-card); }
+[data-own="lead-digest"] .stories article { display: none; scroll-margin-top: var(--nav); }
+[data-own="lead-digest"] .stories article:target { display: block; margin-top: var(--s-6); padding-block: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="lead-digest"] .stories p { max-width: 62ch; margin-top: var(--s-3); }
+[data-own="lead-digest"] .stories a { margin-top: var(--s-3); color: var(--action); }
+@media (max-width: 639px) {
+  [data-own="lead-digest"] .digest { grid-template-columns: 1fr; }
+  [data-own="lead-digest"] .lead, [data-own="lead-digest"] .dispatch { grid-column: 1; grid-row: auto; }
+  [data-own="lead-digest"] .lead { padding-bottom: var(--s-5); }
+}
+[data-own="lead-digest"] .dispatch { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+[data-own="lead-digest"] .digest article { scroll-margin-block-start: calc(var(--nav) + var(--s-2)); }
+[data-own="lead-digest"] .stories p a { display: inline; }
+[data-own="lead-digest"] .lead h3 a, [data-own="lead-digest"] .dispatch h3 a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: var(--s-1); }
+
+
+[data-own="field-roster"] {
+  & .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+  & .definitions { position: absolute; width: 0; height: 0; }
+  & .portraits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--s-2); margin-bottom: var(--s-5); }
+  & button { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--s-2); padding: var(--s-2); padding-bottom: var(--s-3); min-height: var(--btn-h); border: 0; border-bottom: 1px solid var(--line); color: var(--muted); background: transparent; cursor: pointer; }
+  & button svg { width: var(--s-7); }
+  & button[aria-selected="true"] { border-color: var(--ink); color: var(--ink); font-weight: 600; }
+  & .dossier { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); margin-bottom: var(--s-5); }
+  & .profile { grid-column: span 5; padding: var(--s-5); border-top: 1px solid var(--line); }
+  & .profile p { margin-top: var(--s-2); color: var(--muted); }
+  & fieldset, & .single { margin: var(--s-5) 0 0; padding: 0; border: 0; }
+  & legend { padding: 0; margin-bottom: var(--s-2); }
+  & label { display: inline-flex; gap: var(--s-2); min-height: var(--btn-h); align-items: center; margin-inline-end: var(--s-2); cursor: pointer; }
+  & input { margin: 0; accent-color: var(--ink); }
+  & .poses { grid-column: span 7; }
+  & figure svg { width: 100%; background: var(--surface); border-radius: var(--r-md); }
+  & figcaption { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); padding-block: var(--s-3); }
+  & figcaption b { font-weight: 600; }
+  @media (max-width: 639px) { & .dossier { grid-template-columns: 1fr; } & .profile, & .poses { grid-column: 1; } & .profile { padding: var(--s-3) 0; } }
+  @media (max-width: 639px) {
+    & .portraits button { flex-direction: column; gap: var(--s-1); }
+    & .profile { border-top: 0; }
+  }
+  & figcaption { align-items: baseline; }
+  & .poses svg { border: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+<header class="gallery-head"><div class="wrap"><a class="skip-link" href="#top">Skip to examples</a><h1>Complex section gallery</h1><a href="index.html">Original collection</a></div></header>
+<main id="top" tabindex="-1">
+<section class="section own" id="media-desk" data-own="media-desk" aria-labelledby="media-desk-title">
+  <div class="wrap">
+    <h2 id="media-desk-title">The Rain Collector press desk</h2>
+    <p class="t-lead measure">Films and stage stills from Alder Puppet Theatre.</p>
+    <div data-assumed>
+      <svg width="0" height="0" aria-hidden="true"><defs><g id="alder-stage"><path fill="var(--surface)" d="M0 0 112 0 112 63 0 63z"/><path fill="var(--ink)" d="M0 0 112 0 112 3 0 3zM0 0 17 0 8 53 0 57zM96 0 112 0 112 57 104 53z"/><path fill="var(--muted)" d="M24 15 25 15 23 19 22 19zM44 23 45 23 43 27 42 27zM64 15 65 15 63 19 62 19zM84 23 85 23 83 27 82 27zM51 3 52 3 51 26 50 26zM62 3 63 3 63 26 62 26z"/><path fill="var(--ink)" d="M47 26 56 21 65 26 63 28 49 28z"/><path fill="var(--action)" d="M49 28 63 28 61 40 51 40z"/><path fill="var(--bg)" d="M52 29 60 29 59 36 53 36z"/><path fill="var(--ink)" d="M50 39 62 39 61 41 51 41z"/><path fill="var(--muted)" d="M0 53 48 49 76 51 112 46 112 63 0 63z"/></g><g id="alder-rig"><path fill="var(--surface)" d="M0 0 112 0 112 63 0 63z"/><path fill="var(--ink)" d="M17 7 95 7 95 10 17 10z"/><path fill="var(--muted)" d="M17 10 20 10 20 63 17 63zM92 10 95 10 95 63 92 63zM51 10 52 10 51 26 50 26zM62 10 63 10 63 30 62 30z"/><path fill="var(--ink)" d="M47 26 56 23 65 30 63 32 49 28z"/><path fill="var(--action)" d="M49 28 63 32 61 44 51 40z"/><path fill="var(--bg)" d="M52 29 60 33 59 40 53 36z"/><path fill="var(--ink)" d="M50 39 62 43 61 45 51 41z"/><path fill="var(--muted)" d="M0 55 19 43 28 33 30 35 26 42 34 36 36 39 26 52 13 63 0 63zM112 54 98 45 87 33 84 35 88 42 80 36 77 39 90 52 103 63 112 63z"/></g></defs></svg>
+      <div role="tablist" aria-label="Asset format" hidden><button class="press" role="tab" id="alder-tab-0" aria-controls="alder-format-0">Film</button><button class="press" role="tab" id="alder-tab-1" aria-controls="alder-format-1">Stills</button></div>
+      <div class="format" id="alder-format-0"><h3>Film</h3><div class="choices" hidden></div>
+        <figure><div class="well"><svg aria-hidden="true" viewBox="0 0 112 63"><use href="#alder-stage"/></svg></div><figcaption><b>Rehearsal</b><small>48 seconds · Alder Puppet Theatre</small><p>The lantern lifts above the gauze.</p></figcaption>
+          <details><summary>Transcript</summary><p>0:00 The lantern rests behind the gauze.</p><p>0:16 The operator draws it upward.</p><p>0:32 The lantern clears the gauze.</p></details>
+          <a class="download" href="data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZ0SPFUmpZqIq17GDD0JARImIQOdwAAAAAABNgIVBbGRlcldBhUFsZGVyFlSua6aupNeBAXPFgQGDgQGGhVZfQVYxI+ODhQO5rKAA4IiwggOAuoIB+B9DtnVDEeeBAKBDC6FDBIEAAAASAAoLAAAAJMb/936+YBAy7gUUAKZwNPBUgA6r7Ut+hR9BJ/4BPeogwzUd8mumzWysDYCr8mgM/no6AScISV/v8hRPRkTReZa+T3kwEuFuhG9es/xqgFsVuDSQF0HeSp9Y25uu1H/RfFxaJQEabCp2Mln0fHaUw1ykpD8vJvHkRyPED04VAaNk9rpLvwnTZv25/Kxc8nnGX7BIqxxjIjet6MBps/LKAxrM0/04DVqHvsKZOlCu3h8HPQvVO8i0yVrxXBJIIlTUPQibyq/oGY61c81eDvdPfaGA/4yWyLyuFHbfUSZX441+HB9rh4tnl7LbWCxBj/n4lQsZcIrhrodOysHr0o1AQ+LG/65XJ2KgLMMNfhCQuQrm8cuf7/OgBASYLcUAEyb6TiF1JdihtCa7geTxJF1ch2w9CJKzBkP7aYwAAAQy1xui2TUIImAiebdUJiAuc6hJmdX4jvq3df4KpX9Q4s1u3fOjOI8m2yCJn4qck7zW4jGL6eY7qqGAiN1KWzyd795AuYkUYPHr4Q2gutBXk4xIKFjc/xOB2VOcNgyXFG0fY7wwvRlhxk66kL16X+m61eOSIguLHeUwMF+rHp9OtzIogR/////3G9M9ykcZlQytLnMtnlkIYedB/XvjnjXPgz5lzx69RhHtqm/gEy518jqBuc4L/////E4Gaf8v20eNFChHzwsLTZTD2mKSvPEogQcK2E36gcmPV2u2mh1NFejJVYtd61MU/iUzuFywx2QUkB2QO1JDvXLufHjRPs3RgXRMhJqXcAdT4pPWZM+E/2mqG5awbMiHEX7YGKlxPzDwRTZBkjFMoMJoT+pYvnXhVKQYDIsyyCHn9qveJYztLEpusSDOCOqYowUnWLH2GYWM9+dqeTMz7gnK5r5hJhHEwxB5VyKk2+NPToJ3rgMSC5QGIfwa5haHIRm65OX9OIU210vcG87dteAs3sYhVPbgpLvGpDfskVaQvO/0z4hir/P1MXP2zuKxCG0Wqc1UWSO2PWWfhgdAQRkMnnybgj6AH0O2dUCD54I+gKD9ofSBAAAAEgAybDIB4EAAAANOcAAEVIWVlgUA1DQt5om+tTfOLjzYVnZlzeuqFy26PIim08Bvi8U7Y9LHhd0aW7aJsjNPJTMeWrLYewMR/OEXv8ScE53G3tsdfyZvoCuOQ/lhY77G4lvfLqZgjXXHNjIXluUR8JuCPoD7gf8fQ7Z15ueCfQCg4KHXgQAAABIAMk8yAuCCAAADTrAAAFgAABAA1DQuHT1b2jMXGU5n2GBuTjRN3oLvvjmgXtcMQz/bZqA5rHskHS1jkalaPmayeEwAW/PkAGRuW9vm24601tVAm4I+WPuB/x9DtnWt54K7WKCnoZ+BAAAAEgAyFzMDAQICAAaeAAAAsAAAIADRYVpNQ0uQm4Eo+4H/" download="rain-rehearsal.webm">Download rehearsal</a></figure>
+        <figure><div class="well"><svg aria-hidden="true" viewBox="0 0 112 63"><use href="#alder-rig"/></svg></div><figcaption><b>Rig interview</b><small>75 seconds · Alder Puppet Theatre</small><p>Two pull lines control the tilt.</p></figcaption>
+          <details><summary>Transcript</summary><p>0:00 Two lines hang from the rig.</p><p>0:25 One line tips the lantern.</p><p>0:50 The second changes its tilt.</p></details>
+          <a class="download" href="data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZ0Z5FUmpZqIq17GDD0JARImIQPJPgAAAAABNgIVBbGRlcldBhUFsZGVyFlSua6aupNeBAXPFgQGDgQGGhVZfQVYxI+ODhQXSHboA4IiwggOAuoIB+B9DtnVEA+eBAKBD/aFD9oEAAAASAAoLAAAAJMb/936+YBAy4AcUAKaINNE/FWVXTf0iO0yyo7wJyyz+VjIKfu+X04ZzEfNwoCvrVPpzvSXrW6PH0Xok9oAMrylNaD8bRMLvh8EqIEsLg2TOvis/U9IKwsJeYIX1RjlGBx9Gbqf/9qiFOw8C2QDJagS5nUmfogXC2uei/LouR2J8PY6LkPRs77P9GhDjvj34MMAAAAAAHiRYtZnGxNZqYCaC48MY3pX8f8pj4oEzelT5cZwPhY9ek3rPshuB6TR+SBquHfT2FHpBrEYfIwajNLm7ELwUXOxaLsLpAVfFefQAKAl8IRSHR8sbf4uXTzwKNWDVMsBBRc8slF/Z9K5gBt5xL8rHtFMofijS0HCY926ZX////c1IBhp5hkoRgORREhrdT+LcepAuXFAf////97Gpv98eGK+AkczrHE8xTQnww1RgxDvpDMbvBPmupBlqYNm0s1HTO82cf/+Hgf//d4wFEAyq2ibf5f////95GG//o9oMf8Kww7/8AAAAAAAAxgwqCC2z269UdmBGfvKZM1pY4BrEhZTdzh8jEMU/0n4LYApo6OGeKeJES/f/2d6//9aggCMnh0Wf/xrd97mCxPH+vBgOSjMdr9uFRzkpoCjgb76CFte20z/KX/rtSaxtDLHhiaBiDVmmE////tY4heYK13AbsH7+0I3FP/6Cb2gLF/D0n6az//13UA8rJzKUetpKKcw+HMAs5d1PmAvW6MlLL1FfBJs/DlCckrcWOQCEwgX/H8bYADu/Qpp3UiHse/Vl9c1h0ACZGwoBh2RIZEZUWI3gy2YEKc+iynX5TFrkYQM7gcaKD04/Wm3vEA6TJAQ+z0AgPSGMwa/+VXC6v9LHZkhfclYs+IeNWzhvsBGAjBMCgS/olJ506SZyuhgaurSMwVzxcX1+zlu9kfnLVR4FM93g1cVpJFzoF6YDAnBFGL2WW2ysLlr86GJRLvjtlDdaFvz0dvYpN0nKqelIgUIGE2fFYQwf4meMfVZkqTgkxPioIXTDyz7fi0kr4pEqvd5bjkZj1K6LfYrOmDqQ3o44S4L5AKopFuAWx8qYtTgeYCXJV3FwEhFckSH1yCM765pTby5POXQ80mbn81/VeUPL8rtUHcvC4NGxI5zj8DplvNXhIFIJdcu1f///trQ8Rhcg6Y4AF7dsNBIeNtH//80yfh/3ccjQArOkxHflT/T5v/9pd//yy9kYBWAZGp/J7UZnCMf+P9Y//6Sf/gHXPbk+nT//4/Li+33QY8xGku0mGdZzbCtUZeGeKi1Ofk8yY2tUrZpAjFyxGZNGDtGhKpXGS1Uh66E8KmcftvoHX3xUYwQGZu/6xrz6gJuCYagfQ7Z1QMnngmGooEDCoUC4gQAAABIAMq8BMgHgQAAAA06wHmTGBZvoBQDUMvf2dD9RGKV2uod9CCboGcBk/RTXXTn8V3tp1yzdK+H4Y15+CV8qeuuZ0BO5HUqr7MMI96OD+3Azj/+krrNG+aKD/0NVOXgtyiMQTHdyjBpBZd4LP7HGk8/NhfRqT0XkIxvAyMsYnIwYpD/t1B5jI6IlFyfNOa878nDbuYtFcCfH3T4ISt8KG6/Ye0pmDZveU1SmsIbUiXj6yqQlrJuCYaj7gf8fQ7Z1QRTngsNQoEENoUEDgQAAABIAMvoBMgLgggAAA04gG2TXhZvSBQDZmnAOR1Foe/e/WGGG36RgDOyDU4dFEqGGyCHwFT5Qa9FOH3MrUy6atUXEMgohsSF4gkgZWODAbaZa4OcugpYpzXXtArAg1UxeJNH/o6Yyy/yULLAeRg94/67p/qD4Vi7o/aTK/q55dUTRNn/i5QQpbwd120sQdq4/VHPDZ0A7PLR0vQEeBovi2Xblj5Zql/TGslTo3V32XIOungwR3LcTuQEf8FbHcqiYHo+uCixbHiylw9c+ZZavCQig6l7z581qamA2nMO2m56BcwIxqukn9yAMPVOvPbEHTBLks6yUqsVGdSTLYFL/QJuCYYD7gf8fQ7Z1sOeDASTQoKmhoYEAAAASADIZMwMBAgIABp4ABABjCwAAAgDjWORyVp8FoJuBKPuB/w==" download="rain-interview.webm">Download rig interview</a></figure>
+      </div>
+      <div class="format" id="alder-format-1"><h3>Stills</h3><div class="choices" hidden></div>
+        <figure><div class="well"><svg aria-hidden="true" viewBox="0 0 112 63"><use href="#alder-stage"/></svg></div><figcaption><b>Lantern in the rain</b><small>Landscape · Mara Lin</small><p>The lantern hangs above the rain gauze.</p></figcaption></figure>
+        <figure><div class="well"><svg aria-hidden="true" viewBox="0 0 64 80"><use href="#alder-rig" transform="translate(-9 16) scale(.73)"/><path d="M13 41V22h15m23 19V22H36" fill="none" stroke="var(--muted)"/></svg></div><figcaption><b>Hands on the rig</b><small>Portrait · Ivo Bell</small><p>The operator holds a separate line in each hand.</p></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="coverage-map" data-own="coverage-map" aria-labelledby="coverage-map-title">
+  <div class="wrap">
+    <h2 id="coverage-map-title">The valley library route</h2>
+    <p class="t-lead measure">Wold Mobile Library has 50 reserved books across three stops.</p>
+    <div class="route" data-assumed>
+      <figure><svg viewBox="0 0 100 70" role="img" aria-label="Valley route, with three numbered stops and a bridge across the stream"><g fill="none" stroke="var(--line)" stroke-width=".36"><path d="M57 -2q-9 13 4 19t20 1 23 -1M-2 43q10 -6 18 0t18 18l4 12"/><path d="M59.3 -2q-9 13 4 19t20 1 23 -1M-2 45.1q10 -6 18 0t18 18l4 12"/><path d="M61.6 -2q-9 13 4 19t20 1 23 -1M-2 47.2q10 -6 18 0t18 18l4 12"/><path d="M63.9 -2q-9 13 4 19t20 1 23 -1M-2 49.3q10 -6 18 0t18 18l4 12"/><path d="M66.2 -2q-9 13 4 19t20 1 23 -1M-2 51.4q10 -6 18 0t18 18l4 12"/><path d="M68.5 -2q-9 13 4 19t20 1 23 -1M-2 53.5q10 -6 18 0t18 18l4 12"/><path d="M70.8 -2q-9 13 4 19t20 1 23 -1M-2 55.6q10 -6 18 0t18 18l4 12"/><path d="M73.1 -2q-9 13 4 19t20 1 23 -1M-2 57.7q10 -6 18 0t18 18l4 12"/><path d="M75.4 -2q-9 13 4 19t20 1 23 -1M-2 59.8q10 -6 18 0t18 18l4 12"/></g><g fill="var(--line)"><path d="M4 4l17 3-3 14L2 19zM23 8l14 3-4 15-13-4zM50 46l13-4 4 12-13 5zM56 61l13-5 3 15H60z"/><path d="M8 29l5-2 1 3-5 2zm7-3 3-1 2 3-4 2zm56-13h5v3h-5zm1 45 6 1-1 4-6-2z"/></g><path d="M40 -3c-5 14 9 16 4 30s-8 16-4 28 7 13 2 19" fill="none" stroke="var(--action)" stroke-width="2.1" opacity=".62"/><g fill="none" stroke="var(--muted)" stroke-width=".5"><path d="M-2 42l20-4 16-3h13l21-15 33 2M47 35l16 7 15 10 24 3"/><path d="M37 33.8h8m-8 2.4h8" stroke="var(--ink)" stroke-width=".8"/></g><g fill="var(--muted)"><circle cx="52" cy="12" r=".65"/><circle cx="54.5" cy="12" r=".65"/><circle cx="57" cy="12" r=".65"/><circle cx="59.5" cy="12" r=".65"/><circle cx="52" cy="14.6" r=".65"/><circle cx="54.5" cy="14.6" r=".65"/><circle cx="57" cy="14.6" r=".65"/><circle cx="59.5" cy="14.6" r=".65"/><circle cx="52" cy="17.2" r=".65"/><circle cx="54.5" cy="17.2" r=".65"/><circle cx="57" cy="17.2" r=".65"/><circle cx="59.5" cy="17.2" r=".65"/></g><g data-pin=""><circle cx="18" cy="38" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="18" y="39.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">1</text><circle cx="18" cy="38" r="6.6" fill="transparent" class="hit"/></g><g data-pin=""><circle cx="68" cy="20" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="68" y="21.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">2</text><circle cx="68" cy="20" r="6.6" fill="transparent" class="hit"/></g><g data-pin=""><circle cx="78" cy="52" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="78" y="53.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">3</text><circle cx="78" cy="52" r="6.6" fill="transparent" class="hit"/></g></svg><span class="map-name" hidden></span></figure>
+      <fieldset><legend>Library stops</legend>
+        <label><input hidden type="radio" name="wold-stop" value="0" checked><span class="number">1</span><span class="stop"><strong>Mill Square</strong><span>Tuesday · 09:00–10:00</span><small>West by the stream</small></span><span class="books"><b>24</b> reserved</span></label>
+        <label><input hidden type="radio" name="wold-stop" value="1" ><span class="number">2</span><span class="stop"><strong>Orchard School</strong><span>Tuesday · 11:00–12:00</span><small>Northeast of the bridge</small></span><span class="books"><b>16</b> reserved</span></label>
+        <label><input hidden type="radio" name="wold-stop" value="2" ><span class="number">3</span><span class="stop"><strong>Quarry Hall</strong><span>Thursday · 14:00–15:00</span><small>Southeast of the bridge</small></span><span class="books"><b>10</b> reserved</span></label>
+      </fieldset>
+    </div>
+  </div>
+</section>
+<section class="section own" id="answer-finder" data-own="answer-finder" aria-labelledby="answer-finder-title">
+  <div class="wrap">
+    <h2 id="answer-finder-title">Ordering and caring for your mugs</h2>
+    <p class="t-lead measure">Answers from the Reeve Ceramics studio.</p>
+    <div class="answers" data-assumed>
+      <div class="finder"><div class="search" hidden><label for="reeve-query">Find an answer</label><input id="reeve-query" type="search" placeholder="Search questions and answers"><p role="status"></p><button type="button" class="press" hidden>Clear search</button></div>
+      <nav aria-label="Support topics"><a href="#reeve-ordering">Ordering</a><a href="#reeve-delivery">Delivery</a><a href="#reeve-care">Care</a></nav></div>
+      <div class="topics">
+        <div class="topic"><h3 id="reeve-ordering" tabindex="-1">Ordering</h3>
+          <details open id="reeve-minimum"><summary><h4>How many mugs can I order?</h4></summary><p>The minimum order is one mug.</p></details>
+          <details open id="reeve-colour"><summary><h4>Can I order a custom colour?</h4></summary><p>Choose a custom glaze colour when you order 12 mugs or more.</p></details>
+        </div>
+        <div class="topic"><h3 id="reeve-delivery" tabindex="-1">Delivery</h3>
+          <details open id="reeve-dispatch"><summary><h4>When will my mugs ship?</h4></summary><p>We dispatch orders within three working days.</p></details>
+          <details open id="reeve-collection"><summary><h4>When can I collect my order?</h4></summary><p>Collect from the studio on Friday between 14:00 and 17:00.</p></details>
+        </div>
+        <div class="topic"><h3 id="reeve-care" tabindex="-1">Care</h3>
+          <details open id="reeve-dishwasher"><summary><h4>Can the mugs go in the dishwasher?</h4></summary><p>Yes. Place them on the top rack.</p></details>
+          <details open id="reeve-chips"><summary><h4>Can I keep using a chipped mug?</h4></summary><p>Retire a chipped mug from drink service.</p></details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="edition-outlets" data-own="edition-outlets" aria-labelledby="edition-outlets-title">
+  <div class="wrap">
+    <h2 id="edition-outlets-title">Choose your edition of The Moss Signal</h2>
+    <p class="t-lead measure">Windglass Games offers a download and two boxed editions.</p>
+    <div class="picker" id="moss-editions" tabindex="-1" data-assumed>
+      <div class="choices" hidden>
+        <fieldset><legend>Edition</legend><div><label><input type="radio" name="moss-Edition" value="Download" checked><span>Download</span></label><label><input type="radio" name="moss-Edition" value="Boxed" ><span>Boxed</span></label><label><input type="radio" name="moss-Edition" value="Studio Box" ><span>Studio Box</span></label></div></fieldset>
+        <fieldset><legend>Platform</legend><div><label><input type="radio" name="moss-Platform" value="Computer" checked><span>Computer</span><small hidden>Unavailable</small></label><label><input type="radio" name="moss-Platform" value="Handheld" ><span>Handheld</span><small hidden>Unavailable</small></label></div><p class="availability"></p></fieldset>
+      </div>
+      <div class="packs">
+        <article data-price="18"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Drawstring game pouch"><path d="M77 53l14-9-4-14 20 5 17-6 4 13 13 8-7 13 15 57q1 13-16 15H64q-16-4-12-18l21-57z" fill="var(--ink)"/><path d="M78 53q21 9 55 1m-5 1q19 5 28 21" fill="none" stroke="var(--bg)" stroke-width="2"/><g transform="translate(81 89)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g></svg></div><div><h3>Download</h3><p>Game download</p>
+          <div class="fallback"><strong>€18</strong> <a href="#moss-order-0-computer">View Computer order</a> <a href="#moss-order-0-handheld">View Handheld order</a></div></div></article>
+        <article data-price="32"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Game carton"><path d="M57 37l75-12 19 12-73 14z" fill="var(--muted)"/><path d="M57 37l21 14v88l-21-16z" fill="var(--action)"/><path d="M78 51l73-14v87l-73 15z" fill="var(--ink)"/><g transform="translate(95 87) skewY(-10)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g></svg></div><div><h3>Boxed</h3><p>Game and folded map</p>
+          <div class="fallback"><strong>€32</strong> <a href="#moss-order-1-handheld">View Handheld order</a></div></div></article>
+        <article data-price="46"><div class="art"><svg viewBox="0 0 200 158" role="img" aria-label="Game carton and score booklet"><path d="M36 40l66-14 23 10-65 16z" fill="var(--muted)"/><path d="M36 40l24 12v84l-24-14z" fill="var(--action)"/><path d="M60 52l65-16v85l-65 15z" fill="var(--ink)"/><g transform="translate(74 85) skewY(-12)"><path d="M0 16l12-18 8 8 16-22m-36 41 13-16 7 6 16-16" fill="none" stroke="var(--bg)" stroke-width="2"/></g><path d="M124 77l42 6-7 54-42-8z" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.4"/><g fill="none" stroke="var(--muted)" stroke-width="1.4"><path d="M128 95l30 4m-31 1 30 4m-31 1 30 4m-31 1 30 4"/></g><path d="M137 108v-16l9 1" fill="none" stroke="var(--ink)" stroke-width="2"/><ellipse cx="134" cy="109" rx="4" ry="2.6" fill="var(--ink)"/></svg></div><div><h3>Studio Box</h3><p>Game, folded map and score booklet</p>
+          <div class="fallback"><strong>€46</strong> <a href="#moss-order-2-computer">View Computer order</a></div></div></article>
+      </div>
+      <div class="checkout" hidden><strong class="t-stat"></strong><a class="btn btn--primary" href="#moss-order-0-computer">View order</a><p class="sr" role="status"></p></div>
+    </div>
+    <div class="receipts">
+      <article tabindex="-1" id="moss-order-0-computer"><h3>Download order summary</h3><p>The Moss Signal for Computer · Game download</p><strong>€18</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-0-handheld"><h3>Download order summary</h3><p>The Moss Signal for Handheld · Game download</p><strong>€18</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-1-handheld"><h3>Boxed order summary</h3><p>The Moss Signal for Handheld · Game and folded map</p><strong>€32</strong><a href="#moss-editions">Back to editions</a></article>
+      <article tabindex="-1" id="moss-order-2-computer"><h3>Studio Box order summary</h3><p>The Moss Signal for Computer · Game, folded map and score booklet</p><strong>€46</strong><a href="#moss-editions">Back to editions</a></article>
+    </div>
+  </div>
+</section>
+<section class="section own" id="environment-setup" data-own="environment-setup" aria-labelledby="environment-setup-title">
+  <div class="wrap">
+    <h2 id="environment-setup-title">Read a rain gauge sample</h2>
+    <p class="t-lead measure">Use an installed runtime to read a station measurement from Silt Meter.</p>
+    <div class="setup" data-assumed>
+      <aside><h3>Before you run</h3><p>Install Python 3, Node or Ruby. Save this sample as <code>reading.json</code>.</p>
+        <pre><code>{"station":"S4","mm":12}</code></pre><p>Run from the directory containing both files.</p></aside>
+      <div class="work"><div role="tablist" aria-label="Runtime" hidden><button type="button" class="press" role="tab" aria-controls="silt-recipe-0" id="silt-tab-0">Python 3</button><button type="button" class="press" role="tab" aria-controls="silt-recipe-1" id="silt-tab-1">Node</button><button type="button" class="press" role="tab" aria-controls="silt-recipe-2" id="silt-tab-2">Ruby</button></div>
+        <article id="silt-recipe-0"><h3>Python 3</h3>
+          <div class="code-head"><span>Source · <code>read.py</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">import json
+print(json.load(open("reading.json"))["mm"])</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">python read.py</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <article id="silt-recipe-1"><h3>Node</h3>
+          <div class="code-head"><span>Source · <code>read.cjs</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">const fs = require("node:fs");
+console.log(JSON.parse(fs.readFileSync("reading.json","utf8")).mm);</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">node read.cjs</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <article id="silt-recipe-2"><h3>Ruby</h3>
+          <div class="code-head"><span>Source · <code>read.rb</code></span><button class="press" type="button" data-copy="source" hidden>Copy source</button></div>
+          <pre><code data-text="source">require "json"
+puts JSON.parse(File.read("reading.json"))["mm"]</code></pre>
+          <div class="code-head"><span>Run command</span><button class="press" type="button" data-copy="run" hidden>Copy run command</button></div>
+          <pre><code data-text="run">ruby read.rb</code></pre>
+          <div class="output"><span>Expected output</span><samp>12</samp></div>
+        </article>
+        <p role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="fee-comparison" data-own="fee-comparison" aria-labelledby="fee-comparison-title">
+  <div class="wrap">
+    <h2 id="fee-comparison-title">Compare postcard print runs</h2>
+    <p class="t-lead measure">Juniper Print Co-op offers two schedules on the same uncoated stock.</p>
+    <div class="sheet" data-assumed>
+      <div class="quantity">
+        <h3>Postcard quantity</h3>
+        <p>Print 25 to 500 cards. Both prices include all charges for collection.</p>
+        <form hidden novalidate><label for="juniper-qty">Number of cards</label>
+          <div class="entry"><input id="juniper-qty" name="cards" type="number" min="25" max="500" step="1" value="100" required aria-describedby="juniper-error"><button class="btn btn--primary press">Compare</button></div>
+          <p id="juniper-error" role="alert"></p><p class="announcement" role="status"></p>
+        </form>
+      </div>
+      <div class="quotes">
+        <h3 class="quantity-title">Print schedules</h3>
+        <div class="quote" data-setup="1200" data-rate="30">
+          <div class="amount"><h4>Short run</h4><strong class="t-stat" hidden></strong></div>
+          <p>€12 setup + €0.30 per card<span></span></p>
+          <div class="bar" hidden><i></i></div>
+        </div>
+        <div class="quote" data-setup="3600" data-rate="10">
+          <div class="amount"><h4>Press run</h4><strong class="t-stat" hidden></strong></div>
+          <p>€36 setup + €0.10 per card<span></span></p>
+          <div class="bar" hidden><i></i></div>
+        </div>
+        <p class="difference"></p>
+        <table><caption>Collection prices by quantity</caption><thead><tr><th scope="col">Cards</th><th scope="col">Short run</th><th scope="col">Press run</th></tr></thead>
+          <tbody><tr><th scope="row">100</th><td>€42</td><td>€46</td></tr><tr><th scope="row">120</th><td>€48</td><td>€48</td></tr><tr><th scope="row">200</th><td>€72</td><td>€56</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section own" id="chapter-links" data-own="chapter-links" aria-labelledby="chapter-links-title">
+  <div class="wrap">
+    <h2 id="chapter-links-title">Weave a 40 cm sampler</h2>
+    <p class="t-lead measure">A three-chapter field guide from Mere Loom.</p>
+    <div class="guide" data-assumed>
+      <nav class="guide-bar" aria-label="Sampler chapters"><b>Sampler guide</b><div class="links"><a href="#mere-threading">Threading</a><a href="#mere-weaving">Weaving</a><a href="#mere-finishing">Finishing</a></div><a class="chart-link" href="#mere-chart">Threading chart</a></nav>
+      <article class="chapter"><div><h3 id="mere-threading" tabindex="-1">Threading</h3><p>Thread 80 ends across 40 cm, at 2 ends per cm. Work from left to right, alternating one heddle slot and one hole.</p></div><svg viewBox="0 0 300 100" role="img" aria-label="Six warp ends alternating through the slots and holes of a heddle."><g fill="var(--surface)" stroke="var(--muted)" stroke-width="1.2"><rect x="27" y="18" width="246" height="64" rx="8"/></g><g fill="var(--bg)" stroke="var(--muted)" stroke-width="1.6"><rect x="35" y="24" width="4" height="51" rx="2"/><circle cx="47" cy="49" r="2"/><rect x="55" y="24" width="4" height="51" rx="2"/><circle cx="67" cy="49" r="2"/><rect x="75" y="24" width="4" height="51" rx="2"/><circle cx="87" cy="49" r="2"/><rect x="95" y="24" width="4" height="51" rx="2"/><circle cx="107" cy="49" r="2"/><rect x="115" y="24" width="4" height="51" rx="2"/><circle cx="127" cy="49" r="2"/><rect x="135" y="24" width="4" height="51" rx="2"/><circle cx="147" cy="49" r="2"/><rect x="155" y="24" width="4" height="51" rx="2"/><circle cx="167" cy="49" r="2"/><rect x="175" y="24" width="4" height="51" rx="2"/><circle cx="187" cy="49" r="2"/><rect x="195" y="24" width="4" height="51" rx="2"/><circle cx="207" cy="49" r="2"/><rect x="215" y="24" width="4" height="51" rx="2"/><circle cx="227" cy="49" r="2"/><rect x="235" y="24" width="4" height="51" rx="2"/><circle cx="247" cy="49" r="2"/><rect x="255" y="24" width="4" height="51" rx="2"/><circle cx="267" cy="49" r="2"/></g><g fill="none" stroke="var(--action)" stroke-width="2"><path d="M37 94v-54l-4-31"/><path d="M47 94v-45l-4-31"/><path d="M57 94v-54l-4-31"/><path d="M67 94v-45l-4-31"/><path d="M77 94v-54l-4-31"/><path d="M87 94v-45l-4-31"/></g></svg></article>
+      <article class="chapter"><div><h3 id="mere-weaving" tabindex="-1">Weaving</h3><p>Weave 60 picks. Pass the shuttle through the shed for each pick, alternating its direction across the warp.</p></div><svg viewBox="0 0 300 100" role="img" aria-label="A shuttle crossing the warp above six woven picks."><g fill="none" stroke="var(--muted)" stroke-width="2"><path d="M49 10v78"/><path d="M59 10v78"/><path d="M69 10v78"/><path d="M79 10v78"/><path d="M89 10v78"/><path d="M99 10v78"/><path d="M109 10v78"/><path d="M119 10v78"/><path d="M129 10v78"/><path d="M139 10v78"/><path d="M149 10v78"/><path d="M159 10v78"/><path d="M169 10v78"/><path d="M179 10v78"/><path d="M189 10v78"/><path d="M199 10v78"/><path d="M209 10v78"/><path d="M219 10v78"/><path d="M229 10v78"/><path d="M239 10v78"/></g><g stroke="var(--action)" fill="none" stroke-width="3"><path d="M44 43h195"/><path d="M44 50h195"/><path d="M44 57h195"/><path d="M44 64h195"/><path d="M44 71h195"/><path d="M44 78h195"/></g><path fill="var(--ink)" d="M103 28l19-6h60l17 6-17 5h-60z"/><path d="M129 28h40" stroke="var(--bg)" stroke-width="2"/></svg></article>
+      <article class="chapter"><div><h3 id="mere-finishing" tabindex="-1">Finishing</h3><p>Fold and stitch a 2 cm hem at each end of the sampler.</p></div><svg viewBox="0 0 300 100" role="img" aria-label="The cloth edge folded back and stitched to form a hem."><path d="M47 26h202l-13 47H35z" fill="var(--muted)"/><path d="M47 26h202l5 16H52z" fill="var(--ink)"/><path d="M52 38h198" stroke="var(--bg)" stroke-width="1.5" stroke-dasharray="4 4"/><g fill="none" stroke="var(--ink)" stroke-width="1.6"><path d="M47 26H30m24 16H30m3-16v16m-2-13 2-3 2 3m-4 10 2 3 2-3"/></g><text x="7" y="37" font-size="9" fill="var(--ink)">2 cm</text></svg></article>
+    </div>
+    <article class="chart" id="mere-chart" tabindex="-1"><h3>Printable threading chart</h3><p>40 cm sampler · 80 ends · 2 ends per cm</p>
+      <table><caption>Repeat each pair from left to right</caption><thead><tr><th scope="col">Pair</th><th scope="col">Heddle slot</th><th scope="col">Heddle hole</th></tr></thead><tbody>
+        <tr><th scope="row">1</th><td>End 1</td><td>End 2</td></tr>
+        <tr><th scope="row">2</th><td>End 3</td><td>End 4</td></tr>
+        <tr><th scope="row">3–39</th><td>Odd ends 5–77</td><td>Even ends 6–78</td></tr>
+        <tr><th scope="row">40</th><td>End 79</td><td>End 80</td></tr>
+      </tbody></table><a href="#mere-threading">Back to threading</a>
+    </article>
+  </div>
+</section>
+<section class="section own ground-surface" id="witness-selector" data-own="witness-selector" aria-labelledby="witness-selector-title">
+  <div class="wrap">
+    <h2 id="witness-selector-title">Returning the equipment</h2>
+    <p class="t-lead measure">Three customers describe a return at Saltern Tool Hire.</p>
+    <div class="records" data-assumed>
+      <div class="choices" role="tablist" aria-label="Customer account" hidden>
+        <button class="press" type="button" role="tab" id="saltern-tab-0" aria-controls="saltern-account-0"><span class="initial" aria-hidden="true">A</span><span>Flint Farm</span></button>
+        <button class="press" type="button" role="tab" id="saltern-tab-1" aria-controls="saltern-account-1"><span class="initial" aria-hidden="true">B</span><span>Cinder Hall</span></button>
+        <button class="press" type="button" role="tab" id="saltern-tab-2" aria-controls="saltern-account-2"><span class="initial" aria-hidden="true">J</span><span>Tern Yard</span></button>
+      </div>
+      <div class="account-stage">
+        <figure id="saltern-account-0"><blockquote>“The return slip gave me the shed number.”</blockquote><figcaption><b>Ada</b> at Flint Farm</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Hedge trimmer · Shed 2</dd></dl></figure>
+        <figure id="saltern-account-1"><blockquote>“We matched the pump by its tag.”</blockquote><figcaption><b>Bo</b> at Cinder Hall</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Pump · Tag P16</dd></dl></figure>
+        <figure id="saltern-account-2"><blockquote>“I could see both crates on the receipt.”</blockquote><figcaption><b>Jo</b> at Tern Yard</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Lighting crates · 2 crates</dd></dl></figure>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section own" id="lead-digest" data-own="lead-digest" aria-labelledby="lead-digest-title">
+  <div class="wrap">
+    <h2 id="lead-digest-title">Wick Valley Field Notes</h2>
+    <p class="t-lead measure">Reports from the beck, the orchard and the upper meadow.</p>
+    <div class="digest" data-assumed>
+      <article class="lead" id="wick-teaser-bridge"><svg viewBox="0 0 480 320" role="img" aria-label="A timber footbridge crosses Mill Beck between an orchard tree and the upper meadow."><rect width="480" height="320" fill="var(--surface)"/><circle cx="340" cy="64" r="22" fill="var(--bg)"/>
+        <path fill="var(--line)" d="M0 106Q61 60 130 102T257 94t109-13 114 12v35H0z"/>
+        <path fill="var(--muted)" d="M0 134q44-31 89-27t78-7 85 12 111 1 117-18v54H0z"/>
+        <path fill="var(--bg)" d="M0 142q63-24 127-17t124 6 129-9 100 2v196H0z"/>
+        <path fill="var(--action)" d="M328 128q-105 19-83 32t-21 35c-69 30 19 46-39 73q-57 25-146 52h284q24-26 9-45c-17-21-29-31-14-51s-50-41-42-55 19-22 65-41z"/>
+        <g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M-5 160q87-34 190-18m-171 24q95-29 156-20M6 228q66-54 162-53m-82 38 48-16m238-28 57-11m-73 28 79-17m-82 90 120-31"/></g>
+        <g fill="var(--ink)" stroke="var(--ink)" stroke-linecap="round"><path d="M70 139l3-51m0 24-18-17m18 7 14-22m-14 47 18-18" fill="none" stroke-width="3"/><path d="M36 98q-8-12 3-20-3-14 15-16 4-21 21-14 13-7 22 8 18-2 20 15 15 9 4 20-7 16-25 11-17 17-32 4-21 9-28-8z"/>
+        <path d="M378 128l2-30m-1 13-9-11" fill="none" stroke-width="2"/><path d="M359 98q-6-13 8-17 6-14 17-8 14-6 18 8 12 8 2 17-8 9-20 4-19 7-25-4z"/></g>
+        <g stroke="var(--ink)" stroke-linejoin="round"><path d="M151 211l153-43 21 3-156 47z" fill="var(--surface)" stroke-width="2"/><path d="M169 218l156-47v6l-156 47z" fill="var(--ink)"/>
+        <path d="M159 209v-25m47 12v-25m50 11v-24m48 10v-25m-145 41 145-41m-145 51 145-41M171 216v-24m49 9v-23m49 8v-22m52 9v-22m-150 41 150-41" fill="none" stroke-width="2.4"/>
+        <path d="M179 218v22l5-2v-22m112-33v17l4-1v-18" fill="var(--ink)"/></g>
+        <g fill="none" stroke="var(--bg)" stroke-linecap="round"><path d="M239 190l16-4m4-13 9-2m-58 60 22-5m37 23 18-4m-117 38 38-11m13 23 28-9m57-15 9-3"/></g>
+        <g stroke="var(--muted)" fill="none"><path d="M22 260l4-9 2 8 6-12m319 27 3-9 4 8 4-13m77-56 4-8 2 7 6-10m-324 35 1-7 5 5 3-7"/></g></svg>
+        <time datetime="2026-11-12">12 Nov</time><h3><a href="#wick-story-bridge">The footbridge reopens</a></h3><p>A new deck carries the path over Mill Beck.</p>
+      </article>
+      <article class="dispatch" id="wick-teaser-gate">
+        <time datetime="2026-11-09">9 Nov</time><h3><a href="#wick-story-gate">Orchard gate moved</a></h3><p>The west gate now opens onto the lane.</p>
+      </article>
+      <article class="dispatch" id="wick-teaser-paths">
+        <time datetime="2026-11-04">4 Nov</time><h3><a href="#wick-story-paths">Two winter paths</a></h3><p>The upper meadow paths stay open.</p>
+      </article>
+      <article class="dispatch" id="wick-teaser-ferry">
+        <time datetime="2026-10-28">28 Oct</time><h3><a href="#wick-story-ferry">Ferry hours change</a></h3><p>The last crossing now leaves at 16:30.</p>
+      </article>
+    </div>
+    <div class="stories"><article id="wick-story-bridge" tabindex="-1"><h3>The footbridge reopens</h3><p class="muted">12 Nov · Wick Valley Field Notes</p><p>The crossing at Mill Beck is open again. The new deck follows the old footbridge between the orchard bank and the meadow. Walkers can use the crossing from either bank.</p><a href="#wick-teaser-bridge">Back to the footbridge reopens</a></article>
+      <article id="wick-story-gate" tabindex="-1"><h3>Orchard gate moved</h3><p class="muted">9 Nov · Wick Valley Field Notes</p><p>The entrance on the west side of the orchard has moved. From the lane, follow the hedge to the new opening. Close the gate behind you. Visitors collecting mugs at the lane entrance can check <a href="#reeve-collection">Reeve Ceramics collection hours</a>.</p><a href="#wick-teaser-gate">Back to orchard gate moved</a></article>
+      <article id="wick-story-paths" tabindex="-1"><h3>Two winter paths</h3><p class="muted">4 Nov · Wick Valley Field Notes</p><p>Both paths across the upper meadow remain open for winter. One follows the hedge and the other cuts across to the ridge. Use either route on the way back from the beck.</p><a href="#wick-teaser-paths">Back to two winter paths</a></article>
+      <article id="wick-story-ferry" tabindex="-1"><h3>Ferry hours change</h3><p class="muted">28 Oct · Wick Valley Field Notes</p><p>The valley ferry is on its winter timetable. The final boat leaves at 16:30. Arrive at the landing before that departure to cross the beck.</p><a href="#wick-teaser-ferry">Back to ferry hours change</a></article></div>
+  </div>
+</section>
+<section class="section own ground-surface" id="field-roster" data-own="field-roster" aria-labelledby="field-roster-title">
+  <div class="wrap">
+    <h2 id="field-roster-title">Meet the Moss Post couriers</h2>
+    <p class="t-lead measure">Each courier takes a different kind of cargo across the valley.</p>
+    <div class="roster" data-assumed>
+      <svg class="definitions" aria-hidden="true"><defs><g id="moss-animal-0"><g fill="var(--ink)"><path d="M8 37 0 17l15 9c4-10 17-16 28-10q6-12 18-7l9 8 13 2-14 6c-1 11-10 21-21 25-13 4-28-1-34-10z"/><path d="M33 47l-3 11 9 1-1 2H24l4-15m18 0 4 12h8v3H46l-5-14"/></g><path d="M17 31q17-11 34-5-9 15-25 14z" fill="var(--action)"/><circle cx="59" cy="16" r="2" fill="var(--bg)"/></g><g id="moss-animal-1"><g fill="var(--ink)"><path d="M7 43q-4-24 19-32 23-8 40 9l12 12-10 8-11 1q-6 15-37 11z"/><path d="M18 49l-3 11h15l3-10m16 0 3 10h14l-5-13"/></g><path d="M25 24q15-8 27 1l-4 18-23-1z" fill="var(--action)"/><circle cx="62" cy="24" r="2" fill="var(--bg)"/><path d="M73 29l10 3-8 5z" fill="var(--muted)"/></g><g id="moss-animal-2"><path d="M1 42q15 12 26-1 8-15 25-14 10-1 14-12t16-5l9 9q-2 8-15 8-7 12-20 13-16-1-24 9Q15 60 1 42z" fill="var(--ink)"/><path d="M40 37l-6 16-12 2m39-23 10 15 11-1" fill="none" stroke="var(--ink)" stroke-width="5"/><path d="M43 27l14-2 5 12-20 4z" fill="var(--action)"/><circle cx="76" cy="15" r="2" fill="var(--bg)"/></g></defs></svg>
+      <div class="portraits" role="tablist" aria-label="Courier" hidden><button class="press" type="button" role="tab" id="moss-courier-0" aria-controls="moss-dossier-0"><svg viewBox="0 0 92 64" aria-hidden="true"><use href="#moss-animal-0"/></svg>Wren</button><button class="press" type="button" role="tab" id="moss-courier-1" aria-controls="moss-dossier-1"><svg viewBox="0 0 92 64" aria-hidden="true"><use href="#moss-animal-1"/></svg>Mole</button><button class="press" type="button" role="tab" id="moss-courier-2" aria-controls="moss-dossier-2"><svg viewBox="0 0 92 64" aria-hidden="true"><use href="#moss-animal-2"/></svg>Newt</button></div>
+      <article class="dossier" id="moss-dossier-0"><div class="profile"><h3>Wren</h3><p>Cargo · Letters</p>
+        <fieldset hidden><legend>Actions</legend><label><input type="radio" name="moss-action-0" value="0" checked>Fold</label><label><input type="radio" name="moss-action-0" value="1" >Signal</label></fieldset></div>
+        <div class="poses"><figure><svg viewBox="0 0 280 210" role="img" aria-label="Fold, before and after. Wren fits a letter through a slot."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><path d="M105 26l12-4 11 4v79h-23z" fill="var(--muted)"/><path d="M104 55h16v5h-16z" fill="var(--surface)"/><use href="#moss-animal-0" transform="translate(13 62) rotate(0 43 40) scale(.78)"/><path d="M78 58h24v18H78z" fill="var(--bg)" stroke="var(--ink)"/><path d="m78 58 12 9 12-9" fill="none" stroke="var(--ink)"/></g><g transform="translate(145 47)"><path d="M105 26l12-4 11 4v79h-23z" fill="var(--muted)"/><path d="M104 55h16v5h-16z" fill="var(--surface)"/><use href="#moss-animal-0" transform="translate(37 62) rotate(-9 43 40) scale(.78)"/><path d="M94 56h25v3H94z" fill="var(--action)"/></g></svg><figcaption><b>Fold</b><span>Fits a letter through a slot.</span></figcaption></figure>
+        <figure><svg viewBox="0 0 280 210" role="img" aria-label="Signal, before and after. Wren rings a bell at the gate."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><path d="M107 105V29H80" fill="none" stroke="var(--muted)" stroke-width="5"/><g transform="rotate(0 85 32)" fill="var(--ink)"><path d="M83 30h4v8q8 1 8 14l3 4H71l4-4q0-12 8-14z"/><circle cx="85" cy="58" r="3"/><path d="M85 59v18" stroke="var(--ink)"/></g><use href="#moss-animal-0" transform="translate(8 62) rotate(0 43 40) scale(.78)"/></g><g transform="translate(145 47)"><path d="M107 105V29H80" fill="none" stroke="var(--muted)" stroke-width="5"/><g transform="rotate(-24 85 32)" fill="var(--ink)"><path d="M83 30h4v8q8 1 8 14l3 4H71l4-4q0-12 8-14z"/><circle cx="85" cy="58" r="3"/><path d="M85 59v18" stroke="var(--ink)"/></g><use href="#moss-animal-0" transform="translate(22 37) rotate(-16 43 40) scale(.78)"/></g></svg><figcaption><b>Signal</b><span>Rings a bell at the gate.</span></figcaption></figure></div>
+      </article>
+      <article class="dossier" id="moss-dossier-1"><div class="profile"><h3>Mole</h3><p>Cargo · Parcels</p>
+        <fieldset hidden><legend>Actions</legend><label><input type="radio" name="moss-action-1" value="0" checked>Dig</label><label><input type="radio" name="moss-action-1" value="1" >Brace</label><label><input type="radio" name="moss-action-1" value="2" >Lift</label></fieldset></div>
+        <div class="poses"><figure><svg viewBox="0 0 280 210" role="img" aria-label="Dig, before and after. Mole opens a tunnel."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><path d="M70 108q10-55 54-50v50z" fill="var(--muted)"/><use href="#moss-animal-1" transform="translate(9 61) rotate(0 43 40) scale(.78)"/><path d="M88 95l5-3 4 5-8 2m17-7 3-6 5 4-2 5" fill="var(--action)"/></g><g transform="translate(145 47)"><path d="M70 108q10-55 54-50v50z" fill="var(--muted)"/><path d="M77 108q4-30 30-30v30z" fill="var(--ink)"/><use href="#moss-animal-1" transform="translate(33 66) rotate(8 43 40) scale(.78)"/><path d="M88 95l5-3 4 5-8 2m17-7 3-6 5 4-2 5" fill="var(--action)"/></g></svg><figcaption><b>Dig</b><span>Opens a tunnel.</span></figcaption></figure>
+        <figure><svg viewBox="0 0 280 210" role="img" aria-label="Brace, before and after. Mole props a crate."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><use href="#moss-animal-1" transform="translate(9 61) rotate(0 43 40) scale(.78)"/><path d="M112 88h5v20h-5z" fill="var(--muted)"/><g transform="rotate(-14 114 88)"><g transform="translate(81 61) scale(1.3)"><rect width="28" height="21" fill="var(--muted)"/><path d="M3 3l22 15m-22 0L25 3" fill="none" stroke="var(--surface)" stroke-width="1.8"/></g></g><path d="M72 102l-5 5h14z" fill="var(--action)"/></g><g transform="translate(145 47)"><use href="#moss-animal-1" transform="translate(24 61) rotate(-8 43 40) scale(.78)"/><path d="M112 88h5v20h-5z" fill="var(--muted)"/><g transform="rotate(0 96 96)"><g transform="translate(81 61) scale(1.3)"><rect width="28" height="21" fill="var(--muted)"/><path d="M3 3l22 15m-22 0L25 3" fill="none" stroke="var(--surface)" stroke-width="1.8"/></g></g><path d="M83 88l-10 20h14z" fill="var(--action)"/></g></svg><figcaption><b>Brace</b><span>Props a crate.</span></figcaption></figure>
+        <figure><svg viewBox="0 0 280 210" role="img" aria-label="Lift, before and after. Mole raises one parcel."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><use href="#moss-animal-1" transform="translate(13 60) rotate(5 43 40) scale(.78)"/><g transform="translate(85 84) scale(0.95)"><rect width="28" height="21" fill="var(--muted)"/><path d="M3 3l22 15m-22 0L25 3" fill="none" stroke="var(--surface)" stroke-width="1.8"/></g></g><g transform="translate(145 47)"><use href="#moss-animal-1" transform="translate(25 60) rotate(-15 43 40) scale(.78)"/><path d="M61 85l7-2 9-14 7 1-2 4-4 1-7 14-8 3z" fill="var(--ink)"/><g transform="translate(73 51) scale(0.95)"><rect width="28" height="21" fill="var(--muted)"/><path d="M3 3l22 15m-22 0L25 3" fill="none" stroke="var(--surface)" stroke-width="1.8"/></g></g></svg><figcaption><b>Lift</b><span>Raises one parcel.</span></figcaption></figure></div>
+      </article>
+      <article class="dossier" id="moss-dossier-2"><div class="profile"><h3>Newt</h3><p>Cargo · Vials</p>
+        <h4 class="single">Wade</h4></div>
+        <div class="poses"><figure><svg viewBox="0 0 280 210" role="img" aria-label="Wade, before and after. Newt crosses a shallow ford."><path d="M12 155q36-2 62 0t58 0m15 0q33-2 62 0t58 0" fill="none" stroke="var(--line-strong)"/><path d="M140 48v117" stroke="var(--line)"/><g transform="translate(8 47)"><path d="M0 103l26-12q30 10 65 0l37 8v12H0z" fill="var(--action)"/><path d="M26 103h12m25-5h15m20 7h9" stroke="var(--bg)" fill="none"/><use href="#moss-animal-2" transform="translate(0 62) rotate(0 43 40) scale(.78)"/></g><g transform="translate(145 47)"><path d="M0 103l26-12q30 10 65 0l37 8v12H0z" fill="var(--action)"/><path d="M26 103h12m25-5h15m20 7h9" stroke="var(--bg)" fill="none"/><use href="#moss-animal-2" transform="translate(52 55) rotate(-8 43 40) scale(.78)"/></g></svg><figcaption><b>Wade</b><span>Crosses a shallow ford.</span></figcaption></figure></div>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+<script type="module" src="../system.js"></script>
+<script type="module" src="../motion/motion.js"></script>
+<script type="module" src="../layout/layout.js"></script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="media-desk"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]'), groups = all('.format');
+  if (document.getElementById(root.id) !== root) {
+    const suffix = '-' + crypto.randomUUID();
+    for (const el of [root, ...all('[id]')]) el.id += suffix;
+    for (const use of all('use')) use.setAttribute('href', use.getAttribute('href') + suffix);
+    root.setAttribute('aria-labelledby', root.querySelector('h2').id);
+  }
+  let player;
+  function choose(group, index) {
+    if (player) { player.pause(); player.remove(); player = null; }
+    const buttons = group.querySelectorAll('button');
+    const figures = group.querySelectorAll('figure');
+    figures.forEach((figure, i) => {
+      figure.hidden = i !== index;
+      buttons[i].setAttribute('aria-pressed', String(i === index));
+    });
+    const item = figures[index], file = item.querySelector('.download');
+    if (!file) return;
+    player = document.createElement('video');
+    player.controls = player.playsInline = true;
+    player.preload = 'metadata';
+    const poster = item.querySelector('svg').cloneNode(true);
+    poster.replaceChildren(root.querySelector(poster.firstElementChild.getAttribute('href')).cloneNode(true));
+    const colors = getComputedStyle(root);
+    const xml = new XMLSerializer().serializeToString(poster).replace(/var\((--[\w-]+)\)/g, (_, name) => colors.getPropertyValue(name).trim());
+    player.poster = 'data:image/svg+xml,' + encodeURIComponent(xml);
+    player.setAttribute('aria-label', item.querySelector('b').textContent);
+    player.src = file.href;
+    const track = player.addTextTrack('captions','English','en');
+    const beat = index ? 25 : 16;
+    item.querySelectorAll('details p').forEach((p,i) => track.addCue(new VTTCue(i*beat,(i+1)*beat,p.textContent.slice(5))));
+    track.mode = 'showing';
+    player.onerror = event => { event.target.remove(); file.hidden = false; };
+    item.querySelector('.well').append(player);
+  }
+  function format(index) {
+    groups.forEach((group,i) => {
+      group.hidden = index !== i;
+      tabs[i].tabIndex = i === index ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(index === i));
+    });
+    choose(groups[index],0);
+  }
+  groups.forEach((group,i) => {
+    const tab = tabs[i], choices = group.querySelector('.choices');
+    tab.setAttribute('aria-controls', group.id);
+    group.setAttribute('aria-labelledby', tab.id);
+    group.setAttribute('role','tabpanel');
+    group.querySelector('h3').hidden = true;
+    tab.onclick = () => format(i);
+    tab.onkeydown = event => {
+      const next = {Home:0,End:1,ArrowLeft:1-i,ArrowRight:1-i}[event.key];
+      if (next === undefined) return;
+      event.preventDefault(); format(next); tabs[next].focus();
+    };
+    group.querySelectorAll('figure').forEach((figure,j) => {
+      const button = document.createElement('button'), label = document.createElement('span');
+      button.className = 'press';
+      const meta = document.createElement('small');
+      meta.textContent = figure.querySelector('small').textContent.split(' · ')[0];
+      label.append(figure.querySelector('b').textContent, meta);
+      button.append(figure.querySelector('svg').cloneNode(true), label);
+      button.onclick = () => choose(group,j);
+      choices.append(button);
+    });
+    choices.hidden = false;
+  });
+  format(0);
+  for (const file of all('.download')) file.hidden = true;
+  root.querySelector('[role="tablist"]').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="coverage-map"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const inputs = all('input');
+  const pins = all('[data-pin]');
+  const tag = one('.map-name');
+  function update() {
+    inputs.forEach((input, i) => {
+      const row = input.closest('label');
+      row.querySelector('small').hidden = !input.checked;
+      pins[i].classList.toggle('current', input.checked);
+      if (!input.checked) return;
+      const dot = pins[i].querySelector('circle');
+      tag.textContent = row.querySelector('strong').textContent;
+      tag.style.left = dot.cx.baseVal.value + '%';
+      tag.style.top = ((dot.cy.baseVal.value + 4) / 70 * 100) + '%';
+    });
+  }
+  const group = 'wold-' + crypto.randomUUID();
+  inputs.forEach((input, i) => {
+    input.name = group;
+    input.onchange = update;
+    pins[i].onclick = () => input.click();
+    input.hidden = false;
+  });
+  tag.hidden = false;
+  update();
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="answer-finder"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const questions = all('details');
+  const field = one('input');
+  function filter() {
+    const query = field.value.trim().toLowerCase();
+    let count = 0;
+    for (const question of questions) {
+      question.hidden = !question.textContent.toLowerCase().includes(query);
+      if (!question.hidden) count++;
+    }
+    for (const topic of all('.topic')) topic.hidden = !topic.querySelector('details:not([hidden])');
+    one('[role="status"]').textContent = query ? (count ? count + (count === 1 ? ' answer' : ' answers') : 'No matching answers.') : '';
+    one('.search button').hidden = !query;
+  }
+  function clear() { field.value = ''; filter(); }
+  field.oninput = filter;
+  field.onkeydown = event => { if (event.key === 'Escape') clear(); };
+  one('.search button').onclick = () => { clear(); field.focus(); };
+  one('nav').onclick = clear;
+  one('.search').hidden = false;
+  function linkedAnswer() {
+    return questions.find(question => '#' + question.id === location.hash);
+  }
+  function reveal() {
+    const target = linkedAnswer();
+    if (!target) {
+      const topic = all('.topic h3').find(heading => '#' + heading.id === location.hash);
+      if (topic) { clear(); topic.focus({preventScroll:true}); topic.scrollIntoView(); }
+      return;
+    }
+    clear();
+    target.open = true;
+    target.querySelector('summary').focus({preventScroll:true});
+    target.scrollIntoView();
+  }
+  window.addEventListener('hashchange', reveal);
+  document.addEventListener('click', event => {
+    const anchor = event.target.closest('a[href]');
+    if (anchor && anchor.hash === location.hash && linkedAnswer()) reveal();
+  });
+  const initial = linkedAnswer();
+  for (const question of questions) question.open = question === initial;
+  reveal();
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="edition-outlets"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const [editions, platforms] = all('fieldset').map(set => [...set.querySelectorAll('input')]);
+  const articles = all('.packs article');
+  const name = crypto.randomUUID();
+  for (const input of [...editions, ...platforms]) input.name += name;
+  function update(announce) {
+    const article = articles[editions.findIndex(input => input.checked)];
+    articles.forEach(pack => pack.hidden = pack !== article);
+    const links = [...article.querySelectorAll('a')];
+    platforms.forEach(input => {
+      input.disabled = !links.some(link => link.hash.endsWith('-' + input.value.toLowerCase()));
+      input.closest('label').querySelector('small').hidden = !input.disabled;
+    });
+    let selected = platforms.find(input => input.checked && !input.disabled);
+    if (!selected) {
+      selected = platforms.find(input => !input.disabled);
+      selected.checked = true;
+    }
+    one('.availability').textContent = links.length === 1
+      ? article.querySelector('h3').textContent + ' is available for ' + selected.value + ' only.'
+      : '';
+    const link = links.find(a => a.hash.endsWith('-' + selected.value.toLowerCase()));
+    one('.checkout a').href = link.href;
+    one('.checkout strong').textContent = '€' + article.dataset.price;
+    if (announce) one('[role="status"]').textContent = article.querySelector('h3').textContent + ' for ' + selected.value + ', €' + article.dataset.price + '.';
+  }
+  one('.choices').onchange = () => update(true);
+  for (const fallback of all('.fallback')) fallback.hidden = true;
+  update(false);
+  one('.choices').hidden = false;
+  one('.checkout').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="environment-setup"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]');
+  const panels = all('article');
+  const status = one('[role="status"]');
+  let current, request = 0;
+  function select(index) {
+    current = index;
+    request++;
+    status.textContent = '';
+    panels.forEach((panel, i) => {
+      panel.hidden = i !== index;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tabs[i].id);
+      panel.querySelector('h3').hidden = true;
+      tabs[i].tabIndex = i === index ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(i === index));
+    });
+  }
+  function bindTabs(tabs, activate) {
+    tabs.forEach((tab, i) => {
+      tab.onclick = () => activate(i);
+      tab.onkeydown = event => {
+        const next = {ArrowLeft:(i + tabs.length - 1) % tabs.length, ArrowRight:(i + 1) % tabs.length, Home:0, End:tabs.length - 1}[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(next);
+        tabs[next].focus();
+      };
+    });
+  }
+  bindTabs(tabs, select);
+  for (const button of all('[data-copy]')) {
+    button.onclick = async () => {
+      const ticket = ++request;
+      const target = panels[current].querySelector('[data-text="' + button.dataset.copy + '"]');
+      try {
+        await navigator.clipboard.writeText(target.textContent);
+        if (ticket === request) status.textContent = button.dataset.copy === 'run' ? 'Run command copied.' : 'Source copied.';
+      } catch {
+        if (ticket === request) status.textContent = 'Select the text and copy it with your keyboard or device menu.';
+      }
+    };
+    button.hidden = false;
+  }
+  select(0);
+  one('[role="tablist"]').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="fee-comparison"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const rows = all('.quote');
+  const input = one('input');
+  const euros = cents => '€' + (cents / 100).toFixed(cents % 100 ? 2 : 0);
+  function compare(announce) {
+    const qty = input.valueAsNumber;
+    const totals = rows.map(row => Number(row.dataset.setup) + qty * Number(row.dataset.rate));
+    one('.quantity-title').textContent = 'Quote for ' + qty + ' cards';
+    rows.forEach((row, i) => {
+      const total = row.querySelector('strong');
+      total.textContent = euros(totals[i]);
+      total.hidden = false;
+      row.querySelector('p span').textContent = 'Print charge ' + euros(qty * Number(row.dataset.rate));
+      row.querySelector('.bar').hidden = false;
+      row.querySelector('i').style.width = totals[i] / Math.max(...totals) * 100 + '%';
+    });
+    const difference = Math.abs(totals[0] - totals[1]);
+    const cheaper = rows[totals[0] < totals[1] ? 0 : 1].querySelector('h4').textContent;
+    const verdict = difference ? cheaper + ' costs ' + euros(difference) + ' less.' : 'Same price';
+    one('.difference').textContent = verdict;
+    if (announce) one('[role="status"]').textContent = qty + ' cards. Short run ' + euros(totals[0]) + '. Press run ' + euros(totals[1]) + '. ' + verdict;
+  }
+  one('form').onsubmit = event => {
+    event.preventDefault();
+    const valid = input.validity.valid && Number.isInteger(input.valueAsNumber);
+    one('[role="alert"]').textContent = valid ? '' : 'Enter a whole number from 25 to 500.';
+    input.setAttribute('aria-invalid', String(!valid));
+    if (valid) compare(true);
+    else input.focus();
+  };
+  compare(false);
+  one('table').hidden = true;
+  one('form').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="chapter-links"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const nav = one('.guide-bar');
+  const desktop = one('.links');
+  const menu = document.createElement('details');
+  menu.className = 'compact';
+  menu.innerHTML = '<summary>Chapters</summary>';
+  menu.append(desktop.cloneNode(true));
+  nav.insertBefore(menu, desktop);
+  const links = all('.links a');
+  const headings = all('.chapter h3');
+  function current() {
+    const edge = nav.getBoundingClientRect().bottom + 10;
+    const active = headings.filter(h => h.getBoundingClientRect().top <= edge).at(-1) || headings[0];
+    for (const link of links) {
+      if (link.hash === '#' + active.id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  }
+  function follow() {
+    const heading = headings.find(h => location.hash === '#' + h.id);
+    if (heading) {
+      heading.focus({preventScroll:true});
+      menu.open = false;
+      heading.scrollIntoView();
+    }
+  }
+  for (const link of links) link.onclick = () => {
+    if (location.hash === link.hash) follow();
+  };
+  menu.onkeydown = event => {
+    if (event.key !== 'Escape' || !menu.open) return;
+    event.preventDefault();
+    menu.open = false;
+    menu.querySelector('summary').focus();
+  };
+  new ResizeObserver(() => {
+    root.style.setProperty('--guide-height', nav.offsetHeight + 'px');
+    current();
+  }).observe(nav);
+  window.addEventListener('hashchange', follow);
+  window.addEventListener('scroll', current, {passive:true});
+  current();
+  if (location.hash) requestAnimationFrame(follow);
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="witness-selector"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]');
+  const figures = all('figure');
+  function select(index) {
+    figures.forEach((figure, i) => {
+      const active = i === index;
+      tabs[i].tabIndex = active ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(active));
+      figure.hidden = !active;
+      figure.tabIndex = 0;
+      figure.setAttribute('role', 'tabpanel');
+      figure.setAttribute('aria-labelledby', tabs[i].id);
+    });
+  }
+  function bindTabs(tabs, activate) {
+    tabs.forEach((tab, i) => {
+      tab.onclick = () => activate(i);
+      tab.onkeydown = event => {
+        const next = {ArrowLeft:(i + tabs.length - 1) % tabs.length, ArrowRight:(i + 1) % tabs.length, Home:0, End:tabs.length - 1}[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(next);
+        tabs[next].focus();
+      };
+    });
+  }
+  bindTabs(tabs, select);
+  select(0);
+  one('.choices').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="lead-digest"]')) {
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+}
+</script>
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="field-roster"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]');
+  const dossiers = all('.dossier');
+  function action(panel, index) {
+    [...panel.querySelectorAll('figure')].forEach((figure, i) => figure.hidden = i !== index);
+  }
+  function courier(index) {
+    dossiers.forEach((panel, i) => {
+      panel.hidden = index !== i;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tabs[i].id);
+      tabs[i].tabIndex = index === i ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(index === i));
+    });
+    const selected = dossiers[index];
+    const first = selected.querySelector('input');
+    if (first) first.checked = true;
+    action(selected, 0);
+  }
+  function bindTabs(tabs, activate) {
+    tabs.forEach((tab, i) => {
+      tab.onclick = () => activate(i);
+      tab.onkeydown = event => {
+        const next = {ArrowLeft:(i + tabs.length - 1) % tabs.length, ArrowRight:(i + 1) % tabs.length, Home:0, End:tabs.length - 1}[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(next);
+        tabs[next].focus();
+      };
+    });
+  }
+  for (const panel of dossiers) {
+    const group = panel.querySelector('fieldset');
+    if (!group) continue;
+    const name = 'action-' + crypto.randomUUID();
+    for (const input of group.querySelectorAll('input')) input.name = name;
+    group.onchange = event => action(panel, Number(event.target.value));
+    group.hidden = false;
+  }
+  bindTabs(tabs, courier);
+  courier(0);
+  one('.portraits').hidden = false;
+  root.dataset.ready = '';
+}
+</script>
+</body>
+</html>

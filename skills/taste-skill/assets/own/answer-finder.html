@@ -1,0 +1,120 @@
+<section class="section own" id="answer-finder" data-own="answer-finder" aria-labelledby="answer-finder-title">
+  <div class="wrap">
+    <h2 id="answer-finder-title">Ordering and caring for your mugs</h2>
+    <p class="t-lead measure">Answers from the Reeve Ceramics studio.</p>
+    <div class="answers" data-assumed>
+      <div class="finder"><div class="search" hidden><label for="reeve-query">Find an answer</label><input id="reeve-query" type="search" placeholder="Search questions and answers"><p role="status"></p><button type="button" class="press" hidden>Clear search</button></div>
+      <nav aria-label="Support topics"><a href="#reeve-ordering">Ordering</a><a href="#reeve-delivery">Delivery</a><a href="#reeve-care">Care</a></nav></div>
+      <div class="topics">
+        <div class="topic"><h3 id="reeve-ordering" tabindex="-1">Ordering</h3>
+          <details open id="reeve-minimum"><summary><h4>How many mugs can I order?</h4></summary><p>The minimum order is one mug.</p></details>
+          <details open id="reeve-colour"><summary><h4>Can I order a custom colour?</h4></summary><p>Choose a custom glaze colour when you order 12 mugs or more.</p></details>
+        </div>
+        <div class="topic"><h3 id="reeve-delivery" tabindex="-1">Delivery</h3>
+          <details open id="reeve-dispatch"><summary><h4>When will my mugs ship?</h4></summary><p>We dispatch orders within three working days.</p></details>
+          <details open id="reeve-collection"><summary><h4>When can I collect my order?</h4></summary><p>Collect from the studio on Friday between 14:00 and 17:00.</p></details>
+        </div>
+        <div class="topic"><h3 id="reeve-care" tabindex="-1">Care</h3>
+          <details open id="reeve-dishwasher"><summary><h4>Can the mugs go in the dishwasher?</h4></summary><p>Yes. Place them on the top rack.</p></details>
+          <details open id="reeve-chips"><summary><h4>Can I keep using a chipped mug?</h4></summary><p>Retire a chipped mug from drink service.</p></details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="answer-finder"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="answer-finder"] .answers { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: start; }
+[data-own="answer-finder"] nav { grid-column: span 3; display: grid; }
+[data-own="answer-finder"] nav a { border-bottom: 1px solid var(--line); color: var(--action); min-height: var(--btn-h); padding-block: var(--s-3); }
+[data-own="answer-finder"] nav a:hover { text-decoration: underline; }
+[data-own="answer-finder"] .topics { grid-column: span 8; }
+[data-own="answer-finder"] .topic + .topic { margin-top: var(--s-7); }
+[data-own="answer-finder"] h3 { margin-bottom: var(--s-3); }
+[data-own="answer-finder"] :is(h3,details) { scroll-margin-top: calc(var(--nav) + var(--s-3)); }
+[data-own="answer-finder"] details { border-top: 1px solid var(--line); }
+[data-own="answer-finder"] summary { min-height: var(--btn-h); display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-4); cursor: pointer; list-style: none; }
+[data-own="answer-finder"] summary::-webkit-details-marker { display: none; }
+[data-own="answer-finder"] summary::after { content: "+"; color: var(--muted); }
+[data-own="answer-finder"] details[open] > summary::after { content: "−"; }
+[data-own="answer-finder"] details p { max-width: 56ch; padding-bottom: var(--s-4); color: var(--muted); }
+@media (max-width: 639px) {
+  [data-own="answer-finder"] .answers { grid-template-columns: 1fr; gap: var(--s-6); }
+  [data-own="answer-finder"] nav, [data-own="answer-finder"] .topics { grid-column: 1; }
+  [data-own="answer-finder"] nav { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+  [data-own="answer-finder"] .topic + .topic { margin-top: var(--s-6); }
+}
+[data-own="answer-finder"] .finder { grid-column: span 3; min-width: 0; }
+[data-own="answer-finder"] .search { margin-bottom: var(--s-4); }
+[data-own="answer-finder"] .search label { display: block; margin-bottom: var(--s-2); font-weight: 500; }
+[data-own="answer-finder"] input { width: 100%; min-height: var(--btn-h); padding-inline: var(--s-3); background: var(--bg); color: var(--ink); font: inherit; border: 1px solid var(--muted); border-radius: var(--r-sm); }
+[data-own="answer-finder"] .search button { background: none; border: 0; min-height: var(--btn-h); padding: 0; color: var(--action); text-decoration: underline; cursor: pointer; }
+[data-own="answer-finder"] [role="status"] { font-size: var(--t-small); }
+@media (max-width: 639px) { [data-own="answer-finder"] .finder { grid-column: 1; } }
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="answer-finder"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const questions = all('details');
+  const field = one('input');
+  function filter() {
+    const query = field.value.trim().toLowerCase();
+    let count = 0;
+    for (const question of questions) {
+      question.hidden = !question.textContent.toLowerCase().includes(query);
+      if (!question.hidden) count++;
+    }
+    for (const topic of all('.topic')) topic.hidden = !topic.querySelector('details:not([hidden])');
+    one('[role="status"]').textContent = query ? (count ? count + (count === 1 ? ' answer' : ' answers') : 'No matching answers.') : '';
+    one('.search button').hidden = !query;
+  }
+  function clear() { field.value = ''; filter(); }
+  field.oninput = filter;
+  field.onkeydown = event => { if (event.key === 'Escape') clear(); };
+  one('.search button').onclick = () => { clear(); field.focus(); };
+  one('nav').onclick = clear;
+  one('.search').hidden = false;
+  function linkedAnswer() {
+    return questions.find(question => '#' + question.id === location.hash);
+  }
+  function reveal() {
+    const target = linkedAnswer();
+    if (!target) {
+      const topic = all('.topic h3').find(heading => '#' + heading.id === location.hash);
+      if (topic) { clear(); topic.focus({preventScroll:true}); topic.scrollIntoView(); }
+      return;
+    }
+    clear();
+    target.open = true;
+    target.querySelector('summary').focus({preventScroll:true});
+    target.scrollIntoView();
+  }
+  window.addEventListener('hashchange', reveal);
+  document.addEventListener('click', event => {
+    const anchor = event.target.closest('a[href]');
+    if (anchor && anchor.hash === location.hash && linkedAnswer()) reveal();
+  });
+  const initial = linkedAnswer();
+  for (const question of questions) question.open = question === initial;
+  reveal();
+  root.dataset.ready = '';
+}
+</script>

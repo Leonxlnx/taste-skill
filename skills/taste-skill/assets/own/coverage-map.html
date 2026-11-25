@@ -1,0 +1,88 @@
+<section class="section own" id="coverage-map" data-own="coverage-map" aria-labelledby="coverage-map-title">
+  <div class="wrap">
+    <h2 id="coverage-map-title">The valley library route</h2>
+    <p class="t-lead measure">Wold Mobile Library has 50 reserved books across three stops.</p>
+    <div class="route" data-assumed>
+      <figure><svg viewBox="0 0 100 70" role="img" aria-label="Valley route, with three numbered stops and a bridge across the stream"><g fill="none" stroke="var(--line)" stroke-width=".36"><path d="M57 -2q-9 13 4 19t20 1 23 -1M-2 43q10 -6 18 0t18 18l4 12"/><path d="M59.3 -2q-9 13 4 19t20 1 23 -1M-2 45.1q10 -6 18 0t18 18l4 12"/><path d="M61.6 -2q-9 13 4 19t20 1 23 -1M-2 47.2q10 -6 18 0t18 18l4 12"/><path d="M63.9 -2q-9 13 4 19t20 1 23 -1M-2 49.3q10 -6 18 0t18 18l4 12"/><path d="M66.2 -2q-9 13 4 19t20 1 23 -1M-2 51.4q10 -6 18 0t18 18l4 12"/><path d="M68.5 -2q-9 13 4 19t20 1 23 -1M-2 53.5q10 -6 18 0t18 18l4 12"/><path d="M70.8 -2q-9 13 4 19t20 1 23 -1M-2 55.6q10 -6 18 0t18 18l4 12"/><path d="M73.1 -2q-9 13 4 19t20 1 23 -1M-2 57.7q10 -6 18 0t18 18l4 12"/><path d="M75.4 -2q-9 13 4 19t20 1 23 -1M-2 59.8q10 -6 18 0t18 18l4 12"/></g><g fill="var(--line)"><path d="M4 4l17 3-3 14L2 19zM23 8l14 3-4 15-13-4zM50 46l13-4 4 12-13 5zM56 61l13-5 3 15H60z"/><path d="M8 29l5-2 1 3-5 2zm7-3 3-1 2 3-4 2zm56-13h5v3h-5zm1 45 6 1-1 4-6-2z"/></g><path d="M40 -3c-5 14 9 16 4 30s-8 16-4 28 7 13 2 19" fill="none" stroke="var(--action)" stroke-width="2.1" opacity=".62"/><g fill="none" stroke="var(--muted)" stroke-width=".5"><path d="M-2 42l20-4 16-3h13l21-15 33 2M47 35l16 7 15 10 24 3"/><path d="M37 33.8h8m-8 2.4h8" stroke="var(--ink)" stroke-width=".8"/></g><g fill="var(--muted)"><circle cx="52" cy="12" r=".65"/><circle cx="54.5" cy="12" r=".65"/><circle cx="57" cy="12" r=".65"/><circle cx="59.5" cy="12" r=".65"/><circle cx="52" cy="14.6" r=".65"/><circle cx="54.5" cy="14.6" r=".65"/><circle cx="57" cy="14.6" r=".65"/><circle cx="59.5" cy="14.6" r=".65"/><circle cx="52" cy="17.2" r=".65"/><circle cx="54.5" cy="17.2" r=".65"/><circle cx="57" cy="17.2" r=".65"/><circle cx="59.5" cy="17.2" r=".65"/></g><g data-pin=""><circle cx="18" cy="38" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="18" y="39.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">1</text><circle cx="18" cy="38" r="6.6" fill="transparent" class="hit"/></g><g data-pin=""><circle cx="68" cy="20" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="68" y="21.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">2</text><circle cx="68" cy="20" r="6.6" fill="transparent" class="hit"/></g><g data-pin=""><circle cx="78" cy="52" r="3.4" fill="var(--bg)" stroke="var(--ink)" stroke-width=".45"/><text x="78" y="53.3" text-anchor="middle" font-size="3.7" font-weight="600" fill="var(--ink)">3</text><circle cx="78" cy="52" r="6.6" fill="transparent" class="hit"/></g></svg><span class="map-name" hidden></span></figure>
+      <fieldset><legend>Library stops</legend>
+        <label><input hidden type="radio" name="wold-stop" value="0" checked><span class="number">1</span><span class="stop"><strong>Mill Square</strong><span>Tuesday · 09:00–10:00</span><small>West by the stream</small></span><span class="books"><b>24</b> reserved</span></label>
+        <label><input hidden type="radio" name="wold-stop" value="1" ><span class="number">2</span><span class="stop"><strong>Orchard School</strong><span>Tuesday · 11:00–12:00</span><small>Northeast of the bridge</small></span><span class="books"><b>16</b> reserved</span></label>
+        <label><input hidden type="radio" name="wold-stop" value="2" ><span class="number">3</span><span class="stop"><strong>Quarry Hall</strong><span>Thursday · 14:00–15:00</span><small>Southeast of the bridge</small></span><span class="books"><b>10</b> reserved</span></label>
+      </fieldset>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="coverage-map"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="coverage-map"] .route { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: center; font-variant-numeric: tabular-nums; }
+[data-own="coverage-map"] figure { grid-column: span 7; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="coverage-map"] svg { width: 100%; }
+[data-own="coverage-map"] .map-name { position: absolute; transform: translate(-50%, 0); padding: var(--s-1) var(--s-2); font-size: var(--t-small); background: var(--ink); color: var(--bg); border-radius: var(--r-sm); white-space: nowrap; }
+[data-own="coverage-map"] fieldset { grid-column: span 5; min-width: 0; padding: 0; margin: 0; border: 0; }
+[data-own="coverage-map"] legend { font-size: var(--t-card); margin-bottom: var(--s-3); padding: 0; }
+[data-own="coverage-map"] label { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: var(--s-3); border-top: 1px solid var(--line); padding-block: var(--s-4); position: relative; }
+[data-own="coverage-map"] .number { display: grid; place-content: center; width: var(--s-5); height: var(--s-5); border: 1px solid var(--ink); border-radius: 50%; font-size: var(--t-small); }
+[data-own="coverage-map"] input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+[data-own="coverage-map"] label:has(:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+[data-own="coverage-map"] label:has(:checked) .number { background: var(--ink); color: var(--bg); }
+[data-own="coverage-map"] strong, [data-own="coverage-map"] .stop span, [data-own="coverage-map"] small, [data-own="coverage-map"] .books b { display: block; }
+[data-own="coverage-map"] .stop strong { font-size: var(--t-card); font-weight: 500; }
+[data-own="coverage-map"] .stop span, [data-own="coverage-map"] .books, [data-own="coverage-map"] small { font-size: var(--t-small); color: var(--muted); }
+[data-own="coverage-map"] .books { text-align: right; }
+[data-own="coverage-map"] .books b { font-size: var(--t-card); font-weight: 500; color: var(--ink); }
+[data-own="coverage-map"] [data-pin].current circle:not(.hit) { fill: var(--ink); }
+[data-own="coverage-map"] [data-pin].current text { fill: var(--bg); }
+[data-own="coverage-map"][data-ready] :is([data-pin], label) { cursor: pointer; }
+@media (max-width: 1023px) { [data-own="coverage-map"] .route { grid-template-columns: 1fr; gap: var(--s-5); } [data-own="coverage-map"] figure, [data-own="coverage-map"] fieldset { grid-column: 1; } }
+[data-own="coverage-map"] .stop small { margin-top: var(--s-1); }
+[data-own="coverage-map"] .books b { line-height: 1.2; }
+[data-own="coverage-map"] .route { column-gap: var(--s-5); }
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="coverage-map"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const inputs = all('input');
+  const pins = all('[data-pin]');
+  const tag = one('.map-name');
+  function update() {
+    inputs.forEach((input, i) => {
+      const row = input.closest('label');
+      row.querySelector('small').hidden = !input.checked;
+      pins[i].classList.toggle('current', input.checked);
+      if (!input.checked) return;
+      const dot = pins[i].querySelector('circle');
+      tag.textContent = row.querySelector('strong').textContent;
+      tag.style.left = dot.cx.baseVal.value + '%';
+      tag.style.top = ((dot.cy.baseVal.value + 4) / 70 * 100) + '%';
+    });
+  }
+  const group = 'wold-' + crypto.randomUUID();
+  inputs.forEach((input, i) => {
+    input.name = group;
+    input.onchange = update;
+    pins[i].onclick = () => input.click();
+    input.hidden = false;
+  });
+  tag.hidden = false;
+  update();
+  root.dataset.ready = '';
+}
+</script>

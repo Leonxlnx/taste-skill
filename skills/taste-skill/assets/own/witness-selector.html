@@ -1,0 +1,97 @@
+<section class="section own" id="witness-selector" data-own="witness-selector" aria-labelledby="witness-selector-title">
+  <div class="wrap">
+    <h2 id="witness-selector-title">Returning the equipment</h2>
+    <p class="t-lead measure">Three customers describe a return at Saltern Tool Hire.</p>
+    <div class="records" data-assumed>
+      <div class="choices" role="tablist" aria-label="Customer account" hidden>
+        <button class="press" type="button" role="tab" id="saltern-tab-0" aria-controls="saltern-account-0"><span class="initial" aria-hidden="true">A</span><span>Flint Farm</span></button>
+        <button class="press" type="button" role="tab" id="saltern-tab-1" aria-controls="saltern-account-1"><span class="initial" aria-hidden="true">B</span><span>Cinder Hall</span></button>
+        <button class="press" type="button" role="tab" id="saltern-tab-2" aria-controls="saltern-account-2"><span class="initial" aria-hidden="true">J</span><span>Tern Yard</span></button>
+      </div>
+      <div class="account-stage">
+        <figure id="saltern-account-0"><blockquote>“The return slip gave me the shed number.”</blockquote><figcaption><b>Ada</b> at Flint Farm</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Hedge trimmer · Shed 2</dd></dl></figure>
+        <figure id="saltern-account-1"><blockquote>“We matched the pump by its tag.”</blockquote><figcaption><b>Bo</b> at Cinder Hall</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Pump · Tag P16</dd></dl></figure>
+        <figure id="saltern-account-2"><blockquote>“I could see both crates on the receipt.”</blockquote><figcaption><b>Jo</b> at Tern Yard</figcaption>
+          <dl><dt>Equipment returned</dt><dd>Lighting crates · 2 crates</dd></dl></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+[data-own="witness-selector"] .wrap > .t-lead { margin: var(--s-4) 0 var(--head-gap); }
+[data-own="witness-selector"] .records { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); }
+[data-own="witness-selector"] .records > * { grid-column: 3 / span 8; min-width: 0; }
+[data-own="witness-selector"] .account-stage { grid-row: 1; }
+[data-own="witness-selector"] figure { border-top: 1px solid var(--line); padding-block: var(--s-6) var(--s-3); }
+[data-own="witness-selector"] blockquote { font-family: var(--font-display); font-size: var(--t-h3); line-height: 1.28; letter-spacing: var(--display-tracking); max-width: 30ch; min-height: 2.56em; }
+[data-own="witness-selector"] figcaption { margin-top: var(--s-3); }
+[data-own="witness-selector"] figcaption b { font-weight: 600; }
+[data-own="witness-selector"] dl { display: flex; gap: var(--s-2) var(--s-4); flex-wrap: wrap; align-items: baseline; font-size: var(--t-small); margin: var(--s-5) 0 0; }
+[data-own="witness-selector"] dt { color: var(--muted); } [data-own="witness-selector"] dd { margin: 0; font-variant-numeric: tabular-nums; }
+[data-own="witness-selector"] .choices { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--s-3); }
+[data-own="witness-selector"] button { display: flex; gap: var(--s-2); align-items: center; min-height: var(--btn-h); padding: var(--s-2) 0; text-align: left; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+[data-own="witness-selector"] .initial { flex: none; display: grid; place-items: center; width: var(--s-6); height: var(--s-6); border: 1px solid var(--line-strong); border-radius: 50%; font-size: var(--t-small); }
+[data-own="witness-selector"] button[aria-selected="true"] { color: var(--ink); border-top-color: var(--ink); }
+[data-own="witness-selector"] button[aria-selected="true"] span:last-child { text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="witness-selector"] button[aria-selected="true"] .initial { background: var(--ink); color: var(--bg); }
+@media (max-width: 1023px) { [data-own="witness-selector"] .records > * { grid-column: 1 / -1; } }
+@media (max-width: 639px) {
+  [data-own="witness-selector"] .account-stage { grid-row: auto; } [data-own="witness-selector"] .choices { grid-row: 1; }
+  [data-own="witness-selector"] button { align-items: flex-start; flex-direction: column; }
+  [data-own="witness-selector"] figure { padding-top: var(--s-5); }
+}
+</style>
+
+<script type="module">
+for (const root of document.querySelectorAll('[data-own="witness-selector"]')) {
+  if (root.hasAttribute('data-ready')) continue;
+  // Keep public anchors stable on the first instance and scope a repeated copy.
+  if (document.getElementById(root.id) !== root) {
+    const prefix = 'instance-' + [...document.querySelectorAll('[data-own="' + root.dataset.own + '"]')].indexOf(root) + '-';
+    const nodes = [root, ...root.querySelectorAll('*')];
+    const ids = new Set(nodes.map(node => node.id).filter(Boolean));
+    for (const node of nodes) {
+      if (node.id) node.id = prefix + node.id;
+      for (const attr of ['href','for','aria-controls','aria-labelledby','aria-describedby']) {
+        const value = node.getAttribute(attr);
+        if (ids.has(value)) node.setAttribute(attr, prefix + value);
+        if (value?.startsWith('#') && ids.has(value.slice(1))) node.setAttribute(attr, '#' + prefix + value.slice(1));
+      }
+    }
+  }
+  const one = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const tabs = all('[role="tab"]');
+  const figures = all('figure');
+  function select(index) {
+    figures.forEach((figure, i) => {
+      const active = i === index;
+      tabs[i].tabIndex = active ? 0 : -1;
+      tabs[i].setAttribute('aria-selected', String(active));
+      figure.hidden = !active;
+      figure.tabIndex = 0;
+      figure.setAttribute('role', 'tabpanel');
+      figure.setAttribute('aria-labelledby', tabs[i].id);
+    });
+  }
+  function bindTabs(tabs, activate) {
+    tabs.forEach((tab, i) => {
+      tab.onclick = () => activate(i);
+      tab.onkeydown = event => {
+        const next = {ArrowLeft:(i + tabs.length - 1) % tabs.length, ArrowRight:(i + 1) % tabs.length, Home:0, End:tabs.length - 1}[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        activate(next);
+        tabs[next].focus();
+      };
+    });
+  }
+  bindTabs(tabs, select);
+  select(0);
+  one('.choices').hidden = false;
+  root.dataset.ready = '';
+}
+</script>

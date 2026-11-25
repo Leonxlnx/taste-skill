@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="sharp" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Worked sections · Taste skill</title>
+<meta name="description" content="Ten working sections for comparing records, tracing a process and checking sources.">
+<meta name="twitter:card" content="summary">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Worked sections · Taste skill">
+<meta property="og:description" content="Ten working sections for comparing records, tracing a process and checking sources.">
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#f7f9fa">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="../motion/motion.css">
+<link rel="stylesheet" href="../backgrounds/backgrounds.css">
+<link rel="stylesheet" href="../layout/layout.css">
+<link rel="stylesheet" href="../icons/icon.css">
+<style>
+:root {
+  --p-bg: #f7f9fa; --p-surface: #e3e5e6; --p-ink: #1f3038; --p-muted: #58666d;
+  --p-accent: #0c6e79; --p-accent-ink: #ffffff; --p-action: #0c6e79; --p-action-ink: #ffffff;
+  --p-inv-bg: #1f3038; --p-inv-surface: #2c3c44; --p-inv-ink: #f7f9fa; --p-inv-muted: #9ea7ab;
+  --p-inv-accent: #f7f9fa; --p-inv-accent-ink: #1f3038; --p-inv-action: #f7f9fa; --p-inv-action-ink: #1f3038;
+}
+.gallery-head { position: relative; background: var(--ink); color: var(--bg); }
+.gallery-head .wrap { padding-block: var(--s-6); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-2) var(--s-5); justify-content: space-between; }
+.gallery-head h1 { font-size: var(--t-h1); }
+.gallery-head a:focus-visible { outline-color: var(--bg); }
+.gallery-head a:not(.skip-link) { min-height: var(--btn-h); display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: var(--s-1); }
+</style>
+<script src="../backgrounds/backgrounds.js"></script>
+<style id="own-css">
+[data-own="evidence-grid"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="evidence-grid"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="evidence-grid"] .proof-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--card-gap); font-variant-numeric: tabular-nums; }
+[data-own="evidence-grid"] .proof-grid > * { min-width: 0; padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="evidence-grid"] .spread { grid-column: span 8; }
+[data-own="evidence-grid"] .proof-art { background: var(--surface); border-radius: var(--r-sm); padding: var(--s-3); }
+[data-own="evidence-grid"] .proof-art svg { width: 100%; max-height: calc(var(--s-10) * 2); }
+[data-own="evidence-grid"] figcaption { margin-top: var(--s-4); }
+[data-own="evidence-grid"] figcaption p { color: var(--muted); }
+[data-own="evidence-grid"] summary { cursor: pointer; min-height: var(--btn-h); align-content: center; color: var(--action); width: fit-content; }
+[data-own="evidence-grid"] .dimensions { grid-column: span 4; background: var(--surface); display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-3); }
+[data-own="evidence-grid"] .corner { width: 100%; height: var(--s-8); margin-block: var(--s-2); }
+[data-own="evidence-grid"] dl { margin: 0; }
+[data-own="evidence-grid"] dt { color: var(--muted); font-size: var(--t-small); }
+[data-own="evidence-grid"] dl > div { border-top: 1px solid var(--line); padding-block: var(--s-4); }
+[data-own="evidence-grid"] dd { margin: var(--s-1) 0 0; font-size: var(--t-stat); line-height: 1.15; letter-spacing: var(--display-tracking); }
+[data-own="evidence-grid"] dd small { font-size: var(--t-body); }
+[data-own="evidence-grid"] .short { grid-column: span 6; display: flex; gap: var(--s-5); align-items: center; }
+[data-own="evidence-grid"] .short svg { width: 25%; max-width: var(--s-10); }
+[data-own="evidence-grid"] .short h3 { font-size: var(--t-card); }
+@media (max-width: 1023px) { [data-own="evidence-grid"] .dimensions { padding: var(--s-4); } }
+@media (max-width: 639px) {
+  [data-own="evidence-grid"] .proof-grid > * { grid-column: 1 / -1; padding: var(--s-4); }
+  [data-own="evidence-grid"] .dimensions { gap: var(--s-3); }
+  [data-own="evidence-grid"] .corner { display: none; }
+  [data-own="evidence-grid"] .dimensions dl { display: grid; grid-template-columns: 3fr 2fr; gap: var(--s-3); }
+  [data-own="evidence-grid"] .dimensions dd { font-size: var(--t-h3); }
+  [data-own="evidence-grid"] .proof-art { padding: var(--s-3); }
+}
+[data-own="chapter-stage"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="chapter-stage"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="chapter-stage"] .binding-tour { display: grid; gap: var(--gutter); grid-template-columns: minmax(0,1fr); }
+[data-own="chapter-stage"] .steps li { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: var(--gutter); padding-block: var(--s-5); border-top: 1px solid var(--line); }
+[data-own="chapter-stage"] .step-copy { align-self: start; }
+[data-own="chapter-stage"] .step-number, [data-own="chapter-stage"] figcaption { color: var(--muted); font-size: var(--t-small); font-variant-numeric: tabular-nums; }
+[data-own="chapter-stage"] h3 { scroll-margin-top: 30vh; margin-block: var(--s-2); }
+[data-own="chapter-stage"] .chapters { display: flex; align-items: stretch; gap: var(--s-4); margin-bottom: var(--s-5); }
+[data-own="chapter-stage"] .chapters a { display: inline-flex; align-items: center; min-height: var(--btn-h); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: var(--s-1); }
+[data-own="chapter-stage"] .chapters a[aria-current="step"] { text-decoration-color: var(--action); color: var(--action); }
+[data-own="chapter-stage"] .step-number { color: var(--ink); }
+[data-own="chapter-stage"] li[aria-current="step"] h3 { font-weight: 600; }
+[data-own="chapter-stage"] .step-copy p { max-width: 36ch; }
+[data-own="chapter-stage"] figure > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); aspect-ratio: 4/3; display: grid; place-items: center; }
+[data-own="chapter-stage"] figure svg { height: 100%; width: 100%; }
+[data-own="chapter-stage"] figcaption { margin-block-start: var(--s-3); }
+[data-own="chapter-stage"] .binding-tour.pinned { grid-template-columns: repeat(12,minmax(0,1fr)); }
+[data-own="chapter-stage"] .pinned .steps { grid-column: span 4; }
+[data-own="chapter-stage"] .pinned .steps li[aria-current="step"] { border-top-color: var(--action); }
+[data-own="chapter-stage"] .pinned .steps li { display: block; min-height: 33vh; }
+[data-own="chapter-stage"] .pinned .steps li:last-child { min-height: 32vh; }
+[data-own="chapter-stage"] .held { grid-column: span 8; position: sticky; top: calc(var(--nav) + var(--s-4)); align-self: start; }
+[data-own="chapter-stage"] .held figure { max-width: calc((100svh - var(--nav) - var(--s-9)) * 4/3); }
+@media (max-width: 1023px), (max-height: 699px), (prefers-reduced-motion: reduce) { [data-own="chapter-stage"] .steps li { grid-template-columns: minmax(0,1fr); row-gap: var(--s-5); } }
+@media (min-width: 640px) { [data-own="chapter-stage"] .steps figure { max-width: calc(var(--s-10) * 5); } }
+[data-own="model-matrix"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="model-matrix"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="model-matrix"] .filters { display: flex; align-items: center; flex-wrap: wrap; gap: var(--gutter); margin-bottom: var(--s-4); }
+[data-own="model-matrix"] .diff { display: inline-flex; gap: var(--s-2); min-height: var(--btn-h); align-items: center; cursor: pointer; }
+[data-own="model-matrix"] input { accent-color: var(--action); }
+[data-own="model-matrix"] .partner { display: none; }
+[data-own="model-matrix"] table { width: 100%; border-spacing: 0; table-layout: fixed; text-align: left; font-variant-numeric: tabular-nums; }
+[data-own="model-matrix"] caption { text-align: left; font-size: var(--t-small); color: var(--muted); padding-bottom: var(--s-2); }
+[data-own="model-matrix"] :is(th,td) { padding: var(--s-4); border-bottom: 1px solid var(--line); font-weight: 400; vertical-align: baseline; }
+[data-own="model-matrix"] .pictures td { padding-block: var(--s-2); background: var(--surface); border: 0; }
+[data-own="model-matrix"] .pictures svg { width: auto; height: var(--s-9); max-width: 100%; }
+[data-own="model-matrix"] .names { position: sticky; top: var(--nav); z-index: 1; }
+[data-own="model-matrix"] .names th { background: var(--bg); }
+[data-own="model-matrix"] .names th > span { display: block; font-size: var(--t-h3); }
+[data-own="model-matrix"] tbody th, [data-own="model-matrix"] .names th:first-child { color: var(--muted); }
+[data-own="model-matrix"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="model-matrix"] .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-own="model-matrix"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="model-matrix"] .local-note:target { display: block; }
+[data-own="model-matrix"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  [data-own="model-matrix"] .filters { justify-content: space-between; gap: var(--s-2); }
+  [data-own="model-matrix"] .partner { display: grid; }
+  [data-own="model-matrix"] .table-frame { overflow-x: auto; }
+  [data-own="model-matrix"] table { min-width: calc(var(--s-10) * 4); }
+  [data-own="model-matrix"][data-bound] table { min-width: 0; }
+  [data-own="model-matrix"] :is(th,td) { padding: var(--s-3) var(--s-1); overflow-wrap: anywhere; }
+  [data-own="model-matrix"] .names { position: static; }
+  [data-own="model-matrix"]:not([data-bound]) tr > :first-child { position: sticky; left: 0; background: var(--bg); }
+  [data-own="model-matrix"] .pictures td:first-child { background: var(--surface); }
+  [data-own="model-matrix"] .pictures svg { height: var(--s-8); }
+  [data-own="model-matrix"] .names th > span { font-size: var(--t-card); }
+  [data-own="model-matrix"] [data-other] { display: none; }
+}
+@media (max-height: 620px) { [data-own="model-matrix"] .names { position: static; } }
+[data-own="billing-matrix"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="billing-matrix"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="billing-matrix"] .tariffs { font-variant-numeric: tabular-nums; }
+[data-own="billing-matrix"] fieldset { margin: 0 0 var(--s-5); padding: 0; border: 0; }
+[data-own="billing-matrix"] legend { padding: 0 0 var(--s-2); font-size: var(--t-small); }
+[data-own="billing-matrix"] fieldset > div { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r-btn); background: var(--surface); }
+[data-own="billing-matrix"] fieldset label { display: flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); padding-inline: var(--s-4); cursor: pointer; }
+[data-own="billing-matrix"] fieldset label:has(:checked) { background: var(--ink); color: var(--bg); border-radius: var(--r-btn); }
+[data-own="billing-matrix"] fieldset input { margin: 0; accent-color: var(--action); }
+[data-own="billing-matrix"] input:checked:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
+[data-own="billing-matrix"] fieldset label:has(:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+[data-own="billing-matrix"] table { width: 100%; table-layout: fixed; border-spacing: 0; text-align: left; }
+[data-own="billing-matrix"] :is(th,td) { padding: var(--s-4); border-bottom: 1px solid var(--line); font-weight: 400; }
+[data-own="billing-matrix"] tbody th { color: var(--muted); }
+[data-own="billing-matrix"] .plan-links :is(th,td) { padding-block: var(--s-2); }
+[data-own="billing-matrix"] thead th { background: var(--surface); vertical-align: bottom; }
+[data-own="billing-matrix"] .plan-name { display: block; font-size: var(--t-card); }
+[data-own="billing-matrix"] .bill { display: block; font-size: var(--t-stat); line-height: 1.2; letter-spacing: var(--display-tracking); margin-top: var(--s-2); }
+[data-own="billing-matrix"] small { font-size: var(--t-small); letter-spacing: normal; white-space: nowrap; color: var(--muted); }
+[data-own="billing-matrix"] .mobile-name { display: none; }
+[data-own="billing-matrix"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="billing-matrix"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="billing-matrix"] .local-note:target { display: block; }
+[data-own="billing-matrix"] .local-note p { margin-top: var(--s-2); }
+[data-own="billing-matrix"] .local-note:has([data-charge]:target) { display: block; }
+[data-own="billing-matrix"] .local-note:has([data-charge]:target) [data-charge]:not(:target) { display: none; }
+@media (max-width: 639px) {
+  [data-own="billing-matrix"] table { display: flex; flex-direction: column; gap: 0; }
+  [data-own="billing-matrix"] :is(thead,tbody,tr) { display: contents; }
+  [data-own="billing-matrix"] tr > :first-child { display: none; }
+  [data-own="billing-matrix"] tr > :nth-child(2) { order: 1; }
+  [data-own="billing-matrix"] tr > :nth-child(3) { order: 2; }
+  [data-own="billing-matrix"] tr > :nth-child(4) { order: 3; }
+  [data-own="billing-matrix"] thead th { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s-2); }
+  [data-own="billing-matrix"] .bill { margin: 0; }
+  [data-own="billing-matrix"] td { display: flex; justify-content: space-between; gap: var(--s-2); padding-block: var(--s-2); }
+  [data-own="billing-matrix"] .mobile-name { display: inline; color: var(--muted); }
+  [data-own="billing-matrix"] .plan-links td { margin-bottom: var(--s-5); padding-block: 0; background: var(--surface); }
+  [data-own="billing-matrix"] .plan-links td:last-child { margin-bottom: 0; }
+}
+[data-own="connector-finder"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="connector-finder"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="connector-finder"] .directory { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
+[data-own="connector-finder"] .filter-box { grid-column: span 3; display: grid; gap: var(--s-4); }
+[data-own="connector-finder"] .matches { grid-column: 1 / -1; }
+[data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: span 9; }
+[data-own="connector-finder"] .count { font-size: var(--t-small); color: var(--muted); margin-bottom: var(--s-2); }
+[data-own="connector-finder"] .matches ul { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--card-gap); }
+[data-own="connector-finder"] li { min-width: 0; padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+[data-own="connector-finder"] .instrument { display: flex; gap: var(--s-3); align-items: center; }
+[data-own="connector-finder"] svg { width: var(--s-7); background: var(--surface); border-radius: var(--r-sm); }
+[data-own="connector-finder"] dl { margin: var(--s-4) 0 var(--s-1); }
+[data-own="connector-finder"] dl > div { display: flex; flex-wrap: wrap; gap: 0 var(--s-2); justify-content: space-between; border-top: 1px solid var(--line); padding-block: var(--s-2); }
+[data-own="connector-finder"] dt { color: var(--muted); }
+[data-own="connector-finder"] dd { margin: 0; }
+[data-own="connector-finder"] .clear { justify-self: start; padding: 0 var(--s-3); min-height: var(--btn-h); border: 1px solid var(--line-strong); border-radius: var(--r-btn); background: var(--bg); cursor: pointer; }
+[data-own="connector-finder"] .empty { padding: var(--s-5); background: var(--surface); }
+[data-own="connector-finder"] .empty .clear { margin-top: var(--s-3); }
+[data-own="connector-finder"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="connector-finder"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="connector-finder"] .local-note:target { display: block; }
+[data-own="connector-finder"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 1023px) {
+  [data-own="connector-finder"] .matches ul { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  [data-own="connector-finder"] .filter-box { grid-column: span 4; }
+  [data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: span 8; }
+}
+@media (max-width: 639px) {
+  [data-own="connector-finder"] .filter-box, [data-own="connector-finder"] .filter-box:not([hidden]) + .matches { grid-column: 1 / -1; }
+  [data-own="connector-finder"] .matches ul { grid-template-columns: minmax(0,1fr); gap: 0; border-top: 1px solid var(--line); }
+  [data-own="connector-finder"] li { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 0 var(--s-2); padding: var(--s-3) 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+  [data-own="connector-finder"] .instrument { grid-column: 1; }
+  [data-own="connector-finder"] li > a { grid-column: 2; grid-row: 1; }
+  [data-own="connector-finder"] dl { grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-block: var(--s-2) 0; }
+  [data-own="connector-finder"] dl > div { justify-content: flex-start; padding: 0; border: 0; font-size: var(--t-small); }
+  [data-own="connector-finder"] .filter-box { gap: var(--s-3); }
+}
+[data-own="release-register"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="release-register"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="release-register"] .register { font-variant-numeric: tabular-nums; }
+[data-own="release-register"] .wrap > p + .register { margin-top: var(--s-6); }
+[data-own="release-register"] .register h3 { margin-bottom: var(--s-4); }
+[data-own="release-register"] ol { border-bottom: 1px solid var(--line); }
+[data-own="release-register"] li { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); padding-block: var(--s-4); border-top: 1px solid var(--line); }
+[data-own="release-register"] li time { grid-column: span 2; }
+[data-own="release-register"] .change { grid-column: span 6; }
+[data-own="release-register"] .change > span { font-size: var(--t-small); color: var(--muted); }
+[data-own="release-register"] .change h4 { font-size: var(--t-h3); margin-block: var(--s-1); }
+[data-own="release-register"] .documents { grid-column: span 4; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-content: center; gap: var(--s-2); }
+[data-own="release-register"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="release-register"] .documents a { gap: var(--s-2); width: fit-content; }
+[data-own="release-register"] .documents span { font-size: var(--t-small); }
+[data-own="release-register"] .documents p { color: var(--muted); font-size: var(--t-small); }
+[data-own="release-register"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="release-register"] .local-note:target { display: block; }
+[data-own="release-register"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  [data-own="release-register"] li { grid-template-columns: auto 1fr; gap: var(--s-1) var(--s-3); align-items: baseline; }
+  [data-own="release-register"] li time { grid-column: 1; }
+  [data-own="release-register"] .change { display: contents; }
+  [data-own="release-register"] .change > span { grid-column: 2; }
+  [data-own="release-register"] .change h4, [data-own="release-register"] .change p, [data-own="release-register"] .documents { grid-column: 1 / -1; }
+  [data-own="release-register"] .documents { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+}
+[data-own="case-foldout"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="case-foldout"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="case-foldout"] .jobs { border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+[data-own="case-foldout"] details { border-top: 1px solid var(--line); }
+[data-own="case-foldout"] summary { display: grid; grid-template-columns: minmax(0,1fr) auto var(--s-5); align-items: center; gap: var(--s-4); padding: var(--s-4); min-height: var(--btn-h); cursor: pointer; }
+[data-own="case-foldout"] summary::-webkit-details-marker { display: none; }
+[data-own="case-foldout"] summary span:first-child { font-size: var(--t-h3); }
+[data-own="case-foldout"] summary span:nth-child(2) { color: var(--muted); }
+[data-own="case-foldout"] summary::after { content: "+"; font-size: var(--t-h3); justify-self: end; }
+[data-own="case-foldout"] details[open] > summary::after { content: "−"; }
+[data-own="case-foldout"] .job-body { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--s-5); align-items: center; padding-block: var(--s-2) var(--s-5); }
+[data-own="case-foldout"] figure { grid-column: span 7; background: var(--surface); padding: var(--s-4); border-radius: var(--r-md); }
+[data-own="case-foldout"] figure svg { width: 100%; max-height: calc(var(--s-10)*2); }
+[data-own="case-foldout"] figcaption { margin-top: var(--s-4); font-size: var(--t-small); color: var(--muted); }
+[data-own="case-foldout"] .job-body > div { grid-column: span 5; }
+[data-own="case-foldout"] dl { margin: var(--s-5) 0 var(--s-2); }
+[data-own="case-foldout"] dl > div { display: flex; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-2); border-bottom: 1px solid var(--line); }
+[data-own="case-foldout"] dt { color: var(--muted); }
+[data-own="case-foldout"] dd { margin: 0; }
+[data-own="case-foldout"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="case-foldout"] .local-note { display: none; padding: var(--s-5); margin-top: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+[data-own="case-foldout"] .local-note:target { display: block; }
+[data-own="case-foldout"] .local-note p { margin-top: var(--s-2); }
+@media (max-width: 639px) {
+  [data-own="case-foldout"] summary { grid-template-columns: 1fr auto; gap: 0 var(--s-2); padding-inline: 0; }
+  [data-own="case-foldout"] summary span:nth-child(2) { grid-column: 1; }
+  [data-own="case-foldout"] summary::after { grid-column: 2; grid-row: 1/3; }
+  [data-own="case-foldout"] .job-body { grid-template-columns: minmax(0,1fr); }
+  [data-own="case-foldout"] .job-body > :is(figure,div) { grid-column: 1/-1; }
+}
+[data-own="annotated-source"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="annotated-source"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="annotated-source"] .annotation { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; }
+[data-own="annotated-source"] .listing { grid-column: span 8; min-width: 0; border: 1px solid var(--line); border-radius: var(--r-md); }
+[data-own="annotated-source"] .file-name { padding: var(--s-3) var(--s-4); padding-left: calc(var(--s-6) + var(--s-4)); border-bottom: 1px solid var(--line); background: var(--surface); font-weight: 500; }
+[data-own="annotated-source"] .source { display: grid; grid-template-columns: var(--s-6) minmax(0,1fr) var(--btn-h); padding-block: var(--s-2); }
+[data-own="annotated-source"] .numbers, [data-own="annotated-source"] .markers { display: flex; flex-direction: column; }
+[data-own="annotated-source"] .numbers span { line-height: var(--btn-h); text-align: right; font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; user-select: none; }
+[data-own="annotated-source"] pre { margin: 0; min-width: 0; overflow-x: auto; font-family: var(--font-mono); font-size: var(--t-body); }
+[data-own="annotated-source"] code { font-family: inherit; }
+[data-own="annotated-source"] .source pre { padding-inline: var(--s-4); line-height: var(--btn-h); }
+[data-own="annotated-source"] [data-line][data-active] { text-decoration: underline; text-underline-offset: var(--s-1); border-inline-start: var(--s-1) solid var(--action); margin-inline-start: calc(-1 * var(--s-1)); }
+[data-own="annotated-source"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="annotated-source"] .markers { padding-top: var(--btn-h); }
+[data-own="annotated-source"] .markers a { justify-content: center; font-weight: 600; }
+[data-own="annotated-source"] .markers a[aria-current] { text-decoration-thickness: 2px; }
+[data-own="annotated-source"] .markers a[aria-current] { background: var(--surface); }
+[data-own="annotated-source"] .invocation { border-top: 1px solid var(--line); padding: var(--s-4); }
+[data-own="annotated-source"] .invocation p, [data-own="annotated-source"] .printed span { color: var(--muted); font-size: var(--t-small); margin-bottom: var(--s-2); }
+[data-own="annotated-source"] .printed { border-top: 1px solid var(--line); padding: var(--s-4); background: var(--surface); }
+[data-own="annotated-source"] .printed :is(span,strong) { display: block; }
+[data-own="annotated-source"] .printed strong { font-weight: 500; font-size: var(--t-card); }
+[data-own="annotated-source"] .notes { grid-column: span 4; }
+[data-own="annotated-source"] .notes li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="annotated-source"] .notes h3 { font-size: var(--t-card); }
+[data-own="annotated-source"] .notes h3 span { display: inline-grid; place-items: center; width: var(--s-5); height: var(--s-5); margin-right: var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--r-sm); color: var(--action); font-size: var(--t-small); }
+[data-own="annotated-source"] .notes p { margin-top: var(--s-2); }
+@media (max-width: 1023px) { [data-own="annotated-source"] .annotation > * { grid-column: 1/-1; } }
+@media (max-width: 639px) {
+  [data-own="annotated-source"] pre { font-size: var(--t-small); }
+  [data-own="annotated-source"] .notes li { padding-block: var(--s-2); }
+  [data-own="annotated-source"] .source { grid-template-columns: var(--s-5) minmax(0,1fr) var(--btn-h); }
+  [data-own="annotated-source"] .file-name { padding-left: calc(var(--s-5) + var(--s-4)); }
+}
+[data-own="system-paths"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="system-paths"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="system-paths"] .routing { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); align-items: start; font-variant-numeric: tabular-nums; }
+[data-own="system-paths"] .network { grid-column: span 8; display: grid; grid-template-columns: minmax(0,1fr) var(--s-6) minmax(0,1fr) var(--s-6) minmax(0,1fr); grid-template-rows: repeat(2,minmax(calc(var(--s-9) + var(--s-4)),auto)) auto; padding: var(--s-5); background: var(--surface); border-radius: var(--r-md); align-items: center; }
+[data-own="system-paths"] .node { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); padding: var(--s-3); position: relative; }
+[data-own="system-paths"] .node :is(small,strong,span) { display: block; }
+[data-own="system-paths"] .node small, [data-own="system-paths"] .node span, [data-own="system-paths"] figcaption { font-size: var(--t-small); color: var(--muted); }
+[data-own="system-paths"] .node strong { font-size: var(--t-card); font-weight: 500; }
+[data-own="system-paths"] :is(.input-0,.input-1) { grid-column: 1; }
+[data-own="system-paths"] :is(.end-0,.end-1) { grid-column: 5; }
+[data-own="system-paths"] :is(.input-0,.end-0) { grid-row: 1; }
+[data-own="system-paths"] :is(.input-1,.end-1) { grid-row: 2; }
+[data-own="system-paths"] .validator { grid-column: 3; grid-row: 1/3; background: var(--ink); color: var(--bg); }
+[data-own="system-paths"] .validator span { color: inherit; }
+[data-own="system-paths"] .edges { grid-row: 1/3; width: 100%; height: 100%; }
+[data-own="system-paths"] .incoming { grid-column: 2; }
+[data-own="system-paths"] .outgoing { grid-column: 4; }
+[data-own="system-paths"] .edges path { stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
+[data-own="system-paths"] .edges path[data-active] { stroke: var(--action); stroke-width: 3; stroke-dasharray: none; }
+[data-own="system-paths"] .node[data-active] { border-color: var(--action); }
+[data-own="system-paths"] figcaption { grid-column: 1/-1; padding-top: var(--s-3); }
+[data-own="system-paths"] .samples { grid-column: span 4; }
+[data-own="system-paths"] fieldset { border: 0; padding: 0; margin: 0 0 var(--s-4); }
+[data-own="system-paths"] legend { padding: 0; font-weight: 500; font-size: var(--t-card); }
+[data-own="system-paths"] fieldset > div { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+[data-own="system-paths"] fieldset label { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--btn-h); cursor: pointer; }
+[data-own="system-paths"] input { margin: 0; accent-color: var(--action); }
+[data-own="system-paths"] .samples li { padding-block: var(--s-3); border-top: 1px solid var(--line); }
+[data-own="system-paths"] .routing h3 { font-size: var(--t-body); display: flex; justify-content: space-between; gap: var(--s-2); }
+[data-own="system-paths"] time { font-size: var(--t-small); color: var(--muted); }
+[data-own="system-paths"] .sample-value { font-size: var(--t-h3); }
+[data-own="system-paths"] .samples li > span { color: var(--muted); }
+[data-own="system-paths"] .samples li[data-active] .sample-value { font-weight: 600; }
+[data-own="system-paths"] .mobile-routes { display: none; }
+[data-own="system-paths"] .spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 1023px) {
+  [data-own="system-paths"] :is(.network,.samples) { grid-column: 1/-1; }
+}
+@media (max-width: 639px) {
+  [data-own="system-paths"] .network, [data-own="system-paths"] .samples ol { display: none; }
+  [data-own="system-paths"] .samples:has(fieldset[hidden]) { display: none; }
+  [data-own="system-paths"] fieldset { margin-bottom: 0; }
+  [data-own="system-paths"] .mobile-routes { display: grid; grid-column: 1/-1; gap: var(--s-4); }
+  [data-own="system-paths"] .mobile-routes article { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--r-sm); }
+  [data-own="system-paths"] .mobile-routes article[data-active] { border-color: var(--action); background: var(--surface); }
+  [data-own="system-paths"] .mobile-routes ol { margin: var(--s-3) 0 0 var(--s-1); border-left: 1px dashed var(--muted); }
+  [data-own="system-paths"] .mobile-routes article[data-active] ol { border-left: var(--s-1) solid var(--action); }
+  [data-own="system-paths"] .mobile-routes li { display: grid; margin-left: var(--s-3); }
+  [data-own="system-paths"] .mobile-routes li + li { margin-top: var(--s-3); }
+  [data-own="system-paths"] .mobile-routes li span { font-size: var(--t-small); color: var(--muted); }
+}
+[data-own="source-ledger"] .wrap > h2 + p { margin-top: var(--s-4); }
+[data-own="source-ledger"] .wrap > p + * { margin-top: var(--head-gap); }
+[data-own="source-ledger"] .ledger { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: var(--gutter); font-variant-numeric: tabular-nums; }
+[data-own="source-ledger"] .lead-fact { grid-column: span 5; background: var(--ink); color: var(--bg); border-radius: var(--r-md); padding: var(--s-5); display: grid; grid-template-columns: 1fr auto; align-content: center; }
+[data-own="source-ledger"] .fact h3 { font-size: var(--t-body); }
+[data-own="source-ledger"] .lead-fact p { grid-column: 1; margin-top: var(--s-3); }
+[data-own="source-ledger"] .lead-fact strong { display: block; font-size: var(--t-stat); line-height: 1; margin-bottom: var(--s-2); }
+[data-own="source-ledger"] .lead-fact .ref { align-self: end; justify-self: end; color: inherit; }
+[data-own="source-ledger"] .fact strong { font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: var(--display-tracking); }
+[data-own="source-ledger"] .other-facts { grid-column: span 7; }
+[data-own="source-ledger"] .other-facts .fact { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) auto; gap: var(--s-4); align-items: baseline; padding-block: var(--s-4); border-bottom: 1px solid var(--line); }
+[data-own="source-ledger"] .other-facts .fact:first-child { border-top: 1px solid var(--line); }
+[data-own="source-ledger"] .other-facts p { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 var(--s-3); }
+[data-own="source-ledger"] .other-facts strong { font-size: var(--t-h3); }
+[data-own="source-ledger"] a { display: inline-flex; align-items: center; min-height: var(--btn-h); color: var(--action); text-decoration: underline; text-underline-offset: var(--s-1); }
+[data-own="source-ledger"] .ref, [data-own="source-ledger"] .sources a { justify-content: center; min-width: var(--btn-h); font-size: var(--t-small); }
+[data-own="source-ledger"] .sources { margin-top: var(--s-6); }
+[data-own="source-ledger"] .sources h3 { font-size: var(--t-card); margin-bottom: var(--s-2); }
+[data-own="source-ledger"] .sources ol { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 var(--gutter); }
+[data-own="source-ledger"] .sources li { display: flex; gap: var(--s-2); align-items: baseline; border-top: 1px solid var(--line); }
+[data-own="source-ledger"] .sources p { font-size: var(--t-small); color: var(--muted); }
+[data-own="source-ledger"] :target { outline: 2px solid var(--action); outline-offset: 2px; }
+@media (max-width: 639px) {
+  [data-own="source-ledger"] .ledger { display: block; }
+  [data-own="source-ledger"] .lead-fact { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 0 var(--s-2); background: none; color: inherit; padding: var(--s-4) 0; border-top: 1px solid var(--line); border-radius: 0; }
+  [data-own="source-ledger"] .lead-fact p { margin: 0; }
+  [data-own="source-ledger"] .lead-fact strong { display: inline; margin-right: var(--s-1); }
+  [data-own="source-ledger"] .lead-fact .ref { color: var(--action); }
+  [data-own="source-ledger"] .other-facts .fact { grid-template-columns: minmax(0,1fr) auto; gap: 0 var(--s-2); }
+  [data-own="source-ledger"] .fact h3 { grid-column: 1/-1; color: var(--muted); }
+  [data-own="source-ledger"] .other-facts p { gap: 0 var(--s-2); }
+  [data-own="source-ledger"] .sources ol { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="gallery-head"><div class="wrap"><a class="skip-link" href="#examples">Skip to examples</a><h1>Worked sections</h1><a href="index.html">First twelve examples</a></div></header>
+<main id="examples" tabindex="-1">
+<section class="section own" id="evidence-grid" data-own="evidence-grid" aria-labelledby="evidence-grid-title" data-assumed>
+  <div class="wrap">
+    <h2 id="evidence-grid-title">The garden guide proof</h2>
+    <p class="t-lead measure">Mossline Print · Job M-204 · 240 copies, 48 pages each.</p>
+<div class="proof-grid">
+      <figure class="spread"><div class="proof-art"><svg viewBox="76 0 328 211" role="img" aria-label="An open garden guide with botanical studies, a centre fold, solid trim marks and a dashed bleed boundary."><g transform="translate(17 -8) scale(.93 1.14)"><g fill="none" stroke="var(--muted)" stroke-width="1"><path d="M113 12v10m0 151v12M367 12v10m0 151v12M96 26h12m261 0h14M96 173h12m261 0h14"/><rect x="108" y="21" width="264" height="157" stroke-dasharray="3 4"/></g><path d="M113 26H367V173H113Z" fill="var(--bg)" stroke="var(--ink)"/><path d="M240 26v147" stroke="var(--line-strong)"/><g transform="translate(177 138) rotate(-12)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g transform="translate(183 134) rotate(20)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g transform="translate(167 137) rotate(-30)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g><g fill="none" stroke="var(--muted)"><path d="M128 44h45m-45 4h29m125 66h64m-64 5h57m-57 5h60m-60 10h37m-37 5h53m-53 5h49"/><path d="M126 159h8m210 0h8"/></g><g transform="translate(305 100) rotate(22)" fill="none" stroke="var(--action)" stroke-width="1.7"><path d="M0 0Q-4 -25 3 -49"/><path d="M0 -7Q-19 -12 -21 -26Q-4 -22 0 -7M0 -19Q13 -22 19 -36Q4 -33 0 -19M1 -29Q-13 -34 -15 -47Q-1 -42 1 -29M3 -44Q1 -55 9 -64Q13 -52 3 -44Z"/></g></g></svg></div>
+        <figcaption><h3>Inside spread</h3><p>Two facing pages before trimming.</p></figcaption>
+        <details><summary class="press">Proof dimensions</summary><p>Open spread 296 × 210 mm<br>Single page 148 × 210 mm</p></details>
+      </figure>
+      <article class="dimensions"><h3>Trim and bleed</h3>
+        <svg class="corner" viewBox="0 0 156 46" aria-label="Detail of a trim corner, with a dashed boundary for bleed" role="img"><path d="M17 41V10h126" fill="none" stroke="var(--muted)" stroke-dasharray="3 3"/><path d="M23 41V16h120" fill="none" stroke="var(--ink)"/><path d="M9 16H2m21 -9V1" stroke="var(--ink)"/></svg>
+        <dl><div><dt>Finished page</dt><dd>148 × 210 <small>mm</small></dd></div>
+        <div><dt>Bleed beyond trim</dt><dd>3 <small>mm</small></dd></div></dl></article>
+      <article class="short"><svg viewBox="0 0 130 78" role="img" aria-label="Layers of uncoated paper seen in section."><g stroke="var(--ink)" fill="var(--bg)" stroke-linejoin="round"><path d="M12 47l59 -20 47 15 -59 21Z" /><path d="M12 43l59 -20 47 15 -59 21Z" /><path d="M12 39l59 -20 47 15 -59 21Z" /><path d="M12 35l59 -20 47 15 -59 21Z" /><path d="M12 31l59 -20 47 15 -59 21Z" /></g><path d="M22 30 71 14l37 11" fill="none" stroke="var(--action)"/></svg><div><h3>Paper stock</h3><p>120 g/m² uncoated</p></div></article>
+      <article class="short"><svg viewBox="0 0 130 78" role="img" aria-label="Open carton with two stacks of guides inside."><g stroke="var(--ink)" stroke-linejoin="round" fill="var(--bg)"><path d="m13 29 39 -16 61 15 -37 22Zm0 0L5 21 44 6l8 7m61 15 9 -7 -62 -16 -8 8"/><g transform="translate(0 0)"><path d="M24 36l25 -11 21 5 -25 12Z" /><path d="M24 33l25 -11 21 5 -25 12Z" /><path d="M24 30l25 -11 21 5 -25 12Z" /><path d="M24 27l25 -11 21 5 -25 12Z" /></g><g transform="translate(28 6)"><path d="M24 36l25 -11 21 5 -25 12Z" /><path d="M24 33l25 -11 21 5 -25 12Z" /><path d="M24 30l25 -11 21 5 -25 12Z" /><path d="M24 27l25 -11 21 5 -25 12Z" /></g><path d="M13 29l63 18v24L13 52Zm63 18 37 -19v24L76 71Z" fill="var(--surface)"/><path d="m13 29 -5 6 61 19 7 -7m0 0 6 6 37 -19 -6 -6"/></g></svg><div><h3>Packing</h3><p>12 cartons of 20 guides</p></div></article>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="chapter-stage" data-own="chapter-stage" aria-labelledby="chapter-stage-title" data-assumed>
+  <div class="wrap">
+    <h2 id="chapter-stage-title">Binding a 192-page book</h2>
+    <p class="t-lead measure">Bracken Bookbindery sews the pages, lines the spine with cloth and fits a board case.</p>
+<nav class="chapters" aria-label="Binding stages">
+      <a class="press" href="#binding-step-1">Sew the signatures</a>
+      <a class="press" href="#binding-step-2">Line the spine</a>
+      <a class="press" href="#binding-step-3">Fit the case</a>
+    </nav>
+    <div class="binding-tour"><ol class="steps">
+      <li><div class="step-copy"><span class="step-number">Step 1 of 3</span>
+        <h3 id="binding-step-1" tabindex="-1">Sew the signatures</h3><p>Gather the 192 pages into 12 signatures of 16. Sew through each fold to join the book block.</p></div>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="Sewn spine with twelve folded signatures and two rows of stitching."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><g stroke="var(--action)" stroke-width="2" fill="none"><path d="M88 130l13 2.5 -1 3 -12 -3" /><path d="M88 133.8l13 2.5 -1 3 -12 -3" /><path d="M88 137.6l13 2.5 -1 3 -12 -3" /><path d="M88 141.4l13 2.5 -1 3 -12 -3" /><path d="M88 145.2l13 2.5 -1 3 -12 -3" /><path d="M88 149l13 2.5 -1 3 -12 -3" /><path d="M178 147l13 2.5 -1 3 -12 -3" /><path d="M178 150.8l13 2.5 -1 3 -12 -3" /><path d="M178 154.6l13 2.5 -1 3 -12 -3" /><path d="M178 158.4l13 2.5 -1 3 -12 -3" /><path d="M178 162.2l13 2.5 -1 3 -12 -3" /><path d="M178 166l13 2.5 -1 3 -12 -3" /></g></g></svg></div><figcaption>Twelve folds joined by the sewing thread.</figcaption></figure></li>
+      <li><div class="step-copy"><span class="step-number">Step 2 of 3</span>
+        <h3 id="binding-step-2" tabindex="-1">Line the spine</h3><p>Brush glue over the sewn folds and press a strip of cloth across the spine.</p></div>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same spine with a band of cloth glued across its folds."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="M84 127l37 -31 61 11 -37 32v24l-61 -12Z" fill="var(--surface)" stroke="var(--muted)"/><path d="M89 130v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18m7 -17v18" fill="none" stroke="var(--line-strong)"/></g></svg></div><figcaption>The cloth bridges the folds of the sewn block.</figcaption></figure></li>
+      <li><div class="step-copy"><span class="step-number">Step 3 of 3</span>
+        <h3 id="binding-step-3" tabindex="-1">Fit the case</h3><p>Set the lined block into its case and secure it between two 2 mm boards.</p></div>
+        <figure><div><svg viewBox="0 0 360 270" role="img" aria-label="The same book block fitted between two rigid boards."><g stroke-linejoin="round" stroke-linecap="round" stroke="var(--ink)" stroke-width="1.15"><path d="M40 144 125 74 324 110 239 184Z" fill="var(--action)"/><g fill="var(--bg)"><path d="M49 146q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 144q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 142q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 140q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 138q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 136q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 134q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 132q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 130q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 128q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 126q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/><path d="M49 124q-4 -2 -1 -4l75 -62 190 34v3l-77 65Z"/></g><path d="M48 120l76 -62 190 34 -77 63Z" fill="var(--bg)"/><path d="M61 117l64 -51 171 30" stroke="var(--line-strong)" fill="none"/><path d="m41 119 82 -68 200 36 -83 70Z" fill="var(--action)"/><path d="m41 119 199 38v5L41 124Zm199 38 83 -70v5l-83 70Z" fill="var(--ink)"/><path d="m42 124 4 22 193 37 1 -21Z" fill="var(--action)"/><path d="m60 115 66 -55" stroke="var(--action-ink)" fill="none"/></g></svg></div><figcaption>The boards extend just past the edges of the pages.</figcaption></figure></li>
+    </ol><div class="held" hidden></div></div>
+  </div>
+</section>
+<section class="section own" id="model-matrix" data-own="model-matrix" aria-labelledby="model-matrix-title" data-assumed>
+  <div class="wrap">
+    <h2 id="model-matrix-title">Compare field recorders</h2>
+    <p class="t-lead measure">Fenwick Field Audio compares inputs, battery life and timecode across its three recorders.</p>
+<div class="matrix">
+      <div class="filters" hidden><label class="diff"><input type="checkbox"> Show differences</label>
+        <label class="field partner">Compare with Reed<select><option>Marsh</option><option>Tarn</option></select></label></div>
+      <div class="table-frame" role="region" aria-label="Recorder comparison" tabindex="0">
+        <table><caption>Field recorder specifications</caption><thead>
+          <tr class="pictures" aria-hidden="true"><td></td><td data-model="Reed"><svg viewBox="32 0 77 85" role="img" aria-label="Reed field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(13 0)"><rect x="36" y="11" rx="3" width="36" height="66"/><path d="M40 10V6h7v4m10 0V6h7v4"/><rect x="41" y="20" width="26" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h15m-15 4h10"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/></g></g></svg></td><td data-model="Marsh"><svg viewBox="32 0 77 85" role="img" aria-label="Marsh field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(3 0)"><rect x="36" y="11" rx="3" width="47" height="66"/><path d="M40 10V6h7v4m18 0V6h7v4"/><rect x="41" y="20" width="37" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h21m-21 4h16"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><circle cx="66" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/><circle cx="68" cy="64" r="5" fill="var(--action)"/></g></g></svg></td><td data-model="Tarn"><svg viewBox="32 0 77 85" role="img" aria-label="Tarn field recorder"><g stroke="var(--ink)" stroke-width="1.4" fill="var(--bg)" stroke-linejoin="round"><g transform="translate(0 0)"><rect x="36" y="11" rx="3" width="58" height="66"/><path d="M40 10V6h7v4m26 0V6h7v4"/><rect x="41" y="20" width="48" height="19" fill="var(--ink)"/><g fill="none" stroke="var(--bg)"><path d="M44 27h27m-27 4h22"/></g><circle cx="44" cy="49" r="3" fill="var(--surface)"/><circle cx="55" cy="49" r="3" fill="var(--surface)"/><circle cx="66" cy="49" r="3" fill="var(--surface)"/><circle cx="77" cy="49" r="3" fill="var(--surface)"/><path d="M42 59h12m-12 4h12m-12 4h12"/><circle cx="76" cy="64" r="5" fill="var(--action)"/></g></g></svg></td></tr>
+          <tr class="names"><th scope="col">Property</th><th scope="col" data-model="Reed"><span>Reed</span><a href="#recorder-reed">Specs<span class="sr-only"> for Reed</span></a></th><th scope="col" data-model="Marsh"><span>Marsh</span><a href="#recorder-marsh">Specs<span class="sr-only"> for Marsh</span></a></th><th scope="col" data-model="Tarn"><span>Tarn</span><a href="#recorder-tarn">Specs<span class="sr-only"> for Tarn</span></a></th></tr></thead>
+          <tbody><tr><th scope="row">Inputs</th><td data-model="Reed">2</td><td data-model="Marsh">4</td><td data-model="Tarn">4</td></tr>
+          <tr><th scope="row">Battery life</th><td data-model="Reed">10 h</td><td data-model="Marsh">8 h</td><td data-model="Tarn">12 h</td></tr>
+          <tr><th scope="row">Weight</th><td data-model="Reed">180 g</td><td data-model="Marsh">265 g</td><td data-model="Tarn">310 g</td></tr>
+          <tr><th scope="row">Timecode</th><td data-model="Reed">None</td><td data-model="Marsh">Input</td><td data-model="Tarn">Input/output</td></tr>
+          <tr data-shared><th scope="row">Bit depth</th><td data-model="Reed">24-bit</td><td data-model="Marsh">24-bit</td><td data-model="Tarn">24-bit</td></tr></tbody>
+        </table></div>
+      <article class="local-note" id="recorder-reed" tabindex="-1"><h3>Reed specifications</h3><p>2 inputs · 10 h battery · 180 g · No timecode · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+      <article class="local-note" id="recorder-marsh" tabindex="-1"><h3>Marsh specifications</h3><p>4 inputs · 8 h battery · 265 g · Timecode input · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+      <article class="local-note" id="recorder-tarn" tabindex="-1"><h3>Tarn specifications</h3><p>4 inputs · 12 h battery · 310 g · Timecode input/output · 24-bit audio</p><a href="#model-matrix-title">Back to comparison</a></article>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="billing-matrix" data-own="billing-matrix" aria-labelledby="billing-matrix-title" data-assumed>
+  <div class="wrap">
+    <h2 id="billing-matrix-title">Catalogue hosting plans</h2>
+    <p class="t-lead measure">Larch Archive bills each workspace as one catalogue. Choose a plan by its editor and record limits.</p>
+<div class="tariffs">
+      <fieldset hidden><legend>Billing period</legend><div><label class="press"><input type="radio" value="monthly" checked>Monthly</label><label class="press"><input type="radio" value="annual" >Annual</label></div></fieldset>
+      <table aria-label="Workspace plans and features"><thead><tr><th scope="col">Per workspace</th>
+        <th scope="col"><span class="plan-name">Desk</span><span class="bill" data-period="monthly">€12 <small>per month</small></span><span class="bill" data-period="annual">€120 <small>per year</small></span></th>
+        <th scope="col"><span class="plan-name">Room</span><span class="bill" data-period="monthly">€30 <small>per month</small></span><span class="bill" data-period="annual">€300 <small>per year</small></span></th>
+        <th scope="col"><span class="plan-name">Hall</span><span class="bill" data-period="monthly">€70 <small>per month</small></span><span class="bill" data-period="annual">€700 <small>per year</small></span></th>
+      </tr></thead><tbody>
+        <tr><th scope="row">Editors</th><td><span class="mobile-name">Editors</span><span>2</span></td><td><span class="mobile-name">Editors</span><span>8</span></td><td><span class="mobile-name">Editors</span><span>20</span></td></tr>
+        <tr><th scope="row">Catalogue records</th><td><span class="mobile-name">Catalogue records</span><span>1,000</span></td><td><span class="mobile-name">Catalogue records</span><span>10,000</span></td><td><span class="mobile-name">Catalogue records</span><span>50,000</span></td></tr>
+        <tr><th scope="row">CSV export</th><td><span class="mobile-name">CSV export</span><span>Included</span></td><td><span class="mobile-name">CSV export</span><span>Included</span></td><td><span class="mobile-name">CSV export</span><span>Included</span></td></tr>
+        <tr><th scope="row">Review history</th><td><span class="mobile-name">Review history</span><span>Unavailable</span></td><td><span class="mobile-name">Review history</span><span>Included</span></td><td><span class="mobile-name">Review history</span><span>Included</span></td></tr>
+        <tr class="plan-links"><th scope="row">Selection</th><td><a href="#bill-desk">Select Desk</a></td><td><a href="#bill-room">Select Room</a></td><td><a href="#bill-hall">Select Hall</a></td></tr>
+      </tbody></table>
+      <article class="local-note" id="bill-desk" tabindex="-1"><h3>Desk selection</h3><p>2 editors · 1,000 records · CSV export included · Review history unavailable</p><p data-charge="monthly" id="bill-desk-monthly" tabindex="-1">Monthly bill per workspace <strong>€12 <small>per month</small></strong></p><p data-charge="annual" id="bill-desk-annual" tabindex="-1">Annual bill per workspace <strong>€120 <small>per year</small></strong></p><a href="#billing-matrix-title">Back to plans</a></article>
+      <article class="local-note" id="bill-room" tabindex="-1"><h3>Room selection</h3><p>8 editors · 10,000 records · CSV export included · Review history included</p><p data-charge="monthly" id="bill-room-monthly" tabindex="-1">Monthly bill per workspace <strong>€30 <small>per month</small></strong></p><p data-charge="annual" id="bill-room-annual" tabindex="-1">Annual bill per workspace <strong>€300 <small>per year</small></strong></p><a href="#billing-matrix-title">Back to plans</a></article>
+      <article class="local-note" id="bill-hall" tabindex="-1"><h3>Hall selection</h3><p>20 editors · 50,000 records · CSV export included · Review history included</p><p data-charge="monthly" id="bill-hall-monthly" tabindex="-1">Monthly bill per workspace <strong>€70 <small>per month</small></strong></p><p data-charge="annual" id="bill-hall-annual" tabindex="-1">Annual bill per workspace <strong>€700 <small>per year</small></strong></p><a href="#billing-matrix-title">Back to plans</a></article>
+    </div>
+  </div>
+</section>
+<section class="section own" id="connector-finder" data-own="connector-finder" aria-labelledby="connector-finder-title" data-assumed>
+  <div class="wrap">
+    <h2 id="connector-finder-title">Find an instrument connector</h2>
+    <p class="t-lead measure">Wharf Ledger imports readings from scales, temperature loggers and counters.</p>
+<div class="directory">
+      <div class="filter-box" hidden><label class="field">Instrument name<input type="search" placeholder="Search by name"></label>
+        <label class="field">Instrument type<select><option>All types</option><option>Scale</option><option>Temperature logger</option><option>Counter</option></select></label>
+        <button class="clear press" type="button">Clear filters</button></div>
+      <div class="matches"><p class="count" role="status" aria-live="polite">6 connectors</p>
+        <ul><li data-name="Kiln" data-type="Scale"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Scale"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><path d="M7 17h34l-4 5H11Zm6 5 -5 13h32l-5 -13M17 27h14v5H17Z"/></g></svg><h3>Kiln</h3></div><dl><div><dt>Type</dt><dd>Scale</dd></div><div><dt>Connection</dt><dd>USB</dd></div></dl><a id="connector-kiln" href="#setup-kiln">Kiln setup</a></li>
+          <li data-name="Pike" data-type="Scale"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Scale"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><path d="M7 17h34l-4 5H11Zm6 5 -5 13h32l-5 -13M17 27h14v5H17Z"/></g></svg><h3>Pike</h3></div><dl><div><dt>Type</dt><dd>Scale</dd></div><div><dt>Connection</dt><dd>Serial</dd></div></dl><a id="connector-pike" href="#setup-pike">Pike setup</a></li>
+          <li data-name="Wren" data-type="Temperature logger"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Temperature logger"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="12" y="7" width="25" height="32" rx="3"/><path d="M17 12h15v9H17Zm2 16h4m-4 4h9m7 -5h8v8"/></g></svg><h3>Wren</h3></div><dl><div><dt>Type</dt><dd>Temperature logger</dd></div><div><dt>Connection</dt><dd>USB</dd></div></dl><a id="connector-wren" href="#setup-wren">Wren setup</a></li>
+          <li data-name="Heron" data-type="Temperature logger"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Temperature logger"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="12" y="7" width="25" height="32" rx="3"/><path d="M17 12h15v9H17Zm2 16h4m-4 4h9m7 -5h8v8"/></g></svg><h3>Heron</h3></div><dl><div><dt>Type</dt><dd>Temperature logger</dd></div><div><dt>Connection</dt><dd>CSV</dd></div></dl><a id="connector-heron" href="#setup-heron">Heron setup</a></li>
+          <li data-name="Sedge" data-type="Counter"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Counter"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="4" y="12" width="40" height="25" rx="4"/><path d="M9 18h23v12H9Zm8 0v12m8 -12v12M36 20h3m-3 6h3M17 12V8h12v4"/></g></svg><h3>Sedge</h3></div><dl><div><dt>Type</dt><dd>Counter</dd></div><div><dt>Connection</dt><dd>Serial</dd></div></dl><a id="connector-sedge" href="#setup-sedge">Sedge setup</a></li>
+          <li data-name="Flint" data-type="Counter"><div class="instrument"><svg viewBox="0 0 48 46" role="img" aria-label="Counter"><g fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"><rect x="4" y="12" width="40" height="25" rx="4"/><path d="M9 18h23v12H9Zm8 0v12m8 -12v12M36 20h3m-3 6h3M17 12V8h12v4"/></g></svg><h3>Flint</h3></div><dl><div><dt>Type</dt><dd>Counter</dd></div><div><dt>Connection</dt><dd>CSV</dd></div></dl><a id="connector-flint" href="#setup-flint">Flint setup</a></li></ul>
+        <div class="empty" hidden><p>No connectors match these filters.</p><button class="clear press" type="button">Clear filters</button></div>
+      </div>
+    </div>
+    <article class="local-note" id="setup-kiln" tabindex="-1"><h3>Kiln setup</h3><p>Connect the scale over USB. Tare the platform, then import the stable weight in grams.</p><a href="#connector-kiln">Back to Kiln</a></article>
+    <article class="local-note" id="setup-pike" tabindex="-1"><h3>Pike setup</h3><p>Connect the serial lead and select the scale port. Import one weight in grams per reading.</p><a href="#connector-pike">Back to Pike</a></article>
+    <article class="local-note" id="setup-wren" tabindex="-1"><h3>Wren setup</h3><p>Connect USB and import the timestamp and temperature in °C.</p><a href="#connector-wren">Back to Wren</a></article>
+    <article class="local-note" id="setup-heron" tabindex="-1"><h3>Heron setup</h3><p>Export a CSV from the logger. Map its timestamp and temperature in °C before importing.</p><a href="#connector-heron">Back to Heron</a></article>
+    <article class="local-note" id="setup-sedge" tabindex="-1"><h3>Sedge setup</h3><p>Attach the serial lead. Select the counter port and import its cumulative pulse count.</p><a href="#connector-sedge">Back to Sedge</a></article>
+    <article class="local-note" id="setup-flint" tabindex="-1"><h3>Flint setup</h3><p>Choose the counter CSV and map its time and whole-number count columns.</p><a href="#connector-flint">Back to Flint</a></article>
+  </div>
+</section>
+<section class="section own ground-surface" id="release-register" data-own="release-register" aria-labelledby="release-register-title" data-assumed>
+  <div class="wrap">
+    <h2 id="release-register-title">Survey changes and files</h2>
+    <p class="t-lead measure">North Quay Chart Office publishes a notice for each chart revision.</p>
+<div class="register"><h3>2026</h3><ol>
+      <li id="quay-1-4" tabindex="-1"><time datetime="2026-11-12">12 Nov</time>
+        <div class="change"><span>Edition 1.4</span><h4>Buoy B7</h4><p>Moved 30 m east.</p></div>
+        <div class="documents"><a href="#quay-1-4-notice">Notice 1.4 <span>HTML</span></a><a download="north-quay-1.4.csv" href="data:text/csv;charset=utf-8,edition%2Cobject%2Cchange%0D%0A1.4%2Cbuoy%20B7%2Cshifted%2030%20m%20east%0D%0A">Data 1.4 <span>CSV</span></a></div></li>
+      <li id="quay-1-3" tabindex="-1"><time datetime="2026-09-04">4 Sep</time>
+        <div class="change"><span>Edition 1.3</span><h4>West pier light</h4><p>Removed from the chart.</p></div>
+        <div class="documents"><a href="#quay-1-3-notice">Notice 1.3 <span>HTML</span></a><p>No data file issued</p></div></li>
+      <li id="quay-1-2" tabindex="-1"><time datetime="2026-06-18">18 Jun</time>
+        <div class="change"><span>Edition 1.2</span><h4>Seasonal mooring</h4><p>Marked on the chart.</p></div>
+        <div class="documents"><a href="#quay-1-2-notice">Notice 1.2 <span>HTML</span></a><a download="north-quay-1.2.csv" href="data:text/csv;charset=utf-8,edition%2Cobject%2Cchange%0D%0A1.2%2Cseasonal%20mooring%2Cmarked%20on%20chart%0D%0A">Data 1.2 <span>CSV</span></a></div></li>
+    </ol></div>
+    <article class="local-note" tabindex="-1" id="quay-1-4-notice"><h3>Chart notice 1.4</h3><p><time datetime="2026-11-12">12 Nov 2026</time> · Edition 1.4</p><p>Buoy B7 moved 30 m east.</p><a href="#quay-1-4">Back to edition 1.4</a></article>
+    <article class="local-note" tabindex="-1" id="quay-1-3-notice"><h3>Chart notice 1.3</h3><p><time datetime="2026-09-04">4 Sep 2026</time> · Edition 1.3</p><p>West pier light removed from the chart.</p><a href="#quay-1-3">Back to edition 1.3</a></article>
+    <article class="local-note" tabindex="-1" id="quay-1-2-notice"><h3>Chart notice 1.2</h3><p><time datetime="2026-06-18">18 Jun 2026</time> · Edition 1.2</p><p>Seasonal mooring marked on the chart.</p><a href="#quay-1-2">Back to edition 1.2</a></article>
+  </div>
+</section>
+<section class="section own" id="case-foldout" data-own="case-foldout" aria-labelledby="case-foldout-title" data-assumed>
+  <div class="wrap">
+    <h2 id="case-foldout-title">Fleet jobs at the repair bench</h2>
+    <p class="t-lead measure">Grove Repair tracks each fleet by the bicycles it returns to service.</p>
+<div class="jobs">
+      <details id="grove-job-1" open><summary class="press" id="grove-trigger-1"><span>Canal Cycles</span><span>18 of 20 bicycles returned</span></summary>
+        <div class="job-body"><figure><svg viewBox="0 0 320 180" role="img" aria-label="Coiled cable, terminal and two ferrules on the bench."><g fill="none" stroke="var(--ink)" stroke-width="1.35"><ellipse cx="122" cy="86" rx="62" ry="38"/><ellipse cx="124" cy="88" rx="62" ry="38"/><ellipse cx="126" cy="90" rx="62" ry="38"/><ellipse cx="128" cy="92" rx="62" ry="38"/><ellipse cx="130" cy="94" rx="62" ry="38"/><path d="M69 72Q37 94 44 131t-18 11M184 95q9 -44 38 -40h41"/></g><g fill="var(--action)" stroke="var(--ink)"><rect x="259" y="51" width="12" height="9" rx="2"/><rect x="227" y="97" width="25" height="8" rx="2"/><rect x="240" y="115" width="25" height="8" rx="2"/></g></svg><figcaption>18 cables · cable replacement</figcaption></figure>
+          <div><h3>Cable replacement</h3><dl><div><dt>Back in service</dt><dd>18 of 20</dd></div><div><dt>Turnaround</dt><dd>2 days</dd></div><div><dt>Workshop tally</dt><dd>18 cables</dd></div></dl><a href="#grove-sheet-1">Read Canal Cycles job sheet</a></div></div>
+        <article class="local-note" id="grove-sheet-1" tabindex="-1"><h3>Canal Cycles job sheet</h3><p>Replaced 18 cables, then checked lever travel before the bicycles went back into service. 18 of 20 bicycles returned in 2 days.</p><a href="#grove-trigger-1">Back to Canal Cycles</a></article>
+      </details>
+      <details id="grove-job-2"><summary class="press" id="grove-trigger-2"><span>Lime Post</span><span>6 of 8 cargo bikes returned</span></summary>
+        <div class="job-body"><figure><svg viewBox="0 0 320 180" role="img" aria-label="A brake caliper and a pair of brake pads on the bench."><g stroke="var(--ink)" stroke-width="2" fill="var(--bg)"><path d="m68 130 4 -43q1 -15 32 -30l25 -9 8 -13 9 6 -5 19 -35 19q-12 7 -14 23l-2 28Z"/><path d="m162 131 -6 -41q-2 -15 -28 -27l-23 -10 -8 -12 -9 6 7 17 28 17q12 7 13 22l2 28Z"/><circle cx="117" cy="66" r="8"/><circle cx="117" cy="66" r="3" fill="var(--ink)"/><path d="M82 106h22v15H80Zm56 0h-19v15h21Z" fill="var(--action)"/><g transform="translate(0 0)"><rect x="218" y="69" width="49" height="14" rx="4" fill="var(--ink)"/><path d="M237 69v-7h9v7"/></g><g transform="translate(16 24)"><rect x="218" y="69" width="49" height="14" rx="4" fill="var(--ink)"/><path d="M237 69v-7h9v7"/></g></g></svg><figcaption>6 brakes · brake service</figcaption></figure>
+          <div><h3>Brake service</h3><dl><div><dt>Back in service</dt><dd>6 of 8</dd></div><div><dt>Turnaround</dt><dd>1 day</dd></div><div><dt>Workshop tally</dt><dd>6 brakes</dd></div></dl><a href="#grove-sheet-2">Read Lime Post job sheet</a></div></div>
+        <article class="local-note" id="grove-sheet-2" tabindex="-1"><h3>Lime Post job sheet</h3><p>Serviced six brakes, aligned the pads and checked each loaded cargo bike before release. 6 of 8 cargo bikes returned in 1 day.</p><a href="#grove-trigger-2">Back to Lime Post</a></article>
+      </details>
+      <details id="grove-job-3"><summary class="press" id="grove-trigger-3"><span>Hill School</span><span>12 of 12 bicycles returned</span></summary>
+        <div class="job-body"><figure><svg viewBox="0 0 320 180" role="img" aria-label="A replacement tyre with tread and two tyre levers on the bench."><g stroke="var(--ink)" fill="var(--bg)" stroke-width="2"><ellipse cx="118" cy="93" rx="67" ry="49"/><ellipse cx="117" cy="91" rx="50" ry="35"/><path d="M50 94q8 64 91 49 42 -8 45 -48" fill="none"/><path d="M56 96l3 6" /><path d="M63.7 105.79092109407783l3 6" /><path d="M71.4 115.09088452117255l3 6" /><path d="M79.1 123.43355128178428l3 6" /><path d="M86.8 130.40058522859331l3 6" /><path d="M94.5 135.64263018770646l3 6" /><path d="M102.2 138.89682813600024l3 6" /><path d="M109.9 140l3 6" /><path d="M117.6 138.89682813600024l3 6" /><path d="M125.3 135.64263018770646l3 6" /><path d="M133 130.40058522859331l3 6" /><path d="M140.7 123.43355128178428l3 6" /><path d="M148.4 115.09088452117257l3 6" /><path d="M156.10000000000002 105.79092109407785l3 6" /><path d="M163.8 96l3 6" /><g transform="rotate(-15 240 90)"><path d="m221 52h7l-1 55 3 12 -4 7 -5 -11Z" fill="var(--action)"/><path d="m240 52h7l-1 55 3 12 -4 7 -5 -11Z" fill="var(--action)"/></g></g></svg><figcaption>24 tyres · tyre replacement</figcaption></figure>
+          <div><h3>Tyre replacement</h3><dl><div><dt>Back in service</dt><dd>12 of 12</dd></div><div><dt>Turnaround</dt><dd>3 days</dd></div><div><dt>Workshop tally</dt><dd>24 tyres</dd></div></dl><a href="#grove-sheet-3">Read Hill School job sheet</a></div></div>
+        <article class="local-note" id="grove-sheet-3" tabindex="-1"><h3>Hill School job sheet</h3><p>Fitted a pair of tyres on every bicycle and checked the pressure before handover. 12 of 12 bicycles returned in 3 days.</p><a href="#grove-trigger-3">Back to Hill School</a></article>
+      </details>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="annotated-source" data-own="annotated-source" aria-labelledby="annotated-source-title" data-assumed>
+  <div class="wrap">
+    <h2 id="annotated-source-title">How the packing label is counted</h2>
+    <p class="t-lead measure">Elm Parcel packs six items to a box. The label prints the item count, box count and remaining space.</p>
+<div class="annotation"><div class="listing">
+      <div class="file-name">label.py</div>
+      <div class="source"><div class="numbers" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <pre tabindex="0" aria-label="Python source"><code><span data-line="1">def label(items):</span>
+<span data-line="2">    count = sum(items)</span>
+<span data-line="3">    boxes = (count + 5) // 6</span>
+<span data-line="4">    spare = boxes * 6 - count</span>
+<span data-line="5">    return count, boxes, spare</span></code></pre>
+        <div class="markers" aria-label="Line annotations"><a class="press" id="parcel-marker-A" href="#parcel-note-A" aria-label="Note A for line 2">A</a><a class="press" id="parcel-marker-B" href="#parcel-note-B" aria-label="Note B for line 3">B</a><a class="press" id="parcel-marker-C" href="#parcel-note-C" aria-label="Note C for line 4">C</a></div>
+      </div>
+      <div class="invocation"><p>Run with three entries</p><pre tabindex="0" aria-label="Python invocation"><code>count, boxes, spare = label([4, 5, 2])
+print(f"{count} items, {boxes} boxes, {spare} spare place")</code></pre></div>
+      <div class="printed"><span>Printed label</span><strong>11 items, 2 boxes, 1 spare place</strong></div></div>
+      <ol class="notes"><li><h3 id="parcel-note-A" tabindex="-1"><span>A</span> Count the items</h3><p>Line 2 sums the three entries. Four, five and two items give a total of eleven.</p><a href="#parcel-marker-A">Back to line 2</a></li>
+        <li><h3 id="parcel-note-B" tabindex="-1"><span>B</span> Round up the boxes</h3><p>Line 3 adds five before whole-number division by six. Eleven items need two boxes.</p><a href="#parcel-marker-B">Back to line 3</a></li>
+        <li><h3 id="parcel-note-C" tabindex="-1"><span>C</span> Count the spare places</h3><p>Line 4 subtracts eleven items from twelve available places. One place remains.</p><a href="#parcel-marker-C">Back to line 4</a></li></ol>
+    </div>
+  </div>
+</section>
+<section class="section own" id="system-paths" data-own="system-paths" aria-labelledby="system-paths-title" data-assumed>
+  <div class="wrap">
+    <h2 id="system-paths-title">Where rainfall readings go</h2>
+    <p class="t-lead measure">Ash Basin checks every station reading before adding it to the daily ledger.</p>
+<div class="routing"><figure class="network" aria-label="Both sources feed one validator. Its range check determines the destination.">
+      <div class="node input-0" data-station="N"><small>Station N</small><strong>North gauge</strong></div><div class="node input-1" data-station="S"><small>Station S</small><strong>Volunteer sheet</strong></div>
+      <svg class="edges incoming" viewBox="0 0 100 200" preserveAspectRatio="none" aria-hidden="true"><path data-station="N" d="M0 50H29Q50 50 50 70V80Q50 100 70 100H100"/><path data-station="S" d="M0 150H29Q50 150 50 130V120Q50 100 70 100H100"/></svg><div class="node validator"><strong>Validator</strong><span>0–200 mm inclusive</span></div><svg class="edges outgoing" viewBox="0 0 100 200" preserveAspectRatio="none" aria-hidden="true"><path data-station="N" d="M0 100H29Q50 100 50 80V70Q50 50 70 50H100"/><path data-station="S" d="M0 100H29Q50 100 50 120V130Q50 150 70 150H100"/></svg>
+      <div class="node end-0" data-station="N"><small>Within range</small><strong>Daily ledger</strong></div><div class="node end-1" data-station="S"><small>Outside range</small><strong>Review tray</strong></div>
+      <figcaption>Each input supplies station, time and rainfall in millimetres.</figcaption></figure>
+      <div class="samples"><fieldset hidden><legend>Trace a sample</legend><div><label class="press"><input type="radio" value="N" checked> Station N</label><label class="press"><input type="radio" value="S"> Station S</label></div></fieldset>
+        <ol><li data-station="N"><h3>Station N <time>08:00</time></h3><div class="sample-value">12 mm</div><span>Daily ledger</span></li><li data-station="S"><h3>Station S <time>08:15</time></h3><div class="sample-value">230 mm</div><span>Review tray</span></li></ol>
+        <p class="spoken" role="status" aria-live="polite"></p></div>
+      <div class="mobile-routes"><article data-station="N"><h3>Station N <time>08:00</time></h3>
+        <ol><li><strong>North gauge</strong><span>12 mm</span></li><li><strong>Validator</strong><span>Within range · 0–200 mm inclusive</span></li><li><strong>Daily ledger</strong></li></ol></article><article data-station="S"><h3>Station S <time>08:15</time></h3>
+        <ol><li><strong>Volunteer sheet</strong><span>230 mm</span></li><li><strong>Validator</strong><span>Outside range · 0–200 mm inclusive</span></li><li><strong>Review tray</strong></li></ol></article></div>
+    </div>
+  </div>
+</section>
+<section class="section own ground-surface" id="source-ledger" data-own="source-ledger" aria-labelledby="source-ledger-title" data-assumed>
+  <div class="wrap">
+    <h2 id="source-ledger-title">The October lending pilot</h2>
+    <p class="t-lead measure">Mere Tool Library · 1–31 October 2026</p>
+<div class="ledger"><div class="fact lead-fact"><h3>Sign-out register</h3><p><strong>84</strong> <span>distinct borrowers</span></p><a class="ref" id="mere-figure-1" href="#mere-source-1" aria-label="Source 1, Sign-out register">[1]</a></div><div class="other-facts">
+      <div class="fact "><h3>Loan log</h3><p><strong>126</strong> <span>completed loans</span></p><a class="ref" id="mere-figure-2" href="#mere-source-2" aria-label="Source 2, Loan log">[2]</a></div>
+      <div class="fact "><h3>Opening log</h3><p><strong>18</strong> <span>staffed days</span></p><a class="ref" id="mere-figure-3" href="#mere-source-3" aria-label="Source 3, Opening log">[3]</a></div>
+      <div class="fact "><h3>Repair log</h3><p><strong>9</strong> <span>tools returned to stock</span></p><a class="ref" id="mere-figure-4" href="#mere-source-4" aria-label="Source 4, Repair log">[4]</a></div>
+    </div></div>
+    <div class="sources"><h3>Counting notes</h3><ol>
+      <li id="mere-source-1" tabindex="-1"><a href="#mere-figure-1" aria-label="Return to 84 distinct borrowers">[1]</a><p>Unique membership numbers in the sign-out register.</p></li>
+      <li id="mere-source-2" tabindex="-1"><a href="#mere-figure-2" aria-label="Return to 126 completed loans">[2]</a><p>Completed checkouts recorded in the loan log.</p></li>
+      <li id="mere-source-3" tabindex="-1"><a href="#mere-figure-3" aria-label="Return to 18 staffed days">[3]</a><p>Days with a staffed opening in the opening log.</p></li>
+      <li id="mere-source-4" tabindex="-1"><a href="#mere-figure-4" aria-label="Return to 9 tools returned to stock">[4]</a><p>Items cleared after repair and entered back into stock.</p></li>
+    </ol></div>
+  </div>
+</section>
+</main>
+<script type="module" src="../system.js"></script>
+<script type="module" src="../motion/motion.js"></script>
+<script type="module" src="../layout/layout.js"></script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="evidence-grid"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="chapter-stage"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const steps = [...root.querySelectorAll('.steps li')];
+  const links = [...root.querySelectorAll('.chapters a')];
+  const pictures = steps.map(step => step.querySelector('figure'));
+  const tour = root.querySelector('.binding-tour');
+  const stage = root.querySelector('.held');
+  const wide = matchMedia('(min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)');
+  function select(index) {
+    steps.forEach((step, i) => {
+      for (const el of [step, links[i]]) {
+        if (i === index) el.setAttribute('aria-current', 'step');
+        else el.removeAttribute('aria-current');
+      }
+      pictures[i].hidden = wide.matches && i !== index;
+    });
+  }
+  function readPosition() {
+    const last = steps.findLastIndex(step => step.querySelector('h3').getBoundingClientRect().top <= innerHeight / 3 + 1);
+    select(Math.max(last, 0));
+  }
+  function layout() {
+    tour.classList.toggle('pinned', wide.matches);
+    stage.hidden = !wide.matches;
+    pictures.forEach((figure, i) => (wide.matches ? stage : steps[i]).append(figure));
+    readPosition();
+  }
+  function follow() {
+    const index = steps.findIndex(step => '#' + step.querySelector('h3').id === location.hash);
+    if (index < 0) return;
+    const heading = steps[index].querySelector('h3');
+    heading.scrollIntoView({block: 'start'});
+    heading.focus({preventScroll: true});
+    select(index);
+  }
+  links.forEach(link => link.addEventListener('click', event => {
+    if (event.currentTarget.hash === location.hash) follow();
+  }));
+  window.addEventListener('hashchange', follow);
+  window.addEventListener('scroll', readPosition, {passive: true});
+  wide.addEventListener('change', layout);
+  layout();
+  follow();
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="model-matrix"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const controls = root.querySelector('.filters');
+  const shared = root.querySelector('[data-shared]');
+  const difference = controls.querySelector('input');
+  const partner = controls.querySelector('select');
+  const frame = root.querySelector('.table-frame');
+  function compare() {
+    shared.hidden = difference.checked;
+    root.querySelectorAll('[data-model]').forEach(cell => {
+      cell.toggleAttribute('data-other', !['Reed', partner.value].includes(cell.dataset.model));
+    });
+  }
+  controls.addEventListener('change', compare);
+  compare();
+  frame.removeAttribute('tabindex');
+  controls.hidden = false;
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="billing-matrix"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const field = root.querySelector('fieldset');
+  for (const radio of field.querySelectorAll('input')) radio.name = root.id + '-choice';
+  const links = [...root.querySelectorAll('.plan-links a')];
+  const notes = [...root.querySelectorAll('.local-note')];
+  function changePeriod(period) {
+    field.querySelector('[value="' + period + '"]').checked = true;
+    root.querySelectorAll('.bill').forEach(bill => { bill.hidden = bill.dataset.period !== period; });
+    links.forEach((link, i) => {
+      link.setAttribute('href', '#' + notes[i].querySelector('[data-charge="' + period + '"]').id);
+    });
+  }
+  function readReceipt() {
+    const charge = root.querySelector('[data-charge]:target');
+    if (charge) changePeriod(charge.dataset.charge);
+  }
+  field.addEventListener('change', event => {
+    const current = root.querySelector('[data-charge]:target');
+    changePeriod(event.target.value);
+    if (current) {
+      const receipt = current.closest('.local-note').querySelector('[data-charge="' + event.target.value + '"]');
+      history.replaceState(history.state, '', '#' + receipt.id);
+    }
+  });
+  window.addEventListener('hashchange', readReceipt);
+  changePeriod(field.querySelector(':checked').value);
+  readReceipt();
+  field.hidden = false;
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="connector-finder"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const filters = root.querySelector('.filter-box');
+  const search = filters.querySelector('input');
+  const type = filters.querySelector('select');
+  const entries = [...root.querySelectorAll('[data-name]')];
+  const count = root.querySelector('.count');
+  function filter() {
+    const query = search.value.trim().toLowerCase();
+    let found = 0;
+    for (const entry of entries) {
+      const nameFits = entry.dataset.name.toLowerCase().includes(query);
+      const typeFits = type.selectedIndex === 0 || entry.dataset.type === type.value;
+      entry.hidden = !(nameFits && typeFits);
+      if (!entry.hidden) found++;
+    }
+    count.textContent = found + (found === 1 ? ' connector' : ' connectors');
+    root.querySelector('.empty').hidden = found > 0;
+  }
+  function clearFilters() {
+    search.value = '';
+    type.selectedIndex = 0;
+    filter();
+    search.focus();
+  }
+  search.addEventListener('input', filter);
+  type.addEventListener('change', filter);
+  search.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    search.value = '';
+    filter();
+  });
+  root.querySelectorAll('.clear').forEach(button => button.addEventListener('click', clearFilters));
+  filters.hidden = false;
+  filter();
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="release-register"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="case-foldout"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const jobs = [...root.querySelectorAll('details')];
+  const group = root.id + '-cases';
+  function follow() {
+    const target = document.getElementById(location.hash.slice(1));
+    if (!target || !root.contains(target)) return;
+    const job = target.closest('details');
+    if (!job) return;
+    job.open = true;
+    if (target.classList.contains('local-note')) target.focus({preventScroll: true});
+    target.scrollIntoView({block: 'nearest'});
+  }
+  window.addEventListener('hashchange', follow);
+  for (const job of jobs) job.name = group;
+  follow();
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="annotated-source"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const markers = [...root.querySelectorAll('.markers a')];
+  const lines = [...root.querySelectorAll('[data-line]')];
+  const headings = [...root.querySelectorAll('.notes h3')];
+  function follow() {
+    const index = markers.findIndex(marker => marker.hash === location.hash || '#' + marker.id === location.hash);
+    markers.forEach((marker, i) => {
+      lines[i + 1].toggleAttribute('data-active', i === index);
+      if (i === index) marker.setAttribute('aria-current', 'true');
+      else marker.removeAttribute('aria-current');
+    });
+    if (index < 0) return;
+    const target = markers[index].hash === location.hash ? headings[index] : markers[index];
+    target.focus({preventScroll: true});
+  }
+  window.addEventListener('hashchange', follow);
+  follow();
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="system-paths"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  const field = root.querySelector('fieldset');
+  for (const radio of field.querySelectorAll('input')) radio.name = root.id + '-choice';
+  const samples = [...root.querySelectorAll('.samples li')];
+  function select(station, announce) {
+    root.querySelectorAll('[data-station]').forEach(el => {
+      el.toggleAttribute('data-active', el.dataset.station === station);
+    });
+    if (announce) {
+      const sample = samples.find(el => el.dataset.station === station);
+      root.querySelector('.spoken').textContent = 'Station ' + station + ', ' +
+        sample.querySelector('.sample-value').textContent + ', ' + sample.querySelector('span').textContent;
+    }
+  }
+  field.addEventListener('change', event => select(event.target.value, true));
+  select(field.querySelector(':checked').value, false);
+  field.hidden = false;
+  root.dataset.bound = "";
+}
+</script>
+<script type="module">
+const instances = [...document.querySelectorAll('[data-own="source-ledger"]')];
+for (const [index, root] of instances.entries()) {
+  if (root.hasAttribute('data-bound')) continue;
+  if (index && document.getElementById(root.id) !== root) {
+    const suffix = '-' + (index + 1);
+    const anchors = new Set([root, ...root.querySelectorAll('[id]')].map(el => el.id));
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+      if (anchors.has(link.hash.slice(1))) link.setAttribute('href', link.hash + suffix);
+    }
+    root.setAttribute('aria-labelledby', root.getAttribute('aria-labelledby') + suffix);
+    for (const el of [root, ...root.querySelectorAll('[id]')]) el.id += suffix;
+  }
+  root.dataset.bound = "";
+}
+</script>
+</body>
+</html>
