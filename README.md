@@ -122,10 +122,10 @@ Start a new Codex session afterwards so the skill is loaded.
 <details>
 <summary>Pi Agent</summary>
 
-Install the skill from this fork with Pi's package manager:
+Install the skill with Pi's package manager:
 
 ```bash
-pi install git:github.com/fredjunior54/taste-skill
+pi install git:github.com/Leonxlnx/taste-skill
 ```
 
 Start a new Pi session or run `/reload` in an open session. Use `/skill:design-taste-frontend` to invoke the skill explicitly.
