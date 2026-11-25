@@ -7,6 +7,8 @@ page's one brand line (rule 3) or the hero form the voice card chose. Every stud
 description only: learn how the examples are written, never take their words, code, pictures or
 signature effect.
 
+“Tell our story”, “show how it plays” and “meet the bosses” each need a `show` ask mapped to the section that answers it.
+
 ## The copy layer
 
 Write `.taste-skill/copy.md` before the page. It holds the fact sheet, asks, voice card and draft.
@@ -78,11 +80,12 @@ Shape: <id from library/stories.json, and why the brief fits it>
 Thread: <the one record, object, person or time that travels; its name and numbers>
 Turn: <the section where something changes, and what changes>
 Bookend: <what the close brings back from the hero, and what it adds>
+Short: <include only when quoting the brief’s request for a small page>
 Spine:
-- H1: <hero line>
-- <h2 of section 2> | beat: <which beat> | joins the previous by: <so / but / then / until / which means>
+- H1: <hero line> | beat: <id> | section: #<hero-id>
+- <h2 of section 2> | beat: <dealt id> | section: #<id> | joins the previous by: <so / but / then / until / which means>
 - ...
-- Close: <the close's heading>
+- Close: <the close's heading> | beat: <id> | section: #<close-id>
 
 ## Voice card
 Register: <number and name from copy-registers.md, and why it fits>
@@ -128,7 +131,7 @@ Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. L
    ("Yoga studio in Brooklyn") is the default this replaces: copy-lint WARNs it unless the voice card
    chose that form (9 or 12).
 2. **The first screen holds one hard fact:** a number, a place, a price or a date; the brief's, else an
-   assumed one marked `data-assumed` (a "from" price, the district).
+   assumed one marked `data-assumed` (opening hours or the district).
 3. **Every heading has a noun that names a thing:** the product, a part of it, the place, a section
    noun (prices, rooms, menu, opening hours, questions, getting here, visit) or a digit. One brand
    line a page at most: the page's one figure of speech, pun or mantra, with a fact in the line under
@@ -204,16 +207,7 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
 
 Label a working object once on the object itself, for example “Example incident” or “Sample week”. Calculate public totals from confirmed prices and limits. Write invented dated entries as plain notes and identify them as examples in the report.
 
-- **What the brief gives is printed as given.** A plausible fact the page needs to work and the brief
-  leaves out is assumed, on every kind of page: a price or a "from" price, a plan's limits, the
-  opening hours, the dishes on a menu, the room types, the delivery terms and times, a district, a
-  coined brand name (below). Assume it as the trade sets it, uneven and in the local currency (3.60,
-  not 4.00; a day pass 14.50 €, a room from 118 € a night), never rounder or better than the trade.
-  Each assumed fact carries `data-assumed` on its own element (`<span class="rows__value"
-  data-assumed>3.60 €</span>`, `<dl class="hours" data-assumed>`), stands under `Assumed:` in the
-  notes and goes in the report; the checker lists every one [assumed], and assumed hours never drive
-  an open-now line [open-now]. A thin brief makes a page with its working facts assumed and marked,
-  never a page with its core left out.
+- Mark assumed opening hours, menu items or a district with `data-assumed` and list them in the notes and report. Quote the supplied rate with its unit and any “from”. Use only supplied rates in totals. Leave other prices, delivery and response times, rollout durations and discounts for the enquiry.
 - **Never held back instead:** no "Price on request" or "Pricing on request", no "we reply with the
   price" on a page that shows none, no "the street address comes with your confirmation email" or
   "street and district are on the way", no note about the client, the brief or the build ("hours are

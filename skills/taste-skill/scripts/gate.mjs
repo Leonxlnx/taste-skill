@@ -718,6 +718,7 @@ async function dealDrift(html, dot, kind, page, frame, source) {
         if (key === 'mark' && frame.mark === 'client-logo') continue;
         if (machine[key] && machine[key] !== frame[key]) record(key,machine[key],frame[key]);
       }
+      if (machine.heroVariant && !has('data-view',machine.heroVariant)) record('hero variant',machine.heroVariant);
       for (const [part,label] of [['heroPeek','hero--peek'],['heroBook','hero-book']]) {
         if (machine[part] !== true || frame[part]) continue;
         const msg = part === 'heroBook'
@@ -1360,7 +1361,22 @@ function printAll(head) {
   if (crashed) print(`  not checked: ${found.crashed.join('; ')}`);
   for (const ask of found.asks || []) print('  '+ask.line+(ask.hint ? ' '+ask.hint : ''));
 }
+function archiveRun(status) {
+  const dir = path.join(gateDir,'runs');
+  fs.mkdirSync(dir,{recursive:true});
+  let time = Date.now();
+  for (;;) {
+    const at = new Date(time++).toISOString();
+    const name = at.replace(/:/g,'-')+'-r'+(state.round || 0)+'.json';
+    const snapshot = {at,status,round:state.round || 0,quick:QUICK,reused,page:relPage,fingerprint:PAGE_FP,
+      checkFingerprint:FP,...found,open,waivers:W.waivers,waived:W.waived};
+    try { fs.writeFileSync(path.join(dir,name),JSON.stringify(snapshot,null,2)+'\n',{flag:'wx'}); }
+    catch (error) { if (error.code==='EEXIST') continue; throw error; }
+    return 'gate/runs/'+name;
+  }
+}
 const record = (status, extra = {}) => {
+  state.latestRun = archiveRun(status);
   Object.assign(state, { status, fp: FP, page: relPage, found, open: open.map(({ hard, ...f }) => f), waived: W.waived, ignoredWaivers: W.waivers.filter(w => w.invalid).map(ignoredWaiver), warnCount: found.warns.length, ...extra });
   const entry = { at: new Date().toISOString(), mode: HOOK ? 'hook' : QUICK ? 'quick' : 'manual', ...(HOOK ? { host: HOOK } : {}), status, fails: n, round: state.round, reused, stopHookActive: !!input.stop_hook_active };
   state.history = [...(state.history || []), entry].slice(-20);
@@ -1369,6 +1385,8 @@ const record = (status, extra = {}) => {
 };
 
 if (QUICK) {
+  state.latestRun = archiveRun('quick');
+  save();
   // a look between rounds: no round, never closes the build
   printAll(`gate (quick look at 1440 and 390): ${n} FAIL${crashed ? ', some checks did not run' : ''}`);
   if (!HOOK) { console.log(`GATE: QUICK ${n} (not a round; run without --quick to finish)`); process.exit(n ? 1 : 0); }

@@ -34,7 +34,7 @@ const plan = (args) => {
   assert.equal(p.grounds.pattern, 'chapters');
   assert.deepEqual(p.grounds.bySection, ['page', 'ground-surface', 'ground-surface', 'ground-surface', 'ground-surface', 'ground-inverse', 'ground-inverse']);
   assert.match(out, /\n  story        chapters: /);
-  assert.match(out, /beat 2, one a section/);
+  assert.match(out, /beat 2 required \| beat: chapter/);
   const t = plan(['--page', 'product', '--sections', '8', '--story', 'two-part-promise', '--seed', 's2']).p;
   assert.equal(t.grounds.pattern, 'chapters');
   assert.ok(t.grounds.bySection.slice(1).filter((g, i) => g !== t.grounds.bySection[i]).length <= 3);
@@ -66,6 +66,7 @@ Customer words: who is on what this week
 H1: Plan the studio's week on one grid
 Lead: Drag people onto projects.
 H2: Mara is booked twice on Thursday
+H2: Move Friday's booking
 H2: Friday's export goes to invoicing
 H2: Free for three, 12 € a seat after
 `;
@@ -76,10 +77,11 @@ Thread: Mara Lind on Fenwick and Okra, week 14, 32 hours
 Turn: #clash
 Bookend: the grid comes back with the price
 Spine:
-- H1: Plan the studio's week on one grid
-- Mara is booked twice on Thursday | beat: the old way | joins the previous by: but
-- Friday's export goes to invoicing | beat: what changes | joins the previous by: so
-- Close: Free for three, 12 € a seat after
+- H1: Plan the studio's week on one grid | beat: pain | section: #hero
+- Mara is booked twice on Thursday | beat: old-way | section: #old | joins the previous by: but
+- Move Friday's booking | beat: turn | section: #move | joins the previous by: then
+- Friday's export goes to invoicing | beat: outcome | section: #export | joins the previous by: so
+- Close: Free for three, 12 € a seat after | beat: close | section: #close
 `;
 const lint = (text) => {
   const dir = fs.mkdtempSync(path.join(tmp, 'notes-'));
@@ -98,17 +100,24 @@ f = lint(NOTES(GOOD.replace(/Thread: .*/, 'Thread:')));
 assert.ok(f.some((x) => x.sev === 'FAIL' && /no thread/.test(x.msg)));
 f = lint(NOTES(GOOD.replace('joins the previous by: so', 'joins the previous by: also')));
 assert.ok(f.length === 1 && f[0].sev === 'WARN' && /"also" or "and"/.test(f[0].msg));
-f = lint(NOTES(GOOD.replace('- Friday\'s export goes to invoicing | beat: what changes | joins the previous by: so\n', '')));
-assert.ok(f.length === 1 && f[0].sev === 'WARN' && /2 headings, the draft 3/.test(f[0].msg));
+f = lint(NOTES(GOOD.replace('- Friday\'s export goes to invoicing | beat: outcome | section: #export | joins the previous by: so\n', '')));
+assert.ok(f.some(x => x.sev === 'WARN' && /3 headings, the draft 4/.test(x.msg)));
+assert.ok(f.some(x => x.sev === 'FAIL' && /outcome/.test(x.msg)));
+assert.ok(lint(NOTES(GOOD.replace('beat: outcome','beat: other').replace('Turn:', 'Short: Keep the page short.\nTurn:'))).some(x=>x.sev==='WARN' && /Missing story beats/.test(x.msg)));
 ok('copy-lint copy-story: FAIL without the block, for an unknown shape and an empty thread; WARN for a spine off the draft and a join by "also"; none for a whole block');
-assert.equal(readStory(GOOD).spine.length, 4);
+assert.equal(readStory(GOOD).spine.length, 5);
 
+{
+  const {p,out} = plan(['--page','software','--sections','3','--story','work-path','--view','wide','--has','ui']);
+  assert.equal(p.sections,6); assert.equal(p.heroVariant,'wide'); assert.equal(p.heroPeek,true);
+  assert.match(out,/Raised --sections from 3 to 6/);
+}
 // ---- the checker's story block, both ways
 const sec = (h2, text = '', extra = {}) => ({ id: h2.toLowerCase().replace(/\W+/g, '-'), sel: 'section#' + h2.slice(0, 6), h2, text: h2 + ' ' + text, ground: 'page', chapter: '', chapterHead: '', ...extra });
 const hero = { ...sec('', 'Plan the studio\'s week on one grid. Mara Lind, week 14, 32 hours'), hero: true, h2: '' };
 const page = (sections, more = {}) => ({ h1: 'Plan the studio\'s week on one grid', lead: 'Drag people onto projects; a clash shows at once.', heroText: hero.text, sections: [hero, ...sections], close: { sel: 'footer h2', h2: 'Your week on one grid, free for three', lead: '', text: 'Your week on one grid, free for three' }, navs: [], ...more });
 const ids = (P, o) => storyFindings(P, o).map((x) => x.check + ':' + x.sev);
-const good = [sec('Mara is booked twice on Thursday', 'Mara Lind 32 hours week 14'), sec('Friday\'s export goes to invoicing', 'Mara Lind 32 hours'), sec('Free for three, 12 € a seat after')];
+const good = [sec('Mara is booked twice on Thursday', 'Mara Lind 32 hours week 14'), sec("Move Friday's booking",'Mara Lind moved to Friday'), sec('Friday\'s export goes to invoicing', 'Mara Lind sent 28 hours'), sec('Free for three, 12 € a seat after')];
 assert.deepEqual(ids(page(good), { notes: NOTES(GOOD) }), []);
 ok('a page that keeps its spine, carries its thread and answers its hero: no story finding');
 // spine-drift
@@ -120,6 +129,11 @@ assert.ok(ids(page([sec('The trailer', 'Mara Lind'), sec('Devlog', 'Mara Lind'),
 assert.ok(!ids(page(good), {}).includes('label-run:WARN'));
 // thread-lost
 assert.ok(ids(page([sec('Mara is booked twice on Thursday'), sec('Friday\'s export goes to invoicing'), sec('Free for three, 12 € a seat after')]), { notes: NOTES(GOOD) }).includes('thread-lost:WARN'));
+{
+  const repeated = [sec('First stop','Mara Lind, 32 hours'),sec('Second stop','Mara Lind, 32 hours')];
+  const warning = storyFindings(page(repeated),{notes:NOTES(GOOD)}).find(f=>f.check==='thread-lost');
+  assert.ok(warning && warning.msg.includes('second-stop'));
+}
 // close-unanswered
 assert.ok(ids(page(good, { close: { sel: 'footer h2', h2: 'Questions before you start', lead: '', text: 'Questions before you start' } }), { notes: NOTES(GOOD) }).includes('close-unanswered:WARN'));
 // stripe-grounds

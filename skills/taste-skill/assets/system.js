@@ -115,10 +115,67 @@ function nav() {
   window.matchMedia('(min-width: 1024px)').addEventListener('change', e => { if (e.matches) setOpen(false); });
 }
 
+// The same choice may be made in a picker, a tab row or the final form.
+function choices() {
+  const group = name => [...document.querySelectorAll('[data-choice]')].filter(e => e.dataset.choice === name);
+  const value = e => e.dataset.value ?? (e.matches('[role=tab],button') ? e.getAttribute('value') || e.textContent.trim() : e.value);
+  let writing = false;
+  function set(name, values, source) {
+    if (writing || !name) return;
+    writing = true;
+    try {
+      for (const el of group(name)) {
+        if (el === source || el.matches('[role=tablist]')) continue;
+        const selected = values.includes(value(el));
+        if (el.matches('[role=tab]')) {
+          if (selected && el.getAttribute('aria-selected') !== 'true') el.click();
+        } else if (el.matches('button')) el.setAttribute('aria-pressed', String(selected));
+        else if (el.matches('[type=radio],[type=checkbox]')) el.checked = selected;
+        else if (el.matches('select[multiple]')) for (const option of el.options) option.selected = values.includes(option.value);
+        else if ('value' in el) el.value = values.join(', ');
+        else continue;
+        if (!el.matches('button,[role=tab]')) {
+          el.dispatchEvent(new Event('input',{bubbles:true}));
+          el.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+      }
+    } finally { writing = false; }
+  }
+  function from(el) {
+    if (!el || !el.dataset.choice || writing) return;
+    let values = [value(el)];
+    if (el.matches('[type=radio]') && !el.checked) return;
+    if (el.matches('[type=checkbox]')) {
+      const scope = el.closest('fieldset,form,section') || document;
+      values = group(el.dataset.choice).filter(x => scope.contains(x) && x.type === 'checkbox' && x.checked).map(value);
+    }
+    if (el.matches('select[multiple]')) values = [...el.selectedOptions].map(o => o.value);
+    set(el.dataset.choice, values, el);
+  }
+  for (const event of ['input','change','choice-tab']) document.addEventListener(event, e => from(e.target));
+  document.addEventListener('click', e => {
+    const link = e.target.closest('[data-choice-set]');
+    if (link) {
+      const pair = link.dataset.choiceSet.match(/^([^:]+):(.+)$/);
+      if (pair) set(pair[1], [pair[2]]);
+    } else {
+      const button = e.target.closest('button[data-choice]:not([role=tab])');
+      if (button) { button.setAttribute('aria-pressed','true'); from(button); }
+    }
+  });
+  const initialized = new Set();
+  for (const el of document.querySelectorAll('[data-choice]')) {
+    if (el.matches('[role=tablist]') || initialized.has(el.dataset.choice) || el.matches('[type=radio]:not(:checked), [role=tab]:not([aria-selected=true]),button[aria-pressed=false]')) continue;
+    initialized.add(el.dataset.choice);
+    from(el);
+  }
+}
+
 function tabs() {
   const parts = t => (t.getAttribute('aria-controls') || '').split(/\s+/).filter(Boolean).map(id => document.getElementById(id)).filter(Boolean);
   document.querySelectorAll('[role="tablist"]').forEach(list => {
     const tabs = [...list.querySelectorAll('[role="tab"]')];
+    if (list.dataset.choice) tabs.forEach(t => { t.dataset.choice ||= list.dataset.choice; });
     let first = true;
     const select = (tab, focus) => {
       tabs.forEach(t => {
@@ -133,6 +190,7 @@ function tabs() {
           if (on && was && !first) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: reduced() ? 140 : 280, easing: 'ease-out' });
         });
       });
+      if (!first) tab.dispatchEvent(new Event('choice-tab',{bubbles:true}));
       if (focus) tab.focus();
     };
     tabs.forEach((t, i) => {
@@ -596,7 +654,8 @@ function guards() {
     acceptNode: t => (t.parentElement?.closest('script, style, template, noscript, code, pre, kbd, samp') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
   });
   for (let t = walk.nextNode(); t; t = walk.nextNode()) {
-    if (PLACEHOLDER.test(t.textContent)) { t.parentElement.setAttribute('data-placeholder', ''); n++; }
+    const prose = /\b(preview|draft|demo|not sent)\b/i.test(t.parentElement.textContent) ? t.textContent.replace(/\bplaceholder\b/gi,'') : t.textContent;
+    if (PLACEHOLDER.test(prose)) { t.parentElement.setAttribute('data-placeholder', ''); n++; }
   }
   document.querySelectorAll('img[alt]').forEach(img => { if (PLACEHOLDER.test(img.alt)) { img.setAttribute('data-placeholder', ''); n++; } });
   // the old figures note, whatever its words
@@ -703,6 +762,7 @@ function init() {
   nav();
   fitClosingName();
   tabs();
+  choices();
   try { faq(); } catch (e) { console.warn('system.js: faq', e); }
   try { hours(); } catch (e) { console.warn('system.js: hours', e); }
   try { forms(); } catch (e) { console.warn('system.js: forms', e); }

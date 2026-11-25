@@ -150,7 +150,7 @@ export function hasFor(page, given) {
 // deal-drift fix names it): the in-page demo that already holds the moment in a page section, else its own demo
 export const headingMoments = new Set(['letters-assemble', 'word-highlight', 'word-rotate', 'lines-rise', 'giant-type-pass', 'liquid-type']);
 export function momentSource(id, ref = '<skill>') {
-  if (id === 'word-rotate') return 'use an h1 or h2 and refuse the rotation if its widest word changes the line count at 390px. Adapt the inline slot from ' + ref + '/assets/moments/word-rotate/demo.html';
+  if (id === 'word-rotate') return 'each rotating word must be a state shown on the page. Use an h1 or h2 and refuse the rotation if its widest word changes the line count at 390px. Adapt the inline slot from ' + ref + '/assets/moments/word-rotate/demo.html';
   if (headingMoments.has(id)) return 'adapt the heading and its data-moment host from ' + ref + '/assets/moments/' + id + '/demo.html';
   for (const f of ['in-page.html', 'in-page-service.html']) {
     let src = '';
@@ -176,6 +176,7 @@ export function needsMet(x, has, carry) {
   if (nd.object) needs.add('object');
   if (nd.mark) needs.add('logo');
   if (nd.photo && !/^optional/i.test(String(nd.photo))) needs.add('pictures:1');
+  if (x.id === 'word-rotate') needs.add('words');
   if (x.id === 'pinned-chapters' && !has.has('ui')) needs.add('pictures:1');
   const suppliedPictures = [...has].find(n => /^pictures:\d+$/.test(n));
   const minimum = suppliedPictures ? Number(suppliedPictures.split(':')[1]) : null;

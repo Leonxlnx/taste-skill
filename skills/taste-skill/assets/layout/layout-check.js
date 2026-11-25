@@ -314,6 +314,7 @@ window.lyRules = (() => {
     const candidates = new Set(counterCandidates());
     for (const e of new Set([...document.querySelectorAll('section[data-own] *'),...candidates])) {
       if (e.closest('template,script,style,noscript,[hidden],details:not([open]) > :not(summary)') || !e.getBoundingClientRect().width) continue;
+      if (e.matches('input[type=radio]') && !e.disabled && [...e.labels].some(l => l.getBoundingClientRect().width && l.checkVisibility({opacityProperty:true,visibilityProperty:true}))) continue;
       let reason = '';
       const t = e.textContent.trim();
       if (candidates.has(e)) {
@@ -708,7 +709,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
   }
 
   /* placeholders */
-  for (const e of document.querySelectorAll('[data-placeholder]')) add('placeholder', `${secName(secOf(e))} ${e.tagName.toLowerCase()}[data-placeholder]`, 'a stand-in marked data-placeholder is on the page; every visitor sees its dashed outline', 'replace it with the real thing (the brief\'s address, the photograph), or take the element out; never ship data-placeholder');
+  for (const e of document.querySelectorAll('[data-placeholder]')) if (!(e.matches('p,small,aside,span') && /\b(preview|draft|demo|not sent)\b/i.test(e.textContent) && !/\[[^\]]+\]|\bTODO\b/i.test(e.textContent))) add('placeholder', `${secName(secOf(e))} ${e.tagName.toLowerCase()}[data-placeholder]`, 'a stand-in marked data-placeholder is on the page; every visitor sees its dashed outline', 'replace it with the real thing (the brief\'s address, the photograph), or take the element out; never ship data-placeholder');
   {
     const EX = /[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.example\b|\b[\w-]+\.example(?:\.\w+)?\b|\bexample\.(?:com|org|net)\b/i;
     const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); const seen = new Set();

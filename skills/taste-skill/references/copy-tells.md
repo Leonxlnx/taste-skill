@@ -68,7 +68,7 @@ These look like good copy, which is why they survive review.
   a register from `copy-registers.md`, chosen per client.
 - **Invented specifics** (ban). "6:12 a.m., from the window of Room 9", "Batch No. 047", "38% fewer
   re-runs": detail produced as decoration because detail persuades. Fix: the brief's details only;
-  without them, a plainer line. (A working fact the page needs, a price or the hours, is assumed and
+  without them, a plainer line. (A working fact the page needs, opening hours or a district, is assumed and
   marked `data-assumed` instead, `copy.md`, What may be assumed; decoration and proof never are.)
 - **The strip of figures** [copy-stat-strip]. A row of three or four figures, each over a one-word
   label, under the hero or the story, on nearly every model page. Fix: each number in the sentence it proves; a strip only

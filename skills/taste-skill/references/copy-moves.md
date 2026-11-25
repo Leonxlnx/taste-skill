@@ -134,10 +134,7 @@ date. Or none of that: pure facts in the third person, the way Paul Graham write
 ## Prices, FAQ, booking: the plain zone
 
 - **The tone drops to facts:** the reader is anxious here.
-- **A price is shown, never held back:** the brief's, else a plausible one for the trade marked
-  `data-assumed` (`copy.md`, What may be assumed); a custom job gets a "from" price and what moves it
-  ("from 2,400 € for the day; travel past Florence is extra"). Never "Price on request" or "we reply
-  with the price" on a page that shows none [copy-withheld].
+- **Give the supplied price** with its unit and any “from”. The enquiry can settle missing terms.
 - **Perks priced and literal:** "Late checkout until 14:00 for 15 euro", "Bike hire 12 euro a day".
   (The Hoxton priced late checkout by the hour; Pinboard wrote its yearly price into the button.)
 - **A risk reversal beside the button, only when true:** "Cancel up to two days before, free".

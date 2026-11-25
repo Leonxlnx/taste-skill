@@ -68,9 +68,13 @@ const fits = x => (tech ? (!x.only || x.only === 'tech') : (!x.only && x.id === 
 const ids = list => (list || []).filter(fits).filter(x => !x.dark).map(x => x.id);
 const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x.id);
 
+const wideView = opt('view') === 'wide' && has.has('ui') && !gaming && (type === 'software' || opt('kind') === 'tech');
+const worldView = gaming && ['lively','loud'].includes(opt('temper')) && (has.has('art') || opt('illustrate'));
 const productPage = type === 'product' || ['tech', 'product'].includes(opt('kind'));
 function dealOnce(recentHeroes) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
+  if (!hero && wideView) hero = heroes.find(h => h.id === 'centred');
+  if (!hero && worldView) hero = heroes.find(h => h.id === 'photo');
   // a place: the place hero in one of its five forms (dealt below); with no photograph, the statement hero on .ground-brand
   if (!hero && type === 'place') hero = heroes.find(h => h.id === (has.has('photo') ? 'place' : 'statement'));
   if (!hero && !productPage && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
@@ -94,6 +98,7 @@ heroes: ${show(H)}`);
   process.exit(0);
 }
 const hero = dealOnce(hist.heroes.slice(-3));
+const variant = hero?.id === 'centred' && wideView ? 'wide' : hero?.id === 'photo' && worldView ? 'world' : null;
 if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 
 // a place's hero has five forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.
@@ -135,7 +140,7 @@ if (histFile && !opt('hero') && !opt('no-record')) {
 }
 
 if (opt('json')) {
-  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero, peek, book, peekLine, bookLine, form: placeForm ? placeForm.id : undefined }, null, 1));
+  console.log(JSON.stringify({ type, kind: gaming ? 'gaming' : undefined, has: [...has], hero, variant, peek, book, peekLine, bookLine, form: placeForm ? placeForm.id : undefined }, null, 1));
 } else {
   const s = h => (typeof h === 'object' ? Object.entries(h).map(([k, v]) => `    ${k}: ${v}`).join('\n') : h);
   const axis = hero.id === 'word' || hero.id === 'editorial' ? ' This hero needs a face with a wght or wdth axis.' : '';

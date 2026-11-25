@@ -223,6 +223,26 @@ try {
         }
       }
     }
+    if (kitDemo && await ev("!!document.querySelector('.ex-flip > summary')")) {
+      const card = "document.querySelector('.ex-flip')";
+      const reverseVisible = card + ".open && " + card + ".querySelector('.ex-back').getClientRects().length > 0";
+      await ev(card + ".open = false; " + card + ".querySelector('summary').focus()");
+      await S('Input.dispatchKeyEvent', {type:'keyDown',key:'Enter',code:'Enter',text:'\r',windowsVirtualKeyCode:13});
+      await S('Input.dispatchKeyEvent', {type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      const opened = await ev(reverseVisible);
+      const point = await ev(`(() => {
+        const summary = ${card}.querySelector('summary');
+        summary.scrollIntoView({block:'center', behavior:'instant'});
+        const r = summary.getBoundingClientRect();
+        return {x:r.left + r.width / 2, y:r.top + r.height / 2};
+      })()`);
+      for (const type of ['mousePressed', 'mouseReleased']) {
+        await S('Input.dispatchMouseEvent', {type, ...point, button:'left', clickCount:1});
+      }
+      const closed = await ev("!" + card + ".open");
+      if (!opened || !closed) res.findings.push({rule:'collectible-flip',where:'.ex-flip',detail:'Enter should reveal the card back and a click should return to its front.'});
+      res.collectible = {keyboardOpened:opened,clickClosed:closed};
+    }
     if (errors.length) { res.errors = [...errors]; errors.length = 0; }
   }
   ws.close();

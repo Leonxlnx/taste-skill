@@ -79,23 +79,23 @@ for (const kind of kindsToRun) {
     const p = load(planFile);
     const printed = result.stdout.slice(result.stdout.indexOf('==== PLAN'));
     assert(printed.startsWith('==== PLAN'));
-    assert.deepEqual(Object.keys(p).sort(), (p.hero === 'place' ? [...keys, 'heroForm'] : [...keys]).sort());
+    assert.deepEqual(Object.keys(p).sort(), [...keys, ...(p.hero === 'place' ? ['heroForm'] : []), ...(p.temper !== 'quiet' && kind==='gaming' ? ['heroVariant'] : [])].sort());
     if (p.hero === 'place') assert.ok(['band','bleed','split','name','foot'].includes(p.heroForm));
     assert.equal(p.version, '2.5.4');
     assert.equal(p.kind, kind);
     // no brief words: a game is lively, every other kind quiet (references/expressive.md)
     assert.equal(p.temper, kind === 'gaming' ? 'lively' : 'quiet');
-    assert.equal(p.sections, sections);
-    assert.equal(p.own, sections < 6 ? 1 : 2);
+    assert.equal(p.sections, Math.max(sections,stories.find(s => s.id===p.story).beats.filter(b=>b.required).length));
+    assert.equal(p.own, p.sections < 6 ? 1 : 2);
     // The retired no-material effects used to fill every slot. Check the actual remaining pool.
     const eligible = moments.filter(m => !m.retired && m.weight > 0 && m.counts !== false && !m.pointerOnly
       && fitsKind(m, kind) && needsMet(m, hasFor(kind, assets.join(',')), new Set(carry)).length === 0
       && !(action !== 'contact' && m.fits.every(f => f === 'closing')));
     const pair = eligible.some(m => eligible.some(n => m !== n && canShare(m, n)));
-    const expected = (sections >= 7 || long) && pair ? 2 : Number(eligible.length > 0);
+    const expected = (p.sections >= 7 || long) && pair ? 2 : Number(eligible.length > 0);
     assert.equal(p.moments.length, expected, kind + '/' + i + ' moment count');
     assert(p.moments.every(id => eligible.some(m => m.id === id)));
-    assert.equal(p.grounds.bySection.length, sections);
+    assert.equal(p.grounds.bySection.length, p.sections);
     assert.equal(p.grounds.bySection[0], 'page');
     // the story shape: one that lists the kind, printed with its beats, never one of the last three; a chapters or
     // two-part-promise page takes the chapters ground pattern (one ground per chapter run or half), every other page

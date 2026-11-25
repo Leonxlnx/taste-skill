@@ -1,57 +1,507 @@
 [
-  {"id":"claim-proofs","line":"A claim, then its proofs at growing scale, then the objection answered.",
-   "kinds":["software","tech","service"],"sections":[6,9],
-   "thread":"one figure from the brief, first stated, then sourced, then shown at work",
-   "beats":["the claim with one hard fact","the mechanism shown once, the product working","proof at one scale: a figure with its source","proof at a second scale: users of different sizes, one fact each, only from the brief","the objection answered: safety, price or switching","the ask with one new fact"],
-   "fake":"Proofs that are adjectives in cards repeat the claim instead of proving it."},
-  {"id":"problem-turn","line":"The old way pictured, then the same thing after, then what changes for the reader.",
-   "kinds":["software","tech","service","product"],"sections":[5,8],
-   "thread":"one object shown before and after: a receipt, a night's count, an inbox",
-   "beats":["the pain in the buyer's words","the old way as a picture of the object","the turn: the same object after, its heading answering the one before","what changes, as an outcome with a number","the first small step","the close returns to the opening line, resolved"],
-   "fake":"A generic frustration paragraph followed by a feature grid shows nothing that changed."},
-  {"id":"work-path","line":"The product along the path of the work, one step a section, ending on the result.",
-   "kinds":["software","service","tech"],"sections":[6,9],
-   "thread":"one task or record carried from the first step to the result",
-   "beats":["what it is, with its central view","the first step a user takes","n: each next step, the product in that step's state","the result at the end of the path","price or plan","the close"],
-   "fake":"Features in any order with one screenshot repeated never let the reader see the work move."},
-  {"id":"chapters","line":"Named chapters announced up front, each on the same scaffold, use before machine.",
-   "kinds":["tech","product","software","gaming"],"sections":[7,12],
-   "thread":"the chapter names, listed in the hero and in a progress nav from five chapters",
-   "beats":["the hero with the chapters listed as links or tabs","n: one chapter each: its name, a headline with a turn, the product in that chapter's state, one fact","the specs or the machine last","the price","the idea or the makers","the close"],
-   "fake":"Labels painted on unrelated bands, with no contents and no change of state, are kickers, not chapters."},
-  {"id":"day-with-it","line":"A day, a stay or a session in order, each section a time with what happens then.",
-   "kinds":["place","gaming","product","tech","software"],"sections":[5,8],
-   "thread":"the hours of the day or the stages of the stay, with real times from the brief",
-   "beats":["arrival or the start of the day, with the place and one fact","n: each time of day or stage, what the reader does and what they get","the practical part where it falls in the day: hours at the door, price before booking","the end of the day is the ask"],
-   "fake":"Time words pasted onto unrelated sections, or one photograph throughout, let no time pass."},
-  {"id":"two-part-promise","line":"A hero line in two halves, each half kept in order, then where they meet.",
-   "kinds":["software","product","service","tech"],"sections":[6,9],
-   "thread":"the two halves named in the hero and nowhere mixed",
-   "beats":["the hero line in two halves","n: the first half","the hinge: a change of ground or one line naming the second half","n: the second half","where they meet: one price or one picture with both","the close"],
-   "fake":"Interleaving the two halves leaves the reader unsure when the first is done."},
-  {"id":"letter","line":"A signed letter from the people who make it, then what follows from it.",
-   "kinds":["service","place","gaming","software","product"],"sections":[4,7],
-   "thread":"one person's voice, from the greeting to the signature",
-   "beats":["a plain headline of news or of what is made","the letter: greeting, the reader's situation, the makers' own past, what they did, one honest limit, thanks, a name with role","the practical consequence: dates, how to switch, the cost","questions","a sign-off"],
-   "fake":"An unsigned paragraph of passion in a centred column has no person, no past and no limit."},
-  {"id":"sequel","line":"The next version: the object first, then all that changed, then the changes close up.",
-   "kinds":["tech","product","gaming","software"],"sections":[6,9],
-   "thread":"the predecessor, named, and the one number that changed most",
-   "beats":["the object itself, before many words","the name and the one-line difference, with a number","everything that changed as one long list","n: the changes that matter, close up, each with a short dry heading and one admission","one dated anecdote as proof","the family or system it belongs to","the spec sheet"],
-   "fake":"New and improved with no predecessor named and no list of changes is not a sequel."},
-  {"id":"catalogue-argued","line":"The range in one view, in an order that argues, one item opened as the example.",
-   "kinds":["product","place","service","gaming"],"sections":[4,8],
-   "thread":"the order of the range: by size, by date, by the buyer's next step",
-   "beats":["the range in one view, as a picker or an index","one item opened as the example","the rest, one fact each","why buy here: delivery, returns, trial","the close"],
-   "fake":"A grid in no order with reasons in between gives the reader no place to start."},
-  {"id":"question-first","line":"The reader picks a need first; the page answers that pick.",
-   "kinds":["software","service","product"],"sections":[5,8],
-   "thread":"the reader's pick, kept visible as the page answers it",
-   "beats":["a question or a short offer in the hero","the reader's pick, and the answer to it in the same view","what the product does for each moment","people who picked the same, only from the brief","the cost","a close that turns the question back"],
-   "fake":"A picker that changes nothing is a decoration that asks."},
-  {"id":"reader-rise","line":"The reader as the protagonist, from where they are to their own first steps.",
-   "kinds":["software","service"],"sections":[6,9],
-   "thread":"the reader, addressed as you, at growing sizes",
-   "beats":["the reader named as the one who will do it","where people like them work now","others like them at growing sizes, one fact each, only from the brief","the tools that grow with them","the reader's own first three steps, numbered, as the close"],
-   "fake":"You in the headline and a corporate feature list after it ends on contact sales."}
+  {
+    "id": "claim-proofs",
+    "line": "A claim, then its proofs at growing scale, then the objection answered.",
+    "kinds": [
+      "software",
+      "tech",
+      "service"
+    ],
+    "sections": [
+      6,
+      9
+    ],
+    "thread": "one figure from the brief, first stated, then sourced, then shown at work",
+    "beats": [
+      {
+        "id": "claim",
+        "required": true,
+        "show": "the claim with one hard fact"
+      },
+      {
+        "id": "mechanism",
+        "required": true,
+        "show": "the mechanism shown once, the product working"
+      },
+      {
+        "id": "proof",
+        "required": true,
+        "show": "proof at one scale: a figure with its source"
+      },
+      {
+        "id": "second-scale",
+        "required": false,
+        "show": "proof at a second scale: users of different sizes, one fact each, only from the brief"
+      },
+      {
+        "id": "objection",
+        "required": true,
+        "show": "the objection answered: safety, price or switching"
+      },
+      {
+        "id": "ask",
+        "required": true,
+        "show": "the ask with one new fact"
+      }
+    ],
+    "fake": "Proofs that are adjectives in cards repeat the claim instead of proving it."
+  },
+  {
+    "id": "problem-turn",
+    "line": "The old way pictured, then the same thing after, then what changes for the reader.",
+    "kinds": [
+      "software",
+      "tech",
+      "service",
+      "product"
+    ],
+    "sections": [
+      5,
+      8
+    ],
+    "thread": "one object shown before and after: a receipt, a night's count, an inbox",
+    "beats": [
+      {
+        "id": "pain",
+        "required": true,
+        "show": "the pain in the buyer's words"
+      },
+      {
+        "id": "old-way",
+        "required": true,
+        "show": "the old way as a picture of the object"
+      },
+      {
+        "id": "turn",
+        "required": true,
+        "show": "the turn: the same object after, its heading answering the one before"
+      },
+      {
+        "id": "outcome",
+        "required": true,
+        "show": "what changes, as an outcome with a number"
+      },
+      {
+        "id": "first-step",
+        "required": false,
+        "show": "the first small step"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the close returns to the opening line, resolved"
+      }
+    ],
+    "fake": "A generic frustration paragraph followed by a feature grid shows nothing that changed."
+  },
+  {
+    "id": "work-path",
+    "line": "The product along the path of the work, one step a section, ending on the result.",
+    "kinds": [
+      "software",
+      "service",
+      "tech"
+    ],
+    "sections": [
+      6,
+      9
+    ],
+    "thread": "one task or record carried from the first step to the result",
+    "beats": [
+      {
+        "id": "central-view",
+        "required": true,
+        "show": "what it is, with its central view"
+      },
+      {
+        "id": "first-step",
+        "required": true,
+        "show": "the first step a user takes"
+      },
+      {
+        "id": "next-step",
+        "required": true,
+        "show": "each next step, the product in that step's state"
+      },
+      {
+        "id": "result",
+        "required": true,
+        "show": "the result at the end of the path"
+      },
+      {
+        "id": "price",
+        "required": true,
+        "show": "price or plan"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the close"
+      }
+    ],
+    "fake": "Features in any order with one screenshot repeated never let the reader see the work move."
+  },
+  {
+    "id": "chapters",
+    "line": "Named chapters announced up front, each on the same scaffold, use before machine.",
+    "kinds": [
+      "tech",
+      "product",
+      "software",
+      "gaming"
+    ],
+    "sections": [
+      7,
+      12
+    ],
+    "thread": "the chapter names, listed in the hero and in a progress nav from five chapters",
+    "beats": [
+      {
+        "id": "contents",
+        "required": true,
+        "show": "the hero with the chapters listed as links or tabs"
+      },
+      {
+        "id": "chapter",
+        "required": true,
+        "show": "one chapter each: its name, a headline with a turn, the product in that chapter's state, one fact"
+      },
+      {
+        "id": "machine",
+        "required": true,
+        "show": "the specs or the machine last"
+      },
+      {
+        "id": "price",
+        "required": false,
+        "show": "the price"
+      },
+      {
+        "id": "makers",
+        "required": false,
+        "show": "the idea or the makers"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the close"
+      }
+    ],
+    "fake": "Labels painted on unrelated bands, with no contents and no change of state, are kickers, not chapters."
+  },
+  {
+    "id": "day-with-it",
+    "line": "A day, a stay or a session in order, each section a time with what happens then.",
+    "kinds": [
+      "place",
+      "gaming",
+      "product",
+      "tech",
+      "software"
+    ],
+    "sections": [
+      5,
+      8
+    ],
+    "thread": "the hours of the day or the stages of the stay, with real times from the brief",
+    "beats": [
+      {
+        "id": "arrival",
+        "required": true,
+        "show": "arrival or the start of the day, with the place and one fact"
+      },
+      {
+        "id": "stage",
+        "required": true,
+        "show": "each time of day or stage, what the reader does and what they get"
+      },
+      {
+        "id": "practical",
+        "required": true,
+        "show": "the practical part where it falls in the day: hours at the door, price before booking"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the end of the day is the ask"
+      }
+    ],
+    "fake": "Time words pasted onto unrelated sections, or one photograph throughout, let no time pass."
+  },
+  {
+    "id": "two-part-promise",
+    "line": "A hero line in two halves, each half kept in order, then where they meet.",
+    "kinds": [
+      "software",
+      "product",
+      "service",
+      "tech"
+    ],
+    "sections": [
+      6,
+      9
+    ],
+    "thread": "the two halves named in the hero and nowhere mixed",
+    "beats": [
+      {
+        "id": "promise",
+        "required": true,
+        "show": "the hero line in two halves"
+      },
+      {
+        "id": "first-half",
+        "required": true,
+        "show": "the first half"
+      },
+      {
+        "id": "hinge",
+        "required": true,
+        "show": "the hinge: a change of ground or one line naming the second half"
+      },
+      {
+        "id": "second-half",
+        "required": true,
+        "show": "the second half"
+      },
+      {
+        "id": "meeting",
+        "required": true,
+        "show": "where they meet: one price or one picture with both"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the close"
+      }
+    ],
+    "fake": "Interleaving the two halves leaves the reader unsure when the first is done."
+  },
+  {
+    "id": "letter",
+    "line": "A signed letter from the people who make it, then what follows from it.",
+    "kinds": [
+      "service",
+      "place",
+      "gaming",
+      "software",
+      "product"
+    ],
+    "sections": [
+      4,
+      7
+    ],
+    "thread": "one person's voice, from the greeting to the signature",
+    "beats": [
+      {
+        "id": "news",
+        "required": true,
+        "show": "a plain headline of news or of what is made"
+      },
+      {
+        "id": "letter",
+        "required": true,
+        "show": "the letter: greeting, the reader's situation, the makers' own past, what they did, one honest limit, thanks, a name with role"
+      },
+      {
+        "id": "consequence",
+        "required": true,
+        "show": "the practical consequence: dates, how to switch, the cost"
+      },
+      {
+        "id": "questions",
+        "required": false,
+        "show": "questions"
+      },
+      {
+        "id": "sign-off",
+        "required": true,
+        "show": "a sign-off"
+      }
+    ],
+    "fake": "An unsigned paragraph of passion in a centred column has no person, no past and no limit."
+  },
+  {
+    "id": "sequel",
+    "line": "The next version: the object first, then all that changed, then the changes close up.",
+    "kinds": [
+      "tech",
+      "product",
+      "gaming",
+      "software"
+    ],
+    "sections": [
+      6,
+      9
+    ],
+    "thread": "the predecessor, named, and the one number that changed most",
+    "beats": [
+      {
+        "id": "object",
+        "required": true,
+        "show": "the object itself, before many words"
+      },
+      {
+        "id": "difference",
+        "required": true,
+        "show": "the name and the one-line difference, with a number"
+      },
+      {
+        "id": "changes",
+        "required": true,
+        "show": "everything that changed as one long list"
+      },
+      {
+        "id": "close-up",
+        "required": true,
+        "show": "the changes that matter, close up, each with a short dry heading and one admission"
+      },
+      {
+        "id": "anecdote",
+        "required": false,
+        "show": "one dated anecdote as proof"
+      },
+      {
+        "id": "family",
+        "required": false,
+        "show": "the family or system it belongs to"
+      },
+      {
+        "id": "specs",
+        "required": true,
+        "show": "the spec sheet"
+      }
+    ],
+    "fake": "New and improved with no predecessor named and no list of changes is not a sequel."
+  },
+  {
+    "id": "catalogue-argued",
+    "line": "The range in one view, in an order that argues, one item opened as the example.",
+    "kinds": [
+      "product",
+      "place",
+      "service",
+      "gaming"
+    ],
+    "sections": [
+      4,
+      8
+    ],
+    "thread": "the order of the range: by size, by date, by the buyer's next step",
+    "beats": [
+      {
+        "id": "range",
+        "required": true,
+        "show": "the range in one view, as a picker or an index"
+      },
+      {
+        "id": "example",
+        "required": true,
+        "show": "one item opened as the example"
+      },
+      {
+        "id": "remainder",
+        "required": true,
+        "show": "the rest, one fact each"
+      },
+      {
+        "id": "buying",
+        "required": true,
+        "show": "why buy here: delivery, returns, trial"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "the close"
+      }
+    ],
+    "fake": "A grid in no order with reasons in between gives the reader no place to start."
+  },
+  {
+    "id": "question-first",
+    "line": "The reader picks a need first; the page answers that pick.",
+    "kinds": [
+      "software",
+      "service",
+      "product"
+    ],
+    "sections": [
+      5,
+      8
+    ],
+    "thread": "the reader's pick, kept visible as the page answers it",
+    "beats": [
+      {
+        "id": "question",
+        "required": true,
+        "show": "a question or a short offer in the hero"
+      },
+      {
+        "id": "pick",
+        "required": true,
+        "show": "the reader's pick, and the answer to it in the same view"
+      },
+      {
+        "id": "use",
+        "required": true,
+        "show": "what the product does for each moment"
+      },
+      {
+        "id": "peers",
+        "required": false,
+        "show": "people who picked the same, only from the brief"
+      },
+      {
+        "id": "cost",
+        "required": true,
+        "show": "the cost"
+      },
+      {
+        "id": "close",
+        "required": true,
+        "show": "a close that turns the question back"
+      }
+    ],
+    "fake": "A picker that changes nothing is a decoration that asks."
+  },
+  {
+    "id": "reader-rise",
+    "line": "The reader as the protagonist, from where they are to their own first steps.",
+    "kinds": [
+      "software",
+      "service"
+    ],
+    "sections": [
+      6,
+      9
+    ],
+    "thread": "the reader, addressed as you, at growing sizes",
+    "beats": [
+      {
+        "id": "reader",
+        "required": true,
+        "show": "the reader named as the one who will do it"
+      },
+      {
+        "id": "workplace",
+        "required": true,
+        "show": "where people like them work now"
+      },
+      {
+        "id": "peers",
+        "required": false,
+        "show": "others like them at growing sizes, one fact each, only from the brief"
+      },
+      {
+        "id": "tools",
+        "required": true,
+        "show": "the tools that grow with them"
+      },
+      {
+        "id": "steps",
+        "required": true,
+        "show": "the reader's own first three steps, numbered, as the close"
+      }
+    ],
+    "fake": "You in the headline and a corporate feature list after it ends on contact sales."
+  }
 ]

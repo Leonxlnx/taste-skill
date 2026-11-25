@@ -3,6 +3,9 @@
 A page is a story when its headings, read alone in order, make a paragraph and something from the
 hero comes back changed; a list when two neighbours could swap places.
 
+For each spine line name the visitor’s question, its worked form and what changes there.
+A float leads to a clue, or a delayed call changes three teams’ times. Map every required `beat: <id> | section: #id`. Use `Short:` only to quote a brief asking for a small page.
+
 ## The method
 
 1. **Take a shape.** `start.mjs plan` deals one from `library/stories.json`. Take it, or the one the
@@ -14,12 +17,12 @@ hero comes back changed; a list when two neighbours could swap places.
    *until*, *which means*. Where the only honest word is *also* or *and*, the two are a list:
    reorder, merge, or give the second a reason to follow the first.
 4. **One thing travels.** The thread is one record, object, person or time in the hero and again,
-   with the same name and numbers, in two later sections or more, each in the state that section
+   with the same identity and a new state, time, amount or place in two later sections or more, each in the state that section
    is about. A picture that comes back shows its subject in a new state.
 5. **Name the turn and the bookend:** where something changes, and what the close brings back from
    the hero with the fact the page earned.
 
-copy-lint FAILs notes without the block, an unknown shape or an empty thread [copy-story]. The
+copy-lint FAILs notes without the block, an unknown shape, an empty thread or an unmapped required beat [copy-story]. The
 checker WARNs a page that drifts from the planned order [spine-drift], three bare labels in a row
 [label-run], a thread that never comes back [thread-lost], a close that answers nothing in the hero
 [close-unanswered] and grounds that stripe a chaptered page [stripe-grounds].

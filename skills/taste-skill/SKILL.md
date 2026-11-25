@@ -147,13 +147,13 @@ world within the limits of `expressive.md`, each naming its source.
    one line per request, `- <ask> -> #<id> : <outcome>`. Use `play` for media, `go` for a destination,
    `send` for a form, `file` for a download or `show` for on-page content. Before the draft, the `## Story`
    block (`story.md`): a shape from its table, the thread that comes back in three sections, the turn,
-   the bookend, and the spine, every heading in order with the word joining it to the one before (so,
+   the bookend, and the spine, every heading with its `beat: <id> | section: #id` and the word joining it to the one before (so,
    but, then; never *also*). Write the draft one line per
    part (`H1:`, `Lead:`, `H2:`, `Button:`). Lint it: `node <skill>/scripts/copy-lint.mjs
    .taste-skill/copy.md`. The hero tells a stranger in five seconds what is sold and where or for
    whom, with one hard fact; a noun in every heading; buttons a verb and an object; the close says
    something new. Nothing is invented but a coined brand name and the plain facts the page needs
-   that the brief leaves out (prices, hours, plan limits, a district), each marked `data-assumed`
+   that the brief leaves out (hours, menu items, a district), each marked `data-assumed`
    and listed in the report. Record a supplied brand in `names.json` if copy-lint flags its name (`copy.md`). Never reviews, quotes, customers, awards, named people or result
    figures. An assumed fact never contradicts the brief.
 
@@ -161,8 +161,7 @@ world within the limits of `expressive.md`, each naming its source.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
    Merge a heading, one sentence and a picture with a neighbour.
-   Then one line per section, in the spine's order: its id, its one idea, its beat and what of the thread it shows, **what the content is and the form that shape
-   asks for**, its picture and where that picture comes from on the ladder of rule 6, its ground.
+   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its picture and where that picture comes from on the ladder of rule 6, its ground.
    Mark the sections that are your own design. Count the sections, and note what the page really
    carries: a sentence worth a statement, a list the brief names, photographs that show a claim,
    steps, figures. The deal needs both.
@@ -170,7 +169,7 @@ world within the limits of `expressive.md`, each naming its source.
 4. **Deal the frame.**
 
    ```bash
-   node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
+   node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --brief "<client words>" [--view wide] --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
    `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold (a price alone is no `figures`). For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
@@ -332,7 +331,7 @@ Slop bans hold on every page; style limits follow the temper.
   place; two drawing styles on one page; a product page that never shows the product.
 - A drawn look-alike of a real logo; invented reviews, quotes, customers or figures; an assumed
   fact that contradicts the brief; a fake success message.
-- Monospace uppercase labels, a kicker line above every heading (a chapter name with `chapter-nav` aside: `story.md`), check-icon lists, a row of big
+- Monospace uppercase labels, plain kickers (chapter names follow `story.md`; one drawn world tag per section on loud pages follows `expressive.md`), check-icon lists, a row of big
   stat numbers as filler.
 - Violet or lavender the page invents (a real logo or the client's own art keeps its colours).
 - Reading text in a pixel, hand, blackletter or condensed face or in capitals; text on busy art

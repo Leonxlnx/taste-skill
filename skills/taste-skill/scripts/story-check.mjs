@@ -35,9 +35,10 @@ export function readStory(t) {
     if (/^\.{2,}$|^…$/.test(head)) continue;
     const join = ((parts.find((x) => /^joins?\b/i.test(x)) || '').match(/:\s*(.*)$/) || [])[1] || '';
     const beat = ((parts.find((x) => /^beat\b/i.test(x)) || '').match(/:\s*(.*)$/) || [])[1] || '';
-    spine.push({ kind, head: head.replace(/^["“]|["”]$/g, ''), join: join.trim(), beat: beat.trim() });
+    const section = parts.map(x => /^(?:section:\s*)?#([\w:.-]+)$/i.exec(x)).find(Boolean)?.[1] || '';
+    spine.push({ section, kind, head: head.replace(/^["“]|["”]$/g, ''), join: join.trim(), beat: beat.trim() });
   }
-  return { shape: field('shape'), thread: field('thread'), turn: field('turn'), bookend: field('bookend'), spine };
+  return { short: field('short'), shape: field('shape'), thread: field('thread'), turn: field('turn'), bookend: field('bookend'), spine };
 }
 
 export function findBeside(file, name) {
@@ -71,17 +72,34 @@ const same = (a, b) => {
   const shared = A.filter((w) => B.includes(w)).length;
   return shared / Math.max(A.length, B.length) >= 0.6;
 };
-// the thread's marks: ids and figures (RMA-2291, 14:15, 38.00, PL-0418) and the names in the notes' Thread line
-function threadMarks(thread, heroText) {
-  const marks = new Set();
-  const take = (s, names) => {
-    for (const m of tidy(s).matchAll(/[\p{L}]*\d[\p{L}\d:.,/-]*[\p{L}\d]|\d/gu)) { const v = m[0].replace(/[.,]$/, ''); if (v.length >= 2) marks.add(v); }
-    if (names) for (const m of tidy(s).matchAll(/(?:^|[^\p{L}])(\p{Lu}[\p{Ll}]{2,}(?:[ -]\p{Lu}[\p{Ll}]+)?)/gu)) if (!STOP.has(m[1].toLowerCase())) marks.add(m[1]);
-  };
-  if (thread) take(thread, true);
-  else take(heroText, false);
-  return [...marks].filter((m) => !/^(19|20)\d\d$/.test(m) || !!thread);
+// Prefer one complete identifier or name over incidental years and quantities.
+function threadName(thread, hero) {
+  const t = tidy(thread || hero);
+  const ids = t.match(/\b(?:[A-Z]{2,}[-#]\d[\w-]*|(?:call|order|incident|record|return|booking)\s+#?\d+)\b/gi) || [];
+  const names = t.match(/\b\p{Lu}[\p{Ll}]{2,}(?:[ -]\p{Lu}[\p{Ll}]+)*/gu) || [];
+  const explicit = t.match(/"([^"]+)"/)?.[1] || ids[0];
+  if (explicit) return explicit;
+  const proper = names.find(n => !STOP.has(key(n)));
+  if (thread && proper) return proper;
+  const subject = t.split(/[,;]|\s+(?:with|from|on|in|through|at)\s+/i)[0].replace(/^(?:the|a|an)\s+/i,'').trim();
+  if (thread && subject && subject.split(/\s+/).length <= 4) return subject;
+  return [...names, ...t.split(/\s+/)].find(n => n.length > 2 && !STOP.has(key(n)) && (' '+key(hero)+' ').includes(' '+key(n)+' '));
 }
+function stateFacts(text, name) {
+  const facts = new Set();
+  const escaped = name.replace(/[.*+?^(){}|[\]\\$]/g,'\\$&');
+  const matches = tidy(text).matchAll(new RegExp('(?<![\\p{L}\\p{N}])'+escaped+'(?![\\p{L}\\p{N}])','giu'));
+  for (const m of matches) {
+    const near = text.slice(Math.max(0,m.index-45),m.index)+' '+text.slice(m.index+m[0].length,m.index+m[0].length+100);
+    // “to the demo” and “for the reader” are destinations of a link or copy, not states of the record.
+    const factsInText = /\b(?:\d+(?::\d+|[.,]\d+)?(?:\s*(?:%|kg|hours?|days?|seats?))?|(?:pending|ready|approved|cleared|late|due|delayed|open|closed|blank|paid|sent|done|empty|full|caught|found|held|lost|booked|assigned|requested|refunded|packed|shipped|arrived|released|dispatched|moved|signed|billed|waiting|confirmed|completed|rejected|cancelled|delivered|docked|draft|queued|running|failed|resolved)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)|(?:at|from|to|near|in|beside)\s+(?:Gate|Pier|Quay|Port|Room|Bay|Berth)\s+[\w-]+)\b/gi;
+    for (const hit of near.matchAll(factsInText)) facts.add(hit[0].toLowerCase());
+    for (const hit of near.matchAll(/\b(?:at|from|to|near|in|beside)\s+([A-Z][\p{L}-]+(?:\s+[A-Z][\p{L}-]+)*)/gu)) facts.add(hit[1].toLowerCase());
+  }
+  return facts;
+}
+const roles = [/player|wishlist|steam|play the game/i,/press kit|journalist|press assets/i,/buy|order|checkout|shopper/i,/operator|director|demo/i,/guest|book a (?:room|stay|table)/i];
+const actions = [/wishlist/i,/demo/i,/\b(order|buy|checkout)\b/i,/\b(book|reserve)\b/i,/contact|enquir/i,/download|press kit/i,/sign up|start a trial/i,/play the game|watch the trailer/i];
 
 export function storyFindings(P, { plan = null, notes = null } = {}) {
   const F = [];
@@ -107,18 +125,35 @@ export function storyFindings(P, { plan = null, notes = null } = {}) {
       break;
     }
   }
-  // thread-lost: what the hero names (or the notes' Thread) comes back in two later sections at least
-  const marks = threadMarks(story && story.thread, `${P.h1 || ''} ${P.lead || ''} ${P.heroText || ''}`);
-  if (marks.length && secs.length >= 3) {
-    const later = secs.filter((s) => !s.hero);
-    const hits = marks.map((m) => ({ m, n: later.filter((s) => tidy(s.text).toLowerCase().includes(m.toLowerCase())).length + (P.close && tidy(P.close.text).toLowerCase().includes(m.toLowerCase()) ? 1 : 0) }));
-    if (!hits.some((h) => h.n >= 2)) push('thread-lost', 'WARN', null, `the thread never comes back: ${story && story.thread ? 'the notes\' Thread' : 'the hero'} names ${marks.slice(0, 4).map((m) => `"${m}"`).join(', ')}${marks.length > 4 ? ', ...' : ''}, and none of them appears in two later sections (${hits.slice(0, 4).map((h) => `${h.m} in ${h.n}`).join(', ')})`, 'carry one named record (its id, names and numbers) from the hero into two later sections, each time in the state that section is about');
+  const heroText = [P.h1,P.lead,P.heroText].filter(Boolean).join(' ');
+  if (story?.thread || plan?.story) {
+    const hero = P.sections?.find(s => s.hero);
+    const records = [{id:hero?.id || 'hero', text:heroText}, ...(P.sections || []).filter(s => !s.hero)];
+    if (P.close && !records.some(s => s.sel === P.close.sel || s.text === P.close.text)) records.push({id:'close', ...P.close});
+    const name = threadName(story?.thread, heroText);
+    const seen = new Set(), visited = new Set(), repeats = [], changed = [];
+    if (name) for (const s of records) {
+      const id = s.id || s.sel;
+      if (visited.has(id) || !(' '+key(s.text)+' ').includes(' '+key(name)+' ')) continue;
+      visited.add(id);
+      const facts = stateFacts(tidy(s.text), name);
+      if (facts.size && (!changed.length || [...facts].some(f => !seen.has(f)))) changed.push(id);
+      else repeats.push(id);
+      for (const f of facts) seen.add(f);
+    }
+    if (changed.length < 3 || repeats.length) push('thread-lost','WARN',null,
+      (name || story?.thread || 'The record')+' changes in '+changed.length+' distinct sections' + (repeats.length ? '; repeated without a new state in '+repeats.join(', ') : ''),
+      'Show the same named record in three sections, each with a changed state, time, amount or place.');
   }
-  // close-unanswered: the close and the hero share no content word and no number
-  if (P.close && P.close.h2 && P.h1) {
-    const a = `${P.h1} ${P.lead || ''}`, b = `${P.close.h2} ${P.close.lead || ''}`;
-    const wa = contentWords(a), wb = contentWords(b), na = numbersOf(a), nb = numbersOf(b);
-    if (!wa.some((w) => wb.includes(w)) && !na.some((n) => nb.includes(n))) push('close-unanswered', 'WARN', { sel: P.close.sel, h2: P.close.h2 }, `the close ("${P.close.h2.slice(0, 50)}") shares no word and no number with the hero ("${P.h1.slice(0, 50)}"): the end does not answer the start`, 'let the close bring back the hero\'s line, field or object with the one fact the page earned (a bookend), or answer the hero\'s promise in its words');
+  if (P.close?.h2 && P.h1) {
+    const start = P.heroAction || P.h1+' '+(P.lead || '');
+    const end = P.close.action || P.close.h2+' '+(P.close.lead || '');
+    const opening = roles.filter(r => r.test(start+' '+P.h1+' '+(P.lead || '')));
+    const verbs = actions.filter(r => r.test(start));
+    const drift = verbs.length && !verbs.some(r => r.test(end)) || opening.length && !opening.some(r => r.test(end+' '+P.close.h2+' '+(P.close.lead || '')));
+    const shared = contentWords(heroText).filter(w => contentWords(P.close.h2+' '+(P.close.lead || '')).includes(w));
+    if (drift || (!verbs.length && new Set(shared).size < 2)) push('close-unanswered','WARN',P.close,
+      'The close "'+P.close.h2+'" does not return to the opening audience and action "'+start+'".', 'Bring the opening visitor back to their next step.');
   }
   // stripe-grounds: on a chapters or two-part-promise page, grounds change at chapter or half boundaries only
   const navs = P.navs || [];
@@ -158,16 +193,17 @@ export function storyProbe() {
   const sections = [...main.querySelectorAll(':scope > section, :scope > .section')].map((s) => {
     const h2 = s.querySelector('h2');
     const ch = s.querySelector('.chapter-head');
-    return { id: s.id || '', sel: sel(s), hero: s === hero, h2: h2 ? txt(h2) : '', text: txt(s).slice(0, 6000), ground: ground(s), chapter: s.getAttribute('data-chapter') || (ch ? txt(ch).replace(/^\d+\s*/, '') : ''), chapterHead: ch ? txt(ch) : '' };
+    return { id: s.id || '', sel: sel(s), hero: s === hero, action: txt(s.querySelector('.btn--primary, [type="submit"], a.btn')), h2: h2 ? txt(h2) : '', text: txt(s).slice(0, 6000), ground: ground(s), chapter: s.getAttribute('data-chapter') || (ch ? txt(ch).replace(/^\d+\s*/, '') : ''), chapterHead: ch ? txt(ch) : '' };
   });
   const foot = document.querySelector('footer.closing');
+  const action = el => txt(el?.querySelector('.btn--primary, [type="submit"], a.btn'));
   const ch2 = foot ? foot.querySelector('h2') : null;
-  let close = ch2 ? { sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement && ch2.parentElement.querySelector('p')), text: txt(ch2.closest('.closing__close, .close, [class*="close"]') || ch2.parentElement) } : null;
-  if (!close) { const last = sections.filter((s) => !s.hero && s.h2).pop(); if (last) close = { sel: last.sel, h2: last.h2, lead: '', text: last.text }; }
+  let close = ch2 ? { action: action(ch2.closest('.closing__cta, .closing__close, .close, section') || foot), sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement && ch2.parentElement.querySelector('p')), text: txt(ch2.closest('.closing__close, .close, [class*="close"]') || ch2.parentElement) } : null;
+  if (!close) { const last = sections.filter((s) => !s.hero && s.h2).pop(); if (last) close = { action: last.action, sel: last.sel, h2: last.h2, lead: '', text: last.text }; }
   const navs = [...document.querySelectorAll('[data-chapter-nav], .chapter-nav, .contents-row')].map((n) => ({
     kind: n.matches('.contents-row') ? 'contents-row' : 'chapter-nav', sel: sel(n),
     links: [...n.querySelectorAll('a[href]')].filter((a) => a.getAttribute('href').startsWith('#')).map((a) => { const h = a.getAttribute('href'); let id = ''; try { id = decodeURIComponent(h.slice(1)); } catch { id = h.slice(1); } return { href: h, text: txt(a), ok: !!id && !!document.getElementById(id) }; }),
   }));
   const uniq = navs.filter((n, i) => navs.findIndex((m) => m.sel === n.sel) === i);
-  return { h1: txt(h1), lead: txt(lead), heroText: hero ? txt(hero).slice(0, 2000) : '', sections, close, navs: uniq };
+  return { heroAction: action(hero), h1: txt(h1), lead: txt(lead), heroText: hero ? txt(hero).slice(0, 2000) : '', sections, close, navs: uniq };
 }

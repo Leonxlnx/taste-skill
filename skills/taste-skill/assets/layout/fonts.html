@@ -56,7 +56,7 @@
   const all = await (await fetch("../../library/type.json")).json();
   const want = new URLSearchParams(location.search).get("page");
   const kindsOf = t => Object.entries(t.kinds || {}).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).map(([k]) => k);
-  const topKind = t => want && (want === "place" ? !!t.place : (t.kinds || {})[want] > 0) ? want : (kindsOf(t)[0] || "place");
+  const topKind = t => want !== "expressive" && want && (want === "place" ? !!t.place : (t.kinds || {})[want] > 0) ? want : (kindsOf(t)[0] || "place");
 
   // the Google Fonts link, built the way start.mjs builds it
   const axisVal = r => r[0] === r[1] ? String(r[0]) : r[0] + ".." + r[1];
@@ -89,8 +89,8 @@
   }
 
   const nav = document.getElementById("kinds");
-  nav.innerHTML = [["", "all"], ...KINDS.map(k => [k, k])].map(([k, l]) => "<a href='?" + (k ? "page=" + k : "") + "'" + ((want || "") === k ? " aria-current='page'" : "") + ">" + l + "</a>").join("");
-  const pool = all.filter(t => !want || (want === "place" ? !!t.place : (t.kinds || {})[want] > 0));
+  nav.innerHTML = [["", "all"], ["expressive","expressive"], ...KINDS.map(k => [k, k])].map(([k, l]) => "<a href='?" + (k ? "page=" + k : "") + "'" + ((want || "") === k ? " aria-current='page'" : "") + ">" + l + "</a>").join("");
+  const pool = all.filter(t => !want || (want === "expressive" ? t.temper === "expressive" : want === "place" ? !!t.place : (t.kinds || {})[want] > 0));
   document.getElementById("count").textContent = pool.length + (want ? " for " + want + ", " : ", ") + "all on Google Fonts, dealt by the kind of page.";
   const list = document.getElementById("list");
   const pc = n => (Math.round(n * 1000) / 10) + "%";
@@ -98,7 +98,7 @@
     const kind = topKind(p), place = kind === "place", tech = TECH.has(kind);
     const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontLink(p, kind); document.head.append(link);
     const serif = p.class === "serif" || p.class === "slab";
-    const w = Math.max(400, Math.min(tech ? 500 : 400, (tech ? p.display.tech : 400) || 400));
+    const w = p.display.fixedWeight || Math.max(400, Math.min(tech ? 500 : 400, (tech ? p.display.tech : 400) || 400));
     const tr = Math.max(-0.045, Math.min(0, p.display.tracking)), trXl = Math.max(-0.045, Math.min(0, p.display.trackingXl ?? p.display.tracking));
     const stretch = place ? "100%" : (p.display.stretch || "100%"), scale = place ? 1 : (p.display.scale || 1);
     const [h, h2, run, line] = SAMPLE[kind];
@@ -108,6 +108,8 @@
     const tags = [...kindsOf(p), ...(p.place ? ["place: " + p.place] : []), ...p.moods].map(t => "<span>" + t + "</span>").join("");
     el.innerHTML = "<div class='spec__meta'><b>" + p.display.family + (p.text.family !== p.display.family ? " + " + p.text.family : "") + "</b><span>" + p.id + ", " + p.class + ", shown as " + kind + ": display " + w + (stretch !== "100%" ? ", width " + stretch : "") + (place ? "" : ", " + pc(trXl) + " at hero size, scale " + scale) + (p.display.letters && !place ? ", axis " + p.display.letters : ", static") + "</span><div class='tags'>" + tags + "</div><span>" + p.suits + "</span></div>" +
       "<div class='spec__show'><h2>" + h + "</h2><p class='lead'>" + line + "</p><h3>" + h2 + " <span class='muted'>" + run + "</span></h3><p>" + line + "</p></div>";
+    if (p.display.caps) el.querySelectorAll("h2,h3").forEach(h => { h.style.textTransform = "uppercase"; });
+    if (p.display.grid) el.querySelector("h2").style.fontSize = "round(nearest, clamp(40px, 6vw, 80px), "+p.display.grid+"px)";
     list.append(el);
   }
   await document.fonts.ready;

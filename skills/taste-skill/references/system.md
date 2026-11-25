@@ -178,6 +178,9 @@ For the page as a story (`story.md`); each is complete without script and reacha
 
 ## Forms
 
+Match controls and form fields with `data-choice="name"`. A `data-choice-set="name:value"` link selects its tab or field before the jump.
+
+
 One recipe for every form (booking, enquiry, call request, newsletter); `starter.html` has it as
 `booking-form`, system.js runs it. A booking system the brief names replaces the form with its link.
 

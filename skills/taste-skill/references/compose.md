@@ -3,6 +3,9 @@
 Read before the first page. A dealt composition arranges photographs with words. Everything else
 on a page has a shape of its own, and the section takes that shape. This file is how.
 
+Choose a form that answers the section’s question by showing a change. Three still cards are the last choice.
+Carry a chosen quantity, plan, product or date into the next form using the same `data-choice` name.
+
 ## The method
 
 1. **Say what the content is, as a thing.** Not "features" but "five steps, each with a duration
@@ -35,7 +38,7 @@ still says what kind of business this is.
 A section's form comes from its content; its place comes from the story (`story.md`). Read the h2s
 alone, in order: they should make sense as a paragraph. A picture that comes back shows its subject
 in a new state; the same picture twice says nothing new. One thing travels through the page (a named
-record, a sum, a booking, a character), with the same name and the same numbers each time.
+record, a sum, a booking, a character), with the same identity and a legible change each time.
 
 | Content | Form |
 |---|---|

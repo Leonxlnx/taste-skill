@@ -57,8 +57,7 @@ where you can. Each field feeds a part of the page:
 | The offer | Price, trial, booking terms, the one action | buttons, the close |
 
 - **Nothing is invented** beyond what `copy.md` allows (What may be assumed): a coined name, and on
-  every kind the plausible facts the page needs to work and the brief leaves out (a price, a plan's
-  limits, hours, menu dishes, room types, delivery terms, a district), each under `Assumed:` in the
+  every kind the plausible facts the page needs to work and the brief leaves out (hours, menu dishes, room types, a district), each under `Assumed:` in the
   notes, `data-assumed` on the page and in the report; on a made-up client, a few odd details too.
   Proof is never assumed: an empty field of reviews, quotes, customers, awards or result figures
   stays empty, and its section shrinks or goes. In the notes a gap is written `[NEED: what]` under

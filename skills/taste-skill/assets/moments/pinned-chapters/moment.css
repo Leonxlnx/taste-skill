@@ -81,3 +81,22 @@ main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { posit
   main [data-moment="pinned-chapters"][data-moment].is-live > .mo-pc__grid { position: static; height: auto; }
   [data-moment="pinned-chapters"] .mo-pc__step p, [data-moment="pinned-chapters"] .mo-pc__visual { transition: none !important; }
 }
+
+/* Compact states are native buttons. On a narrow screen the open detail follows its button. */
+.is-compact .mo-pc__step button {
+  min-height: 44px; padding: var(--s-2) 0; border: 0; background: none;
+  color: var(--muted); font: inherit; text-align: left; cursor: pointer;
+}
+.is-compact .mo-pc__step button[aria-expanded="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: .25em; }
+[data-moment].is-compact .mo-pc__step [hidden] { display: none; }
+[data-moment].is-compact .mo-pc__visual { aspect-ratio: auto; max-height: none; }
+@media (min-width: 640px) {
+  [data-moment].is-compact .mo-pc__steps { grid-template-columns: minmax(0,5fr) minmax(0,7fr); column-gap: var(--gutter); }
+  [data-moment].is-compact .mo-pc__step { display: contents; }
+  [data-moment].is-compact .mo-pc__step h3, [data-moment].is-compact .mo-pc__step p { grid-column: 1; align-self: start; }
+  [data-moment].is-compact .mo-pc__step .mo-pc__visual { grid-column: 2; grid-row: 1 / span 4; align-self: start; }
+}
+
+@media (max-width: 639px) {
+  [data-moment="pinned-chapters"] .mo-pc__visual [data-step-detail] { display: block; }
+}

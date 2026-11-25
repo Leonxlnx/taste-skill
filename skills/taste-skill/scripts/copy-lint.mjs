@@ -298,7 +298,7 @@ const WITHHELD = [
     /\b(prices?|pricing|fees?|rates?|costs?)\b[^.!?\n]{0,24}\b(on|upon|by) (request|application|enquiry|inquiry)\b/i,
     /\b(ask|contact us|email us|write to us|call us|get in touch|enquire|inquire) (for|about) (a |the |our )?(prices?|pricing|rates|fees)\b/i,
   ], // a price sent in the reply holds it back only on a page that shows none ("from 118 € a night", then the price for your dates)
-  bare: [/\b(reply|replies|write back|get back to you|answer|send you|email you|tell you)\b[^.!?\n]{0,30}\bwith (the|a|our|your) (prices?|pricing)\b/i], fix: 'write a plausible price for this trade and place, uneven and in the local currency (a custom job: a "from" price), on its own element with data-assumed, and list it in the report (copy.md, What may be assumed)' },
+  bare: [/\b(reply|replies|write back|get back to you|answer|send you|email you|tell you)\b[^.!?\n]{0,30}\bwith (the|a|our|your) (prices?|pricing)\b/i], fix: 'give the supplied rate and unit, or settle the missing terms in the enquiry (copy.md, What may be assumed)' },
   { msg: 'an address held back ("comes with your confirmation email", "on the way"): the visitor cannot find the door', res: [
     /\b(street|address|location|district)\b[^.!?\n]{0,30}\b(is|are) on (the|its|their) way\b(?!\s+(to|from|up|down|between|back|home|into|towards?|out)\b)/i,
     /\b(street|address|location)\b[^.!?\n]{0,30}\b(comes?|is sent|are sent|will be sent|follows?|arrives?|is shared|is given)\b[^.!?\n]{0,40}\b(confirmation|booking|once you book|after you book|by e-?mail|in the e-?mail|with your)\b/i,
@@ -361,7 +361,7 @@ function readNotes(t) {
   }
   return f;
 }
-function notesFindings(t, where) {
+function notesFindings(t, where, page, brief, dealtShape) {
   const f = readNotes(t), out = [];
   const val = (re) => { const k = Object.keys(f).find((x) => re.test(x)); return k === undefined ? '' : f[k]; };
   const missing = NOTE_FIELDS.filter(([, re]) => noValue(val(re))).map(([n]) => n);
@@ -373,7 +373,7 @@ function notesFindings(t, where) {
   if (!lines.some((l) => /^#{1,3}\s*(the\s+)?fact sheet\b/i.test(l))) nope.push('"## Fact sheet"');
   if (!lines.some((l) => DRAFT_START.test(l))) nope.push('"## Draft"');
   if (nope.length) out.push(['WARN', nope, `${where}: the ${nope.join(' and the ')} part${nope.length > 1 ? 's are' : ' is'} missing`,'the notes hold the fact sheet, the voice card, then the draft (copy the block in references/copy.md)']);
-  out.push(...storyFindings(t, where));
+  out.push(...storyFindings(t, where, page, brief, dealtShape));
   return { out, f, val };
 }
 // the ## Story block (references/story.md, copy.md The copy notes): the shape, the thread, the turn, the bookend and the
@@ -386,12 +386,12 @@ Thread: <the one record, object, person or time that travels; its name and numbe
 Turn: <the section where something changes, and what changes>
 Bookend: <what the close brings back from the hero, and what it adds>
 Spine:
-- H1: <hero line>
-- <h2 of section 2> | beat: <which beat> | joins the previous by: <so / but / then / until / which means>
+- H1: <hero line> | beat: <id> | section: #<hero-id>
+- <h2 of section 2> | beat: <dealt id> | section: #<id> | joins the previous by: <so / but / then / until / which means>
 - ...
-- Close: <the close's heading>`;
-let STORY_IDS = null;
-const storyIds = () => STORY_IDS || (STORY_IDS = (() => { try { return JSON.parse(fs.readFileSync(path.join(SKILL_DIR, 'library', 'stories.json'), 'utf8')).map((s) => s.id); } catch { return []; } })());
+- Close: <the close's heading> | beat: <id> | section: #<close-id>`;
+const shapes = JSON.parse(fs.readFileSync(path.join(SKILL_DIR, 'library', 'stories.json'), 'utf8'));
+const storyIds = () => shapes.map(s => s.id);
 const headKey = (s) => tidy(decode(String(s).replace(/<[^>]+>/g, ' '))).toLowerCase().replace(/[*_`"']/g, '').replace(/[^\p{L}\p{N}%€$£ ]+/gu, ' ').replace(/\s+/g, ' ').trim();
 function draftH2s(t) {
   const lines = tidy(t).split(/\r?\n/);
@@ -400,13 +400,28 @@ function draftH2s(t) {
   let rest = lines.slice(d + 1); const e = rest.findIndex((l) => DRAFT_END.test(l.trim())); if (e >= 0) rest = rest.slice(0, e);
   return rest.map((l) => l.trim().replace(/^[-*]\s+/, '').match(/^h2\s*:\s*(.*)$/i)).filter(Boolean).map((m) => m[1].trim());
 }
-function storyFindings(t, where) {
+function storyFindings(t, where, page, brief, dealtShape) {
   const out = [], S = readStory(t);
   const fill = `copy this block into the notes before the draft and fill it from the brief (references/story.md):\n${STORY_BLOCK.split('\n').map((l) => '         ' + l).join('\n')}`;
   if (!S) { out.push(['FAIL', ['## Story'], `${where}: no ## Story block: the page's shape, thread, turn, bookend and spine come before the draft`, fill, 'copy-story']); return out; }
   const id = (S.shape.match(/[a-z]+(?:-[a-z]+)*/) || [''])[0];
   if (noValue(S.shape) || !storyIds().includes(id)) out.push(['FAIL', [S.shape || 'Shape:'], `${where}: Shape "${clip(S.shape || '', 40)}" is no shape of library/stories.json (${storyIds().join(', ')})`, 'write the dealt shape\'s id, or another from library/stories.json, and why the brief fits it', 'copy-story']);
   if (noValue(S.thread) || /^(none|n\/a|nothing|no)\b/i.test(S.thread)) out.push(['FAIL', ['Thread:'], `${where}: the story has no thread: name the one record, object, person or time that comes back in three sections`, 'Thread: a name and its numbers from the brief (an incident at 14:15, a booking for two nights, the 9 g camera); without one the shape is a list with a label on it', 'copy-story']);
+  if (dealtShape && dealtShape !== id) out.push(['FAIL',[id],'The notes name '+id+' and the plan deals '+dealtShape+'.','Deal again with --story or map the planned shape.', 'copy-story']);
+  const shape = shapes.find(s => s.id === (dealtShape || id));
+  if (shape) {
+    const used = new Set();
+    const missing = shape.beats.filter(b => b.required && !S.spine.some(line => {
+      const target = page?.ids.get(line.section);
+      if (line.beat !== b.id || !line.section || used.has(line.section)) return false;
+      if (page && !isSectionTarget(target)) return false;
+      used.add(line.section);
+      return true;
+    }));
+    const quote = S.short.replace(/^["“']|["”']$/g, '').trim();
+    const short = !/[<>]/.test(quote) && /\b(short|small|compact|brief page|one[- ]screen|single[- ]screen|few sections|(?:[1-4]|one|two|three|four) sections)\b/i.test(quote) && (!brief || headKey(brief).includes(headKey(quote)));
+    if (missing.length) out.push([short ? 'WARN' : 'FAIL', missing.map(b => b.id), 'Missing story beats for ' + shape.id + ': ' + missing.map(b => b.id + ' — ' + b.show).join('; '), 'On each spine line write beat: <id> | section: #id. Short: quotes the client asking for a small page.', 'copy-story']);
+  }
   const heads = S.spine.filter((x) => x.kind !== 'h1'), draft = draftH2s(t);
   if (draft && draft.length && heads.length) {
     const n = Math.min(heads.length, draft.length);
@@ -609,7 +624,7 @@ function pageTargets(raw, file, root) {
   }
   for (const c of captions) { c.frame ||= c.scope?.firstPicture; if (c.fact && c.frame) frames.set(c.frame,(frames.get(c.frame)||0)+1); }
   closeFrom(0);
-  return {ids,captions,frames,nodes,modules,file:assetPage || file,root:assetRoot || root || path.dirname(path.resolve(file))};
+  return {parseLocal: file => pageTargets(fs.readFileSync(file,'utf8'),file,root),ids,captions,frames,nodes,modules,file:assetPage || file,root:assetRoot || root || path.dirname(path.resolve(file))};
 }
 
 function staticPageForNotes(file) {
@@ -627,7 +642,11 @@ function staticPageForNotes(file) {
   if (typeof target!=='string' || !/\.html?$/i.test(target) || /^https?:/i.test(target)) return null;
   try { return pageTargets(fs.readFileSync(path.resolve(project,target),'utf8'),path.resolve(project,target),root); } catch { return null; }
 }
-function briefAsks(notes, page, add) {
+function isSectionTarget(target) {
+  return !!target && (['section','header','footer','article'].includes(target.name) ||
+    target.get('role') === 'region' || /(?:^|\s)(?:section|hero|closing__cta)(?:\s|$)/.test(target.get('class') || ''));
+}
+function briefAsks(notes, page, add, brief) {
   const rows = [];
   const fix = 'write each ask as "- ask -> #id : outcome" using play, go, send, file or show';
   const lines = notes.split(/\r?\n/);
@@ -645,6 +664,13 @@ function briefAsks(notes, page, add) {
     asks.push(line.replace(/^\s*[-*]\s+/,'').trim());
   }
   if (!asks.length) add('FAIL','brief-ask',['Asks:'],'the copy notes need an Asks: block with a mapping',fix);
+  const editorial = [/\btell (?:us |visitors )?(?:our|the|their) story\b/i, /\bshow how (?:it|the game) plays\b/i, /\bmeet (?:the|our) bosses\b/i];
+  for (const pattern of editorial) {
+    const request = (brief + '\n' + notes.split('Asks:')[0]).match(pattern);
+    if (request && !asks.some(line => pattern.test(line) || contentWords(request[0]).some(w => w.length >= 4 && !['tell','show','meet'].includes(w) && contentWords(line.split('->')[0]).includes(w)))) {
+      add('FAIL','brief-ask',[request[0]],'Map the requested editorial content to its section.',fix);
+    }
+  }
   const mappings = [];
   for (const line of asks) {
     const skip = line.match(/^(.+?)\s*->\s*none:\s*(\S.*)$/i);
@@ -669,6 +695,7 @@ function briefAsks(notes, page, add) {
     rows.push(row);
     const target = page && id && page.ids.get(id);
     if (page && id && !target) add('FAIL','brief-ask',[line],'target #'+id+' is missing from the page',fix);
+    if (editorial.some(pattern => pattern.test(ask)) && (!id || outcome !== 'show' || (page && !isSectionTarget(target)))) add('FAIL','brief-ask',[line],'This editorial ask needs a show destination.',fix);
     if (!outcome) {
       row.detail = 'choose play, go, send, file or show';
       add('WARN','ask-outcome',[ask],'"'+ask+'": '+row.detail,fix);
@@ -829,7 +856,7 @@ function lintRead(R, isHtml) {
   if (strips.length) add('WARN', 'copy-stat-strip', strips, `stat strip x${strips.length}`, 'a strip only of figures the brief gives (a price, hours, a count); otherwise put each number in the sentence it proves, or leave it out');
   const numbered = R.lines.filter((l) => /^0\d\.?$/.test(l.text)).length;
   if (numbered >= 6) add('WARN', 'copy-numbered', numbered, `${numbered} step numbers`, 'number only steps that happen in order');
-  if (R.eyebrows >= 5) add('WARN', 'copy-eyebrows', R.eyebrows, `${R.eyebrows} eyebrow or kicker labels`, 'one or two a page; a heading that names the thing needs no label over it');
+
 
   // ---- people and names, mocks included
   const people = CAST.filter((n) => new RegExp(`\\b${esc(n)}\\b`).test(R.all));
@@ -872,16 +899,59 @@ function lintRead(R, isHtml) {
   // ---- the copy notes: the fact sheet, the voice card and the draft come before the page
   const insideSkill = R.file && (path.resolve(R.file) + path.sep).startsWith(SKILL_DIR + path.sep);
   let notes = null, asks = [];
-  if (!isHtml && /^copy\.md$/i.test(path.basename(R.file || ''))) notes = notesFindings(R.raw, path.basename(R.file));
+  const nf = isHtml ? findNotes(R.file) : R.file;
+  const page = isHtml ? pageTargets(R.raw,R.file) : staticPageForNotes(R.file);
+  if (page && isHtml) {
+    const temper = attrOf((R.raw.match(/<html\b([^>]*)>/i) || [])[1] || '', 'data-temper');
+    const counts = new Map();
+    const chapterNames = new Set();
+    for (const nav of page.nodes.filter(n => /(?:^|\s)(?:chapter-nav|contents-row)(?:\s|$)/.test(n.get('class') || ''))) {
+      for (const link of page.nodes.slice(nav.start,nav.end).filter(n => n.name==='a')) chapterNames.add(headKey(link.labelText));
+    }
+    for (const node of page.nodes) {
+      const tagged = node.get('data-world-tag') !== null;
+      const next = page.nodes[node.end];
+      const before = next && /^h[1-6]$/.test(next.name);
+      if (!tagged && !before) continue;
+      if (!tagged && page.nodes.slice(0,node.start).some(n => n.end>node.start && n.get('data-world-tag')!==null)) continue;
+      const children = page.nodes.slice(node.start,node.end);
+      if (!tagged && children.slice(1).some(n => n.get('data-world-tag')!==null || n.get('class')?.split(/\s+/).includes('chapter-head'))) continue;
+      const words = children.map(n => n.text).join(' ').trim();
+      const classes = (node.get('class') || '').split(/\s+/);
+      if (classes.includes('chapter-head') && chapterNames.has(headKey(words))) continue;
+      const named = classes.some(c => EYEBROW.test(c));
+      if (!tagged && !(before && (named || node.get('data-sticker')!==null || /^(?=.*[A-Z])[A-Z\d\s-]{2,36}$/.test(words)))) continue;
+      const section = page.nodes.slice(0,node.start).findLast(n => n.name==='section' && n.end>node.start);
+      const count = (counts.get(section) || 0)+1;
+      counts.set(section,count);
+      if (temper!=='loud' || !tagged || !before || !section || count>1 || node.get('data-sticker')===null || words.split(/\s+/).length>6)
+        add('FAIL','copy-eyebrows',[words],'A heading label needs one short world tag on a loud section.','Use data-world-tag on the game’s drawn sticker in its display face, or remove the label.');
+    }
+  }
+  let brief = '', dealtShape = '';
+  if (nf) {
+    try {
+      const plan = JSON.parse(fs.readFileSync(path.join(path.dirname(nf),'plan.json'),'utf8'));
+      brief = plan.brief || '';
+      dealtShape = plan.story || '';
+    } catch {}
+  }
+  if (!isHtml && /^copy\.md$/i.test(path.basename(R.file || ''))) notes = notesFindings(R.raw, path.basename(R.file), page, brief, dealtShape);
   else if (isHtml && !insideSkill) {
     const nf = findNotes(R.file);
     if (!nf) add('FAIL', 'copy-notes', ['.taste-skill/copy.md'], 'no copy notes: .taste-skill/copy.md is missing beside the page (or one or two folders up)', 'before the page, copy the block in references/copy.md (The copy notes) to .taste-skill/copy.md and fill the fact sheet, the voice card and the draft');
-    else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf); }
+    else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf, page, brief, dealtShape); }
   }
   if ((isHtml && !insideSkill) || (!isHtml && /^copy\.md$/i.test(path.basename(R.file || '')))) {
-    const nf = isHtml ? findNotes(R.file) : R.file;
-    const page = isHtml ? pageTargets(R.raw,R.file) : null;
-    asks = briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page || (!isHtml && staticPageForNotes(R.file)),add);
+    asks = briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page,add,brief);
+    if (isHtml && page) for (const node of page.nodes.filter(n => n.get('data-assumed') !== null)) {
+      const value = page.nodes.slice(node.start,node.end).map(n => n.text).join(' ').trim();
+      const price = /[€£$]\s*\d|\d[\d.,]*\s*(?:[€£$]|USD|EUR|GBP)/i.test(value);
+      const duration = /\b(?:\d+|a|an|one|two|three|four|five|six|seven|eight)[ -]+(?:(?:working|business)[ -]+)?(?:hours?|days?|weeks?|months?)\b/i;
+      const timing = /\b(?:within|ship(?:s|ping)?|deliver\w*|repl\w*|respond\w*|response|rollout|weeks?)\b/i;
+      if (price || value.split(/[.!?\n]/).some(line => duration.test(line) && timing.test(line)))
+        add('WARN','assumed-terms',[value],'An assumed element gives a price or commercial duration.','Use the rate and timing supplied by the brief.');
+    }
     if (page) for (const c of page.captions) {
       const t = c.text.trim().replace(/\s+/g,' ');
       if (!t && !c.fact) continue;

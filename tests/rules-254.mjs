@@ -19,9 +19,8 @@ const starter = fs.readFileSync(path.join(skill,'assets','starter.html'),'utf8')
 fs.copyFileSync(path.join(skill,'assets','system.css'),path.join(tmp,'system.css'));
 fs.mkdirSync(path.join(tmp,'.taste-skill'));
 const notes = path.join(tmp,'.taste-skill','copy.md');
-const deadline = Date.now()+9*60*1000;
 async function run(script,args) {
-  const r = await runCheck([script,...args],tmp,Math.max(1,Math.min(300000,deadline-Date.now())));
+  const r = await runCheck([script,...args],tmp,300000);
   if (r.error || r.timedOut || ![0,1].includes(r.status)) throw Error(String(r.error || r.stderr));
   return JSON.parse(r.stdout);
 }
@@ -50,8 +49,10 @@ function fixture(bad) {
   return file;
 }
 const variant = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only')+1] : '';
-if (variant && !['good','broken','booking','bands','headings','outcomes'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
+if (variant && !['good','broken','booking','bands','headings','outcomes','regressions'].includes(variant)) throw Error('Use --only good, broken, booking, bands, headings or outcomes');
 if (!variant || variant==='outcomes') {
+  fs.writeFileSync(path.join(tmp,'store-hop.html'),'<a href="https://store.steampowered.com/search/?term=wren">Find Wren</a>');
+  fs.writeFileSync(path.join(tmp,'store-item.html'),'<a href="https://store.steampowered.com/app/1234">Official store page</a>');
   const form = (action,body,extra='') => '<form action="'+action+'" '+extra+'><input type="email" name="email">'+body+'</form>';
   const cases = [
     ['Watch the film','play','works','<video controls><source src="film.mp4"></video>'],
@@ -87,6 +88,10 @@ if (!variant || variant==='outcomes') {
     ['Get the press kit','file','preview','<a href="https://press.example/">Press kit preview</a>','press kit ZIP'],
     ['Install the preview app','go','preview','<a href="https://shop.example/" aria-describedby="app-note">Store link</a><p id="app-note">Store preview.</p>','app store URL'],
     ['Film from a decoy','play','pretends','<video controls src="more.html"></video>'],
+    ['Wishlist the game','go','pretends','<a href="store-hop.html">Wishlist on Steam</a>'],
+    ['Wishlist the game','go','preview','<a href="store-hop.html">Find Wren on Steam</a>','official listing'],
+    ['Wishlist the game','go','works','<a href="store-item.html">Wishlist on Steam</a>'],
+    ['Meet the bosses',null,'works','<p>The harbour keeper catches the last ferry.</p>'],
     ['Open the artist page','go','works','<a href="more.html">Visit the artist</a>'],
     ['Download a brochure','file','pretends','<a href="page-without-extension" download>Download</a>'],
     ['Join our mailing list','send','pretends',form('','<button>Join</button><output>Signed up!</output>','onsubmit="return false"')],
@@ -113,7 +118,7 @@ if (!variant || variant==='outcomes') {
     for (const [i,[ask,outcome,state]] of cases.entries()) {
       const row=report.asks[i];
       assert.equal(row.ask,ask);
-      assert.equal(row.outcome,outcome || (state ? 'file' : null));
+      assert.equal(row.outcome,outcome || (ask==='Meet the bosses' ? 'show' : state ? 'file' : null));
       assert.equal(row.state || null,state,row.line);
       const findings=report.findings.filter(f=>f.id==='ask-outcome' && f.hits.some(h=>h.match.includes('#case-'+i+' ')));
       if (state==='pretends') assert.ok(findings.some(f=>f.sev==='FAIL' && /Client must supply/.test(f.fix)),row.line);
@@ -127,6 +132,35 @@ if (!variant || variant==='outcomes') {
   assert.ok(!deferred.findings.some(f=>f.id==='brief-ask' && f.sev==='FAIL'));
   assert.equal(deferred.asks[0].state,'preview');
   console.log('ok - a deferred ask may name a future target');
+}
+if (!variant || variant==='regressions') {
+  const file=path.join(tmp,'regressions.html');
+  const html='<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Harbour schedule</title><link rel="stylesheet" href="system.css">'+
+    '<style>.hero--triptych .hero__cta .btn{height:64px;font-size:20px}.nav .btn,.repeat .btn{height:44px;font-size:16px}#only-price{font-size:80px}#delay{opacity:0;position:absolute;width:1px;height:1px}label{display:inline-block;padding:12px}section{padding:40px}</style>'+
+    '<body><header class="nav"><div class="wrap"><a class="btn btn--primary" href="#demo">Book a demo</a></div></header><main>'+
+    '<section class="hero hero--triptych"><div class="wrap"><h1>Harbour schedule</h1><p>See each call at the quay.</p><div class="hero__cta"><a class="btn btn--primary" href="#demo">Book a demo</a></div></div></section>'+
+    '<section data-own="schedule"><div class="wrap"><h2>When the Wren arrives</h2><div role="img" aria-label="Schedule hours">09 10 11 12 13</div>'+
+    '<input id="delay" type="radio" name="delay"><label for="delay">Six hours late</label><p id="only-price">€2,400</p></div></section>'+
+    '<section id="demo" class="repeat"><div class="wrap"><h2>Review your call</h2><p data-placeholder>The demo opens an email draft with a placeholder destination.</p>'+
+    '<a class="btn btn--primary" href="#demo">Book a demo</a></div></section></main></body></html>';
+  fs.copyFileSync(path.join(skill,'assets/system.js'),path.join(tmp,'system.js'));
+  const controls = '<section id="pick"><h2>Choose a shift</h2><label>Shifts<input type="number" value="1" data-choice="shifts"></label><a href="#request">Request shift</a></section>'+
+    '<section id="request"><h2>Request your shift</h2><form><label>Shifts<input type="number" value="1" name="shifts" data-choice="shifts"></label></form></section>'+
+    '<a href="#teams" data-choice-set="team:Night">Night</a><section id="teams"><h2>Teams</h2><div role="tablist" data-choice="team">'+
+    '<button type="button" role="tab" aria-selected="true" aria-controls="day">Day</button><button type="button" role="tab" aria-controls="night">Night</button></div>'+
+    '<div id="day" role="tabpanel">Day shift</div><div id="night" role="tabpanel">Night shift</div></section>';
+  fs.writeFileSync(file,html.replace('</main>',controls+'</main><script type="module" src="system.js"></script>'));
+  const layout=await run(path.join(skill,'assets/layout/check.mjs'),['--url',file,'--profile',profile,'--sizes','1440x900','--json','--no-stress','--still']);
+  const rules=layout.flatMap(row=>row.findings);
+  assert.ok(!rules.some(f=>f.rule==='still-wrong' && f.where.includes('delay')),'native radio has a visible label');
+  assert.ok(!rules.some(f=>f.rule==='placeholder'),'an honest data-placeholder note is readable');
+  const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--widths','1440','--json','--profile',profile,'--out',path.join(tmp,'regressions')]);
+  assert.ok(report.widths.every(w=>!w.errors?.length && w.screens>0));
+  const fails=report.widths.flatMap(w=>w.findings).filter(f=>f.sev==='FAIL');
+  for (const [rule,subject] of [['phone-number','ascending chart hours'],['placeholder','preview wording'],['heading-scale','single display price'],['same-action','triptych/nav action'],['button-styles','triptych button size'],['choice-lost','synchronised picker and linked tab']]) {
+    assert.ok(!fails.some(f=>f.check===rule),subject+' '+JSON.stringify(fails.filter(f=>f.check===rule)));
+    console.log('ok - '+subject);
+  }
 }
 if (!variant || variant==='bands') {
   const scope={window:{},getComputedStyle:()=>({backgroundImage:'none',visibility:'visible',opacity:'1'})};

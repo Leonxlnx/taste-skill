@@ -358,7 +358,7 @@ for (const whole of [false, true]) {
 // A typography or palette change still blocks even when all suggested sections differ.
 {
   fs.mkdirSync(path.join(SKILL,'library'),{recursive:true});
-  for (const name of ['palettes','type']) fs.copyFileSync(path.join(SCRIPTS,'../library',name+'.json'),path.join(SKILL,'library',name+'.json'));
+  for (const name of ['palettes','type','stories']) fs.copyFileSync(path.join(SCRIPTS,'../library',name+'.json'),path.join(SKILL,'library',name+'.json'));
   const dir=project('none','Opening hours','room'), dot=path.join(dir,'.taste-skill');
   const frame={nav:'nav-mega',close:'close-form',footer:'footer-visit',mark:'petal',hero:'split',entrance:'rise',buttons:'solid',density:'compact',bg:'#fff',ink:'#111111',accent:'#1a4be0',display:'Geist',text:'Geist'};
   fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame}));
@@ -393,9 +393,14 @@ for (const whole of [false, true]) {
     found.asks.every(a=>run.out.includes(a.line)), 'gate prints every ask after its findings',run.out);
   check(found.fails.filter(f=>f.check==='play-dead').length===1 && found.fails.filter(f=>f.check==='ask-outcome').length===2,
     'one mapped play failure, with the independent unmapped dead control still reported',run.out);
+  const oldRun = path.join(dir,'.taste-skill',state(dir).latestRun);
+  const oldBytes = fs.readFileSync(oldRun,'utf8');
+  const snapshot = JSON.parse(oldBytes);
+  check(snapshot.fingerprint && snapshot.fails.length===found.fails.length && snapshot.warns.length===found.warns.length && Array.isArray(snapshot.waivers),'immutable run keeps fingerprint, findings and waivers',oldRun);
   fs.writeFileSync(path.join(dir,'kit.txt'),'Studio press contact');
   run = gate(dir,[]);
   found = state(dir).found;
+  check(path.join(dir,'.taste-skill',state(dir).latestRun)!==oldRun && fs.readFileSync(oldRun,'utf8')===oldBytes,'the latest pointer advances and the earlier findings are byte-identical',oldRun);
   check(found.asks?.find(a=>a.id==='kit')?.state==='works','adding the missing download refreshes the cached gate result',run.out);
 }
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch { /* a profile still held: left in the temp folder */ }

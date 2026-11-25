@@ -251,3 +251,11 @@ html[data-buttons="offset"] .btn:active { translate: 3px 3px; box-shadow: 0 0 0 
   [data-dialogue]::after, [data-sprite] { animation: none; }
   html[data-buttons] .btn:active { translate: none; }
 }
+
+/* The name and control stay in place on both sides. Native disclosure supports touch and keyboard. */
+[data-collectible] { position: relative; }
+.ex-flip > summary { width: fit-content; display: flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
+.ex-flip:not([open]) > summary span + span, .ex-flip[open] > summary span:first-child { display: none; }
+[data-collectible]:has(.ex-flip[open]) > :is(.ex-art,.ex-type,.ex-stats,.ex-flavour) { visibility: hidden; }
+.ex-flip[open] .ex-back { position: absolute; inset: 4rem var(--s-4) 4rem; display: grid; align-content: center; overflow: auto; background: var(--surface); padding: var(--s-4); }
+[data-temper="loud"] [data-world-tag][data-sticker] { position: static; display: inline-flex; width: fit-content; font-family: var(--font-display); }

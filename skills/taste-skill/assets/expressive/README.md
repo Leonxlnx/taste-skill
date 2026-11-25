@@ -16,3 +16,5 @@ after the kit's stylesheets; every part reads without script. `demo.html` shows 
 - `sprite-strip`: `<span data-sprite style="--sheet: url(…); --frames: 3; --frame-w: 10; --frame-h: 14">` inside a `[data-sprite-host]`.
 - `field-document`: `<div data-field-doc>` with a `dl` of typed fields and one `data-sticker="stamp"`.
 - `ornament-frame`: `<div data-ornament="rivet|corner|filigree">`, one material a page.
+
+A collectible can put its reverse in `details.ex-flip`. Its summary turns the card by click, tap, Enter or Space and returns to the front. See the tea cards in `demo.html`.

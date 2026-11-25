@@ -48,6 +48,12 @@ paper`. No source, no move. One world runs through the page; the buy button and 
 - Monospace uppercase kickers, an invented violet gradient, glass panels, a banned face; a pixel face off its grid;
   invented awards, laurels, scores or press quotes.
 
+A loud game can place one short label above a heading, set in the display face and drawn as a tag from that world (`data-sticker="tag" data-world-tag`). Name the source in the plan. Quiet and lively pages leave it out.
+
+## A scene the player can try
+
+Without a trailer, the strongest hero picture can be a small scene from the game. Show one action and its consequence in a self-running canvas with a pause button. A click or keyboard activation hands control to the player. Start with a complete still beneath the canvas and keep it for reduced motion or when script is unavailable.
+
 ## Picking the type
 
 A lively or loud deal gives two expressive pairings and one plain one as the exit; brief words such as pixel, arcade,
@@ -60,7 +66,7 @@ face at 400.
 
 `assets/expressive/` (`demo.html` shows each on light and dark grounds): `sticker`; `edge` (pixel, torn, wave,
 scallop, saw, diagonal); `dialogue-box` (name tab, a caret that blinks four times); `collectible` (name bar, art
-window, type line, stat chips, flavour line, set number); the `push`, `bevel`, `ribbon` and `offset` buttons;
+window, type line, stat chips, flavour line, set number, optional keyboard-operated reverse); the `push`, `bevel`, `ribbon` and `offset` buttons;
 `lettering`; `texture` (scanlines, grain, dither); `plate`; `crossing`; `sprite-strip` (`steps(n)`, three plays, again
 on hover or focus); `field-document` (typed fields, one stamp); `ornament-frame` (rivet, corner, filigree).
 

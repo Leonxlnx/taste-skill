@@ -1589,7 +1589,11 @@ function scan(t, o = {}) {
   const labelled = (at) => o.tel || /(?:^|[^\p{L}])(?:tel|tlf|tlfn|phone|telephone|call(?:\s+us)?(?:\s+on|\s+at)?|ring(?:\s+us)?(?:\s+on)?|fon|telefon|telefoon|téléphone|tél|tel[eé]fono|telefone|sími|simi|puh|puhelin|mob|mobile|mobil|cell|handy|whatsapp|fax|hotline)\.?\s*[:.]?\s*$/iu.test(before(at)) || /(?:^|[\s(|·•])[TPMF]\s?[:.]\s*$/.test(before(at));
   // a Nordic label: 5xx xxxx after it is a real Icelandic line, not the US 555-01xx
   const nordic = (at) => /(?:^|[^\p{L}])(?:sími|simi|símanúmer|puh|puhelin|tlf|tlfn)\.?\s*[:.]?\s*$/iu.test(before(at));
-  const notNumber = (m) => CUR.test(before(m.index, 6)) || UNIT.test(t.slice(m.index + m[0].length)) || (!labelled(m.index) && /(?:ISBN|ISSN|EAN|GTIN|SKU|Art\.?|Nr\.?|No\.?|Order|Invoice|Ref\.?|ID|Kunden|Rechnung|#)\s*[:.]?\s*$/i.test(before(m.index, 14)))
+  const hourTicks = raw => {
+    const ticks = raw.trim().split(/\s+/);
+    return ticks.length >= 4 && ticks.every((v,i) => /^\d{2}$/.test(v) && +v < 24 && (!i || +v === (+ticks[i-1]+1)%24));
+  };
+  const notNumber = (m) => (!labelled(m.index) && hourTicks(m[0])) || CUR.test(before(m.index, 6)) || UNIT.test(t.slice(m.index + m[0].length)) || (!labelled(m.index) && /(?:ISBN|ISSN|EAN|GTIN|SKU|Art\.?|Nr\.?|No\.?|Order|Invoice|Ref\.?|ID|Kunden|Rechnung|#)\s*[:.]?\s*$/i.test(before(m.index, 14)))
     || /^\d{1,2}[.\-\/]\d{1,2}[.\-\/]\d{2,4}$/.test(m[0].trim()) || /^\d{1,2}[.:]\d{2}(?:\s?[-–]\s?\d{1,2}[.:]\d{2})?$/.test(m[0].trim());
   const phone = (m, d, why) => { if (!notNumber(m) && dialable(d, m[0], nordic(m.index))) add('phone-number', m.index, m[0], d, why); };
   for (const m of t.matchAll(/(?<![\w+\d])(?:\+|00)\s?\(?[1-9]\d{0,2}\)?(?:[\s.\-\/]?\(?\d{1,5}\)?){2,6}(?!\d)/g)) { const d = digits(m[0]).replace(/^00/, ''); if (d.length >= 8 && (m[0].trim()[0] === '+' || d.length >= 10) && !/^\+\d{1,3}(?:[\s.]\d{3})+$/.test(m[0].trim())) phone(m, d, 'a phone number in international format'); } // (+12 000 000 downloads is a count)
@@ -1932,7 +1936,7 @@ const checks = [
   { id: 'one-heading', sev: 'FAIL', what: 'SR-5: one h2 per section, none in the hero' },
   { id: 'container-edges', sev: 'FAIL', what: 'SR-6: one container, equal margins (64-120px, 16-24px on a phone), the page shell, nothing past its lines, one or two left lines, no sideways scroll, wide pictures edge to edge; a viewport meta tag' },
   { id: 'row-lines', sev: 'FAIL', what: 'SR-7: card rows on the container lines at one height, no sideways scroller or cut carousel, no cut row item, nothing past the right line' },
-  { id: 'split-pair', sev: 'FAIL', what: 'SR-8: splits top-aligned, text left, the right column on its local grid (k 5, 6 or 7; 6 on a place page unless declared), edge to edge' },
+  { id: 'split-pair', sev: 'FAIL', what: 'SR-8: splits top-aligned, text left, the right column on a line of its twelve-column grid, edge to edge' },
 ];
 const fixes = {
   'hero-screen': 'make the hero exactly one screen (height: 100svh) with its content between the nav and 24px above the fold',
@@ -2236,7 +2240,7 @@ function measure(opt) {
     if (layerMemo.has(el)) return layerMemo.get(el);
     let v = false, m = el;
     if (TU(m) === 'IMG' && m.parentElement && TU(m.parentElement) === 'PICTURE') m = m.parentElement;
-    if (/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(m)) && m.parentElement && secSet.has(m.parentElement)) {
+    if (/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(m)) && m.parentElement && secSet.has(m.parentElement)) {
       const pm = picImg(m) || m;
       if (m.classList.contains('layer') || el.classList.contains('layer')) v = true;
       else { const s = cs(pm); if (s.position === 'absolute') { const r = rectOf(pm); v = r.l <= SX + 1 && r.r >= SX + W - 1; } }
@@ -2252,21 +2256,16 @@ function measure(opt) {
     const st = cs(s.el), raw = rectOf(k);
     // A transformed photographic layer is painted only inside the parent's crop.
     const r = /^(clip|hidden)$/.test(st.overflowX) && /^(clip|hidden)$/.test(st.overflowY) ? inter(raw, secR(s)) : raw;
-    if (!/^(IMG|PICTURE|VIDEO|CANVAS)$/.test(TU(k0))) probs.push('uses ' + k0.localName + ' where an image, picture, video or canvas is required');
+    if (!/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(k0))) probs.push('uses ' + k0.localName + ' where an image, picture, video, canvas or SVG is required');
     if (cs(k).position !== 'absolute') probs.push('uses ' + cs(k).position + ' positioning where absolute is required');
     if (!inPlacePicture(k0) && (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1)) probs.push('covers x ' + px(r.l - SX) + ' to ' + px(r.r - SX) + 'px instead of 0 to ' + W + 'px (1px tolerance)');
     if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('extends ' + px(Math.max(s.top - r.t, r.b - s.bottom)) + 'px outside the section against a 1px limit');
     if (cs(k).zIndex !== '0') probs.push('has z-index ' + cs(k).zIndex + ' where 0 is required');
     const ah = k.getAttribute('aria-hidden') === 'true';
-    if (s.isHero) {
-      const img = TU(k) === 'IMG' ? k : (k.querySelector && k.querySelector('img'));
-      if (!ah && !(img && img.hasAttribute('alt'))) probs.push('has no accessible description or decorative marker and needs one');
-    } else {
-      if (ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
-      const picture = TU(k)==='IMG' ? k : k.querySelector?.('img');
-      const described = picture?.hasAttribute('alt') || (k.getAttribute('role')==='img' && (k.getAttribute('aria-label') || k.getAttribute('aria-labelledby')));
-      if (!ah && !described) probs.push('has no accessible description or decorative marker and needs one');
-    }
+    if (!s.isHero && ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
+    const picture = TU(k) === 'IMG' ? k : k.querySelector('img');
+    const described = picture?.hasAttribute('alt') || (k.getAttribute('role') === 'img' && (k.getAttribute('aria-label') || k.getAttribute('aria-labelledby')));
+    if (!ah && !described) probs.push('has no accessible description or decorative marker and needs one');
     return probs;
   };
   const fixMemo = new Map();
@@ -2843,7 +2842,7 @@ function measure(opt) {
     const picUnder = (b) => {
       const r = rectOf(b);
       if (/url\(/.test(cs(S[0].el).backgroundImage)) return rectOf(S[0].el);
-      for (const m of S[0].el.querySelectorAll('img, picture, video, canvas')) { if (b.contains(m)) continue; const p = rectOf(m); if (p.l <= r.l + 2 && p.r >= r.r - 2 && p.t <= r.t + 2 && p.b >= r.b - 2) return p; }
+      for (const m of S[0].el.querySelectorAll('img, picture, video, canvas, :scope > svg')) { if (b.contains(m)) continue; const p = rectOf(m); if (p.l <= r.l + 2 && p.r >= r.r - 2 && p.t <= r.t + 2 && p.b >= r.b - 2) return p; }
       return null;
     };
     const heroBoxMemo = new Map();
@@ -2960,6 +2959,7 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number' || it.layer || bleedPic(it.el, it.r)) continue;
       const el = it.el, z = it.z, c = C(z), cw = c.r - c.l;
+      if (el.closest('h1') && (el.closest('h1').getAttribute('aria-label') || el.closest('h1').querySelector('svg[aria-label],svg title,img[alt]'))) continue;
       if (el === S[z].wrap || el.closest('section[data-own]') || inPlacePicture(el) || window.lyRules.edgePicture(el) || el.closest('.item-row')) continue;
       // The text panel over a hero photograph has its own placement check above.
       // Its width follows the headline; the full-bleed visual is the photograph.
@@ -3074,8 +3074,7 @@ function measure(opt) {
       const lFirst = boxes.filter((b) => L.contains(b.el));
       const lt = lFirst.length ? Math.min(...lFirst.map((b) => b.r.t)) : null;
       const orient = lt != null && lFirst.some((b) => b.kind === 'text' && b.r.t <= lt + 2) ? 'text-left' : 'text-right';
-      const declared = sp.G.el.matches('.grid') && [5,6,7].find(k=>L.classList.contains('span-'+k) && Rt.classList.contains('span-'+(12-k)));
-      const ks = (place ? [...new Set([6,...(declared?[declared]:[])])] : [5,6,7]).map((k) => ({ k, x: c.l + k * pitch }));
+      const ks = Array.from({length:12}, (_,k) => ({k,x:c.l + k*pitch}));
       const kHit = ks.find((k) => Math.abs(rr.l - k.x) <= 2);
       const gr = rectOf(sp.G.el), cols = [box(lr), box(rr)];
       // T-mode: the tops of the two columns' first boxes agree within 8px (merged CK-33: a centred split FAILs)
@@ -3089,13 +3088,13 @@ function measure(opt) {
       } else {
         const ends = [kHit.x - gutter, kHit.x - gutter - pitch];
         const end = ends.reduce((a,b) => Math.abs(a - lr.r) <= Math.abs(b - lr.r) ? a : b);
-        if (Math.abs(lr.r - end) > 2) pOff.push(off(sp.G.el, gr, `The left column ends at x ${px(lr.r - SX)}px, so adjust its span to end within 2px of the track edge at x ${px(end - SX)}px.`, { d: Math.abs(lr.r - end), ref: [lineX(end, gr.t, gr.b)] }));
+        if (Math.abs(lr.r - end) > 2) pOff.push(off(sp.G.el, gr, `The gap between the pair is ${px(rr.l-lr.r)}px. Use a ${gutter}px gutter or leave one full track open.`, { d: Math.abs(lr.r - end), ref: [lineX(end, gr.t, gr.b)] }));
       }
       // T-edges: the left item on wrap.left, the right item on wrap.right, 2px either way
       const ep = [];
       if (Math.abs(lr.l - c.l) > 2) ep.push(`its left column starts at ${px(lr.l - SX)}px, the container's left at ${px(c.l - SX)}px`);
       if (Math.abs(rr.r - c.r) > 2) ep.push(`its right column ends at ${px(rr.r - SX)}px, the container's right at ${px(c.r - SX)}px`);
-      if (ep.length) eOff.push(off(sp.G.el, gr, `The split runs from x ${px(lr.l - SX)} to ${px(rr.r - SX)}px, so align its outside edges within 2px of the wrap at ${px(c.l - SX)} and ${px(c.r - SX)}px.`, { d: Math.max(Math.abs(lr.l - c.l), Math.abs(rr.r - c.r)), ref: [cbox(c, gr.t, gr.b)] }));
+      if (ep.length) eOff.push(off(sp.G.el, gr, `The short outer edge leaves ${px(Math.max(Math.abs(lr.l-c.l),Math.abs(rr.r-c.r)))}px at the wrap, so extend the split to x ${px(c.l-SX)} and ${px(c.r-SX)}px.`, { d: Math.max(Math.abs(lr.l - c.l), Math.abs(rr.r - c.r)), ref: [cbox(c, gr.t, gr.b)] }));
     }
     T.push(test('T-mode', mOff.length ? 'FAIL' : 'PASS', mOff));
     T.push(test('T-orientation', oOff.length ? 'FAIL' : 'PASS', oOff));
@@ -4326,13 +4325,28 @@ async function run(ctx) {
   return { id, phase, checks, fixes, summary, flags, quick, run };
 })();
 
+import {choiceProbe} from './choice-check.mjs';
+const choiceMod = {
+  id:'choices', phase:'pass', quick:true, flags:[], summary:'  choices    selected values reach their forms and linked tabs',
+  checks:[{id:'choice-lost',sev:'FAIL',what:'a choice or linked tab is lost'}],
+  fixes:{'choice-lost':'Use matching data-choice names on the picker and form.'},
+  when: ctx => ctx.first,
+  async run(ctx) {
+    const tab = await ctx.openTab();
+    try {
+      await tab.goto(ctx.url);
+      await ctx.waitReady(tab);
+      return await tab.eval('('+choiceProbe.toString()+')()');
+    } finally { await tab.close(); }
+  }
+};
+
 const storyMod = (() => {
 // the page as a story (references/story.md, scripts/story-check.mjs): read once, at the first width, from the page's
 // headings, grounds and chapter links, the plan (.taste-skill/plan.json: its story) and the copy notes' ## Story block.
 //   story      spine-drift (the page's h2s against the notes' Spine: another order, or a planned heading with no section),
-//              label-run (three neighbouring h2s that are bare labels), thread-lost (none of the hero's or the Thread's
-//              ids, names and figures comes back in two later sections), close-unanswered (the close shares no word and no
-//              number with the hero), stripe-grounds (a chapters or two-part-promise page whose ground changes inside a
+//              label-run (three neighbouring labels), thread-lost (the named record needs three distinct states),
+//              close-unanswered (the close loses the opening audience or action), stripe-grounds (a chapters or two-part-promise page whose ground changes inside a
 //              chapter, or at every section for four in a row), each WARN; chapter-nav (a chapter-nav or contents-row link
 //              that misses its id FAIL; a bar of under four or over six chapters, or a label no chapter head carries, WARN)
 const id = 'story';
@@ -4340,8 +4354,8 @@ const phase = 'width';
 const checks = [
   { id: 'spine-drift', sev: 'WARN', what: 'the page’s h2s in another order than the notes’ Spine, or a planned heading with no section' },
   { id: 'label-run', sev: 'WARN', what: 'three neighbouring h2s that are bare labels (three words or fewer, no verb, no figure)' },
-  { id: 'thread-lost', sev: 'WARN', what: 'none of the hero’s or the Thread’s ids, names and figures comes back in two later sections' },
-  { id: 'close-unanswered', sev: 'WARN', what: 'the close shares no content word and no number with the hero' },
+  { id: 'thread-lost', sev: 'WARN', what: 'the named thread has fewer than three distinct states or repeats unchanged' },
+  { id: 'close-unanswered', sev: 'WARN', what: 'the close loses the opening audience or action' },
   { id: 'stripe-grounds', sev: 'WARN', what: 'a chapters or two-part-promise page whose ground changes inside a chapter or at every section' },
   { id: 'chapter-nav', sev: 'FAIL', what: 'a chapter-nav or contents-row link that misses its id (FAIL); a bar of under four or over six chapters, a label no chapter head carries (WARN)' },
 ];
@@ -4373,7 +4387,7 @@ async function run(ctx) {
 
 // the checks kept as blocks of their own: each runs on the walked tab at every width it names (phase 'width') or opens
 // its own tab (phase 'pass'); --no-<id> skips one
-const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod, storyMod];
+const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod, storyMod, choiceMod];
 
 const OUT = opt('out', null);
 // the page's own file when a local page is checked (the story block reads the plan and the copy notes beside it)
@@ -5610,7 +5624,8 @@ function lib(itemContext) {
       // (a small mark set before the words, a swatch, a dot or an icon, starts the line: the words follow it)
       const tl = Math.min(...ls.map((l) => l.left));
       const lead = faint || mark ? null : [...blk.querySelectorAll('svg, img, span, i')].find((m) => { if ((m.textContent || '').trim()) return false; const q = m.getBoundingClientRect(); return q.width >= 4 && q.width <= 40 && q.height >= 4 && q.height <= 40 && q.left < tl - 2 && q.left >= r.left - 1 && shown(m, q); });
-      const left = faint || mark ? r.left : lead ? Math.min(tl, lead.getBoundingClientRect().left) : tl;
+      const lockup = blk.closest('a.nav__logo, a:has([data-mark]), a:has(.mark)');
+      const left = lockup ? lockup.getBoundingClientRect().left : faint || mark ? r.left : lead ? Math.min(tl, lead.getBoundingClientRect().left) : tl;
       if (left <= 2) continue;
       const u = faint || mark ? R(r) : { left, top: Math.min(...ls.map((l) => l.top)), width: Math.max(...ls.map((l) => l.right)) - left, height: Math.max(...ls.map((l) => l.bottom)) - Math.min(...ls.map((l) => l.top)) };
       out.grid.push({ id: idOf(blk), sel: sel(blk), text: label(blk), left: Math.round(left * 2) / 2, kind: 'text', fs: parseFloat(CS(blk).fontSize) || 16, sec: secIndex(blk), rect: R(u) });
@@ -5762,7 +5777,7 @@ function lib(itemContext) {
       }
       looks.push(el);
       const href = real && el.getAttribute('href') != null ? (() => { try { return new URL(el.getAttribute('href'), location.href).href; } catch { return null; } })() : null;
-      out.buttons.push(Object.assign({ id: idOf(el), sel: sel(el), rect: R(r), fixed: inFixed(el), href, nav: real && !!(inFixed(el) || inChrome(el)), faint: faintBox(CS(el)) }, L, { mock: mock || !real }));
+      out.buttons.push(Object.assign({ id: idOf(el), sel: sel(el), rect: R(r), triptychPrimary: el.matches('.hero--triptych .hero__cta .btn--primary') && (Math.abs(r.height-64)<1 || Math.abs(r.height-56)<1), fixed: inFixed(el), href, nav: real && !!(inFixed(el) || inChrome(el)), faint: faintBox(CS(el)) }, L, { mock: mock || !real }));
       if (real && !mock) buttonExtras(el, r, out);
     }
   }
@@ -7631,7 +7646,8 @@ function lib(itemContext) {
   const PH_CAPS = /\bTODO\b|\bTBD\b|\bX{3,}\b|\{\{[^}\n]{1,40}\}\}/;
   function placeholderIn(t) {
     for (const m of t.matchAll(/\[([^\]\n]{2,48})\]/g)) { const x = m[1].trim(); if (/\p{L}/u.test(x) && PH_WORD.test(x)) return m[0]; }
-    const a = t.match(PH_TEXT) || t.match(PH_CAPS); return a ? a[0] : null;
+    const prose = /\b(preview|draft|demo|sample form|not sent)\b/i.test(t) ? t.replace(/\bplaceholder\b/gi,'') : t;
+    const a = prose.match(PH_TEXT) || t.match(PH_CAPS); return a ? a[0] : null;
   }
   // "sample" as a builder's tag on a figure, a price, an address or a quote (not a free sample a shop gives away)
   const SAMPLE = /\(\s*samples?\b[^)]{0,40}\)|\bsamples? (figures?|prices?|hours|quotes?|address(es)?|data|terms?|dates?|numbers?|names?|rooms?|details|coordinates|answers?|reviews?|copy|text|photos?|pictures?|images?|plans?|menus?|coffees?|products?|items?|map|contacts?|times?|figures? and)\b|\b(are|is|as|marked( as)?|all) samples?\b|^\s*samples?\b|\bsamples? only\b|\bsamples? until\b|\bsamples?\s*[:;]/im;
@@ -8235,7 +8251,7 @@ function lib(itemContext) {
       const it = (e, sec) => ({ id: idOf(e || sec), sel: sel(e || sec), text: label(e || sec) });
       // (a layer of the kit's own big scene the width of the page, its ground or its light, bleeds like a picture: the
       // scene paints its stage to its edges, so it meets the section before and after with no seam)
-      const bleeds = (e) => e && (MEDIA.has(e.tagName) || ['picture', 'effect'].includes(quickKind(e)) || (inKitScene(e) && !ownText(e))) && (e.getBoundingClientRect().width >= vw * 0.9 || (e.matches('img,picture') && window.lyRules.edgePicture(e)));
+      const bleeds = (e) => e && (MEDIA.has(e.tagName) || (e.matches('section > svg') && CS(e).position === 'absolute') || ['picture', 'effect'].includes(quickKind(e)) || (inKitScene(e) && !ownText(e))) && (e.getBoundingClientRect().width >= vw * 0.9 || (e.matches('img,picture') && window.lyRules.edgePicture(e)));
       if (edgeA) {
         const d = (ruleAt != null && same(gA, rb.top - ra.bottom > 4 ? gGap : gB) ? Math.min(ra.bottom, ruleAt) : ra.bottom) - ea.bottom, e = lastItem(A, ea, 'bottom');
         const bleed = bleeds(e);
@@ -9436,7 +9452,7 @@ const CHECKS = Object.keys(FIX);
 // outside a Title Case run ("rides in the Black Forest", "from Vicosoprano" have one; "Roasted in Every Batch" has none:
 // a Title Case headline's place is passed with --place)
 const PLATFORMS = /\b(iOS|iPadOS|Android|macOS|Linux|Firefox|PlayStation|PS[45]|Xbox|Nintendo Switch|Zendesk|Shopify|GitHub|GitLab|Figma|Salesforce|HubSpot|SumUp|Zettle|Help Scout|VS ?Code|JetBrains)\b/;
-const PLATFORM_WORDS = /\b(Windows|Chrome|Safari|Steam|Slack|Notion|Stripe)\b/;
+const PLATFORM_WORDS = /\b(Windows|Chrome|Safari|Steam|Slack|Notion|Stripe)\b|\b(?:on|for) (?:PC|Switch)\b/;
 const GENRES = /\b(roguelikes?|roguelites?|rpgs?|role-playing game|platformers?|metroidvanias?|shooters?|fps|city-builders?|deck-?builders?|visual novel|mmos?|mobas?|co-?op|multiplayer|single-player|open-world|(strategy|puzzle|racing|survival|horror|sand-?box|simulation|sports|fighting|rhythm|adventure|action) games?)\b/i;
 const PLACE_AT = /\b(in|at|near|from|across|around)\s+(the\s+)?(?!(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|January|February|March|April|May|June|July|August|September|October|November|December)\b)(\p{Lu}\p{Ll}{2,})/gu;
 const placeAt = (text) => {
@@ -9580,7 +9596,9 @@ function extrasFindings(X, PG, AU, first, later, vw) {
   const figs = X.figures.filter((f) => !f.foot && !f.head);
   const h1s = PG ? PG.heads.filter((h) => h.level === 1 && !h.foot).map((h) => h.fs) : [];
   const top = h1s.length ? Math.max(...h1s) : null;
-  for (const f of figs.filter((x) => top && x.fs > top + 0.5).slice(0, 2)) push('heading-scale', 'FAIL', f, `the figure "${f.text}" is set at ${f.fs}px, larger than the h1 (${top}px)`, { fix: 'set figures below the h1: a stat reads as data, not as the headline' });
+  const overTitle = figs.filter(x => top && x.fs > top + 0.5);
+  const displayPrice = overTitle.length === 1 && /[€$£¥]|\b(EUR|USD|GBP)\b/i.test(overTitle[0].text) ? overTitle[0] : null;
+  for (const f of overTitle.filter(x => x !== displayPrice).slice(0, 2)) push('heading-scale', 'FAIL', f, `the figure "${f.text}" is set at ${f.fs}px, larger than the h1 (${top}px)`, { fix: 'set figures below the h1: a stat reads as data, not as the headline' });
   // a figure over the section headings (the readers counted every one: "6 hours" at 64px over 48px h2s), told once
   { const h2s = PG ? PG.heads.filter((h) => h.level === 2 && !h.foot && !h.card && !h.moment).map((h) => h.fs).sort((a, b) => a - b) : [];
     const m2 = h2s.length ? h2s[Math.floor(h2s.length / 2)] : null;
@@ -10992,7 +11010,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // second style; two or more of them are judged like any other
     const xlOf = (b) => b.rect && b.rect.width >= Math.min(360, 0.85 * vw) && b.h >= 56;
     const xls = all.filter((b) => b.real && !b.mock && !b.nav && xlOf(b)), xlIds = new Set(xls.length === 1 || new Set(xls.map((b) => norm(b.text))).size === 1 ? xls.map((b) => b.id) : []);
-    const page = all.filter((b) => b.real && !b.mock && !b.nav && !xlIds.has(b.id));
+    const page = all.filter((b) => b.real && !b.mock && !b.nav && !b.triptychPrimary && !xlIds.has(b.id));
     for (const st of clusterLooks(page)) {
       const hs = [...new Set(st.items.map((i) => i.h))].sort((a, b) => a - b), fs = [...new Set(st.items.map((i) => Math.round(i.fs)))].sort((a, b) => a - b);
       const lo = st.items.find((i) => i.h === hs[0]), hi = st.items.find((i) => i.h === hs[hs.length - 1]);
@@ -11021,6 +11039,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
           if (bad || a.id >= b.id) continue;
           const nav = a.nav !== b.nav, small = a.nav ? a : b, large = a.nav ? b : a;
           if (!sameLook(a, b) && !invertedLook(a, b)) { bad = `${lookName(a)} and ${lookName(b)}`; break; }
+          if ((a.triptychPrimary && b.h===44 || b.triptychPrimary && a.h===44) && Math.max(a.fs,b.fs)/Math.min(a.fs,b.fs)<=1.5) continue;
           const kh = Math.max(a.h, b.h) / Math.min(a.h, b.h), kf = Math.max(a.fs, b.fs) / Math.min(a.fs, b.fs);
           if (nav && small.h <= large.h && kh <= 1.5 && kf <= 1.5) continue; // the nav copy, one size smaller
           if (kh > 1.3 || kf > 1.3) bad = `${Math.min(a.h, b.h)}px and ${Math.max(a.h, b.h)}px tall, labels at ${Math.round(Math.min(a.fs, b.fs))}px and ${Math.round(Math.max(a.fs, b.fs))}px`;

@@ -16,11 +16,13 @@ node <skill>/scripts/moments.mjs pick --page service --sections 7 --carry photos
 | `window-parallax` | A wide picture already in the section | A photograph with room above and below its subject for a small crop. |
 | `closing-lift` | The close | A closing photograph, line and action. Light text needs a calm, dark lower third. Use a solid reading band if the crop is bright. |
 | `word-highlight` | An existing h2 or closing heading | `--carry words` and a statement of 12–40 words. Mark the heading itself or its text with `.mo-wh__text`. |
-| `word-rotate` | One word inside an h1 or h2 | Two to four alternatives that belong in that heading. Keep the written word first. Refuse the part when the widest alternative changes the line count at 390px. Keep the pause button. |
+| `word-rotate` | One word inside an h1 or h2 | Use `--carry words` for two to four states the page shows. Keep the written word first. Refuse the part when the widest alternative changes the line count at 390px. Keep the pause button. |
 
 Details outside the count are `lines-rise` on a heading, `marquee-row` for a named list and `liquid-hover` for a game or creative tool whose picture is the product.
 
 By name in the brief only: `giant-type-pass`, `letters-assemble`, `iris-opens`, `line-carries-colour`, `liquid-type`, `cursor-spotlight`, `counter-rolls`, `headline-arrives`.
+
+Three states with fewer than 25 words each use buttons beside one frame. Use `data-compact` for longer captions that still show one small change. Mark the changing detail `data-step-detail` to keep it visible on phones.
 
 ## Mount it
 

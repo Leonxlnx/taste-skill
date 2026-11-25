@@ -16,3 +16,7 @@ description: Draw a product, its output or a game's world when the page needs to
 **Deliver** accessible SVG in the hero and section, a self-contained share master, and any small CSS needed. Use `<svg role="img" aria-label="…">` or `<img alt="…">`. Hide decorative crops from assistive technology when the caption covers them. Export the SVG master to a supported raster format when publishing a social preview. Use flat fills and at most one shadow tone per material. Keep each source asset under 60 KB.
 
 **Check** with `node check.mjs <page-folder>`. It checks IDs, inline labels, part references, and the size and viewBox of the self-contained `share.svg` master. At desktop and phone size, point to the subject, its identifying feature and its action. Inspect every state and the share crop. See `example/index.html` for the worked result.
+
+## A game without a trailer
+
+Draw the still first. A small canvas scene can play one action and its consequence by itself, with a pause control and click or keyboard input to take over. Keep the still for reduced motion and without script.

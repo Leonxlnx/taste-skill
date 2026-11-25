@@ -783,3 +783,30 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
   .hero--centred .btn-row { margin-top: var(--s-1); }
   .hero--centred .hero__window { margin-top: var(--s-4); }
 }
+
+/* A wide work view keeps the explanation and action on the same edge. */
+.hero[data-view="wide"] .hero__c { justify-items: start; text-align: left; margin-inline: 0; max-width: 52rem; }
+.hero[data-view="wide"] .btn-row { justify-content: flex-start; }
+.hero[data-view="wide"] .hero__window { width: 100%; max-width: none; margin-inline: 0; }
+.work-board { padding: clamp(20px,4vw,64px); background: var(--surface); color: var(--ink); }
+.work-board__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-4); justify-content: space-between; padding-bottom: var(--s-6); }
+.work-board__head strong { font: var(--display-weight) var(--t-h2)/1.1 var(--font-display); }
+.work-board dl > div { display: grid; grid-template-columns: minmax(8rem, 1fr) 4fr; align-items: center; border-top: 1px solid var(--line-strong); min-height: clamp(70px,12svh,120px); }
+.work-board dd { margin: 0; }
+.work-board dd span { display: block; margin-inline-start: var(--start); width: var(--length); min-width: fit-content; padding: var(--s-3); background: var(--ink); color: var(--bg); font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) {
+  .work-board dl > div { grid-template-columns: 1fr auto; }
+  .work-board dd span { width: auto; margin: 0; }
+}
+
+/* Game art extends behind a quiet reading plate at both crops. */
+main > .hero[data-view="world"] { --photo: 0px; position: relative; isolation: isolate; overflow: hidden; }
+.hero[data-view="world"] > .hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero[data-view="world"] > .wrap { position: relative; z-index: 1; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr; }
+.hero[data-view="world"] .hero__text { width: fit-content; max-width: min(31rem,100%); padding: var(--s-5); background: var(--p-bg); color: var(--p-ink); border-radius: 0; }
+.hero[data-view="world"] .hero__text p { margin-block: var(--s-3) var(--s-4); color: inherit; }
+@media (max-width: 639px) {
+  main > .hero[data-view="world"]:has(> .wrap) { display: flex; flex-direction: column; justify-content: flex-end; }
+  main > .hero[data-view="world"] > .wrap { flex: none; padding-block: 0; }
+  .hero[data-view="world"] .hero__text { align-self: start; }
+}

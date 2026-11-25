@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { runCheck } from './run-check.mjs';
 
@@ -30,6 +30,21 @@ for (const t of types.filter((x) => x.temper === 'expressive')) {
 }
 ok('twenty expressive faces with class, own weight, text face, suits and avoid');
 
+// A chapter named in the navigation and a game-world object are distinct from a plain kicker.
+const sticker = '<p data-world-tag data-sticker="tag">Dock pass</p><h2>Board the boat</h2>';
+const chapter = '<nav class="chapter-nav"><a href="#harbour">PIER</a></nav><section id="harbour"><p class="chapter-head">PIER</p><h2>Board the boat</h2></section>';
+for (const [temper,inside,expected] of [
+  ['loud',sticker,0], ['quiet',sticker,1], ['lively',sticker,1], ['loud',sticker+sticker,1],
+  ['loud','<p>DOCK PASS</p><h2>Board the boat</h2>',1], ['quiet',chapter,0]
+]) {
+  const f = path.join(TMP,'tag-case.html');
+  fs.writeFileSync(f,'<html data-temper="'+temper+'"><body><section>'+inside+'</section></body></html>');
+  const result = spawnSync(process.execPath,[path.join(SKILL,'scripts/copy-lint.mjs'),f,'--json'],{encoding:'utf8',windowsHide:true});
+  const findings = JSON.parse(result.stdout).files[0].findings.filter(f=>f.id==='copy-eyebrows' && f.sev==='FAIL');
+  assert.equal(findings.length,expected,temper+' '+inside);
+}
+ok('one drawn heading tag on loud pages, with the chapter-navigation exception preserved');
+
 // ---------------------------------------------------------------- the temper and the deal
 const plan = (args, seed) => {
   const dir = fs.mkdtempSync(path.join(TMP, 'plan-'));
@@ -50,6 +65,9 @@ ok('a quiet kind is never dealt an expressive face or button family');
 for (let i = 0; i < 8; i++) {
   const { out, p } = plan(['--page', 'gaming', '--sections', '5', '--has', 'art', '--brief', 'a cosy pixel art fishing game'], 'pixel-' + i);
   assert.equal(p.temper, 'loud');
+  assert.equal(p.heroVariant,'world');
+  assert.equal(p.palette,'art');
+  assert.match(out,/start\.mjs brand .*--accent/);
   assert.ok(expressiveIds.has(p.type), 'a pixel game is dealt an expressive face first: ' + p.type);
   assert.ok(['push', 'bevel', 'ribbon', 'offset'].includes(p.buttons));
   assert.equal(p.effect, null, 'a loud page takes no WebGL effect');

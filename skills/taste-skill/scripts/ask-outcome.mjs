@@ -14,6 +14,7 @@ export function inferOutcome(ask) {
       /^(?:visit|open|go to)\b.*\b(?:website|site|shop|store|profile|channel)\b/i.test(ask)) return 'go';
   if (/\b(download|press (?:kit|assets)|pdf|zip)\b/i.test(ask)) return 'file';
   if (/\b(trailer|film|teaser|audio clip|podcast)\b|^(?:play|watch|listen to)\b/i.test(ask)) return 'play';
+  if (/\b(?:tell (?:our|their|the) story|meet (?:our|the) bosses|show how .* plays)\b/i.test(ask)) return 'show';
   if (mapAsk.test(ask) || /^(?:see|read|show|find out whether)\b/i.test(ask)) return 'show';
   if (/^send\b/i.test(ask) || [booking, purchase, order, signup, enquiry].some(pattern => pattern.test(ask))) return 'send';
   if (/\b(view|menu|projects?|prices?|pricing|hours|choose|devlog|shipping|woven|review|mascot|streaks?|timeline|sdk|alerts?|ping|tap|release|spring|nights)\b|[€$£]\s*\d/i.test(ask)) return 'show';
@@ -163,13 +164,32 @@ function fileProblem(href,page) {
   return '';
 }
 
-function linkResult(outcome,page,scope,active,preview) {
+function linkResult(outcome,page,scope,active,preview,ask) {
   const fileAsk = outcome==='file';
+  const store = !fileAsk && /\b(wishlist|store|steam|app listing)\b/i.test([ask,...active.map(n=>label(page,n))].join(' '));
+  const honest = label => /\b(find|search|coming soon|opens? (?:when|once)|not yet available|availability)\b/i.test(label);
+  const availability = /\b(coming soon|opens? (?:when|once)|not yet (?:available|live)|not (?:yet )?live)\b/i;
+  function storeStep(node,href) {
+    const id = attr(node,'aria-controls') || attr(node,'popovertarget') || attr(node,'commandfor') || href.split('#')[1];
+    let next = page, scope;
+    const file = localAsset(href,page);
+    if (file && webPage.test(file)) {
+      next = page.parseLocal(file);
+      scope = id && next.ids.has(id) ? nodesIn(next,next.ids.get(id)) : next.nodes;
+    } else if (id && page.ids.has(id)) scope = nodesIn(page,page.ids.get(id));
+    else return 'no product page';
+    const items = scope.filter(n=>n.name==='a').map(n=>({title:label(next,n), url:webURL(attr(n,'href'))})).filter(n=>n.url);
+    const urls = items.filter(({title,url}) => /wishlist|store|buy|shop|steam|listing|purchase/i.test(title) ||
+      /(?:steampowered|epicgames|gog|nintendo|playstation|xbox|microsoft)\.com$|itch\.io$|^apps\.apple\.com$|^play\.google\.com$/.test(url.hostname)).map(n=>n.url);
+    if (urls.some(u=>!example(u) && !destinationProblem(u) && u.pathname!=='/')) return '';
+    return urls.map(destinationProblem).find(Boolean) || (availability.test(words(scope)) ? 'an availability notice' : 'no store listing');
+  }
   const related = active.filter(n=>n.get('download')!==null || (fileAsk
     ? /download|press kit|\b(?:zip|pdf)\b/i
-    : /download|wishlist|store|visit|watch|open|view|install|get the/i).test(label(page,n)));
+    : /download|wishlist|store|steam|visit|watch|open|view|install|get the/i).test(label(page,n)));
   const links = related.length ? related : active.filter(n=>n.name==='a');
   if (!links.length) {
+    if (store && !active.length && availability.test(words(scope))) return {state:'preview',detail:needs.go};
     if (fileAsk && !active.length && previewWords.test(words(scope))) return preview();
     return fails('the target has no destination');
   }
@@ -184,14 +204,16 @@ function linkResult(outcome,page,scope,active,preview) {
     if (example(url) && previewWords.test(promised)) waiting=true;
     else if (fileAsk) problem = fileProblem(href,page);
     else if (url) problem = example(url) ? 'an unlabelled placeholder' : destinationProblem(url);
+    else if (store) problem = storeStep(node,href);
     else {
       const file = localAsset(href,page);
       if (!file || !webPage.test(file) || path.resolve(file)===path.resolve(page.file)) problem = 'no product page';
     }
+    if (store && honest(title) && ['a search result','an availability notice'].includes(problem)) { waiting = true; continue; }
     if (problem) problems.push('"'+title+'" opens '+(href || 'nothing')+' ('+problem+')');
   }
   if (problems.length) return fails(problems.join(' / '));
-  return waiting ? preview() : works();
+  return waiting ? (store && links.every(n => honest(label(page,n))) ? {state:"preview", detail:needs.go} : preview()) : works();
 }
 
 function missingFields(ask,fields) {
@@ -286,7 +308,7 @@ export function assessAsk(row,page,supply,sharedOutcome) {
   if (!target) return fails('#'+id+' is missing');
   // Follow a section link to its actual destination; a bare # goes nowhere.
   const seen = new Set();
-  while (target.name==='a' && /^#.+/.test(attr(target,'href')) && !seen.has(target)) {
+  while (outcome!=='go' && target.name==='a' && /^#.+/.test(attr(target,'href')) && !seen.has(target)) {
     seen.add(target);
     const next = page.ids.get(attr(target,'href').slice(1));
     if (!next) break;
@@ -297,7 +319,12 @@ export function assessAsk(row,page,supply,sharedOutcome) {
     if (form?.name==='form') target=form;
   }
   const scope = nodesIn(page,target);
-  const active = scope.filter(n=>isControl(n) && !isDisabled(n));
+  let active = scope.filter(n=>isControl(n) && !isDisabled(n));
+  if (target.name === 'dialog' && outcome === 'go') {
+    const triggers = page.nodes.filter(n => isControl(n) && !isDisabled(n) && !scope.includes(n) &&
+      (attr(n,'href') === '#'+id || ['aria-controls','popovertarget','commandfor'].some(k => attr(n,k) === id)));
+    if (triggers.length) active = triggers;
+  }
 
   function preview(piece=needs[outcome],hint='') {
     const subject = (ask.toLowerCase().match(/[a-z]{3,}/g) || []).filter(w=>
@@ -319,5 +346,5 @@ export function assessAsk(row,page,supply,sharedOutcome) {
   }
   if (outcome==='send') return sendResult(row,page,scope,active,preview);
   if (outcome==='show') return showResult(ask,page,scope,active,preview);
-  return linkResult(outcome,page,scope,active,preview);
+  return linkResult(outcome,page,scope,active,preview,ask);
 }

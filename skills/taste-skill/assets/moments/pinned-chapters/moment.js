@@ -24,7 +24,7 @@
     </section>
 
   The stage holds for one screen of scroll, so the live section is exactly two screens (layout-v4.md);
-  two steps or explanations averaging fewer than 25 words stay in flow.
+  three steps with fewer than 25 words each use buttons and one changing detail. Other short sequences stay in flow.
   A phone gets the light version, nothing pinned: the steps stand with their visuals under them, the step
   in hand (the one crossing the middle of the screen) takes the accent rule at its left, and each visual's
   picture settles from a close crop (scale 1.08) to its framing as it rises through the screen. One
@@ -37,9 +37,35 @@ export default function (root, opts, lib) {
   const frame = root.querySelector('.mo-pc__visuals');
   const figures = steps.map(s => s.querySelector('.mo-pc__visual'));
   if (steps.length < 2 || !frame || figures.some(f => !f)) return {};
-  // A short explanation reads in one pass alongside its picture.
-  const words = steps.reduce((count, step) => count + (step.querySelector('p')?.textContent.match(/\S+/g) || []).length, 0);
-  if (steps.length === 2 || words < steps.length * 25) return {};
+  const lengths = steps.map(step => (step.querySelector('p')?.textContent.match(/\S+/g) || []).length);
+  // An author can choose compact for a short sequence with longer captions.
+  if (steps.length === 3 && (lengths.every(n => n < 25) || root.hasAttribute('data-compact'))) {
+    const panels = steps.map(step => [step.querySelector('p'),step.querySelector('figure')].filter(Boolean));
+    const buttons = steps.map((step,i) => {
+      const h = step.querySelector('h3');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = h.textContent;
+      h.replaceChildren(button);
+      panels[i].forEach((p,k) => { if (!p.id) p.id = (root.id || 'chapters-'+[...document.querySelectorAll('[data-moment="pinned-chapters"]')].indexOf(root))+'-detail-'+i+'-'+k; });
+      button.setAttribute('aria-controls',panels[i].map(p => p.id).join(' '));
+      button.addEventListener('click',() => select(i));
+      return button;
+    });
+    function select(index) {
+      buttons.forEach((b,i) => {
+        b.setAttribute('aria-expanded',String(i===index));
+        panels[i].forEach(p => { p.hidden = i!==index; });
+      });
+    }
+    root.classList.add('is-compact');
+    select(0);
+    return {destroy() {
+      root.classList.remove('is-compact');
+      buttons.forEach((b,i) => { b.replaceWith(b.textContent); panels[i].forEach(p => { p.hidden=false; }); });
+    }};
+  }
+  if (steps.length === 2 || lengths.reduce((a,b) => a+b,0) < steps.length*25) return {};
   const homes = figures.map(f => f.parentElement);
   // the section stays exactly two screens (layout-v4.md: 1H or 2H), so the stage holds for one screen of scroll
   const hold = 1;

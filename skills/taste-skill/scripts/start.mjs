@@ -503,7 +503,7 @@ const COMP_WHAT = { offer: 'the offer (menu, prices, services)', showcase: 'the 
 // compositions sections-library.md allows once a page (2.5.3: a showcase and a feature were both dealt bleed-panel)
 const ONCE_A_PAGE = ['bleed-panel', 'mirrored'];
 const sectionsArg = opt('sections', 7);
-const sections = Number(sectionsArg);
+let sections = Number(sectionsArg);
 const action = opt('action');
 const bookingSubject = opt('booking');
 if (['plan', 'deal'].includes(cmd)) {
@@ -666,10 +666,11 @@ function dealLayout(h) {
 
 const histFile = opt('history', '.taste-skill/history.json');
 
-function dealFrame(h) {
+function dealFrame(h, artPalette = false) {
   let palette;
   const tys = dealTypes(h, { axis: !!opt('axis') });
-  if (!opt('types-only')) {
+  if (artPalette) palette = {id:'art'};
+  else if (!opt('types-only')) {
     // a loud page may take a flat poster palette (flat-loud): four flat grounds at most, the expressive limit
     let pals = temper === 'loud' ? lib('palettes.json').filter(p => paletteOk(p) || (p.tags.includes('flat-loud') && !isViolet(p.accent))) : palettes;
     if (!techPage && page) pals = pals.filter(p => !color.isDark(p.bg)); // dark pages are tech only
@@ -744,10 +745,20 @@ if (cmd === 'deal') {
     return JSON.parse(result.stdout);
   };
   const frameHistory = readHistory(histFile);
-  const { palette, type, layout } = dealFrame(frameHistory);
+  const forcedStory = opt('story');
+  if (forcedStory === true) throw new Error('--story needs a shape id from library/stories.json');
+  const story = dealStory(frameHistory, { carry: [...carry], action, assets: [...assets], rand: rng(seed + ':story'), forced: forcedStory });
+  const minimum = story.beats.filter(b => b.required).length;
+  if (sections < minimum) {
+    console.log('Raised --sections from ' + sections + ' to ' + minimum + ' for the required beats of ' + story.id + '.');
+    sections = minimum;
+  }
+  const artPalette = expressive && (assets.has('art') || page === 'gaming');
+  const { palette, type, layout } = dealFrame(frameHistory, artPalette);
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
-  const { hero, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
-    '--type', pageType, '--kind', page, '--has', has, '--history', path.join(dir, 'layout-history.json'),
+  const { hero, variant, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
+    '--type', pageType, '--kind', page, '--has', has, '--temper', temper,
+    ...(opt('view') === 'wide' ? ['--view','wide'] : []), ...(page === 'gaming' && !assets.has('art') ? ['--illustrate'] : []), '--history', path.join(dir, 'layout-history.json'),
     ...(action ? ['--action', action] : []), ...(bookingSubject ? ['--booking', bookingSubject] : []), ...(opt('no-record') ? ['--no-record'] : []),
   ]);
   const ownFormClose = opt('last-section') === 'form';
@@ -756,7 +767,7 @@ if (cmd === 'deal') {
     ...(opt('no-record') ? ['--no-record'] : [])];
   const motion = run(path.join(here, 'moments.mjs'), ['pick', ...common, '--scene', 'deal', '--has', has,
     '--carry', [...carry].join(','), '--sections', String(sections), ...(opt('long') ? ['--long'] : []),
-    ...(peek || book ? ['--keep-hero'] : []), ...(reserveClose ? ['--keep-close'] : []), ...(action ? ['--action', action] : [])]);
+    ...(peek || book || variant ? ['--keep-hero'] : []), ...(reserveClose ? ['--keep-close'] : []), ...(action ? ['--action', action] : [])]);
   const sceneHero = motion.sceneFits.includes('hero');
   const sceneClose = motion.sceneFits.includes('close');
   const effectSlot = page === 'gaming' ? 'band' : 'hero';
@@ -794,9 +805,7 @@ if (cmd === 'deal') {
   closes[closes.length - 1] = close;
 
   const ideas = dealIdeas(h);
-  const forcedStory = opt('story');
-  if (forcedStory === true) throw new Error('--story needs a shape id from library/stories.json');
-  const story = dealStory(h, { carry: [...carry], action, assets: [...assets], rand: rng(seed + ':story'), forced: forcedStory });
+  h.stories = frameHistory.stories;
   // a chapters or two-part-promise page changes ground only where a chapter or half begins (the dealt pattern stays in the history)
   if (['chapters', 'two-part-promise'].includes(story.id)) layout.grounds = chapterGrounds(story.id, sections);
   const sub = {};
@@ -811,12 +820,12 @@ if (cmd === 'deal') {
     if (mascot) sub.mascot = 'give a recurring guide or character one consistent form';
   }
   const plan = {
-    version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: palette.id, type: type.id,
-    hero: hero.id, ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, nav: layout.nav, footer: layout.footer,
+    version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
+    hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
     align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
     ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
-    scene: motion.scene, effect, story: story.id,
+    scene: motion.scene, effect, story: story.id, ...(briefWords ? { brief: briefWords } : {}),
   };
   if (!opt('no-record')) writeHistory(histFile, h);
   writeHistory(path.join(dir, 'plan.json'), plan, 2);
@@ -830,15 +839,20 @@ if (cmd === 'deal') {
     : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
   line('story', story.id + ': ' + story.line + (forcedStory ? ' (chosen with --story)' : ''));
   const pad = ' '.repeat(15);
-  story.beats.forEach((b, i) => console.log(pad + 'beat ' + (i + 1) + (b.startsWith('n: ') ? ', one a section, as often as the content holds: ' + b.slice(3) : ': ' + b)));
+  console.log(pad + 'minimum ' + minimum + ' sections; map every required beat to its section id.');
+  story.beats.forEach((b, i) => console.log(pad + 'beat ' + (i + 1) + ' ' + (b.required ? 'required' : 'optional') + ' | beat: ' + b.id + ' | ' + b.show));
   console.log(pad + 'thread: ' + story.thread);
   console.log(pad + 'not this: ' + story.fake);
   console.log(pad + 'Take it, or another shape from ' + ref + '/library/stories.json when the brief fits it better (the table in references/story.md): deal again with --story <id> so the grounds follow it, and say why on plan line 3. Write the ## Story block in the copy notes first.');
+  if (['software','tech'].includes(page) && assets.has('ui') && !variant) line('view','For one wide timeline, schedule or board, deal again with --view wide.');
   line('copy first', '.taste-skill/copy.md from references/copy.md. Lint it with node ' + ref + '/scripts/copy-lint.mjs .taste-skill/copy.md');
-  line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --history ' + histFile.split(path.sep).join('/'));
-  line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
+  if (artPalette) line('palette','art, type ' + type.id + ': take the grounds, ink and action colour from the art. Run node '+ref+'/scripts/start.mjs brand --page '+page+' --type '+type.id+' --temper '+temper+' --bg "<art ground>" --surface "<second ground>" --ink "<reading ink>" --accent "<action colour>"');
+  else line('palette', palette.id + ', type ' + type.id + ': node ' + ref + '/scripts/start.mjs css --page ' + page + ' --palette ' + palette.id + ' --type ' + type.id + ' --radius ' + (placePage ? 'sharp' : 'soft') + (expressive ? ' --temper ' + temper : '') + ' --history ' + histFile.split(path.sep).join('/'));
+  if (variant==='wide') line('hero',hero.id+' with data-view="wide" and class hero--peek: copy '+ref+'/assets/layout/wide-view.html for the timeline, schedule or board. Keep each lane label beside its value on phones.');
+  else if (variant==='world') line('hero',hero.id+' with data-view="world": copy the hero from '+ref+'/assets/expressive/demo.html. Use the supplied or illustrated world edge to edge with the game name as lettering on a plate.');
+  else line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
-  if (order) line('order', 'put the configurator or order pad within the first three sections, with delivery and return facts at the close');
+  if (order) line('order', 'put the configurator or order pad within the first three sections; give supplied delivery and return terms at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
   line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, The entrance deck)');
   line('nav', plan.nav + ' (starter.html NAV comment)');
@@ -860,7 +874,7 @@ if (cmd === 'deal') {
   if (!motion.picks.length) line('moment', 'none: use the entrance, reveals, hover feedback and motion in own sections.');
   motion.picks.forEach((m, i) => {
     const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
-    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
+    line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'word-rotate' ? '. Each rotating word must be a state the page shows.' : '') + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
   if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');

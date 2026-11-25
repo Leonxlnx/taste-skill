@@ -2,6 +2,8 @@
 
 Build the dealt frame. Choose each section's form from its content. Read `compose.md` before the first page, then the recipes you use in `sections-library.md`. Edges and spacing are in `layout-v4.md`.
 
+“Tell our story”, “show how it plays” and “meet the bosses” each need a `show` ask mapped to the section that answers it.
+
 ## 1. Plan the sections
 
 Before planning, name what the visitor needs to know before acting and which supplied fact answers it. Give that answer a section high on the page in its natural form: a guesthouse explains what guests get by booking direct and what follows their request, while an integration shows one real example in the existing system. Merge a section with only a heading, a sentence and a picture into its neighbour.
