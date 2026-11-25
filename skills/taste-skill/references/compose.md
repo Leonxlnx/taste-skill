@@ -1,5 +1,7 @@
 # Compose a section
 
+Write `shows  <subject> | <source>` on each section line, or `shows  nothing` for a text-only section. Show what a heading describes beside or below it. Use `illustrate` for a drawing or `data-picture` for supplied numbers. Keep text-only sections to one quarter of a quiet plan and picture-free desktop screens to one in four.
+
 Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
 
 ## The method
@@ -54,7 +56,7 @@ A section about goods, dishes or rooms shows them. Spend the available photograp
 - Show independent choices together, with the selected language, environment or plan’s content visible. Reserve a scroll-held sequence for steps that depend on each other.
 - Place a fact, unit, source or link 16–32px from its picture or table at 1440 and 12–20px on a phone, closer than the next heading.
 - One standalone statement of twelve words or fewer may break into two or three lines starting on different column lines.
-- Related sections may share a ground. Change it when the visitor’s task changes.
+- Related sections may share the page ground.
 
 ## The section
 

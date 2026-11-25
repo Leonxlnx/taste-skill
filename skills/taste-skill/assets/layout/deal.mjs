@@ -79,7 +79,7 @@ function dealOnce(recentHeroes, projectHeroes = []) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
   if (!hero && wideView) hero = heroes.find(h => h.id === 'centred');
   if (!hero && worldView) hero = heroes.find(h => h.id === 'photo');
-  // a place: the place hero in one of its five forms (dealt below); with no photograph, the statement hero on .ground-brand
+  // a place: the place hero in one of its five forms (dealt below); with no photograph, the statement hero on the page ground
   if (!hero && type === 'place') hero = heroes.find(h => h.id === (has.has('photo') ? 'place' : 'statement'));
   if (!hero && !productPage && has.has('object') && !has.has('photo') && !has.has('film')) hero = heroes.find(h => h.id === 'product');
   // A product with no photograph or art uses the split for its built view.
@@ -90,7 +90,13 @@ function dealOnce(recentHeroes, projectHeroes = []) {
     if (!ok.length) { console.error(`deal: no hero for ${gaming ? 'a game' : type} with ${[...has].join(', ')}`); process.exit(1); }
     const fresh = ok.filter(h => !recentHeroes.includes(h.id));
     const weight = h => h.types[weightKey] + (h.id === 'centred' && !separateSubjects && type === 'software' ? 2 : 0);
-    hero = fresh.length ? draw(fresh, weight, projectHeroes) : draw(ok, weight, recentHeroes);
+    let pool = fresh.length ? fresh : ok;
+    if (fresh.length && !['lively', 'loud'].includes(opt('temper'))) {
+      const across = Math.random() < .6;
+      const group = pool.filter(h => !['split', 'triptych', 'collage'].includes(h.id) === across);
+      if (group.length) pool = group;
+    }
+    hero = draw(pool, weight, fresh.length ? projectHeroes : recentHeroes);
   }
   return hero;
 }
@@ -115,14 +121,16 @@ const PLACE_FORMS = [
   { id: 'foot', w: 3, how: 'the photograph needs a calm lower left for the heading, one line and action. Fall back to bleed when the crop has none. data-form="foot"' },
   { id: 'band', w: 1, how: 'the photograph under the header down to the words; the words end on the fold. data-form="band"' },
   { id: 'bleed', w: 3, how: 'the photograph over the whole first screen; the h1, the line and the button on a solid panel of the page ground in its lower left corner (data-corner="end" when the calm side is right). data-form="bleed"' },
-  { id: 'split', w: 3, how: 'the words on five columns (title, lead and action together at the top), the photograph on seven down to the fold. data-form="split"' },
+  { id: 'split', w: 3, how: 'the words on seven columns (title, lead and action together at the top), the photograph on five down to the fold. data-form="split"' },
   { id: 'name', w: 2, how: 'band, with the name or the street set large across the .wrap first in .hero__text: <p class="hero__name">Henderson Street</p>. It is the page\'s one type moment (the address|name moment is then this). data-form="name"' },
 ];
 let placeForm = null;
 if (hero.id === 'place') {
   const forced = opt('form') && opt('form') !== true ? PLACE_FORMS.find(f => f.id === opt('form')) : null;
   const recent = (hist.placeForms || []).slice(-2);
-  placeForm = forced || draw(PLACE_FORMS, f => f.w, recent);
+  const forms = !['lively','loud'].includes(opt('temper')) && !recent.includes('split') && Math.random() < .62
+    ? PLACE_FORMS.filter(f => f.id === 'split') : PLACE_FORMS;
+  placeForm = forced || draw(forms, f => f.w, recent);
 }
 
 const window = !!hero.window && has.has('ui') && tech;

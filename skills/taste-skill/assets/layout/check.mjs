@@ -213,7 +213,7 @@ try {
         if (st) {
           const sev = kitDemo ? 'FAIL' : 'WARN';
           const again = st.changed ? await ev(src + '\n;window.lyCheck()') : res;
-          const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? h.h1.lines[0] : W <= 420 ? h.h1.lines[1] : null;
+          const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? (st.chars <= 45 ? 2 : Math.max(3,h.h1.lines[0])) : W <= 420 ? h.h1.lines[1] : null;
           res.stress = { hero: id, maxChars: h.h1.maxChars, authored: st.authored, changed: st.changed, chars: st.chars, lines, height: again.hero?.height };
           const sameFold = f => res.findings.some(old => old.rule === f.rule && old.where === f.where && old.detail === f.detail);
           for (const f of again.findings.filter(f => st.changed && f.rule === 'hero-fold' && !sameFold(f))) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `With a test headline of ${st.chars} characters, ${f.detail[0].toLowerCase() + f.detail.slice(1)}` });

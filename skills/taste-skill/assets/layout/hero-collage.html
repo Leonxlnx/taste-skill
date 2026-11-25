@@ -15,12 +15,12 @@
 <link rel="stylesheet" href="demo.css">
 <style>
 :root {
-  --p-bg: #fbfbf9; --p-surface: #f0f1ed; --p-ink: #10140f; --p-muted: #575e55;
+  --p-bg: #fbfbf9; --p-surface: #f0f1ed; --p-ink: #10140f; --p-muted: #484848;
   --p-accent: #1f7a4d; --p-accent-ink: #ffffff; --p-action: #10140f; --p-action-ink: #fbfbf9;
   --p-inv-bg: #10140f; --p-inv-surface: #1a1f19; --p-inv-ink: #f3f5f1; --p-inv-muted: #a5ada2;
   --p-inv-accent: #6fcf9a; --p-inv-accent-ink: #10140f; --p-inv-action: #f3f5f1; --p-inv-action-ink: #10140f;
   --font-display: "Funnel Display", system-ui, sans-serif; --font-text: "Funnel Sans", system-ui, sans-serif;
-  --display-weight: 500; --display-tracking: -0.03em; --display-tracking-xl: -0.04em; --ly-scale: .98;
+  --display-weight: 500; --display-tracking: -0.03em; --display-tracking-xl: -.012em; --ly-scale: .98;
 }
 /* the lit ground of the art: the page's sage with one soft light and a fine grain */
 .hero__art { background:
@@ -103,13 +103,13 @@
   <!-- Add hero--peek to let the product view in .hero__art continue below the fold. -->
   <section class="hero hero--collage" data-work-window data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-5">
+      <div class="hero__text span-7">
         <h1 id="hero-h">Stock and orders for independent grocers</h1>
         <p class="hero__lead">See what sold today and send Friday’s order to your wholesaler. €49 a month per shop.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#how">Start free for 30 days</a><a class="btn btn--secondary" href="#how">Book a demo</a></div>
         <p class="hero__proof">Reads sales from Square, SumUp and Zettle.</p>
       </div>
-      <div class="hero__art span-6 start-7" role="img" aria-label="Pickwell's stock list with oat milk running low, and an order sent to a wholesaler">
+      <div class="hero__art span-5 start-8" role="img" aria-label="Pickwell's stock list with oat milk running low, and an order sent to a wholesaler">
         <div class="ly-piece ly-piece--main d-win" data-ui aria-hidden="true">
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span>Pickwell · Corner Shop, Stockbridge</span></div>
           <div class="d-win__body">
@@ -192,7 +192,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head"><h2 id="close-h">Start free for 30 days</h2></div>
-      <a class="btn btn--primary btn--xl btn--wide" href="#how">Start free for 30 days<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <a class="btn btn--primary btn--xl btn--wide" href="#how">Start free for 30 days</a>
     </div>
     <div class="closing__links">
       <div class="grid">

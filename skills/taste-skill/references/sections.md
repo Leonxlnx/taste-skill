@@ -57,7 +57,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A composition from `sections-library.md` |
 
-**Show the subject.** Use the client's pictures first, including screens, art and renders. Next build the actual view, draw the product or its world, or plot its data. Start here for a game without art, an unphotographed product or a software claim. Use a stand-in photograph only for what it shows, such as a street, a material, hands at work or a whole room of the right kind. Never use another maker's product, a detail for a whole or mood beside prices. For each photograph write “heading says X, picture shows Y”. A list, table, form or FAQ may stand on type alone. Change ground between two such neighbours.
+**Show the subject.** Use the client's pictures first, including screens, art and renders. Next build the actual view, draw the product or its world, or plot its data. Start here for a game without art, an unphotographed product or a software claim. Use a stand-in photograph only for what it shows, such as a street, a material, hands at work or a whole room of the right kind. Never use another maker's product, a detail for a whole or mood beside prices. For each photograph write “heading says X, picture shows Y”. A list, table, form or FAQ may stand on type alone. On a quiet page, at most a quarter of sections may say `shows  nothing`. At 1440, show a subject on three of every four screens across the page.
 
 - **One object cannot show every claim.** Show the whole product in the hero and at most two further sections. Elsewhere show its use, parts, output or setting. A recolour of the whole product still counts as a whole view. A game's crew, tools and world can share one drawing style.
 - **Client files.** Reserve slots at their final ratio for promised art, renders, screenshots or films. Use a complete built picture until the file arrives. Name the file in a comment and the handoff report. Show a play control only for a playable source. See `sections-library.md`, client-slots.
@@ -72,6 +72,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
   FAQ) after at most two visual ones, and the back third of the page calm before the close. Repeat
   the section scaffold (head, padding, ground logic) so it is learned once.
 - **Proof.** Use the brief's named quotes, footnoted figures, reviews or permitted customer logos. A comparison needs comparable numbers and a source.
+- **Repeated items.** Features, services, posts, steps and people sit on the page, with a picture when the subject needs one, a heading and a sentence. A plan, product, document or room that people can act on may use a flat box. Separate rows with space.
 - **Two boxes deep at most:** a card and its picture panel, or a panel and its UI. A card whose
   panel holds UI drops its box (`.card--open`) or runs the panel flush (`.panel--flush`).
 - **Real destinations.** Direct links are the default. Use a panel for several related destinations; its label predicts what opens. Put supplied sign-in, docs, status and store links in both nav and footer. Without those links, a software page links its setup section as Quickstart in both. Use real page IDs for local links.
@@ -82,11 +83,11 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 
 ## 2. The deal
 
-Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
+Run `node <skill>/scripts/start.mjs plan --section-plan .taste-skill/sections.txt` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
 
 Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
-- `grounds` suggests the number and kinds of ground. Start on the page ground, and place a change where the visitor’s question changes. Use one surface for one software workflow; highlight the changed record. Keep fields visibly distinct from a tinted form.
+- A quiet plan deals `one` page ground, one `band` on a second ground, or, with an explicit story or at least eight sections, `chapters` sharing a second ground. Use at most two grounds before the footer. Reserve a whole brand field for the dealt band or an expressive page. Keep fields distinct on a tint.
 - `story` names the dealt shape from `library/stories.json` with its beats, its thread and how it is faked (`story.md`). Keep it or name a better fit on plan line 3. Keep non-tech heroes off bands.
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
 - `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).

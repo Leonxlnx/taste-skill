@@ -1,5 +1,8 @@
 # Photographs
 
+On quiet pages, check aligned 1440 × 900 screens, including the last partial screen. At least three in four show the section’s subject. A product window in HTML, a photograph from the ladder, a drawing, a figure from supplied numbers, a map, a document or a named logo can carry the point. Use another view for another claim. Decorative shapes, icon tiles and unrelated photographs add no evidence.
+
+
 ## Choose the picture
 
 1. **The client's own pictures.** Start with the photographs, art, screenshots or renders supplied with the brief.

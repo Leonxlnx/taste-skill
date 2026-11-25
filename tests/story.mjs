@@ -31,12 +31,12 @@ const plan = (args) => {
 {
   const { out, p } = plan(['--page', 'software', '--sections', '7', '--story', 'chapters', '--seed', 's1']);
   assert.equal(p.story, 'chapters');
-  assert.equal(p.grounds.pattern, 'chapters');
-  assert.deepEqual(p.grounds.bySection, ['page', 'ground-surface', 'ground-surface', 'ground-surface', 'ground-surface', 'ground-inverse', 'ground-inverse']);
+  assert(['one','band','chapters'].includes(p.grounds.pattern));
+  assert(new Set(p.grounds.bySection).size <= 2);
   assert.match(out, /\n  story        chapters: /);
   assert.match(out, /beat 2 required \| beat: chapter/);
   const t = plan(['--page', 'product', '--sections', '8', '--story', 'two-part-promise', '--seed', 's2']).p;
-  assert.equal(t.grounds.pattern, 'chapters');
+  assert(['one','band','chapters'].includes(t.grounds.pattern));
   assert.ok(t.grounds.bySection.slice(1).filter((g, i) => g !== t.grounds.bySection[i]).length <= 3);
   const d = plan(['--page', 'place', '--sections', '6', '--action', 'booking', '--booking', 'stay', '--seed', 's3']).p;
   assert.ok(stories.find((s) => s.id === d.story).kinds.includes('place'));
@@ -113,6 +113,19 @@ assert.equal(readStory(GOOD).spine.length, 5);
   assert.match(out,/Raised --sections from 3 to 6/);
 }
 // ---- the checker's story block, both ways
+{
+  const file = path.join(tmp,'section-subjects.txt');
+  const subjects = ['port map','cargo manifest','the ship’s schedule','nothing','berth plan','customs receipt','vessel drawing','nothing'];
+  const args = ['--page','software','--sections','8','--section-plan',file];
+  fs.writeFileSync(file,subjects.map((v,i)=>'Section '+(i+1)+' | shows  '+v+' | supplied').join('\n'));
+  assert.deepEqual(plan(args).p.shows,subjects);
+  fs.appendFileSync(file,'\nextra section without a subject');
+  const rejected = () => spawnSync(process.execPath,[path.join(skill,'scripts','start.mjs'),'plan','--no-recent',...args],{cwd:tmp,encoding:'utf8'});
+  assert.match(rejected().stderr,/Each of the 8 section lines/);
+  subjects[0]='nothing';
+  fs.writeFileSync(file,subjects.map(v=>'shows  '+v).join('\n'));
+  assert.match(rejected().stderr,/More than a quarter/);
+}
 const sec = (h2, text = '', extra = {}) => ({ id: h2.toLowerCase().replace(/\W+/g, '-'), sel: 'section#' + h2.slice(0, 6), h2, text: h2 + ' ' + text, ground: 'page', chapter: '', chapterHead: '', ...extra });
 const hero = { ...sec('', 'Plan the studio\'s week on one grid. Mara Lind, week 14, 32 hours'), hero: true, h2: '' };
 const page = (sections, more = {}) => ({ h1: 'Plan the studio\'s week on one grid', lead: 'Drag people onto projects; a clash shows at once.', heroText: hero.text, sections: [hero, ...sections], close: { sel: 'footer h2', h2: 'Your week on one grid, free for three', lead: '', text: 'Your week on one grid, free for three' }, navs: [], ...more });

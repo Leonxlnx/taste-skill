@@ -26,7 +26,7 @@ const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-ri
 for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
   assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
 }
-const keys = 'version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
+const keys = 'actionColour footerWordmark headline version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
 const hasByKind = { software: 'ui,logo', gaming: 'setting', tech: 'ui', product: 'object', service: 'photo', place: 'photo' };
@@ -106,7 +106,13 @@ for (const kind of kindsToRun) {
     recentStories.push(p.story);
     assert(printed.includes('  story        ' + p.story + ': ' + story.line));
     story.beats.forEach((b, ix) => assert(printed.includes('beat ' + (ix + 1)), 'beat ' + (ix + 1) + ' not printed'));
-    if (['chapters', 'two-part-promise'].includes(p.story)) {
+    if (p.temper === 'quiet') {
+      assert(['one','band','chapters'].includes(p.grounds.pattern));
+      assert(new Set(p.grounds.bySection).size <= 2);
+      if (p.grounds.pattern === 'one') assert(p.grounds.bySection.every(g => g === 'page'));
+      if (p.grounds.pattern === 'band') assert.equal(p.grounds.bySection.filter(g => g !== 'page').length, 1);
+      if (p.grounds.pattern === 'chapters') assert(p.sections >= 8);
+    } else if (['chapters', 'two-part-promise'].includes(p.story)) {
       assert.equal(p.grounds.pattern, 'chapters');
       const changes = p.grounds.bySection.slice(1).filter((g, ix) => g !== p.grounds.bySection[ix]).length;
       assert(changes <= 3, 'chapters grounds change ' + changes + ' times');
@@ -192,7 +198,7 @@ for (const kind of kindsToRun) {
     }
     prev = p;
   }
-  assert(Object.keys(counts.grounds).filter(g => g !== 'chapters').length === 4, kind + ' ground patterns ' + Object.keys(counts.grounds));
+  assert(Object.keys(counts.grounds).filter(g => g !== 'chapters').length >= 2, kind + ' ground patterns ' + Object.keys(counts.grounds));
   assert(Object.keys(counts.story).length >= 3, kind + ' story shapes ' + Object.keys(counts.story));
   fs.writeFileSync(path.join(run, 'counts-' + kind + '.json'), JSON.stringify({ counts, minDelta }, null, 2));
   const part = k => Object.entries(counts[k]).map(([v, n]) => v + ' ' + n).join(', ');

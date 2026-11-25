@@ -1399,7 +1399,7 @@ function selfTest(log = () => {}) {
 }
   // the kit's own parts, read by the runner's motion block (dealt moments and scenes) and effects-fit
   const kit = { MOMENT_PAGES, readMeta, sceneFitsKind, isTreatment };
-  return { id, phase, checks, fixes, summary, flags, quick, run, kit };
+  return { id, phase, checks, fixes, summary, flags, quick, run, kit, decodePng };
 })();
 
 // ---------------------------------------------------------------- address: kept as one block
@@ -2225,16 +2225,18 @@ function measure(opt) {
   // a <picture> (the hero photos.mjs fetch prints: a phone <source> and one <img>) is one image: when the picture
   // stays in the flow and its img is the positioned one, the img's box and position stand for the picture
   const picImg = (p) => { if (TU(p) !== 'PICTURE' || /absolute|fixed/.test(cs(p).position)) return null; const i = p.querySelector(':scope > img'); return i && /absolute|fixed/.test(cs(i).position) ? i : null; };
-  // The place split assigns its picture the last seven tracks, outside the wrap.
+  // The place split assigns its picture the last five tracks; earlier pages used seven.
   function inPlacePicture(el) {
     const frame = el.closest('.hero--place[data-form="split"] > .hero__bg');
     if (!frame || W < 1024) return false;
     const wrap = frame.parentElement.querySelector(':scope > .wrap');
     if (!wrap) return false;
     const bounds = innerBox(wrap), gap = parseFloat(cs(wrap).getPropertyValue('--gutter')) || 24;
-    const start = bounds.l + 5 * (bounds.r - bounds.l + gap) / 12;
-    const aligned = r => Math.abs(r.l - start) <= 2 && Math.abs(r.r - bounds.r) <= 2;
-    return aligned(rectOf(frame)) && aligned(rectOf(el));
+    return [7,5].some(columns => {
+      const start = bounds.l + columns * (bounds.r - bounds.l + gap) / 12;
+      const aligned = r => Math.abs(r.l-start) <= 2 && Math.abs(r.r-bounds.r) <= 2;
+      return aligned(rectOf(frame)) && aligned(rectOf(el));
+    });
   }
   const layerOf = (el) => {
     if (layerMemo.has(el)) return layerMemo.get(el);
@@ -2878,6 +2880,18 @@ function measure(opt) {
       // "buttons, inline-block or flex links": a block link counts only when it is button-like (class or role, or its own fill or border)
       if (!ex) { const a = el.closest('a'); if (a && S[z].el.contains(a) && (/inline-block|flex|grid/.test(cs(a).display) || a.matches('.btn, .button, [role=button]') || boxed(a))) ex = 'button or inline-block / flex link'; }
       if (!ex) ex = rowExempt(el, z);
+      // Numbered rows have their own text track. Require two matching sibling starts, even without a rule.
+      if (!ex) {
+        const item = el.closest('ol.rows > li, ul.rows > li');
+        if (item && el.parentElement === item && cs(item).display === 'grid') {
+          const slot = Array.from(item.children).indexOf(el), x = rectOf(el).l;
+          const aligned = Array.from(item.parentElement.children).filter(row => {
+            const peer = row.children[slot];
+            return peer && peer.tagName === el.tagName && Math.abs(rectOf(peer).l - x) <= 2;
+          });
+          if (aligned.length >= 2) ex = 'aligned list track';
+        }
+      }
       if (!ex && splitCard(el, z)) ex = 'card (split column)';
       if (!ex && inFooterLinks(el, z)) ex = 'footer links';
       if (!ex) for (let e = el; e && e !== S[z].el; e = e.parentElement) { if (e !== el && boxed(e) && wd(rectOf(e)) <= 0.5 * cw) { ex = 'small boxed element'; break; } }
@@ -10314,6 +10328,7 @@ function groupSame(F) {
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
 const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
+ORDER.push('picture-sparse','headline-narrow','accent-wide','arrow-links','rule-heavy');
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
 ORDER.splice(ORDER.indexOf('overlap-text') + 1, 0, 'collide', 'tap-size');
@@ -10338,6 +10353,7 @@ const sameFault = (f, L) => {
   if (f.check === 'effect-kind') return /WebGL context|shader code|shader source|effect parts/.test(f.msg) && L.some((g) => g.check === 'effects-fit');
   return false;
 };
+import { checkFinish } from './still-finish.mjs';
 async function runWidth(cdp, helper, { w: width, h }, first) {
   const height = h || HEIGHTS[width] || (width < 700 ? 844 : 900);
   const mobile = width < 700;
@@ -10406,6 +10422,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     if (PROBE) console.log(`probe @${width}:`, JSON.stringify(await tab.eval(PROBE).catch((e) => e.message), null, 1));
     // the page as a whole: headings, actions, prices, links and the copy (placed on a screen once the walk is done)
     PG = await safe('page', () => tab.eval('window.__cc.pageInfo(' + JSON.stringify(String(opt('ask-ids','')).split(',').filter(Boolean)) + ')', 60000));
+    const finish = await safe('still finish', () => checkFinish(tab, width, visualMod.decodePng));
+    if (finish) later.push(...finish);
     if (PG) {
       // heading-scale: the h1 largest, every h2 one size, every h3 one size below the h2; display type inside a dealt
       // moment's section (letters-assemble, liquid-type, a statement) or the kit's big scene (light-flood's statement) is

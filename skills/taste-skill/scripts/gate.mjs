@@ -380,7 +380,7 @@ function fingerprint(dir, m, P, html) {
   const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
   const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(dir, 'package.json')) ? sourceFiles(dir) : [])])];
   const h = crypto.createHash('sha1');
-  h.update(JSON.stringify({ rules:'2.5.4-ask-outcome', target, opts }));
+  h.update(JSON.stringify({ rules:'2.5.4-ask-outcome', stillFinish:1, target, opts }));
   // Download anchors aren't loaded by the browser. Installing or removing the
   // file after a gate run must invalidate its verdict too.
   if (P.file) for (const m of html.matchAll(/<a\b[^>]*>/gi)) {
@@ -394,7 +394,7 @@ function fingerprint(dir, m, P, html) {
       h.update(file + '\0' + (st?.isFile() ? `${st.size}:${st.mtimeMs}` : 'absent'));
     } catch { /* malformed href */ }
   }
-  for (const name of ['copy.md','plan.json','history.json','layout-history.json']) {
+  for (const name of ['copy.md','plan.json','sections.txt','history.json','layout-history.json']) {
     try { h.update(name).update(fs.readFileSync(path.join(dir,'.taste-skill',name))); } catch { /* optional building input */ }
   }
   for (const f of files) {

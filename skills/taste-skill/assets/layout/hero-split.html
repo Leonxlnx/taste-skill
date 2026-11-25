@@ -14,12 +14,12 @@
 <link rel="stylesheet" href="layout.css">
 <style>
 :root {
-  --p-bg: #f7f2ea; --p-surface: #eee5d7; --p-ink: #211c17; --p-muted: #665c51;
+  --p-bg: #f7f2ea; --p-surface: #eee5d7; --p-ink: #211c17; --p-muted: #424242;
   --p-accent: #b4532a; --p-accent-ink: #ffffff; --p-action: #211c17; --p-action-ink: #f7f2ea;
-  --p-inv-bg: #211c17; --p-inv-surface: #2d2620; --p-inv-ink: #f7f2ea; --p-inv-muted: #b9ad9e;
+  --p-inv-bg: #211c17; --p-inv-surface: #2d2620; --p-inv-ink: #f7f2ea; --p-inv-muted: #bdbdbd;
   --p-inv-accent: #e08a5c; --p-inv-accent-ink: #211c17; --p-inv-action: #f7f2ea; --p-inv-action-ink: #211c17;
   --font-display: "Fraunces", Georgia, serif; --font-text: "Figtree", system-ui, sans-serif;
-  --display-weight: 400; --display-tracking: -0.02em; --display-tracking-xl: -0.03em; --display-axes: 'SOFT' 70, 'WONK' 0; --ly-scale: 1;
+  --display-weight: 400; --display-tracking: -0.02em; --display-tracking-xl: -.012em; --display-axes: 'SOFT' 70, 'WONK' 0; --ly-scale: 1;
 }
 #packages .counter__photo { border-radius: var(--r-lg); }
 .counter__photo { position: relative; overflow: hidden; height: min(560px, var(--ly-fit)); background: var(--surface); }
@@ -58,13 +58,13 @@
   <!-- For a software window, put the working .app-frame in .hero__media and add data-work-window to the section. Add hero--peek when dealt. -->
   <section class="hero hero--split" data-enter aria-labelledby="hero-h">
     <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-5">
+      <div class="hero__text span-7">
         <h1 id="hero-h">Coffee bar hire for weddings and events</h1>
         <p class="hero__lead">Two baristas, an espresso machine and our own roast, set up in an hour anywhere in Edinburgh.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#book">Ask for a date</a><a class="btn btn--secondary" href="#packages">See the packages</a></div>
         <p class="terms">Half a day from £480, up to 100 cups.</p>
       </div>
-      <div class="hero__media span-6 start-7">
+      <div class="hero__media span-5 start-8">
         <img src="img/photo-c166.jpg" alt="A cappuccino dusted with cinnamon beside a croissant, in window light" style="--ly-pos: 50% 58%" fetchpriority="high">
         <!-- Optional dated record when the photograph actually shows it:
         <div class="ly-float">
@@ -99,7 +99,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head"><h2 id="close-h">Ask for a date</h2></div>
-      <a class="btn btn--primary btn--xl" href="mailto:book@saltmarsh.example">Ask for a date<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <a class="btn btn--primary btn--xl" href="mailto:book@saltmarsh.example">Ask for a date</a>
     </div>
     <div class="closing__links">
       <div class="grid">

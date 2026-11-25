@@ -38,16 +38,8 @@ These air values are at regular density. The PLAN sets `data-density` on `html`.
 
 ## Type
 
-The dealt pairing (`layout-v4.md` section 5) at the tokens `--t-h1`, `--t-h2`, `--t-h3`,
-`--t-lead`, `--t-card`, `--t-body` 16, `--t-small` 14, `--t-label` 13, `--t-stat` (38/28,
-under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
+Use the dealt pairing. At 1440/390 the headline is 64/36px, the section heading 40/28px, the small heading and item title 20/18px at 500, and the lead 18/16px. Body text is 16px. Keep supporting paragraphs in secondary ink at 7–10:1 against their ground. Headings, prices and other decision terms take full ink. Every text role needs at least 4.5:1.
 
-- Headline and text weights: `layout-v4.md` section 5 (the one place they are set); tight tracking.
-- Text people read (sub-lines, card lines, list items, answers) is 16px or more, line height 1.5 to
-  1.8, in `--ink` at 7:1 or more. `--muted` (4.5:1 or more) only for labels, dates, meta and a
-  heading's grey run-on: `<h2>Send invoices in minutes. <span class="muted">Clients pay by
-  card.</span></h2>`. Large text (24px+) in a muted half or an inactive row 3:1 at least. On a place
-  every text is 4.5:1 or more, and every word on the brand band 7:1. Never 14px paragraphs or 15px grey card text.
 - The hero has one quieter level of small text at most (a grey fact line, or a pill above the h1).
 - Highlight by contrast, never by colour: no marker highlights or coloured bars behind words; colour
   inside a word once a page at most, never on a place.
@@ -66,13 +58,12 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 - **The interface stays 90 to 95% neutral;** colour comes from the photographs, the product, the
   work and real logos. One near-black ink, often warm, never #000, for text, hairlines (12 to 15% of
   it), button borders, interface glyphs and a designed mark.
-- Body copy, labels and tables inherit the neutral ink for their ground. Only headings use a palette’s optional `--p-heading-ink`.
+- Body copy, labels and tables inherit the neutral ink for their ground. Use full ink for quiet headings.
 - **Real logos keep their own full colours** (house rule): a client's logo or a known product's icon (the
   Google Docs icon) from `icons.mjs` or the brand's press kit, never redrawn or tinted
   (`icons.md`). A fictional client's own mark is designed, not borrowed.
 - **One accent at most,** from the client (its product, shopfront paint, tiles, a bag label): the
-  primary button (the only filled accent), the focus ring, links, state in visuals, small marks and
-  brand ground. Use `--action` for buttons, links and focus. Check the label reaches 4.5:1 and the button 3:1 on its ground.
+  primary button (the only filled accent), links, focus and at most one small mark. Use ink on rules, large type and repeated figures or icons. A dealt ink action keeps saturated colour off controls. Set `data-action="ink"` or `data-action="accent"` on the root as dealt. A quiet brand band uses the palette’s separate field. Use `--action` for buttons, links and focus. Check the label reaches 4.5:1 and the button 3:1 on its ground.
 - **Grounds.** Any section can take its planned ground. Page inherits `--bg`. Add `.ground-surface`, `.ground-inverse` or `.ground-brand` directly to the section for tint, inverse or brand. The hero uses the page ground outside tech.
 - **The grade** (light or evening) is chosen once on load or by a click, never by scrolling; the dark
   evening grade is tech only.
@@ -82,18 +73,17 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 
 ## Radius and buttons
 
-- `<html data-radius>`: `sharp` 4/6/8, `soft` 8/12/20 (default), `round` 10/16/24. `--r-lg` cards
+- `<html data-radius>`: `sharp` 4/6/8, `soft` 8/12/16 (default), `round` 10/16/24. `--r-lg` cards
   and frames, `--r-md` panels, `--r-sm` controls, `--r-btn` buttons; software windows one radius
   (12 to 20) with a 1px line. Set the PLAN's `data-pictures="square|soft"` on html. For a shaped mask, mark one inset picture frame `data-picture-mask`. Full-bleed grounds reach the edges.
 - `.btn.btn--primary` and `.btn.btn--secondary`, 44px high (48 on a place, with
   `data-buttons="block"` and in the phone bar; the nav's button is the same `--btn-h`, never
-  smaller), label 16px, 24px side padding, at most two in a `.btn-row`, full width on a phone.
+  smaller), label 15px, 20px side padding, at most two in a `.btn-row`, full width on a phone.
   The look is dealt once on `<html data-buttons="solid|pill|tonal|arrow|block">`; the markup never
   changes. Exactly one filled button marks the main action in any view; every secondary takes one
   style; text links use `.link`. `.btn--xl` once, in the type close. Never a slanted, gradient,
   ghost or shadowed button, or a third style. Their hover and press: `motion.md`.
-- The primary carries the drawn arrow `svg.m-arrow` as its last child where the look shows one; one
-  arrow style a page, only on the actions that need one.
+- Keep the main button text-only. An external link or download may carry one mark, once per page. At most two text links carry arrows.
 
 ## Nav
 

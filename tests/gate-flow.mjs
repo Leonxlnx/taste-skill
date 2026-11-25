@@ -360,7 +360,8 @@ for (const whole of [false, true]) {
   fs.mkdirSync(path.join(SKILL,'library'),{recursive:true});
   for (const name of ['palettes','type','stories']) fs.copyFileSync(path.join(SCRIPTS,'../library',name+'.json'),path.join(SKILL,'library',name+'.json'));
   const dir=project('none','Opening hours','room'), dot=path.join(dir,'.taste-skill');
-  const frame={nav:'nav-mega',close:'close-form',footer:'footer-visit',mark:'petal',hero:'split',entrance:'rise',buttons:'solid',density:'compact',bg:'#fff',ink:'#111111',accent:'#1a4be0',display:'Geist',text:'Geist'};
+  const palette=JSON.parse(fs.readFileSync(path.join(SKILL,'library/palettes.json'),'utf8')).find(p=>p.id==='white-link-blue');
+  const frame={nav:'nav-mega',close:'close-form',footer:'footer-visit',mark:'petal',hero:'split',entrance:'rise',buttons:'solid',density:'compact',bg:'#fff',ink:'#111111',accent:palette.accent,display:'Geist',text:'Geist'};
   fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame}));
   const plan={version:'2.5.4',nav:frame.nav,footer:frame.footer,close:frame.close,hero:frame.hero,entrance:frame.entrance,mark:frame.mark,buttons:frame.buttons,palette:'white-link-blue',type:'geist',density:'regular',moments:[]};
   fs.writeFileSync(path.join(dot,'plan.json'),JSON.stringify(plan));

@@ -5,17 +5,12 @@ Read `compose.md` before the first page. Look up a recipe here when it fits the 
 ## What every recipe assumes
 
 - **Frame.** `system.css` at 1440: `.wrap` 1280 at x 80, gutter 24, h1 72,
-  h2 48; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
+  h2 40; at 390: 342 at x 24. Every section is as tall as its content, its h2 first, `--padt` over
   it and `--padb` under its last block (`layout-v4.md` section 2); the "At 1440" sizes below are what
   the content takes, never a screen to fill. Never add a number the system lacks; a missing value
   becomes a token.
 - **Splits.** Align the top edges. Keep text first in the markup and at phone width, including the mirrored composition.
-- **Cards.** `cards.md` builds the card, its panel, the ground and the UI on it, and wins over
-  anything here except the depth rule: two boxes at most. A card whose panel holds UI is
-  `.card--open` (no box: its words on the page ground, the panel under them with four round
-  corners) or runs its panel flush (`.panel--flush`); an inset panel holds only a picture. From 640
-  to 1023 a card with a panel takes the full row; from 1024 to 1279 span-4 cards with a panel go
-  two-up, so a span-4 panel is never under 304px.
+- **Cards.** For a quiet page use these roles with the panel placements in `cards.md`. Keep repeated features, services, steps, posts and people open. A picture may sit above the title and sentence. Put plans with a price and action, goods, rooms and documents in a flat `.card--boxed` or `.card--plan` when the whole item needs a boundary. Use 16px corners, a visible 1px edge or a tint, and no resting shadow. Padding and gaps are 24px on desktop and 20px on phones. Separate ordinary lists with space. Keep hairlines for tables, definitions, fields and the top of the footer.
 - **Grounds in frames (tech).** The page has one effect and one card group's still grounds
   (`effects-usage.md`). Where a recipe below says "the card ground", it means that group's dealt id
   with its own seed per panel; "the effect" means the page's one effect, only in the hero or the one
@@ -196,7 +191,7 @@ row on a service or place page.
 `figcaption`): a 40px photograph of the person (a quote needs a face) or the company's logo, the
 name over role and company. The stat: `p.t-stat` (38 at 1440, 28 at 390) and a grey line of up to eight words.
 
-**At 390.** Quote, person, then the stat, a 1px hairline and 24px above it.
+**At 390.** Quote, person, then the stat, 24px above it.
 
 **Copy.** A before and an after, no praise words. Example form: "We used to rebuild the rota every
 Sunday night. Now it takes twenty minutes on Friday." / name, role, home / "20 min", "to plan a week
@@ -242,7 +237,7 @@ hero frame of the same width.
 **At 1440.** The statement on `span-8`: an h2 (48px, at most 4 lines), the first sentence in ink,
 the rest in `<span class="muted">`. 48px below, `.frame.frame--hero` on `span-12` (page CSS
 `aspect-ratio: 2 / 1`) holding the cut-out photograph, centred, at least 64px from every edge; 48px
-below, three facts on `span-4`: a 1px hairline, the value at 28px with its unit, a grey line. A
+below, three facts on `span-4`: the value at 28px with its unit, a grey line. A
 technical product may show the client's render or its object of its own kind instead (`.frame--lit`
 with `<div data-print="print-…">`, its `hero` preset large and right of centre, the facts in
 `div.frame__text` at the lower left). For a product without photographs, draw its known shape or output. A requested 3D view uses `data-product` (`effects-objects.md`).

@@ -51,7 +51,7 @@ These nine win over everything else in this skill.
    at most). Licence credits go in one footer line.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390, and every section
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
-3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone). Change ground where the visitor changes tasks.
+3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone).
 4. **Equal left and right content edges.**
 5. **Quiet motion everywhere, set pieces only where the content carries them.** The motion layer
    gives every control a hover and a press, every hero its dealt entrance, every section its
@@ -60,9 +60,9 @@ These nine win over everything else in this skill.
    stickers excepted), no carousel or tab that moves by itself, no section that only animates words.
 6. **Show the thing itself.** In this order: the client's own pictures; a picture built for this
    page (the product's UI as live HTML, a drawing of the product or its world in one style, a
-   chart from believable data); a stand-in photograph only where its subject is right (a
+   figure from supplied numbers); a stand-in photograph only where its subject is right (a
    landscape, a material, a street, hands at work, a room of the right kind). Never another
-   maker's product, never a detail standing for the whole, never a mood picture beside a price.
+   maker's product, repeated pictures or icon tiles. On quiet pages show a subject on at least three of four desktop screens.
 7. **Real full-colour icons** (a known product's real icon, never a drawn look-alike); small
    diagram visuals in cards (`diagrams.md`).
 8. **At least two sections are your own design for this content** (one on a page under six
@@ -156,7 +156,7 @@ world within the limits of `expressive.md`, each naming its source.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
    Merge a heading, one sentence and a picture with a neighbour.
-   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its picture and where that picture comes from on the ladder of rule 6, its ground.
+   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its ground and `shows  <subject> | <source>`. Save these lines to .taste-skill/sections.txt.
    Mark the sections that are your own design. Count the sections, and note what the page really
    carries: a sentence worth a statement, a list the brief names, photographs that show a claim,
    steps, figures. The deal needs both.
@@ -164,7 +164,7 @@ world within the limits of `expressive.md`, each naming its source.
 4. **Deal the frame.**
 
    ```bash
-   node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --brief "<client words>" [--view wide] --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
+   node <skill>/scripts/start.mjs plan --section-plan .taste-skill/sections.txt --page <kind> --trade <trade> --sections <n> --brief "<client words>" [--view wide] --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
    `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold (a price alone is no `figures`; use a meter only with several supplied prices). Pass `--subjects 3` only for three independent subjects that each need an exhibit. A single workflow gets one view. For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
@@ -179,7 +179,7 @@ world within the limits of `expressive.md`, each naming its source.
      colours go through `start.mjs brand`), hero and its entrance, nav, footer, close, buttons,
      mark, `data-density`, heading alignment, picture
      corners. Never violet: deal again.
-   - **Suggestions:** `grounds` gives a count and a set of surfaces. Keep a workflow together. `composition` lines, for sections that are photographs with words.
+   - **Suggestions:** `grounds` names the surface for each section. Keep a workflow together. `composition` lines, for sections that are photographs with words.
    - **Prompts:** four `ideas` seeds. Take one where your content has that shape, or compose
      something else; a seed is never a part to paste.
    - **`sub` lines** name a sub-skill for one job on this page (a mascot, an illustration, a logo
@@ -287,7 +287,7 @@ For your eyes first, then the gate (its check ids in brackets):
 - **Sections from their content:** two own sections from six sections up, one below six [own-count]; no section holds a few
   words in an empty band; no content cut or hidden to fit [section-height, empty-area,
   still-wrong].
-- **Air and grounds:** leave space for the content and change ground at a change of task [section-air, empty-band, ground-flat].
+- **Air and grounds:** one ground is sufficient. Check the air at section boundaries [section-air, empty-band].
 - **Equal text edges,** with the page inside the viewport [container-edges, right-edge,
   spill, off-viewport].
 - **Photo-led pages** take a picture to a screen edge after the hero and keep runs of boxed picture sections to two [boxed-run].

@@ -30,6 +30,10 @@ for (const p of palettes) {
     const minimum = ['ink','inv-ink'].includes(text) ? 7 : 4.5;
     assert(color.contrast(token(ground), token(text)) >= minimum, p.id + ': ' + text + ' on ' + ground);
   }
+  for (const [ground, text] of [['bg','muted'],['surface','muted'],['inv-bg','inv-muted'],['inv-surface','inv-muted']]) {
+    const ratio = color.contrast(token(ground), token(text));
+    assert(ratio >= 7 && ratio <= 10, p.id + ': secondary ink on ' + ground + ' is ' + ratio);
+  }
   const l = color.lab(bg)[0];
   const original = p.surface || color.mix(p.bg, p.ink, 0.05);
   const before = Math.abs(l - color.lab(original)[0]);

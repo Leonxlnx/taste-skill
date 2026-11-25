@@ -31,10 +31,10 @@ html[data-density="open"] { --density: 1.15; }
   --p-bg: #ffffff;
   --p-surface: #ebebeb;
   --p-ink: #111111;
-  --p-muted: #686868;
-  --p-accent: #1a4be0;
+  --p-muted: #4c4c4c;
+  --p-accent: #0a3bd1;
   --p-accent-ink: #ffffff;
-  --p-action: #1a4be0;      /* buttons, links, focus: the accent, or the ink when the accent is too pale */
+  --p-action: #0a3bd1;      /* buttons, links, focus: the accent, or the ink when the accent is too pale */
   --p-action-ink: #ffffff;
   --p-inv-bg: #111111;
   --p-inv-surface: #1c1c1c;
@@ -54,11 +54,11 @@ html[data-density="open"] { --density: 1.15; }
   --font-text: system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --display-weight: 400;    /* headlines 400; 500 on a tech page (software, gaming, hardware) */
-  --display-tracking: -0.025em;
+  --display-tracking: -0.012em;
 
   /* The fixed header and the hero's own clearances. */
   --nav: 72px;
-  --hero-clearance: 50px; /* allows for cap ink rounding above the line box */
+  --hero-clearance: 122px; /* allows for cap ink rounding above the line box */
   --hgap: 48px;
   --hpadb: 64px;
   --bar: 0px;
@@ -84,18 +84,18 @@ html[data-density="open"] { --density: 1.15; }
   --t-label: 13px;
   --t-small: 14px;
   --t-body: 16px;
-  --t-lead: 18px;
+  --t-lead: 16px;
   --t-card: 18px;
-  --t-h3: 24px;
+  --t-h3: 18px;
   /* straight lines from the phone size at 390 to the desktop size at 1440 (system.md's table) */
-  --t-h2: clamp(30px, 1.72vw + 23.3px, 48px);
-  --t-h1: clamp(38px, 3.24vw + 25.4px, 72px);
+  --t-h2: clamp(28px, calc(28px + (100vw - 390px) * 12 / 1050), 40px);
+  --t-h1: clamp(36px, calc(36px + (100vw - 390px) * 28 / 1050), 64px);
   /* a big number stays a step under the h2 (VI-11): 38 at 1440, 28 at 390, so it never reads as a
      section heading; a stats row and a price set their own, smaller still */
   --t-stat: clamp(28px, .952vw + 24.29px, 38px);
 
   /* radius: one scale (soft by default; data-radius on <html> switches it) */
-  --r-sm: 8px;  --r-md: 12px; --r-lg: 20px; --r-btn: 8px;
+  --r-sm: 8px;  --r-md: 12px; --r-lg: 16px; --r-btn: 8px;
 
   /* controls (fixed here; a page never adds its own) */
   --btn-h: 44px;
@@ -108,7 +108,7 @@ html[data-density="open"] { --density: 1.15; }
   --dur: 180ms;
 }
 html[data-radius="sharp"] { --r-sm: 4px; --r-md: 6px;  --r-lg: 8px;  --r-btn: 4px; }
-html[data-radius="soft"]  { --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-btn: 8px; }
+html[data-radius="soft"]  { --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-btn: 8px; }
 html[data-radius="round"] { --r-sm: 10px; --r-md: 16px; --r-lg: 24px; --r-btn: 999px; }
 /* the four lit grounds (references/cards.md); sand is the default above. painting goes with
    painterly-landscape (x.ai's daylight sky over olive hills) */
@@ -121,14 +121,14 @@ html[data-radius] .panel { --p-r: var(--r-md); }
 
 /* Phone header, content gutters and heading gap. */
 @media (max-width: 639px) {
-  :root { --nav: 56px; --hero-clearance: 32px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 12px; --head-gap: 32px; }
+  :root { --nav: 56px; --hero-clearance: 74px; --hgap: 40px; --hpadb: 24px; --gut: 24px; --gutter: 12px; --card-gap: 20px; --head-gap: 32px; }
 }
 @media (min-width: 640px) {
   :root { --gut: 48px; --section: 48px; --section-band: 72px; --card-pad: 24px; }
 }
 @media (min-width: 1024px) {
   :root { --gut: 80px; --section: 56px; --section-band: 96px; --card-gap: 24px;
-          --t-lead: 20px; --t-card: 20px; --t-h3: 28px; }
+          --t-lead: 18px; --t-card: 20px; --t-h3: 20px; }
 }
 /* a place (VI-06, ST-96, PH-23): its own smaller type (h1 48/53 and 32/37, h2 40/50 and 28/35, titles
    and the sub-line 20 and 18), the Recipe 3 hero's gap under its photograph (40, 24 on a phone),
@@ -137,7 +137,7 @@ html[data-radius] .panel { --p-r: var(--r-md); }
   --hgap: 40px;
   --t-h1: clamp(32px, 1.524vw + 26.06px, 48px);
   --t-h2: clamp(28px, calc(28px + (100vw - 390px) * 12 / 1050), 40px);
-  --t-h3: clamp(20px, .381vw + 18.51px, 24px);
+  --t-h3: var(--t-card);
   --r-sm: 2px; --r-md: 0px; --r-lg: 0px; --r-btn: 2px;
 }
 :root[data-type="place"] :is(h1, .t-h1) { line-height: 1.104; }
@@ -229,9 +229,9 @@ h1, h2, h3, h4 {
 }
 h1, .t-h1 { font-size: var(--t-h1); line-height: 1.04; }
 :where(h1, h2, h3, h4, h5, h6) { color: var(--heading-ink, currentColor); }
-h2, .t-h2 { font-size: var(--t-h2); line-height: 1.1; }
-h3, .t-h3 { font-size: var(--t-h3); line-height: 1.2; }
-h4, .t-card { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: -0.01em; }
+h2, .t-h2 { letter-spacing: -.008em; font-size: var(--t-h2); line-height: 1.1; }
+h3, .t-h3 { font-weight: 500; letter-spacing: 0; font-size: var(--t-h3); line-height: 1.2; }
+h4, .t-card { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: 0; }
 p { text-wrap: pretty; }
 .t-lead  { font-size: var(--t-lead); line-height: 1.5; }
 .t-body  { font-size: var(--t-body); line-height: 1.55; }
@@ -586,8 +586,8 @@ main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.h
      block  near-square corners, 48px tall; the secondary is an underlined text link (shops, hotels) */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
-  height: var(--btn-h); padding: 0 var(--s-5); border-radius: var(--r-btn); border: 1px solid transparent;
-  font: 500 var(--t-body)/1 var(--font-text); letter-spacing: 0; white-space: nowrap; cursor: pointer;
+  height: var(--btn-h); padding: 0 20px; border-radius: var(--r-btn); border: 1px solid transparent;
+  font: 500 15px/1 var(--font-text); letter-spacing: 0; white-space: nowrap; cursor: pointer;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
 }
 .btn--primary { background: var(--action); color: var(--action-ink); }
@@ -654,13 +654,16 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 /* ---------------------------------------------------------------- card (one style) */
 .card {
   display: flex; flex-direction: column; gap: var(--s-2); min-width: 0;
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--card-pad);
+  background: none; border: 0; padding: 0;
+}
+.card:is(.card--boxed,.card--plan,.plan) {
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--r-lg); padding: var(--card-pad);
 }
 /* small titles in the text face: a display face at 20px (a condensed or hairline serif) reads smaller than the body */
-.card > h3, .card > h4, .card--plan h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: -0.01em; }
+.card > h3, .card > h4, .card--plan h3 { font-family: var(--font-text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; letter-spacing: 0; }
 /* the type floor (system.md): text people read is 16px or more in ink; cards.css sets it for its
    card text, this for a plain card's lines */
-.card > p { color: var(--ink); max-width: 52ch; }
+.card > p { color: var(--muted); max-width: 52ch; }
 .card > p:not([class^="t-"], [class*=" t-"]) { font-size: var(--t-body); }
 /* at most two boxes one inside the other (sections.md): a card whose panel holds UI drops its own
    box, so its title and lines sit on the page ground over the panel (Figma's tiles), or runs the
@@ -668,7 +671,7 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
 .card.card--open { --c-pad: 0px; background: none; border: 0; box-shadow: none; padding: 0; overflow: visible; }
 .card.card--open > .panel { margin: var(--s-5) 0 0; border-radius: var(--r-lg); }
 .card.card--open > .panel--top { margin: 0 0 var(--s-5); }
-.card--plan.is-featured { border-color: var(--action); box-shadow: inset 0 0 0 1px var(--action); }
+.card--plan.is-featured { border-color: var(--ink); box-shadow: none; }
 /* cards.css (linked after this file) sets .card { gap: 0 } for feature cards; a plan keeps its 16px rows */
 .card.card--plan { gap: var(--s-4); }
 
@@ -881,7 +884,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
 .nav__expand { display: none; }
 .nav__actions { display: flex; align-items: center; gap: var(--s-4); flex: none; }
 /* the bar's button: the page's primary at the one button height (44, 48 with data-buttons="block"; ST-09) */
-.nav__actions .btn { height: var(--btn-h); padding-inline: var(--s-5); font-size: 15px; }
+.nav__actions .btn { height: var(--btn-h); padding-inline: 20px; font-size: 15px; }
 .nav__actions > .nav__link { padding-inline: var(--s-2); }
 .nav__toggle { display: none; }
 
@@ -1075,7 +1078,7 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
    questions or more may fold (.faq--fold, below).
      <div class="faq"><div class="faq__item"><h3>[Question]</h3><p>[Answer]</p></div> ...</div>
    Older <details> markup shows its answer open too (system.js also sets [open]). */
-.faq > :is(.faq__item, details) { display: grid; gap: var(--s-2); padding: var(--s-5) 0; border-bottom: 1px solid var(--line); }   /* each row closes with its rule (ST-43) */
+.faq > :is(.faq__item, details) { display: grid; gap: var(--s-2); padding: var(--s-5) 0; }
 .faq > :is(.faq__item, details):first-child { padding-top: 0; }
 .faq :is(.faq__item > h3, summary) { display: block; font: 500 var(--t-lead)/1.4 var(--font-text); letter-spacing: 0; list-style: none; cursor: text; }
 .faq summary { pointer-events: none; }
@@ -1133,7 +1136,7 @@ html[data-tone="dark"] .footer--dark {
 /* .footer--visit (a place): the address set large with the way there, the hours beside it, then
    one row of the nav's words; no third ask for the main action */
 .footer__address { font: var(--display-weight) var(--t-h2)/1.1 var(--font-display); letter-spacing: var(--display-tracking); font-style: normal; }
-.footer__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-6); margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid var(--line); font-weight: 500; }
+.footer__nav { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-6); margin-top: var(--s-8); padding-top: var(--s-5); font-weight: 500; }
 .footer__nav a:hover { color: var(--action); }
 .footer__nav .socials { margin-left: auto; }
 .footer--visit .footer__legal { margin-top: var(--s-5); border-top: 0; padding-top: 0; }
@@ -1230,7 +1233,7 @@ html[data-tone="dark"] .footer--dark {
                     tinted ground (then no other close and no second form on the page)
    A close never repeats the section right above it: a page whose last section is the form ends on
    .close--form instead. A phone stacks the close, then the links. */
-footer.closing { border-top: 0; }
+footer.closing { border-top: 1px solid var(--line); }
 footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-10); }
 .closing__cta { min-width: 0; display: flex; flex-direction: column; gap: var(--s-6); }
 .closing__cta > .section-head--split, .closing__cta > .section-head { margin-bottom: 0; }
@@ -1267,7 +1270,7 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
   .closing__cta.close--form > .section-head h2 { font-size: clamp(var(--t-h2), min(4.4vw, 6.4svh), 88px); line-height: 1.04; }
 }
 @media (max-width: 639px) { .close__form { padding: var(--s-5); } }
-.closing__cta.close--type > .btn--xl { width: fit-content; max-width: 100%; height: var(--btn-h); font: inherit; padding-inline: var(--s-5); }
+.closing__cta.close--type > .btn--xl { width: fit-content; max-width: 100%; height: var(--btn-h); font: 500 15px/1 var(--font-text); padding-inline: 20px; }
 /* The name wraps naturally without script. system.js fits one line when space permits. */
 .close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/1.02 var(--font-display); letter-spacing: -0.045em;
                min-width: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--ink); }
@@ -1305,7 +1308,7 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
 /* Keep the decision and its action on the same reading edge. */
 .cta-type { display: grid; justify-items: start; gap: var(--s-6); text-align: left; }
 .cta-type h2 { max-width: 22ch; }
-.btn--xl, .btn--xl.btn--wide { width: fit-content; max-width: 100%; height: var(--btn-h); padding-inline: var(--s-5); }
+.btn--xl, .btn--xl.btn--wide { width: fit-content; max-width: 100%; height: var(--btn-h); padding-inline: 20px; }
 html[data-buttons] .btn--xl::after { width: .6em; height: .6em; }
 
 /* ---------------------------------------------------------------- photographs
@@ -1461,7 +1464,7 @@ main > .photo-band--hero:first-child > .photo-band__text { padding-top: calc(var
 /* .rows: a list read across, a name (and a line) left, a value right, hairlines between: a menu, a
    price list, services with prices, specs, hours. Never cards for these. */
 .rows { border-top: 0; }   /* each row closes with its own rule; no rule above the first (ST-43) */
-.rows > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-5); padding-block: var(--s-4); border-bottom: 1px solid var(--line); }
+.rows > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-1) var(--s-5); padding-block: var(--s-4); }
 /* no rule above the first row, so no padding either: its words start on the line beside it (a photograph's top) */
 .rows > li:first-child { padding-top: 0; }
 .rows__name { font-weight: 500; }
@@ -1567,7 +1570,7 @@ html[data-check] [data-placeholder] { outline: 2px dashed #d92d20; outline-offse
    moves the logo off that line */
 .skip-link { position: absolute; left: max(var(--gut), (100% - var(--container)) / 2); top: 50%; z-index: 2; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap; }
-.skip-link:focus { width: auto; height: var(--btn-h); padding: 0 var(--s-5); clip-path: none; transform: translateY(-50%);
+.skip-link:focus { width: auto; height: var(--btn-h); padding: 0 20px; clip-path: none; transform: translateY(-50%);
   display: inline-flex; align-items: center; background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong);
   border-radius: var(--r-btn); font: 500 var(--t-body)/1 var(--font-text); }
 .stack-2 > * + * { margin-top: var(--s-2); }
@@ -1646,7 +1649,7 @@ main > section.own > .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 .facts--compact { display: grid; grid-template-columns: max-content minmax(0,1fr); align-items: baseline; gap: var(--s-2) 1rem; max-width: 42rem; }
 .facts--compact > div { display: contents; }
 .facts--compact dd { margin: 0; }
-.ground-surface :is(.form,.card) { border: 1px solid var(--line-strong); background: var(--card); }
+.ground-surface :is(.form,.card--boxed,.card--plan,.card.plan) { border: 1px solid var(--line-strong); background: var(--card); }
 .ground-surface .form :is(input:not([type=checkbox],[type=radio]),select,textarea) { background: var(--bg); border: 1px solid color-mix(in srgb,var(--ink) 45%,var(--bg)); color: var(--ink); }
 
 .service-notice { display: flex; align-items: center; justify-content: center; gap: var(--s-4); padding-inline: var(--gut); background: var(--surface); color: var(--ink); font-size: var(--t-body); }
@@ -1656,3 +1659,42 @@ main > section.own > .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 @media (max-width: 639px) { :root:has(.service-notice:not([hidden])) { --nav: calc(56px + var(--notice-height,44px)); } }
 .nav:has(.service-notice) .nav__bar { height: calc(var(--nav) - var(--notice-height,0px)); }
 @media (max-width: 639px) { .facts--compact { grid-template-columns: fit-content(45%) minmax(0,1fr); } }
+
+/* Quiet page roles, including pages built before the seven-column split. */
+:root:not([data-temper="lively"], [data-temper="loud"]) .nav__link { font-size: 14px; }
+:where(:root:not([data-temper="lively"], [data-temper="loud"])) :is(:where(h1, h2, h3, h4) + p, .section-head > p, .hero-copy > .t-lead):not(:where([data-own] article *, .ui *, [data-ui] *, .app-frame *)) { color: var(--muted); }
+/* Older embedded palettes may predate the calibrated secondary ink. Y is the relative
+   luminance of the local ground; (lighter + .05) / (darker + .05) targets 8:1.
+   The D65 white point converts that luminance to a neutral reading colour. */
+@supports (color: color(from white xyz-d65 x y z)) {
+  :root:not([data-action], [data-temper="lively"], [data-temper="loud"]) :is(.hero p.hero__lead, .section-head > p, h2 + p, h3 + p):not(:where([data-own] article *, .ui *, [data-ui] *, .app-frame *)) {
+    --reading-y: clamp(0, max((y + .05) / 8 - .05, min((y + .05) * 8 - .05, (.179 - y) * 1000)), 1);
+    color: rgb(from color(from var(--bg) xyz-d65 calc(.95047 * var(--reading-y)) var(--reading-y) calc(1.08883 * var(--reading-y))) r g b);
+  }
+}
+p.terms, .card > p:is(.terms, .price, .t-stat) { color: var(--ink); }
+html[data-buttons] .btn:not([download], [data-external])::after { content: none; }
+.footer__mark { font-size: var(--t-card); }
+footer[data-wordmark="large"]:not(:has(.close__word)) .footer__mark {
+  font: var(--display-weight) clamp(48px, 6vw, 88px)/1 var(--font-display); overflow-wrap: anywhere;
+}
+:root:not([data-temper="lively"], [data-temper="loud"]) footer:not([data-wordmark="large"]) .close__word { display: none; }
+@media (min-width: 1024px) {
+  .hero-split > .hero-copy { grid-column: 1 / 8; }
+  .hero-split > .hero-visual { grid-column: 8 / -1; }
+}
+main > .section.section--pause { padding-top: var(--air-same); }
+main > section:has(+ .section--pause) { padding-bottom: var(--air-same); }
+
+html[data-action="ink"] :is(a, button, input, select, textarea, [role="button"]) {
+  --accent: var(--ink); --accent-ink: var(--bg); --action: var(--ink); --action-ink: var(--bg);
+}
+
+/* A quiet brand band uses the palette's second field. The action hue stays on controls. */
+html[data-action]:not([data-temper="lively"], [data-temper="loud"]) .ground-brand {
+  --bg: var(--p-inv-bg); --ink: var(--p-inv-ink); --muted: var(--p-inv-muted);
+  --surface: var(--p-inv-surface); --card: var(--surface);
+  --action: var(--ink); --action-ink: var(--bg);
+}
+:root:not([data-temper="lively"], [data-temper="loud"]) .checks li::before { background: var(--ink); }
+:root:not([data-temper="lively"], [data-temper="loud"]) .chapter-nav a[aria-current="true"] { border-bottom-color: var(--ink); }

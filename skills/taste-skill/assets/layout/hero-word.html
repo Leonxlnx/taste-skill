@@ -16,12 +16,12 @@
 <link rel="stylesheet" href="demo.css">
 <style>
 :root {
-  --p-bg: #fbf8f1; --p-surface: #f1ece0; --p-ink: #141311; --p-muted: #5e5a52;
+  --p-bg: #fbf8f1; --p-surface: #f1ece0; --p-ink: #141311; --p-muted: #464646;
   --p-accent: #e0a100; --p-accent-ink: #141311; --p-action: #141311; --p-action-ink: #fbf8f1;
   --p-inv-bg: #141311; --p-inv-surface: #1f1d1a; --p-inv-ink: #fbf8f1; --p-inv-muted: #b1aca2;
   --p-inv-accent: #f5c242; --p-inv-accent-ink: #141311; --p-inv-action: #f5c242; --p-inv-action-ink: #141311;
   --font-display: "Archivo", system-ui, sans-serif; --font-text: "Archivo", system-ui, sans-serif;
-  --display-weight: 400; --display-tracking: -0.025em; --display-tracking-xl: -0.035em; --display-stretch: 112%; --ly-scale: .9;
+  --display-weight: 400; --display-tracking: -0.025em; --display-tracking-xl: -.012em; --display-stretch: 112%; --ly-scale: .9;
 }
 .hero--word { --halo-x: 30%; --halo-y: 34%; }
 .price-rows .rows__name small { display: block; font-weight: 400; color: var(--muted); font-size: var(--t-small); }
@@ -71,9 +71,14 @@
       <h1 id="hero-h" data-ly-letters="wdth">Hamburg movers for flats.</h1>
       <div class="grid hero__foot">
         <div class="span-6">
-          <p class="hero__lead">A fixed price after a 15-minute video call. Two to six movers, a 7.5-tonne truck, blankets and boxes included, insured to €50,000.</p>
+          <p class="hero__lead">A fixed price after a 15-minute video call. We bring the blankets and boxes.</p>
           <div class="btn-row"><a class="btn btn--primary" href="#prices">Get a fixed price</a><a class="btn btn--secondary" href="#prices">See the prices</a></div>
         </div>
+        <dl class="hero__facts hero__facts--col span-5 start-8">
+          <div><dt>Crew</dt><dd>2–6 movers</dd></div>
+          <div><dt>Truck</dt><dd>7.5 tonnes</dd></div>
+          <div><dt>Insurance</dt><dd>Up to €50,000</dd></div>
+        </dl>
       </div>
     </div></div>
   </section>
@@ -116,7 +121,7 @@
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head"><h2 id="close-h">Get a fixed price</h2></div>
-      <a class="btn btn--primary btn--xl" href="#prices">Get a fixed price<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      <a class="btn btn--primary btn--xl" href="#prices">Get a fixed price</a>
     </div>
     <div class="closing__links">
       <div class="grid">
