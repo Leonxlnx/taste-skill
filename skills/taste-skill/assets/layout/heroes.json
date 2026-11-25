@@ -401,24 +401,7 @@
      "only": "tech"
     }
    ],
-   "effects": [
-    {
-     "id": "grain-gradient",
-     "only": "tech"
-    },
-    {
-     "id": "painterly-landscape",
-     "only": "tech"
-    },
-    {
-     "id": "gradient-mesh",
-     "only": "tech"
-    },
-    {
-     "id": "ruled-grounds",
-     "only": "tech"
-    }
-   ],
+   "effects": [],
    "mistakes": [
     "the frame out to the viewport edge (one-sided bleed)",
     "a window cut on all four sides",
@@ -566,12 +549,7 @@
      "dark": true
     }
    ],
-   "effects": [
-    {
-     "id": "film-light-leak",
-     "only": "tech"
-    }
-   ],
+   "effects": [],
    "mistakes": [
     "a play button with no film behind it",
     "words over the poster's busy part",
@@ -739,13 +717,7 @@
      "only": "tech"
     }
    ],
-   "effects": [
-    {
-     "id": "grain-gradient",
-     "only": "tech",
-     "as": "a collage piece's own ground"
-    }
-   ],
+   "effects": [],
    "mistakes": [
     "pieces that slide, scale or tilt",
     "a piece cut by the collage's edge",
@@ -797,7 +769,7 @@
     "lead": "16px. Box 342 × 96px at x 24, y 271.",
     "stage": "342 × 492px at x 24, y 499."
    },
-   "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again; the ground (painterly-landscape or the lit ground) is drawn once and held",
+   "moment": "a loop inside the window: the question stays, the tool line, the answer and the actions arrive about 0.9 s apart, hold 2.4 s, play again",
    "moments": [],
    "grounds": [
     {
@@ -809,24 +781,7 @@
      "only": "tech"
     }
    ],
-   "effects": [
-    {
-     "id": "painterly-landscape",
-     "only": "tech"
-    },
-    {
-     "id": "gradient-mesh",
-     "only": "tech"
-    },
-    {
-     "id": "grain-gradient",
-     "only": "tech"
-    },
-    {
-     "id": "aurora-curtains",
-     "only": "tech"
-    }
-   ],
+   "effects": [],
    "mistakes": [
     "a third button",
     "a frame wider than the container",

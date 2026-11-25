@@ -2,7 +2,7 @@
 
 Write `shows  <subject> | <source>` on each section line, or `shows  nothing` for a text-only section. Show what a heading describes beside or below it. Use `illustrate` for a drawing or `data-picture` for supplied numbers. Keep text-only sections to one quarter of a quiet plan and picture-free desktop screens to one in four.
 
-Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
+Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. If a selector changes only a word, print the options in one line, with their marks when available. Show an install command only when the brief supplies it. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
 
 ## The method
 
@@ -99,7 +99,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 **Product**
 
 - `record-handoff` Show one identifiable record at its source and destination with the changed field legible in both.
-- `setup-by-environment` Choose a supported environment and see its first working instruction, expected result and next action in the same panel.
+- `setup-by-environment` List the supported environments together. Offer a selector only for distinct instructions and results supplied in the brief.
 - `core-view` The product's central view built large, with three callouts pinned to real parts of it.
 - `switcher` One frame; three to five use cases as click tabs that change what the frame shows.
 - `anatomy` The product in the middle, thin leader lines to labelled parts round it.

@@ -3,6 +3,7 @@
   "name": "Ridgeline",
   "family": "pattern",
   "look": "Stacked thin lines rising into a few clean peaks, the front lines hiding the ones behind, with one line picked out in the accent.",
+  "kinds": ["gaming"],
   "bestOn": ["band"],
   "motion": "slow",
   "cost": "low",

@@ -107,8 +107,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
   the nav's button moves into the sheet (system.css). system.js shows the bar only once the hero's
   main button has scrolled off the top, and hides it again while that button, or a link or button
   that does what one of the bar's does (the same address or the same words, such as the close's
-  booking button or the footer's directions), or the form it links to, is on the screen: one screen never shows an action
-  twice [action-repeat]. Hidden, it is off the screen and inert, so nothing in it takes the focus;
+  booking button or the footer's directions), or the form it links to, is on the screen. The nav and hero may repeat their action. Keep a third copy off the same screen [action-repeat]. Hidden, it is off the screen and inert, so nothing in it takes the focus;
   it never hides while the focus is in it. The hero does not pad for it then. Without script the
   bar is simply always at the foot, over the page as it scrolls by; the hero and the footer pad for
   it, so it covers neither the first screen's button nor the page's end. Write it as the starter does, a child of `body` after the footer, and add no script of your own.
@@ -117,7 +116,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 
 `footer.closing` is the page's last section (`layout-v4.md`): row 1 the dealt close, row 2 the
 directory on one ground (link columns, the legal row). Types: `footer-columns`, `footer--dark` (columns on a darker ground), `footer--statement` (the lit ground; tech),
-`footer--visit` (directions and opening hours). Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
+`footer--visit` (directions and opening hours). Use a column heading only over three or more links. For fewer destinations use one row beside the name and contact line. Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
 brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
 unless the brief gives the accounts.
@@ -172,7 +171,7 @@ One recipe for every form (booking, enquiry, call request, newsletter); `starter
 - **Where it sends:** `data-endpoint` holds the address of the client's form service when the
   brief gives one; system.js posts to it. Without one the form's `action` is a `mailto:` on
   `.example` (`hello@brand.example`, `copy.md`): a stand-in, listed in the report as the address
-  the client must supply. Keep a message field and its submit group on separate full rows with `.field--full`. Name the actual destination on the button (Open email draft). Explain beside it in a visible `.terms` line that it opens the visitor’s email with the request filled in. Disclose preview limits before the fields.
+  the client must supply. Keep a message field and its submit group on separate full rows with `.field--full`. Keep the main action’s wording on submit. Put one visible `.terms` sentence under it explaining that the visitor’s email opens with the request filled in.
 - **Size:** fields 48px with labels at 14px and 16px text (on the phone too, so the browser never
   enlarges the page), tap targets 44px, six fields at most, one column under 640.
 - **Labels you can see:** every field has a `<label for>` above it, in words that say what goes in

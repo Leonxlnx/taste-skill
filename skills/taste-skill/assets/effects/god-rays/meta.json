@@ -3,6 +3,7 @@
   "name": "God rays",
   "family": "light",
   "look": "Bundles of light shafts fall from above the frame through haze, uneven in width, with a few soft motes drifting in them.",
+  "kinds": ["gaming"],
   "bestOn": ["hero", "band"],
   "motion": "slow",
   "cost": "mid",

@@ -380,7 +380,7 @@ function fingerprint(dir, m, P, html) {
   const walked = P.file ? walk(P.file, root || path.dirname(P.file)) : [];
   const files = [...new Set([...walked, ...(P.url || fs.existsSync(path.join(dir, 'package.json')) ? sourceFiles(dir) : [])])];
   const h = crypto.createHash('sha1');
-  h.update(JSON.stringify({ rules:'2.5.4-ask-outcome', stillFinish:1, target, opts }));
+  h.update(JSON.stringify({ rules:'2.5.4-ask-outcome', stillFinish:2, target, opts }));
   // Download anchors aren't loaded by the browser. Installing or removing the
   // file after a gate run must invalidate its verdict too.
   if (P.file) for (const m of html.matchAll(/<a\b[^>]*>/gi)) {
@@ -584,6 +584,7 @@ function productChecks(html, dot) {
     const shows = [...imgs.map(a => [a.alt,a['aria-label'],a['data-subject']].filter(Boolean).join(' ')),...titles].join(' ');
     for (const n of nouns) {
       const h = heads.find(x => word(esc(n)).test(x));
+      if (h && nouns.some(other => word(esc(other)).test(h) && word(esc(other) + (Object.hasOwn(SAME,other) ? '|' + SAME[other] : '')).test(shows))) continue;
       if (!h || word(esc(n) + (Object.hasOwn(SAME, n) ? '|' + SAME[n] : '')).test(shows)) continue;
       W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's picture identifies "${shows.trim().slice(0, 70)}"`, fix: `show the ${n} in a photograph, drawing or working view and name it in the accessible description` });
     }
@@ -617,7 +618,7 @@ const COMP_MARK = {
   'bleed-panel': [/\bcomp-bleed\b/, '<section class="section comp-bleed"> with the photograph as its layer and the words on .comp-panel (sections-library.md, Compositions)'],
   'offset-pair': [/\bcomp-offset\b/, '<div class="grid comp-offset"> with two figures of one subject (sections-library.md, Compositions)'],
   'three-up': [/\bcomp-three\b/, '<div class="grid comp-three"> with three figures on span-4 (sections-library.md, Compositions)'],
-  'street-large': [/\btype-moment\b/, 'the street set large as .type-moment under the visit\'s h2 (sections.md section 4)'],
+  'street-large': [/\btype-moment\b/, 'the supplied street set large as the visit\'s h2 (sections.md section 4)'],
   'statement-short': [/\bstatement--short\b/, '<section class="section statement statement--short"> (sections-library.md, Compositions)'],
   'close-form': [/\bclose--form\b|\bclose__form\b/,'the <template data-part="close-form"> of <skill>/assets/starter.html as the close'],
 };
@@ -934,7 +935,7 @@ const LAYOUT_FIX = {
   'section-air': 'keep the kit padding (--padt, --padb) on the section; never zero it or add your own', sparse: 'give the section the content its heading promises, or merge it into the section next to it',
   neighbour: "keep the next section's heading and picture out of this screen", 'neighbour-ground': 'end the ground with the section',
   'hero-fold': 'the hero contains its offer and action; keep the next heading or control whole at the fold', 'hero-maxchars': 'shorten the h1 or give the hero room for the longest headline',
-  'hero-lines': 'widen the headline column so the test headline fits its line limit', 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
+  'hero-lines': 'widen the headline column so the page headline fits its line limit', 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
 };
 
 // Keep the gate promotion for a repeated photograph.

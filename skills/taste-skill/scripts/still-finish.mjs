@@ -29,7 +29,9 @@ export function measureFinish() {
     const image = el.matches('img') ? el.complete && el.naturalWidth > 0
       : el.matches('svg') ? !el.closest('defs,mask,symbol,button,a.btn') && !!el.querySelector('path,rect,circle,polygon,line,image,use')
       : el.matches('video,canvas,.app-frame,.hero__window,[data-ui],[data-chart],[data-diagram],[data-map],iframe[src*="map"],[role="img"]')
+        || el.matches('figure[aria-label],[data-diagram],.frame[role="img"]') && !!el.querySelector('img,svg,dl,table,.ui')
         || el.matches('figure') && !!el.querySelector('table')
+        || el.matches('[aria-label]') && !!el.querySelector('details > summary')
         || /url\(/.test(style.backgroundImage);
     if (!image) continue;
     let top = r.top, bottom = r.bottom, left = r.left, right = r.right;

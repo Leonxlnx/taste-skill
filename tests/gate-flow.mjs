@@ -384,24 +384,24 @@ for (const whole of [false, true]) {
   check(['palette','type','mark','nav','close','footer','hero','entrance','buttons'].every(f=>bad.includes(f)),'each changed frame field remains a blocking drift',JSON.stringify(bad));
 }
 // Use the real copy checker with the stand-in browser. The gate must print
-// all three states, preserve them between runs and check a newly supplied file.
+// all four states, preserve them between runs and check a newly supplied file.
 {
-  for (const script of ['copy-lint.mjs','ask-outcome.mjs','heading-copy.mjs','story-check.mjs']) {
+  for (const script of ['copy-lint.mjs','ask-outcome.mjs','place-address.mjs','heading-copy.mjs','story-check.mjs']) {
     fs.copyFileSync(path.join(SCRIPTS,script),path.join(SKILL,'scripts',script));
   }
   const dir = project('none','Press desk','a desk');
   fs.writeFileSync(path.join(dir,'.taste-skill','copy.md'),
-    'Asks:\n- Watch the film -> #clip : play\n- Get the kit -> #kit : file\n- Read the fees -> #fees : show\n- Store listing -> #listing : go\n\n## Client must supply\n- #listing product URL\n');
+    'Asks:\n- Watch the film -> #clip : play\n- Get the kit -> #kit : file\n- Read the fees -> #fees : show\n- Store listing -> #listing : go\n- Join the newsletter -> #news : send\n\n## Client must supply\n- #listing store address\n- #news receiving address\n');
   const controls = '<section id="clip"><button class="ly-play">Play film</button></section>'+
     '<a id="kit" href="kit.txt">Download the kit</a><p id="fees">A day costs €15.</p>'+
-    '<a id="listing" href="https://studio.example/">Store preview</a>'+
+    '<a id="listing" data-needs="store address" href="https://studio.example/">Visit store</a><form id="news" action="mailto:list@studio.example"><input name="email"><button>Join the newsletter</button><p>Opens your email with the request filled in.</p></form>'+
     '<section><button class="ly-play">Play another film</button></section>';
   fs.writeFileSync(path.join(dir,'index.html'),PAGE('Press desk','a desk',controls));
   gate(dir,['--start','index.html']);
-  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{listing:false}}));
+  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{news:false}}));
   let run = gate(dir,[]);
   let found = state(dir).found;
-  check(found.asks?.map(a=>a.state).join('/')==='pretends/pretends/works/preview' &&
+  check(found.asks?.map(a=>a.state).join('/')==='pretends/pretends/works/needs-address/preview' &&
     found.asks.every(a=>run.out.includes(a.line)), 'gate prints every ask after its findings',run.out);
   check(found.fails.filter(f=>f.check==='play-dead').length===1 && found.fails.filter(f=>f.check==='ask-outcome').length===2,
     'one mapped play failure, with the independent unmapped dead control still reported',run.out);
@@ -411,7 +411,7 @@ for (const whole of [false, true]) {
   const snapshot = JSON.parse(oldBytes);
   check(snapshot.fingerprint && snapshot.fails.length===found.fails.length && snapshot.warns.length===found.warns.length && Array.isArray(snapshot.waivers),'immutable run keeps fingerprint, findings and waivers',oldRun);
   fs.writeFileSync(path.join(dir,'kit.txt'),'Studio press contact');
-  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{listing:true}}));
+  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{news:true}}));
   run = gate(dir,[]);
   found = state(dir).found;
   check(!found.warns.some(f=>f.check==='preview-handoff'), 'mapped preview with an adjacent handoff passes',run.out);

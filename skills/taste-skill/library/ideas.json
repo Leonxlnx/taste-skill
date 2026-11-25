@@ -48,7 +48,7 @@
   {"id":"pantry-tiles","shape":"detail","line":"Show ingredients, materials or origins on square brand-ground tiles with one single-colour drawing and a name each.","kinds":["place","product","service"]},
   {"id":"archive-prints","shape":"story","line":"Place four to six dated photographs on an offset grid around a short paragraph. Give each a white border and its year and keep the prints straight.","kinds":["place","product","service","gaming"]},
   {"id":"record-handoff","shape":"product","line":"Show one identifiable record at its source and destination with the changed field legible in both.","kinds":["software","tech","service"]},
-  {"id":"setup-by-environment","shape":"product","line":"Choose a supported environment and see its first working instruction, expected result and next action in the same panel.","kinds":["software","tech","gaming"]},
+  {"id":"setup-by-environment","shape":"product","line":"List the supported environments together. Offer a selector only for distinct instructions and results supplied in the brief.","kinds":["software","tech","gaming"]},
   {"id":"test-record","shape":"proof","line":"Place a documented reading beside its object, unit, conditions and source.","kinds":["tech","product","software","service"]},
   {"id":"release-documents","shape":"story","line":"Give each release its date, one line on what changed and aligned links to its real files.","kinds":["software","tech","gaming","product"]},
   {"id":"directory-foot","shape":"detail","line":"Put related destinations under named headings, keep the most-used task within reach, and finish with a separate locale and policy row.","kinds":["software","gaming","tech","product","service","place"]},

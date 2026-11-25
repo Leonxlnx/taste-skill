@@ -29,7 +29,7 @@
   node scripts/start.mjs types --page <kind>
       every pairing the kind can be dealt, with its exact Google Fonts link
   node scripts/start.mjs plan --page <kind> [--trade <trade>] [--type <page type>]
-      [--sections N] [--section-plan <file>] [--motion ask] [--long] [--has photo,ui,film,object,setting,logo,art]
+      [--sections N] [--section-plan <file>] [--motion ask] [--effect ask] [--street "<street from brief>"] [--long] [--has photo,ui,film,object,setting,logo,art]
       [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form]
       [--tone warm|editorial|product|tech|playful] [--axis] [--story <id>] [--history .taste-skill/history.json]
       Deal the frame, four prompts for the content and one story shape (library/stories.json: one that lists the kind,
@@ -59,6 +59,7 @@
   linked after the :root block.
 */
 import fs from 'node:fs';
+import { suppliedStreet } from './place-address.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { color } from '../assets/effects/fx.js';
@@ -594,7 +595,7 @@ function groundLine({ bySection }) {
 }
 function dealIdeas(h, carry) {
   const recent = (h.ideas || []).slice(-8);
-  const pool = lib('ideas.json').filter(s => s.kinds.includes(page) && !recent.includes(s.id) && (s.id !== 'meter' || carry.has('figures')) && (s.id !== 'week-strip' || carry.has('steps')));
+  const pool = lib('ideas.json').filter(s => s.kinds.includes(page) && !recent.includes(s.id) && !(action === 'trial' && s.id === 'enquiry-preview') && (s.id !== 'meter' || carry.has('figures')) && (s.id !== 'week-strip' || carry.has('steps')));
   if (pool.length < 4) throw new Error('too few fresh idea seeds for ' + page);
   const shuffled = drawFresh(pool, pool.length, []);
   const picks = [];
@@ -641,10 +642,14 @@ function dealLayout(h) {
   out.compositions = {};
   const lines = [], used = [];
   const dealt = v => { if (ONCE_A_PAGE.includes(v)) used.push(v); return v; };
+  // Name the supplied street explicitly when the brief uses a local address format.
+  const namedStreet = opt('street');
+  const hasStreet = !!suppliedStreet(briefWords) || typeof namedStreet === 'string' && briefWords.toLowerCase().includes(namedStreet.toLowerCase()) &&
+    (/\p{L}/u.test(namedStreet) && /\d/.test(namedStreet) || /^(?:rue|via|calle|rua|avenida|quai|chemin|piazza)\s+\S/i.test(namedStreet));
   for (const sec of KIND_COMPS[k] || []) {
     if (sec === 'form' && (action === 'trial' || action === 'visit')) continue;
     const edgeOptions = ['place', 'product', 'service'].includes(k) && ['showcase', 'feature'].includes(sec);
-    const pool = COMPS[sec] + (edgeOptions ? '|edge-split|colour-half' : '');
+    const pool = (sec === 'visit' && !hasStreet ? COMPS.visit.replace('|street-large','') : COMPS[sec]) + (edgeOptions ? '|edge-split|colour-half' : '');
     if (sec === 'feature') {
       const a = dealt(pick(`${k}:feature`, pool, 2, used));
       const b = dealt(pick(`${k}:feature`, pool, 2, [...used, a]));
@@ -801,7 +806,12 @@ if (cmd === 'deal') {
   const sceneClose = motion.sceneFits.includes('close');
   const effectSlot = page === 'gaming' ? 'band' : 'hero';
   // a lively or loud page's one effect is its texture, from its own world (references/expressive.md): no WebGL ground
-  const effect = techPage && !sceneHero && !expressive ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
+  const occupiedHero = variant === 'wide' || hero.window && assets.has('ui')
+    || ['photo','film','place','collage','triptych'].includes(hero.id)
+    || ['split','product'].includes(hero.id) && assets.has('photo');
+  const effectRequest = opt('effect') === 'ask' || /\b(?:add|use|want|include|with|show)\s+(?:an? |a subtle |a quiet )?(?:shader|background effect|canvas background)\b/i.test(briefWords);
+  const drawEffect = effectRequest || rng(seed + ':background')() < 1/6;
+  const effect = techPage && !sceneHero && !occupiedHero && !expressive && drawEffect ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
     color.isDark(palette.bg) ? 'dark' : 'light', '--slots', effectSlot]).picks[0]?.id || null : null;
 
   const h = readHistory(histFile);
@@ -892,6 +902,7 @@ if (cmd === 'deal') {
   else if (variant==='world') line('hero',hero.id+' with data-view="world": copy the hero from '+ref+'/assets/expressive/demo.html. Use the supplied or illustrated world edge to edge with the game name as lettering on a plate.');
   else line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' && headline === 'across' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
+  if (action === 'trial') line('destination','Use a link button to the app. With no address use https://app.brand.example/signup and data-needs="sign-up address". List it first under Client must supply.');
   if (order) line('order', 'put the configurator or order pad within the first three sections; give supplied delivery and return terms at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
   line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, Build the plan)');
@@ -900,7 +911,7 @@ if (cmd === 'deal') {
   if (shows) shows.forEach((subject,i) => line('section ' + (i+1), 'shows  ' + subject));
   line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
-  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': contact or support and the links a returning visitor needs. Repeat useful hours, directions or purchase terms.');
+  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': name, contact and return links in one row. A column heading needs at least three links. Repeat useful hours, directions or purchase terms.');
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');

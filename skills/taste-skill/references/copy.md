@@ -116,12 +116,14 @@ Footer: <the facts line>
 - <each fact the client must send or confirm (every assumed one, the street, the photographs, any proof), as [NEED: what]; a [NEED] never reaches the page>
 ```
 
-Write each request at its target, for example `- Book a double room -> #booking : send`, choosing `play` for media, `go` for a product destination, `send` for a form, `file` for a download or `show` for on-page content. For a preview, name what the visitor can do now and list the missing piece under “Client must supply” with its `#id`.
+Write each request at its target, for example `- Book a double room -> #booking : send`, choosing `play` for media, `go` for a product destination, `send` for a form, `file` for a download or `show` for on-page content. Describe the action in visitor terms. List each missing piece under “Client must supply” with its `#id`.
 
 Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. Label each line under `## Draft` with its part (`H1:`, `Lead:`, `Button:`).
 
 Cover the paragraph. The first heading or its clearly pictured subject identifies what is sold. Later headings name what the reader can learn, choose or do. Read each at 390. Cut explanations of the column, list or length of the answer.
-Read the destination before naming the button. Say who receives the request and when the visitor leaves the page. Show preview limits in body text beside the action. Source every public total, named project credit and time limit. Without a verified app listing, state availability.
+Use a link button for sign-up, starting free, opening an app, downloads, store purchases and booking through a named service. Use the supplied address or a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List that address first under “Client must supply” in the notes and handoff. The link keeps the action’s name.
+
+Use a short form for an enquiry, slot booking, pre-order, demo request or newsletter. Its submit repeats the main action word for word. With no receiving address, open an email draft and put one plain sentence under the button, such as “Opens your email with the order filled in.” Keep build notes and missing services in the handoff. Source every public total, project credit and time limit.
 
 ## Five rules
 
@@ -148,8 +150,8 @@ Read the destination before naming the button. Say who receives the request and 
    labels a page at most. The main action names the transaction (Book a room, Order a cake, Start a
    free trial; on a place the brief's order or booking, else Get directions, never a side event) and
    reads the same in the nav, hero, phone bar and form or order controls. One screen
-   shows it twice at most: the nav's button and the hero's on a desktop (the checker WARNs it, so
-   look that nothing else repeats it), the hero's on a phone (system.js keeps the phone bar away
+   shows it twice at most: the nav's button and the hero's on a desktop,
+   the hero's on a phone (system.js keeps the phone bar away
    from a screen that already shows its action); a third copy on one screen FAILs [action-repeat].
    The button keeps its words; the headings around it do not borrow them. **The close's heading says
    something new:** the hero's promise with one fact from the brief, the admission turned into a

@@ -166,7 +166,7 @@ A product window, code card or UI fragment takes the neutral matte of its sectio
 
 - One ground id for the card group, a new `data-fx-seed` per panel, never the id of the hero's
   effect (one effect in hero, cards and close reads as a stock motif).
-- **Behind a fragment, a soft field**: `painterly-landscape`, `grain-gradient`, `gradient-mesh`,
+- **Behind a fragment, a soft field**: `grain-gradient`, `gradient-mesh`,
   `silk-folds` (and other mesh, grain and material families). Never a pattern that fights the UI:
   no `grid-pulse`, `ruled-grounds`, `contour-lines`, `dot-terrain`, `ridgeline`, `halftone-screen`
   or `bayer-dither` behind a window, list or card. Those are pictures on their own: a panel with
@@ -175,7 +175,7 @@ A product window, code card or UI fragment takes the neutral matte of its sectio
   own, the same in light and dark. On the dark page it is clearly lighter than the card (3:1 or
   more), so page, card, panel and UI are never four near-black layers; on the light page it is a
   clear step darker than the white UI. The palettes in the showcase:
-  - painting: `{"bg":"#a3b0b6","accent":"#c49a6c"}` with params `"blur":1,"brush":0.35,"slope":0,
+  - A painted game-world panel: `{"bg":"#a3b0b6","accent":"#c49a6c"}` with params `"blur":1,"brush":0.35,"slope":0,
     "hillY":0.3,"horizon":0.62` (a level mist over warm sand, fully soft). Never a blue sky over a
     green hill with a diagonal crest: it reads as a stock desktop wallpaper, not a crafted ground.
     At most one painted panel in a card group (one per page is better); the others keep their section’s neutral matte.
@@ -291,5 +291,5 @@ every other fragment holds its finished picture.**
 - A "sample", "example" or "to follow" note anywhere, even one line in the footer (in testing:
   "Names and figures on this page are examples" read as an apology), a caption under a visual
   that explains or apologises, and a placeholder (`[Name]`, `Example Street 1`, a `.example`
-  address, lorem ipsum). Licence credits go in one footer line.
+  address printed as contact text, lorem ipsum). A missing action URL stays in its marked link. Licence credits go in one footer line.
 - Small grey card text (15px muted): card text is 16px in the ink.

@@ -93,6 +93,7 @@ function stateFacts(text, name) {
     const near = text.slice(Math.max(0,m.index-45),m.index)+' '+text.slice(m.index+m[0].length,m.index+m[0].length+100);
     // “to the demo” and “for the reader” are destinations of a link or copy, not states of the record.
     const factsInText = /\b(?:\d+(?::\d+|[.,]\d+)?(?:\s*(?:%|kg|hours?|days?|seats?))?|(?:pending|ready|approved|cleared|late|due|delayed|open|closed|blank|paid|sent|done|empty|full|caught|found|held|lost|booked|assigned|requested|refunded|packed|shipped|arrived|released|dispatched|moved|signed|billed|waiting|confirmed|completed|rejected|cancelled|delivered|docked|draft|queued|running|failed|resolved)|(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)|(?:at|from|to|near|in|beside)\s+(?:Gate|Pier|Quay|Port|Room|Bay|Berth)\s+[\w-]+)\b/gi;
+    for (const hit of near.matchAll(/\b(?:slack|teams|email|pagerduty)\b/gi)) facts.add('channel '+hit[0].toLowerCase());
     for (const hit of near.matchAll(factsInText)) facts.add(hit[0].toLowerCase());
     for (const hit of near.matchAll(/\b(?:at|from|to|near|in|beside)\s+([A-Z][\p{L}-]+(?:\s+[A-Z][\p{L}-]+)*)/gu)) facts.add(hit[1].toLowerCase());
   }
@@ -145,7 +146,7 @@ export function storyFindings(P, { plan = null, notes = null } = {}) {
       (name || story?.thread || 'The record')+' changes in '+changed.length+' distinct sections' + (repeats.length ? '; repeated without a new state in '+repeats.join(', ') : ''),
       'Show the same named record in three sections, each with a changed state, time, amount or place.');
   }
-  if (P.close?.h2 && P.h1) {
+  if (P.close?.h2 && P.h1 && !P.close.mainAction && !(P.heroAction && key(P.close.action) === key(P.heroAction))) {
     const start = P.heroAction || P.h1+' '+(P.lead || '');
     const end = P.close.action || P.close.h2+' '+(P.close.lead || '');
     const opening = roles.filter(r => r.test(start+' '+P.h1+' '+(P.lead || '')));
@@ -198,8 +199,14 @@ export function storyProbe() {
   const foot = document.querySelector('footer.closing');
   const action = el => txt(el?.querySelector('.btn--primary, [type="submit"], a.btn'));
   const ch2 = foot ? foot.querySelector('h2') : null;
-  let close = ch2 ? { action: action(ch2.closest('.closing__cta, .closing__close, .close, section') || foot), sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement && ch2.parentElement.querySelector('p')), text: txt(ch2.closest('.closing__close, .close, [class*="close"]') || ch2.parentElement) } : null;
+  let close = ch2 ? { action: action(ch2.closest('.closing__cta, .closing__close, .close, section') || foot), sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement && ch2.parentElement.querySelector('p')), text: txt(ch2.closest('.closing__cta, .closing__close, .close, section') || ch2.parentElement) } : null;
   if (!close) { const last = sections.filter((s) => !s.hero && s.h2).pop(); if (last) close = { action: last.action, sel: last.sel, h2: last.h2, lead: '', text: last.text }; }
+  if (close) {
+    const heroButton = hero?.querySelector('a.btn--primary,a.btn');
+    const closeRoot = ch2?.closest('.closing__cta,section') || main.querySelector(':scope > section:last-of-type');
+    const target = heroButton?.hash && document.getElementById(heroButton.hash.slice(1));
+    close.mainAction = !!(target && closeRoot?.contains(target) && (target.matches('form') || target.querySelector('form')));
+  }
   const navs = [...document.querySelectorAll('[data-chapter-nav], .chapter-nav, .contents-row')].map((n) => ({
     kind: n.matches('.contents-row') ? 'contents-row' : 'chapter-nav', sel: sel(n),
     links: [...n.querySelectorAll('a[href]')].filter((a) => a.getAttribute('href').startsWith('#')).map((a) => { const h = a.getAttribute('href'); let id = ''; try { id = decodeURIComponent(h.slice(1)); } catch { id = h.slice(1); } return { href: h, text: txt(a), ok: !!id && !!document.getElementById(id) }; }),

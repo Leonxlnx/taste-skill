@@ -943,7 +943,7 @@ The new photo compositions are shown at both widths in `assets/layout/compositio
 - **three-up**: three photographs on span-4, one height, filling the row.
   `<div class="grid comp-three"><figure class="media span-4"><img ..></figure> x3</div>` after the head.
 - **strip, wall, story, row, side**: a strip groups process details, never under a price list. A wall holds a set, a story pairs a picture with prose. For a row of rooms or rooms beside a heading see `sections.md`, Rooms.
-- **street-large**: the visit's h2, then the street set large (`.type-moment`, sections.md section
+- **street-large**: the supplied street as the visit's h2, set large (`.type-moment`, sections.md section
   4), then the split of the panel and the photograph.
 - **form-photo, form-band**: the heading and booking form together in a seven-column block beside a five-column photograph that takes the form’s height (booking-form), or on a tinted
   band across the section. Use the left five columns for the heading and the terms the guest needs before booking. Put the form on the right seven. For **close-form**, see above.

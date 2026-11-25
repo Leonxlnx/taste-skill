@@ -3,6 +3,7 @@
   "name": "Fluted glass",
   "family": "material",
   "look": "A pane of ribbed glass over soft page colours; each rib bends a thin slice of what is behind it.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["card", "hero", "band"],
   "motion": "slow",
   "cost": "mid",

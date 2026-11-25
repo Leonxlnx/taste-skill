@@ -16,6 +16,12 @@ const holdsAny = (text, list) => list.find((x) => holds(text, x)) || null;
 // words of one trade that name the same goods (a category in one of them counts in any)
 const KIN = [['ceramics', 'ceramic', 'pottery', 'potter', 'stoneware', 'porcelain', 'tableware'], ['coffee', 'espresso', 'roastery', 'roaster', 'cafe'], ['guesthouse', 'guest house', 'inn', 'b&b', 'bed and breakfast', 'lodge'], ['bakery', 'bakehouse', 'bread', 'sourdough'], ['bicycle', 'bike', 'bikes', 'cycle']];
 const SECTION_NOUNS = terms('fee,fees,building,buildings,terms,conditions,privacy,legal,pricing,prices,price,plans,plan,faq,questions,contact,menu,seasons,season,rooms,room,getting here,directions,visit,hours,opening times,location,address,map,about,team,customers,integrations,works with,how it works,reviews,testimonials,booking,book,order,specs,specifications,download,security,support,help,docs,blog,news,changelog,careers,jobs,press,shop,store,delivery,shipping,returns,warranty,gallery,photos,events,history,process,steps,services,products,product,apps,api,partners,compare,comparison,examples,templates,resources');
+export function headingSubjects(brief, notes) {
+  const facts = String(notes || '').split(/^\s*(?:#{1,6}\s*)?Asks:/mi)[0];
+  const supplied = facts.split(/\r?\n/).filter(l => /^(?:What it is|Category|Products?|Place|Location|Address|District|True difference|Offer|Odd true details):/i.test(l)).map(l => l.slice(l.indexOf(':')+1));
+  const common = /^(?:add|build|give|good|make|comes?|start|keep|every|small|large|offers?|shows?|from|onto|there|takes?|each|main|goal|some|simple|page|landing|site|website|their|teams?)$/;
+  return [...new Set(words([brief,...supplied].join(' ')).filter(w => !common.test(w)))].join(',');
+}
 function copyTerms(P, {category = '', audience = '', place = '', products = '', primary = ''} = {}) {
   const t = { category: terms(category), audience: terms(audience), place: terms(place), products: terms(products), primary: primary.trim(), from: 'flags' };
   // a category given as a phrase ("coffee roastery and bar") also counts word by word, as the title's does

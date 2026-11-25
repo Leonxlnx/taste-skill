@@ -3,6 +3,7 @@
   "name": "Soft light bars",
   "family": "light",
   "look": "Four to seven soft, nearly upright bars of light grouped to one side, like light through slats on a wall, breathing slowly beside an empty gap for text.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["hero", "card", "band", "footer"],
   "motion": "slow",
   "cost": "low",

@@ -3,6 +3,7 @@
   "name": "Stage spotlight",
   "family": "light",
   "look": "One slanted stage light from out of frame falls through drifting haze and lands as a soft pool on the floor, for a product or UI on stage.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["card", "hero"],
   "motion": "slow",
   "cost": "low",

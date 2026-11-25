@@ -8,7 +8,7 @@
 
     node <skill>/assets/layout/deal.mjs --type software|product|place|service
          [--kind tech]                         hardware or a tech device (page type product, kind tech): the grounds, moments
-                                               and effects print as for software; without it a product, service or
+                                               print as for software; without it a product, service or
                                                place prints none (kind other is flat)
          [--kind gaming]                       a game: page type software, kind gaming (SKILL.md section 1).
                                                It deals the game's world or actual product window;
@@ -19,8 +19,8 @@
          [--hero <id>]                         print that one instead of dealing it
          [--history .taste-skill/layout-history.json] [--json] [--stats 1000]
 
-  Prints the hero: its demo page, its numbers, and the moment, ground and effect ids that fit the type
-  (tech-only ids and effects for software only). word and editorial need a face with a wght or wdth
+  Prints the hero: its demo page, its numbers, and the moment and ground ids that fit the type.
+  Start.mjs chooses an effect with the full page plan. word and editorial need a face with a wght or wdth
   axis: when start.mjs's pairing has none, deal the type again with start.mjs (VI-02).
   Node 18+, no packages.
 */
@@ -63,9 +63,9 @@ function draw(list, weight, recent) {
   return pool[pool.length - 1];
 }
 const needsMet = h => h.needs.every(n => n.split('|').some(k => has.has(k))) && !(h.avoid || []).some(k => has.has(k));
-// heroes.json moments / grounds / effects are { id, only?, dark?, as? }: only "tech" is for software briefs
+// heroes.json moments and grounds are { id, only?, dark?, as? }: only "tech" is for software briefs
 // Tech is software, a game, or hardware passed as --kind tech. Every other page (product, service, place)
-// is flat: heroes.json's grounds, moments and effects are all tech-only except the photograph ground,
+// is flat: heroes.json's grounds and moments are all tech-only except the photograph ground,
 // so a page of kind other is printed none (backgrounds.md "Other kinds stay flat").
 const tech = type === 'software' || opt('kind') === 'tech';   // a game counts as tech
 const fits = x => (tech ? (!x.only || x.only === 'tech') : (!x.only && x.id === 'photo'));
@@ -165,7 +165,7 @@ if (opt('json')) {
   grid:\n${s(hero.grid)}
   at 1440:\n${s(hero.at1440)}
   at 390:\n${s(hero.at390)}
-  moment: ${hero.moment}${tech ? '' : '\n  grounds: flat (kind other: flat colour, photographs, type; --kind tech for hardware); one moment, a second on a long page and an occasional scene are dealt by fit (start.mjs plan, or moments.mjs pick --page <kind> --scene deal)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}${hero.effects && hero.effects.length && tech ? `\n  effects: ${hero.effects.map(e => e.id).join(', ')}` : ''}
+  moment: ${hero.moment}${tech ? '' : '\n  grounds: flat (kind other: flat colour, photographs, type; --kind tech for hardware); one moment, a second on a long page and an occasional scene are dealt by fit (start.mjs plan, or moments.mjs pick --page <kind> --scene deal)'}${ids(hero.moments).length ? `\n  moments: ${ids(hero.moments).join(', ')}` : ''}${ids(hero.grounds).length ? `\n  grounds: ${ids(hero.grounds).join(', ')}` : ''}${darkIds(hero.grounds).length ? `\n  grounds on a dark page: ${darkIds(hero.grounds).join(', ')}` : ''}
   mistakes: ${hero.mistakes.join('; ')}
 
 type: the pairing start.mjs dealt (VI-02); keep its :root lines as printed (headlines 400; 400 to 500 on tech).${axis}`);

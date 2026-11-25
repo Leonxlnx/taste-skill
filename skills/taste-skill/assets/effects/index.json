@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generated": "2026-11-25T14:49:32.841Z",
+ "generated": "2026-11-25T16:23:45.018Z",
  "count": 25,
  "families": {
   "dither": 4,
@@ -17,6 +17,11 @@
    "name": "ASCII shade",
    "family": "dither",
    "look": "A slowly turning sphere (or a cloud, or a wave across the frame) made only of monospace characters, sparse dots to dense signs, so it reads as code.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -105,6 +110,9 @@
    "name": "Aurora curtains",
    "family": "mesh",
    "look": "Curtains of light fold in S-curves across a night sky, bright at the hem with a soft glow below, fading upward in long rays, swaying slowly.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band",
@@ -193,6 +201,11 @@
    "name": "Bayer dither",
    "family": "dither",
    "look": "A soft glow drawn in crisp square pixels with an ordered dither, in two or three page colours.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -293,6 +306,9 @@
    "name": "Water caustics",
    "family": "light",
    "look": "Curved lines of light, bright where they gather and faint where they spread, drift over the ground like sunlight on the floor of a pool.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "card",
     "hero",
@@ -376,6 +392,9 @@
    "name": "Topographic contours",
    "family": "pattern",
    "look": "A topographic map: thin contour lines with accent index lines over stepped elevation tints and a faint hillshade, slowly breathing.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -483,6 +502,9 @@
    "name": "Dot terrain",
    "family": "pattern",
    "look": "Rolling land drawn as a cloud of points, like a laser scan, lit from one side and heaving in slow waves toward a soft horizon.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -594,6 +616,11 @@
    "name": "Dotted globe",
    "family": "pattern",
    "look": "A globe of fine dots with the real continents turns slowly, bright at the front and fading at the rim, while one thin arc at a time lifts between two cities.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band",
@@ -718,6 +745,11 @@
    "name": "Duotone grade",
    "family": "photo",
    "look": "The section's own photograph graded into two or three page tones with still grain; without one, a calm study of window light kept clear of the text.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band",
@@ -808,6 +840,11 @@
    "name": "Edge glow",
    "family": "light",
    "look": "Light runs around the edge of a card or prompt box, a bright head with a long fading tail that washes the box with its colour as it passes.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "card"
    ],
@@ -903,6 +940,10 @@
    "name": "Film light leak",
    "family": "grain",
    "look": "Light bleeds in from one edge of a dark or coloured frame, with a blown-out core, a soft fringe and fine moving film grain.",
+   "kinds": [
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1004,6 +1045,11 @@
    "name": "Fluted glass",
    "family": "material",
    "look": "A pane of ribbed glass over soft page colours; each rib bends a thin slice of what is behind it.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "card",
     "hero",
@@ -1104,6 +1150,9 @@
    "name": "God rays",
    "family": "light",
    "look": "Bundles of light shafts fall from above the frame through haze, uneven in width, with a few soft motes drifting in them.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band"
@@ -1209,6 +1258,11 @@
    "name": "Gradient mesh",
    "family": "mesh",
    "look": "Soft islands of the page colours blend over a slowly folding surface, lit where it folds; a thin mesh grid can be drawn on top.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1303,6 +1357,11 @@
    "name": "Grain gradient",
    "family": "grain",
    "look": "Soft shapes in the page colours drift slowly under fine film grain, like a printed texture.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1399,6 +1458,11 @@
    "name": "Grid pulse",
    "family": "pattern",
    "look": "A fine hairline grid with signals running along the lines; the nodes and cells they pass light up and fade, like a circuit keeping a trace.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1497,6 +1561,11 @@
    "name": "Halftone screen",
    "family": "dither",
    "look": "A gradient field or a big lit sphere printed as a rotated screen of round dots that grow in the shadows, like a zoomed-in magazine print.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band"
@@ -1591,6 +1660,9 @@
    "name": "Line engraving",
    "family": "dither",
    "look": "Fine parallel lines that swell in the shadows and bend over rolling hills or around a big sphere, like the engraving on a banknote.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1703,6 +1775,9 @@
    "name": "Light orb",
    "family": "light",
    "look": "One sphere with a slowly turning nebula, a bright rim and specks of light: glowing in a dark field on light-text pages, a dark glass ball on others.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -1802,7 +1877,10 @@
    "id": "painterly-landscape",
    "name": "Painterly landscape",
    "family": "mesh",
-   "look": "A soft, out-of-focus landscape painted in broad dabs: sky, hazy far hills and a near hill with a lit crest in the page colours, to sit under a UI window.",
+   "look": "A soft, out-of-focus landscape painted in broad dabs: sky, hazy far hills and a near hill with a lit crest in the page colours.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "card",
     "hero"
@@ -1896,6 +1974,11 @@
    "name": "Prism light",
    "family": "light",
    "look": "A soft white beam crosses a dark room, breaks into a widening fan of colour and lands as a glowing spectrum on the far wall.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "band",
@@ -1995,6 +2078,9 @@
    "name": "Ridgeline",
    "family": "pattern",
    "look": "Stacked thin lines rising into a few clean peaks, the front lines hiding the ones behind, with one line picked out in the accent.",
+   "kinds": [
+    "gaming"
+   ],
    "bestOn": [
     "band"
    ],
@@ -2098,6 +2184,11 @@
    "name": "Ruled dot ground",
    "family": "pattern",
    "look": "A fine dot ruling with a small cross on every fourth node over a grainy ground; a wide soft light drifts across it. A quiet ground for a UI card on top.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "card",
     "band"
@@ -2184,6 +2275,10 @@
    "name": "Silk folds",
    "family": "material",
    "look": "Large, unevenly spaced folds of satin in one page colour (a muted tint on light pages), with a broad soft sheen along them as they move slowly.",
+   "kinds": [
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -2272,6 +2367,11 @@
    "name": "Soft light bars",
    "family": "light",
    "look": "Four to seven soft, nearly upright bars of light grouped to one side, like light through slats on a wall, breathing slowly beside an empty gap for text.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "hero",
     "card",
@@ -2375,6 +2475,11 @@
    "name": "Stage spotlight",
    "family": "light",
    "look": "One slanted stage light from out of frame falls through drifting haze and lands as a soft pool on the floor, for a product or UI on stage.",
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "bestOn": [
     "card",
     "hero"

@@ -101,8 +101,7 @@
 //   pictures   photo-weight (on the phone, a photograph 3x or more wider than drawn, no srcset: its frame shows empty
 //              until it arrives, WARN), photo-repeat (one picture shown twice, at every width, WARN: compared by content, so a srcset's width variants and a renamed copy count as one), busy-ground also WARNs detail
 //              (|dL*| between neighbouring pixels) or a shadow or bright patch (the 5-95% spread) under words on a photo
-//   chrome     nav-current (a bar that stays on screen with 3+ section links, none ever marked for the section you are
-//              in, WARN), nav's lopsided check reads a text link by its letters (padding is not seen), fold-cut WARNs the
+//   chrome     nav's lopsided check reads a text link by its letters (padding is not seen), fold-cut WARNs the
 //              hero's own button cut by the fold, button-contrast (a filled button with no outline under 1.3:1 against the
 //              ring of ground round it, WARN), progress-bar (a drag, progress or meter bar: the house rules have none, WARN)
 //   copy       copy-length (a headline or section heading of 22+ words or 4+ lines at a desktop width, WARN)
@@ -242,7 +241,7 @@
 //              skip-link WARN; keyboard (a Tab walk at the first width through the first screen and the main action):
 //              focus-visible (no change, under 3:1 or nothing to see FAIL, a ring that fades in WARN), focus-hidden (under
 //              the fixed header or bar); head: lang, page-meta, share-meta; claims: action-repeat (one action 3+ times on
-//              a screen FAIL, nav and hero on a desktop WARN), map-link (no street, or a whole town), open-now (from
+//              a screen FAIL), map-link (no street, or a whole town), open-now (from
 //              assumed hours), assumed (every data-assumed fact listed for the report), run-on (a heading's grey sentence
 //              with no stop before it); forms: form-fields, form-send (a thank-you with nothing to send to FAIL, a mailto
 //              stand-in on .example WARN)
@@ -290,7 +289,8 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
-import { STOP, norm, words, stem, holds, holdsAny, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { STOP, norm, words, stem, holds, holdsAny, headingSubjects, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { areaInSource, suppliedStreet } from './place-address.mjs';
 import { storyProbe, storyFindings, findBeside } from './story-check.mjs';
 
 const motionAudit = readFileSync(new URL('../assets/layout/motion-audit.js', import.meta.url), 'utf8');
@@ -3783,8 +3783,7 @@ const basicsMod = (() => {
 //   head       lang (no <html lang>, or not a language tag, FAIL; the words in another language than it names, WARN),
 //              page-meta (no <title>, or a title and description with the same words, FAIL; no description, WARN),
 //              share-meta (og:title, og:description, og:image, twitter:card, an icon or theme-color missing, WARN)
-//   claims     action-repeat (one action on three controls or more on one screen FAIL; twice on a desktop's first
-//              screen, the nav's and the hero's, WARN), map-link (a directions link or map search with no street in it, or
+//   claims     action-repeat (one action on three controls or more on one screen FAIL), map-link (a directions link or map search with no street in it, or
 //              a search for a town alone, FAIL), open-now (an open-now line beside hours marked data-assumed FAIL; beside
 //              hours nothing marks as given or assumed, WARN), assumed (every [data-assumed] fact, listed for the report,
 //              WARN), run-on (a heading whose grey second sentence follows the first with no stop: "Rooms and prices
@@ -3812,7 +3811,7 @@ const checks = [
   { id: 'lang', sev: 'FAIL', what: '<html lang> missing or no language tag (FAIL); the page written in another language than it names (WARN)' },
   { id: 'page-meta', sev: 'FAIL', what: 'no <title>, or a title and description with the same words (FAIL); no meta description (WARN)' },
   { id: 'share-meta', sev: 'WARN', what: 'og:title, og:description, og:image, twitter:card, an icon or theme-color missing' },
-  { id: 'action-repeat', sev: 'FAIL', what: 'one action on three controls or more on one screen (FAIL); on two on a desktop first screen (WARN)' },
+  { id: 'action-repeat', sev: 'FAIL', what: 'one action on three controls or more on one screen (FAIL)' },
   { id: 'map-link', sev: 'FAIL', what: 'a directions link or map search with no street in it, or a search for a whole town' },
   { id: 'open-now', sev: 'FAIL', what: 'an open-now line read from hours marked data-assumed (FAIL), or from hours nothing marks as given (WARN)' },
   { id: 'assumed', sev: 'WARN', what: 'the prices, hours, dates and places marked data-assumed: listed for the report' },
@@ -3849,7 +3848,7 @@ const summary = [
   '             ring that fades in WARN), focus-hidden (under the fixed header or bar: wholly FAIL, partly WARN); first width',
   '  head       lang (missing or no tag FAIL, the text in another language WARN), page-meta (no title, or title = description',
   '             FAIL; no description WARN), share-meta (og:*, twitter:card, icon, theme-color, WARN)',
-  '  claims     action-repeat (one action 3+ times on a screen FAIL, nav + hero on a desktop WARN), map-link (no street, or a',
+  '  claims     action-repeat (one action 3+ times on a screen FAIL), map-link (no street, or a',
   '             whole town, FAIL), open-now (from data-assumed hours FAIL), assumed (each data-assumed fact listed, WARN),',
   '             run-on (a heading\'s grey sentence with no stop before it, FAIL)',
   '  forms      form-fields (paste blocked FAIL; type, autocomplete, inputmode, a pre-disabled button, no status line WARN),',
@@ -4026,7 +4025,15 @@ function pageProbe() {
   }
   out.anyAssumed = !!document.querySelector('[data-assumed]');
   out.hours = hours.length;
-  for (const el of document.querySelectorAll('[data-assumed]')) { if (el.parentElement && el.parentElement.closest('[data-assumed]')) continue; out.assumed.push({ sel: sel(el), text: squash(el.innerText || el.textContent || el.getAttribute('content') || '').slice(0, 60), doc: el.getClientRects().length ? doc(el) : null }); }
+  for (const el of document.querySelectorAll('[data-assumed]')) {
+    if (el.parentElement?.closest('[data-assumed]')) continue;
+    const caption = el.getAttribute('aria-label') || '';
+    const exhibit = el.matches('figure,[data-ui],[data-picture],.app-frame');
+    const sample = exhibit && (/\bexample\b/i.test(caption) || /\bexample (?:incident|record|alert|event)\b/i.test(squash(el.innerText)));
+    const record = /\b(?:event|incident|log|alert|timeline)\b/i.test(caption) && el.querySelector('time,details > summary');
+    if ((sample || record) && !el.closest('.terms,address,.hours') && !el.querySelector('form')) continue;
+    out.assumed.push({ sel: sel(el), text: squash(el.innerText || el.textContent || el.getAttribute('content') || '').slice(0,60), doc: el.getClientRects().length ? doc(el) : null });
+  }
   // run-on: a heading whose later part (a span in another colour or .muted) starts a new sentence with no stop before it
   for (const h of document.querySelectorAll('h1, h2, h3')) {
     if (drawn(h) || !shown(h)) continue;
@@ -4045,7 +4052,7 @@ function pageProbe() {
   // forms
   for (const f of document.querySelectorAll('form')) {
     if (drawn(f) || !shown(f)) continue;
-    const info = { sel: sel(f), doc: doc(f), action: (f.getAttribute('action') || '').trim(), endpoint: (f.dataset.endpoint || '').trim(), status: !!f.querySelector('[role=status], [aria-live], output, [data-form-status]'), fields: [], disabled: false, paste: [], thanks: '' };
+    const info = { explainsDraft: [...f.querySelectorAll('p,.terms,small')].some(n => shown(n) && /\bopens? (?:your |an? )?(?:email|mail)\b/i.test(n.innerText)), sel: sel(f), doc: doc(f), action: (f.getAttribute('action') || '').trim(), endpoint: (f.dataset.endpoint || '').trim(), status: !!f.querySelector('[role=status], [aria-live], output, [data-form-status]'), fields: [], disabled: false, paste: [], thanks: '' };
     const sub = f.querySelector('button:not([type=button]):not([type=reset]), input[type=submit]');
     info.disabled = !!(sub && (sub.disabled || sub.getAttribute('aria-disabled') === 'true'));
     for (const el of f.querySelectorAll('input, select, textarea')) {
@@ -4184,12 +4191,11 @@ async function run(ctx) {
     const groups = new Map(); for (const x of S.list) { if (!groups.has(x.label)) groups.set(x.label, []); groups.get(x.label).push(x); }
     let shot = null;
     for (const [label, xs] of groups) {
-      if (xs.length < 2 || !xs.some((x) => x.btn)) continue;
+      if (xs.length < 3 || !xs.some((x) => x.btn)) continue;
       const where = xs.map((x) => x.where);
-      const sev = xs.length >= 3 ? 'FAIL' : (!mobile && ctx.width >= 1000 && where.includes('nav') && where.includes('hero')) ? 'WARN' : null;
-      if (!sev) continue;
+      const sev = 'FAIL';
       if (shot == null) shot = ctx.addShot(await tab.shot());
-      F.push({ check: 'action-repeat', sev, id: 0, sel: xs[0].sel, text: label, stop: shot, rects: xs.map((x) => x.view), msg: `"${label}" shows ${xs.length} times on the first screen at ${ctx.width}px (${where.join(', ')}): ${sev === 'FAIL' ? 'three copies of one action on a screen read as clutter' : 'the nav\'s button and the hero\'s; nothing else on the screen may repeat it'}` });
+      F.push({ check: 'action-repeat', sev, id: 0, sel: xs[0].sel, text: label, stop: shot, rects: xs.map((x) => x.view), msg: `"${label}" shows ${xs.length} times on the first screen at ${ctx.width}px (${where.join(', ')}); keep at most two copies of this action in view` });
     }
   }
 
@@ -4240,12 +4246,17 @@ async function run(ctx) {
     const STREET_WORD = /^(st|rd|ave|blvd|way|place|pl|walk|hill|rue|via|viale|piazza|calle|carrer|rua|avenida|plaza|camino|corso|largo|travessa|chemin|quai|place)\.?$/i;
     const COUNTRY = /^(germany|deutschland|uk|england|scotland|wales|france|spain|españa|italy|italia|portugal|netherlands|nederland|sweden|sverige|norway|norge|denmark|danmark|iceland|ísland|austria|österreich|switzerland|schweiz|suisse|ireland|usa|us|belgium|belgië|finland|suomi|poland|polska|czechia|hungary|greece)$/i;
     const DIRECTIONS = /\b(directions?|route|get here|how to get|find us|anfahrt|wegbeschreibung|route planen|so finden sie uns|vägbeskrivning|vejvisning|itinéraire|cómo llegar|indicazioni|routebeschrijving)\b/i;
+    const context = P.maps.length ? readPageNotes() : {};
+    const places = [PLACE,context.plan?.brief,context.notes?.split(/^\s*(?:#{1,6}\s*)?Asks:/im)[0]].filter(Boolean).join('\n');
+    const address = suppliedStreet(places);
     const toldMap = new Set();
     for (const m of P.maps) {
       const toks = m.q.split(/[\s,]+/).filter((t) => t && !COUNTRY.test(t) && !/^\d+$/.test(t));
       const street = toks.some((t) => STREET_END.test(t) || STREET_WORD.test(t));
-      if (street) continue;
-      const why = !toks.length ? 'searches for nothing' : toks.length === 1 ? `searches the whole of "${m.q}"` : DIRECTIONS.test(m.label) ? `promises directions but its search ("${m.q}") holds no street` : '';
+      const area = !address && !DIRECTIONS.test(m.label) && areaInSource(m.q,places) &&
+        (/\b(?:area|district|neighbou?rhood|on the map)\b/i.test(m.label) || norm(m.label) === norm(m.q));
+      if (street && (!address || holds(m.q,norm(address))) || area) continue;
+      const why = address ? 'misses the supplied street “'+address+'”' : !toks.length ? 'searches for nothing' : toks.length === 1 ? `searches the whole of "${m.q}"` : DIRECTIONS.test(m.label) ? `promises directions but its search ("${m.q}") holds no street` : '';
       if (!why) continue;
       // one finding per search: the other links with the same search are counted in it, not told again
       if (toldMap.has(m.q)) continue; toldMap.add(m.q);
@@ -4270,7 +4281,7 @@ async function run(ctx) {
       const sends = /^https?:\/\//.test(f.endpoint) || f.endpoint.startsWith('/') || (/^(https?:)?\/\//.test(f.action) || (f.action && !/^(#|mailto:|javascript:)/i.test(f.action)));
       const mail = /^mailto:/i.test(f.action);
       if ((f.thanks || f.thanksAttr) && !sends && !mail) F.push(put({ check: 'form-send', sev: 'FAIL', id: 0, sel: f.sel, text: f.thanks || '', msg: `the form holds a confirmation ("${f.thanks || 'data-sent'}") but nothing to send it to: a visitor is told it went when it did not` }, f.doc));
-      else if (mail && /\.example\b/i.test(f.action) && !sends) F.push(put({ check: 'form-send', sev: 'WARN', id: 0, sel: f.sel, text: f.action.slice(0, 50), msg: `the form opens a mail to ${f.action.replace(/^mailto:/i, '').split('?')[0]}: a stand-in until the client gives its form address; list it in the report` }, f.doc));
+      else if (mail && /\.example\b/i.test(f.action) && !sends && !f.explainsDraft) F.push(put({ check: 'form-send', sev: 'WARN', id: 0, sel: f.sel, text: f.action.slice(0, 50), msg: `the form opens a mail to ${f.action.replace(/^mailto:/i, '').split('?')[0]}: a stand-in until the client gives its form address; list it in the report` }, f.doc));
     }
   }
 
@@ -4365,11 +4376,10 @@ const when = (ctx) => ctx.first;
 async function run(ctx) {
   const P = await ctx.safe('story', () => ctx.tab.eval('(' + storyProbe.toString() + ')()'));
   if (!P) return [];
-  let plan = null, notes = null;
-  try { const f = findBeside(PAGE_FILE, 'plan.json'); if (f) plan = JSON.parse(readFileSync(f, 'utf8')); } catch { /* no plan */ }
-  try { const f = findBeside(PAGE_FILE, 'copy.md'); if (f) notes = readFileSync(f, 'utf8'); } catch { /* no notes */ }
+  const {plan,notes} = readPageNotes();
   return storyFindings(P, { plan, notes });
 }
+
   return { id, phase, checks, fixes, summary, flags, quick, when, run };
 })();
 
@@ -4380,6 +4390,12 @@ const MODULES = [visualMod, addressMod, rhythmMod, motionMod, areaMod, basicsMod
 const OUT = opt('out', null);
 // the page's own file when a local page is checked (the story block reads the plan and the copy notes beside it)
 let PAGE_FILE = null;
+function readPageNotes() {
+  let plan = null, notes = null;
+  try { const f = findBeside(PAGE_FILE, 'plan.json'); if (f) plan = JSON.parse(readFileSync(f, 'utf8')); } catch { /* no plan */ }
+  try { const f = findBeside(PAGE_FILE, 'copy.md'); if (f) notes = readFileSync(f, 'utf8'); } catch { /* no notes */ }
+  return {plan,notes};
+}
 // --root: a built site's folder, served instead of the page's own so its root-relative links (/style.css) resolve
 const ROOT = opt('root', null);
 if (ROOT !== null && (ROOT === undefined || !String(ROOT) || String(ROOT).startsWith('--'))) { console.error('--root needs a folder'); process.exit(2); }
@@ -5988,7 +6004,7 @@ function lib(itemContext) {
     const S = sectionsList(), hero = S[0], done = new Set();
     const frame = window.lyRules.peek(hero), picks = window.lyRules.picks(hero);
     for (const [el, r] of view) {
-      if (picks?.contains(el) || r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || (inDrawn(el) && !el.closest(HEADS)) || el.closest(INTER) || (frame?.contains(el) && !el.closest(HEADS))) continue;
+      if (el.closest('.hero--peek .hero__window,[data-view="wide"] .work-board') || picks?.contains(el) || r.bottom <= vh + 4 || !ownText(el) || inFixed(el) || (inDrawn(el) && !el.closest(HEADS)) || el.closest(INTER) || (frame?.contains(el) && !el.closest(HEADS))) continue;
       const fs = parseFloat(CS(el).fontSize) || 16, big = !!el.closest('h1, h2') || fs >= 32;
       const L = lines(el).find((l) => l.top < vh - 2 && l.bottom > vh + 4); if (!L) continue;
       const v = clipRect(el, L); if (v.bottom < L.bottom - 1) continue; // cut by an overflow: told under cut-text
@@ -6555,14 +6571,7 @@ function lib(itemContext) {
     const links = rest.filter((e) => !buttonLook(e, true));
     const fam = (e) => { let t = e; for (const d of e.querySelectorAll('*')) if (ownText(d)) { t = d; break; } return CS(t).fontFamily.split(',')[0].replace(/["']/g, '').trim(); };
     const toggle = items.some((e) => e.matches('[aria-expanded]') && /menu/i.test((e.getAttribute('aria-label') || '') + ' ' + full(e)));
-    // nav-current: how each in-page link looks on this screen (a link marked for the section on screen changes its look,
-    // its aria-current or its class), and where the bar's small marks sit (a dot or a line that moves to the current link)
-    const hashLinks = links.filter((e) => /^#[\w-]/.test((e.getAttribute('href') || '').trim()));
-    const cur = hashLinks.map((e) => { const c = CS(e); return { h: (e.getAttribute('href') || '').trim(), s: [c.color, c.fontWeight, c.backgroundColor, c.textDecorationLine, c.borderBottomColor + ' ' + c.borderBottomWidth, c.opacity].join('¦'), on: (!!e.getAttribute('aria-current') && e.getAttribute('aria-current') !== 'false') || /(^|\s|-)(active|current|is-on|selected)(\s|$)/.test(typeof e.className === 'string' ? e.className : '') }; });
-    const marks = [...root.querySelectorAll('*')].filter((e) => !e.matches(INTER) && !e.closest(INTER) && !e.children.length && !ownText(e)).map((e) => { const t = e.getBoundingClientRect(); return t.width >= 2 && t.width < 300 && t.height < 60 && rgba(CS(e).backgroundColor).a >= 0.3 && shown(e, t) ? `${Math.round(t.left)}:${Math.round(t.width)}` : null; }).filter(Boolean).join(';');
-    // how many separate sections the in-page links open (a short page's one section holds them all: nothing to mark as you scroll)
-    let secs = null; try { const ix = new Set(); for (const e of hashLinks) { const t = document.getElementById((e.getAttribute('href') || '').trim().slice(1)); if (t) ix.add(secIndex(t)); } secs = ix.size; } catch {}
-    return { id: idOf(root), sel: sel(root), rect: R(q), left: Math.round(bq.left), width: Math.round(bq.width), fill: bf.a >= 0.5 ? hex(bf) : null, links: links.length, toggle, cur, secs, marks, fixedBar: inFixed(root),
+    return { id: idOf(root), sel: sel(root), rect: R(q), left: Math.round(bq.left), width: Math.round(bq.width), fill: bf.a >= 0.5 ? hex(bf) : null, links: links.length, toggle,
       fonts: [...new Set(rest.map(fam))], sizes: [...new Set(links.map((e) => Math.round(parseFloat(CS(e).fontSize) || 16)))] };
   }
 
@@ -7043,6 +7052,12 @@ function lib(itemContext) {
     for (const e of box.querySelectorAll('*')) {
       if (SKIP.has(e.tagName) || isSvgPart(e) || inFixed(e)) continue;
       const q = e.getBoundingClientRect(); if (q.width < 1 || q.height < 1 || !shown(e, q)) continue;
+      // A readable column above a wide product window occupies its row. Measure the gap below that row.
+      if (box.matches('.hero[data-view="wide"]') && e.matches('.hero__c')) {
+        const pane = box.querySelector('.hero__window')?.getBoundingClientRect();
+        if (pane && pane.width >= .65 * width && q.bottom <= pane.top + 1)
+          mark({left:pane.left,right:pane.right,top:q.top,bottom:q.bottom});
+      }
       if (MEDIA.has(e.tagName) || e.tagName.toLowerCase() === 'svg' || e.matches(INTER + ', input, select, textarea, [data-ui], .ui[class*=ui-], [data-fx], [data-fx-mounted], [role="img"], hr')) { mark(clipRect(e, q)); continue; }
       const k = quickKind(e);
       if (k && k !== 'shadow' && !(skipSelf && e === box) && !isBand(q, innerWidth)) { mark(clipRect(e, q)); continue; }
@@ -7262,6 +7277,7 @@ function lib(itemContext) {
       return false;
     };
     const heads = [];
+    const closingSection = document.querySelector('footer .closing__cta') ? null : [...document.querySelectorAll('main > section')].at(-1);
     for (const h of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
       if (inDrawn(h) || inFixed(h) || h.closest('dialog, .nav__menu, [role="menu"], header nav') || !visible(h)) continue;
       let mx = ownText(h) ? parseFloat(CS(h).fontSize) || 16 : 0;
@@ -7270,7 +7286,7 @@ function lib(itemContext) {
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
       const item = isItem(h);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h), item, step: h.tagName === 'H3' && !!h.closest('[class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]'), level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h) || (item && !!h.closest('article,[role=option]')), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h) });
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h), item, step: h.tagName === 'H3' && !!h.closest('[class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]'), alignmentExempt: !!h.closest('footer,.hero,.closing__cta,[class*="close--"]') || h.closest('section') === closingSection, level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h) || (item && !!h.closest('article,[role=option]')), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h) });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -7302,6 +7318,7 @@ function lib(itemContext) {
     }
     // the actions: every link or button with a button look, outside drawn mocks
     const ctas = [];
+    const actionClose = document.querySelector('footer .closing__cta') || last;
     for (const e of document.querySelectorAll(INTER)) {
       if (inDrawn(e) || (e.parentElement && e.parentElement.closest(INTER)) || !actionVisible(e)) continue;
       if (e.matches('[aria-pressed], [aria-selected], [role="tab"], [role="switch"]') || e.closest('[role="tablist"], [role="radiogroup"], .nav__menu, dialog')) continue;
@@ -7312,7 +7329,7 @@ function lib(itemContext) {
       const raw = e.getAttribute('href');
       let href = null; if (raw != null) { try { href = new URL(raw, location.href).href; } catch {} }
       const where = inFixed(e) || inChrome(e) ? 'nav' : hero && hero.contains(e) ? 'hero' : (last && last.contains(e)) || e.closest('footer.closing') ? 'last' : 'other'; // footer.closing is the page's closing section (system.css): its button is the last section's
-      ctas.push({ id: idOf(e), sel: sel(e), label: full(e).slice(0, 60), href, where, beforeLast: !!last?.previousElementSibling?.contains(e), submitTargets: e.form && e.matches("button[type=submit], input[type=submit], form button:not([type])") ? [e.form.id, e.form.closest("section[id]")?.id].filter(Boolean).map(id => new URL("#"+id,location.href).href) : [], shape: L.shape, fill: L.fill, h: L.h, doc: doc(e) });
+      ctas.push({ id: idOf(e), sel: sel(e), label: full(e).slice(0, 60), href, where, atClose: !!actionClose?.contains(e), beforeLast: !!last?.previousElementSibling?.contains(e), submitTargets: e.form && e.matches("button[type=submit], input[type=submit], form button:not([type])") ? [e.form.id, e.form.closest("section[id]")?.id].filter(Boolean).map(id => new URL("#"+id,location.href).href) : [], shape: L.shape, fill: L.fill, h: L.h, doc: doc(e) });
     }
     // price cards with no action in them or right under them
     const priced = [];
@@ -7350,7 +7367,7 @@ function lib(itemContext) {
         const t = document.getElementById(id) || document.getElementsByName(id)[0];
         if (!t) { links.push(Object.assign(it, { sev: 'FAIL', why: `goes to ${raw}, which is not on this page` })); continue; }
         if (t.contains(a) && t !== document.body && !t.matches('main, body, html')) links.push(Object.assign(it, { sev: 'WARN', why: `goes to ${raw}, the block it already sits in` }));
-        else if ((t.tagName === 'FOOTER' || t.closest('footer')) && !a.closest('footer')) links.push(Object.assign(it, { sev: 'WARN', why: `goes to ${raw}, in the footer` }));
+        else if ((t.tagName === 'FOOTER' || t.closest('footer')) && !t.closest('.closing__cta') && !a.closest('footer')) links.push(Object.assign(it, { sev: 'WARN', why: `goes to ${raw}, in the footer` }));
         else if (/^(download|order|book|buy|reserve|get)\b/i.test(lab) && !t.querySelector('form, input, select, a[download], a[href$=".dmg"], a[href$=".exe"], a[href$=".zip"], a[href$=".pdf"], a[href^="http"]')) links.push(Object.assign(it, { sev: 'WARN', why: `only scrolls to ${raw}, where nothing completes it` }));
         continue;
       }
@@ -7505,7 +7522,48 @@ function lib(itemContext) {
       });
     }
     const offerFindings = [];
-    const flagOffer = (check, el, msg) => offerFindings.push({ check, sev: 'WARN', id: idOf(el), sel: sel(el), text: full(el).slice(0,80), doc: doc(el), msg });
+    const flagOffer = (check, el, msg, sev = 'WARN') => offerFindings.push({ check, sev, id: idOf(el), sel: sel(el), text: full(el).slice(0,80), doc: doc(el), msg });
+    const builder = /\b(?:preview|stand[- ]in|placeholder|live (?:sign[- ]?up |booking |payment )?service|does(?: not|n['’]t) send|demo data)\b|\b(?:this|the) (?:site|page|website|form) (?:was|is|has been) (?:built|generated|scaffolded|mocked up)\b|\b(?:we|i) (?:built|generated|scaffolded) (?:this|the) (?:site|page|website)\b|^\s*(?:site |website )?(?:built|generated|scaffolded) (?:with|using|by|in)\b/i;
+    const reported = new Set();
+    for (const el of document.body.querySelectorAll('*')) {
+      if (SKIP.has(el.tagName) || el.closest('script,style,template,svg defs')) continue;
+      const fieldText = el.matches('input[type="submit"],input[type="button"],input[type="reset"]') ? el.value :
+        el.matches('input:placeholder-shown,textarea:placeholder-shown') ? el.placeholder : '';
+      if ((!fieldText && !ownText(el)) || !shown(el)) continue;
+      const block = fieldText ? el : el.closest('p,button,a,h1,h2,h3,label,li,figcaption,small') || el;
+      if (reported.has(block)) continue;
+      const copy = fieldText || block.innerText?.trim() || '';
+      if (!builder.test(copy)) continue;
+      const exampleLabel = block.closest('[data-ui],[data-work-window],.app-frame,.app-window,.hero__window,.panel__screen') &&
+        /^(?:demo data|(?:[a-z0-9-]+ ){0,2}preview|preview of [\w -]{1,24})[.:]?$/i.test(copy);
+      if (exampleLabel) continue;
+      reported.add(block);
+      flagOffer('builder-words',block,'Move the build note to the handoff. Keep the visitor’s action and its outcome on the page.','FAIL');
+    }
+    const thin = [];
+    for (const h of document.querySelectorAll('footer :is(h2,h3,h4,h5,h6,[role="heading"],.footer__heading)')) {
+      if (!shown(h) || h.closest('.closing__cta')) continue;
+      let group = h.closest('.footer__col') || h.parentElement;
+      while (!group.matches('footer,nav,.footer__col') && !group.querySelector('a[href]') &&
+        group.parentElement?.closest('footer') && group.parentElement.querySelectorAll('h2,h3,h4,h5,h6,[role="heading"],.footer__heading').length === 1) group = group.parentElement;
+      const links = [...group.querySelectorAll('a[href]')].filter(a => shown(a));
+      if ((group.matches('.footer__col,nav') || links.length) && links.length < 3) thin.push(full(h)+' ('+links.length+')');
+    }
+    if (thin.length) flagOffer('footer-thin',document.querySelector('footer'),thin.join(', ')+': a column heading needs three links. Put short groups in one row with the name and contact.');
+    for (const heading of document.querySelectorAll('main section h2,main section h3')) {
+      if (!shown(heading) || heading.closest('.hero')) continue;
+      const sec = heading.closest('section');
+      let next = heading;
+      while (next !== sec && !next.nextElementSibling) next = next.parentElement;
+      if (next === sec) continue;
+      next = next.nextElementSibling;
+      while (next.firstElementChild && !ownText(next)) next = next.firstElementChild;
+      if (!shown(next) || !full(next) || next.matches('button,a.btn') || next.closest('section') !== sec) continue;
+      const a = heading.getBoundingClientRect(), b = next.getBoundingClientRect();
+      if (b.top < a.bottom-2 || b.top-a.bottom > 48 || Math.min(a.right,b.right)-Math.max(a.left,b.left) < 10) continue;
+      if (parseFloat(CS(next).fontSize) >= Math.max(24,.85*parseFloat(CS(heading).fontSize)))
+        flagOffer('heading-pair',next,'“'+full(heading)+'” and “'+full(next).slice(0,64)+'” read as consecutive headings. Put the supporting fact in the lead.');
+    }
     const kind = document.documentElement.dataset.type || document.querySelector('meta[name="page-type"]')?.content;
     if (vw === 390 && hero && (['product','place','tech','hardware'].includes(kind) || document.querySelector('meta[name="site-kind"][content="tech"],meta[name="page-kind"][content="hardware"]'))) {
       const marked = hero.querySelector('[data-subject]');
@@ -7543,12 +7601,14 @@ function lib(itemContext) {
       const submit = form.querySelector('button:not([type]),button[type=submit],input[type=submit]');
       if (!submit) continue;
       const button = submit.getBoundingClientRect();
-      const handoff = [...form.querySelectorAll('.terms,p,small,span')].some(note => {
-        const r = note.getBoundingClientRect();
-        return /(?:opens?.{0,20}(?:email|mail)|(?:email|mail|message) draft|draft.{0,16}(?:email|message))/i.test(full(note)) && shown(note,r) && parseFloat(getComputedStyle(note).fontSize) >= 15
-          && Math.max(0, r.top-button.bottom, button.top-r.bottom) <= 24 && Math.max(0, r.left-button.right,button.left-r.right) <= 24;
-      });
-      if (!handoff || !/\b(?:draft|email|mail)\b/i.test(submit.value || full(submit))) flagOffer('preview-handoff',submit,'Name the email draft on the button and explain the handoff beside it in body text.');
+      const notes = [...form.querySelectorAll('.terms,p,small,span')].filter(note =>
+        !note.closest('button') && shown(note) && /\bopens? (?:your |an? )?(?:email|mail)\b/i.test(full(note)));
+      // Nested inline formatting belongs to the containing sentence.
+      const blocks = notes.filter(note => !notes.some(outer => outer !== note && outer.contains(note)));
+      const note = blocks[0], r = note?.getBoundingClientRect();
+      const handoff = blocks.length === 1 && !/[.!?]\s+\S/.test(full(note)) && parseFloat(CS(note).fontSize) >= 15 &&
+        r.top >= button.bottom-2 && r.top-button.bottom <= 24 && Math.max(0,r.left-button.right,button.left-r.right) <= 24;
+      if (!handoff) flagOffer('preview-handoff',submit,'Explain that the email draft opens in one body-size sentence under the action.');
     }
     const notices = [...document.querySelectorAll('.service-notice')].filter(el => shown(el));
     for (const el of notices) {
@@ -7733,7 +7793,7 @@ function lib(itemContext) {
   const blockOf = (e) => { let b = e; while (b && b !== document.body && /^(inline|contents)/.test(CS(b).display) && !b.matches('a, button, label')) b = b.parentElement; return b || e; };
   const fxOf = (e) => (e.getAttribute('data-fx') || e.getAttribute('data-cx-effect') || e.getAttribute('data-glow') || '').trim();
   function workingExampleLabel(el, text, labelled) {
-    if (!/^(example|sample) [\p{L}\p{N}-]+(?: [\p{L}\p{N}-]+){0,2}$/iu.test(text)) return false;
+    if (!/^demo data[.]?$/i.test(text) && !/^(example|sample) [\p{L}\p{N}-]+(?: [\p{L}\p{N}-]+){0,2}$/iu.test(text)) return false;
     if (/\b(?:reviews?|quotes?|testimonials?|prices?|addresses?|contacts?|customers?|awards?)\b/i.test(text)) return false;
     const object = el.closest('[data-ui], [data-chart], [data-own], .app-frame, .hero__window, .panel__screen, .device');
     if (!object || labelled.has(object)) return false;
@@ -7772,7 +7832,7 @@ function lib(itemContext) {
       else if (CREDIT.test(t) && t.length <= 160 && !b.closest('footer') && (b.closest('figcaption, figure') || (() => { const pv = b.previousElementSibling; return !!(pv && (MEDIA.has(pv.tagName) || pv.matches('figure, picture, .frame, .panel, [data-fx]') || pv.querySelector('img, picture, canvas, video'))); })())) out.credits.push(it());
     }
     // a contact or link left on a stand-in domain (.example, example.com): it must be the client's before the page ships
-    { const ex = [...document.querySelectorAll('a[href]')].filter((a) => /^(mailto:[^?]*@|tel:|https?:\/\/)[^?#]*\b(example\.(com|org|net)|\.example|\.invalid|\.test)\b/i.test(a.getAttribute('href')) && !/^mailto:[^?]*@(?:[\w-]+\.)*[\w-]+\.example(?:$|[?#])/i.test(a.getAttribute('href')) && !inDrawn(a)); // (CO-68: a mailto: on .example is the house "Email us" button, not a leftover)
+    { const ex = [...document.querySelectorAll('a[href]')].filter((a) => /^(mailto:[^?]*@|tel:|https?:\/\/)[^?#]*\b(example\.(com|org|net)|\.example|\.invalid|\.test)\b/i.test(a.getAttribute('href')) && !/^mailto:[^?]*@(?:[\w-]+\.)*[\w-]+\.example(?:$|[?#])/i.test(a.getAttribute('href')) && !(a.dataset.needs?.trim() && /^https?:$/.test(a.protocol) && /\.example$/i.test(a.hostname)) && !inDrawn(a)); // (CO-68: a mailto: on .example is the house "Email us" button, not a leftover)
       if (ex.length) { const a0 = ex.find(visible) || ex[0]; out.stand.push({ id: idOf(a0), sel: sel(a0), text: (full(a0) || a0.getAttribute('href')).slice(0, 60), n: ex.length, href: a0.getAttribute('href').slice(0, 60), doc: visible(a0) ? doc(a0) : null }); } }
     // 2. effect ids by section (an effect id in at most two sections)
     const fxBy = new Map();
@@ -9481,7 +9541,6 @@ const FIX = {
   'photo-repeat': 'show each photograph once',
   'same-object': 'give each section its own kind of visual: the world, the crew, the product in use, its parts, a diagram, a type moment; the object whole in three sections at most',
   'progress-bar': 'show the figure in words or as a number ("2 of 5 done"), not as a bar that fills',
-  'nav-current': 'mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls',
   'photo-print': 'show the photograph plain (in colour, or greyed into the palette with CSS): no halftone, dither or engraving over it',
   grounds: 'three flat grounds at most (the base, one surface, one inverse), four on a lively or loud page: lay the other bands on one of them',
   'reading-face': 'set reading text in the text face, in sentence case: a display face and capitals stop at the heading',
@@ -9526,7 +9585,8 @@ const placeAt = (text) => {
 const VERBS = new Set('book buy order pre-order preorder reserve try start get download compare see watch read find join subscribe sign contact add send configure request call email message visit plan check apply create open view copy shop schedule talk chat log register rent hire claim explore ask save pay upgrade choose pick enquire inquire donate install wishlist'.split(' '));
 const BANNED = new Set(['learn more', 'read more', 'view more', 'show more', 'discover', 'discover more', 'explore', 'explore more', 'more', 'mehr erfahren', 'weitere infos', 'click here', 'find out more', 'see more', 'begin', 'an example', 'details', 'more info', 'go']);
 function copyChecks(P) {
-  const F = [], T = copyTerms(P, { category: CATEGORY, audience: AUDIENCE, place: PLACE, products: PRODUCTS, primary: PRIMARY });
+  const {plan,notes} = readPageNotes();
+  const F = [], T = copyTerms(P, { category: CATEGORY, audience: AUDIENCE, place: PLACE, products: [PRODUCTS,headingSubjects(plan?.brief,notes)].join(','), primary: PRIMARY });
   const f = (check, sev, x, msg) => F.push({ check, sev, id: x && x.id || 0, sel: x && x.sel || '(the page)', text: x && (x.text || x.label) ? String(x.text || x.label).slice(0, 48) : '', msg, doc: x && x.doc || null });
   // 1. the hero (h1, hero notice and lead) names the category (and, for a brand nobody knows, the buyer or the place); the h1
   //    takes the hero form on the voice card (copy.md, rule 1), in 2 to 9 words
@@ -9569,7 +9629,7 @@ function copyChecks(P) {
   const primary = T.primary || (P.ctas.find((c) => c.where === 'nav' && c.fill) || P.ctas.find((c) => c.where === 'hero' && c.fill) || {}).label || '';
   if (primary && P.last) {
     const inTop = P.ctas.some((c) => (c.where === 'nav' || c.where === 'hero') && norm(c.label) === norm(primary));
-    const inLast = P.ctas.some((c) => (c.where === 'last' || c.beforeLast) && norm(c.label) === norm(primary));
+    const inLast = P.ctas.some((c) => c.atClose && norm(c.label) === norm(primary));
     if (!inTop || !inLast) f('copy-actions', 'WARN', null, `the main action "${primary}" does not read word for word the same in ${!inTop ? 'the nav or hero' : ''}${!inTop && !inLast ? ' and ' : ''}${!inLast ? 'the closing section' : ''}`);
   }
   return { F, T };
@@ -10311,7 +10371,7 @@ function groupSame(F) {
   }
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
-const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
+const ORDER = ['assets', 'builder-words', 'footer-thin', 'heading-pair', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
 ORDER.push('picture-sparse','headline-narrow','accent-wide','arrow-links','rule-heavy');
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-shift', 'entrance-heavy', 'reveal-heavy');
@@ -10435,7 +10495,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       // curve (tilt), text links in more than two looks (link-styles)
       for (const x of PG.outranked || []) later.push({ check: 'heading-scale', sev: x.sev, id: x.id, sel: x.sel, text: x.text, msg: x.msg, doc: x.doc, fix: 'set the heading larger than the text under it, or that text smaller: the heading reads first' });
       // heading-align: the section headings left-aligned, but one or two centred (a heading's place is part of its look)
-      { const h2s = hs.filter((x) => x.level === 2 && !x.card), cen = h2s.filter((x) => x.centred), left = h2s.length - cen.length;
+      { const h2s = hs.filter((x) => x.level === 2 && !x.card && !x.alignmentExempt), cen = h2s.filter((x) => x.centred), left = h2s.length - cen.length;
         if (cen.length && left >= 2 && cen.length <= left / 2) later.push({ check: 'heading-align', sev: 'WARN', id: cen[0].id, sel: cen[0].sel, text: cen[0].text, msg: `${left} section headings sit on the left, ${cen.length} centred: ${cen.slice(0, 3).map((x) => `"${x.text.slice(0, 24)}"`).join(', ')}`, doc: cen[0].doc }); }
       previewEvidence = PG.previewEvidence || {};
       later.push(...(PG.offerFindings || []));
@@ -10820,7 +10880,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       }
     }
     // photo-credit: library photographs, for the judge to confirm they show this client
-    if (credits.size) { const c = [...credits.values()]; const c0 = c.find((x) => x.id) || c[0]; F.push({ check: 'photo-credit', sev: 'WARN', id: c0.id, sel: c0.sel, text: '', stop: c0.stop ?? null, rects: [], msg: `${c.length} library source${c.length > 1 ? 's' : ''} (${[...new Set(c.map((x) => x.host.toLowerCase()))].join(', ')}): ${c.slice(0, 5).map((x) => x.name).join(', ')}${c.length > 5 ? ', ...' : ''}; confirm each shows the client's own product, place or people` }); }
+    if ([...credits.values()].some(c => c.id)) { const c = [...credits.values()].filter(c => c.id); const c0 = c.find((x) => x.id) || c[0]; F.push({ check: 'photo-credit', sev: 'WARN', id: c0.id, sel: c0.sel, text: '', stop: c0.stop ?? null, rects: [], msg: `${c.length} library source${c.length > 1 ? 's' : ''} (${[...new Set(c.map((x) => x.host.toLowerCase()))].join(', ')}): ${c.slice(0, 5).map((x) => x.name).join(', ')}${c.length > 5 ? ', ...' : ''}; confirm each shows the client's own product, place or people` }); }
     // what the page asked for and did not get
     if (first) {
       const base = url.slice(0, url.lastIndexOf('/') + 1), told = new Set();
@@ -10964,7 +11024,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     { const n0 = navs.find((n) => n.stop === 0);
       if (n0 && n0.items && n0.items.length >= 2 && cl != null) {
         const L0 = Math.min(...n0.items.map((o) => o.rect.left)), R0 = Math.max(...n0.items.map((o) => o.rect.left + o.rect.width));
-        const dl = L0 - cl, dr = cr - R0, lone = (a, b) => Math.abs(a) <= 2 && Math.abs(b) > 3 && Math.abs(b) <= 24;
+        const dl = L0 - cl, dr = cr - R0, lone = (a, b) => Math.abs(a) <= 2 && Math.abs(b) > 24;
         if (lone(dl, dr) || lone(dr, dl)) { const inL = Math.abs(dl) > Math.abs(dr); const o = inL ? n0.items.find((x) => x.rect.left === L0) : n0.items.find((x) => x.rect.left + x.rect.width === R0);
           F.push({ check: 'nav', sev: 'WARN', id: o.id, sel: o.sel, text: o.text, stop: 0, rects: n0.items.map((x) => x.rect), msg: `the nav is lopsided: its ${inL ? 'first item starts' : 'last item ends'} ${Math.round(Math.abs(inL ? dl : dr))}px ${(inL ? dl : dr) > 0 ? 'inside' : 'outside'} the content's edge (${inL ? cl : cr}px), while its ${inL ? 'last ends' : 'first starts'} on the other edge`, fix: 'start the nav\'s first item and end its last on the content\'s two edges' }); }
       } }
@@ -10984,17 +11044,6 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
           if (a.toggle !== b.toggle || Math.abs(a.links - b.links) >= 2) ch.push(`its links change from ${a.links}${a.toggle ? ' and a Menu button' : ''} to ${b.links}${b.toggle ? ' and a Menu button' : ''}`);
         }
         if (ch.length) { F.push({ check: 'nav-family', sev: 'WARN', id: b.id, sel: b.sel, text: '', stop: b.stop, rects: [b.rect], msg: `the nav changes form as the page scrolls: ${ch.join('; ')}` }); break; }
-      }
-      // nav-current: a bar that stays on screen with 3+ links to the page's sections, none ever marked for the section on
-      // screen (no link changes its look, aria-current or class against the others, and no mark in the bar moves)
-      const kept = seenSigs.filter((x) => x.stop >= 1 && x.fixedBar && x.cur && x.cur.length >= 3 && (x.secs == null || x.secs >= 3));
-      if (kept.length >= 3 && seenSigs[0] && seenSigs[0].cur) {
-        const s0 = seenSigs[0].cur, looks = (cur) => new Set(cur.map((c) => c.s)).size;
-        const marked = seenSigs.some((s) => (s.cur || []).some((c) => c.on))
-          || seenSigs.some((s) => s.cur && looks(s.cur) > looks(s0))
-          || seenSigs.some((s) => s.cur && s.cur.length === s0.length && s.cur.some((c, j) => c.s !== s0[j].s) && !s.cur.every((c, j) => c.s !== s0[j].s))
-          || new Set(kept.map((s) => s.marks)).size > 1;
-        if (!marked) { const b = kept[0]; F.push({ check: 'nav-current', sev: 'WARN', id: b.id, sel: b.sel, text: '', stop: b.stop, rects: [b.rect], msg: `the nav stays on screen with ${b.cur.length} links to the page's sections, but never marks the one you are in (no link changes as the page scrolls)` }); }
       }
     }
 
@@ -11345,7 +11394,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     // a fault inside a scroll-linked animation is caught mid-way: a WARN (the animation is the FAIL, told on its own);
     // with --quick, the same for anything in a held section or a scroll scene, whose motion was not checked
     // (what does not depend on where a moving part was caught keeps its severity: sizes, words, links, pictures, loops)
-    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'font-load', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object']);
+    const told = new Set(['placeholder', 'sample-label', 'caption', 'effect-repeat', 'card-layout', 'nesting', 'pricing-tiers', 'col-edge', 'text-contrast', 'body-size', 'text-only', 'scroll-linked', 'scroll-reveal', 'pinned', 'no-visual', 'assets', 'heading-scale', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'nav-labels', 'links', 'forms', 'font-load', 'cta', 'photo-upscale', 'photo-set', 'photo-credit', 'button-picture', 'loop-pause', 'webgl', 'marquee', 'hole', 'card-visual', 'hidden-visual', 'card-family', 'link-styles', 'heading-align', 'hero-fill', 'shader-lint', 'gl-fallback', 'credit-wall', 'unit-break', 'tab-wrap', 'flush', 'photo-weight', 'copy-length', 'progress-bar', 'photo-repeat', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object']);
     for (const M of MODULES) for (const c of M.checks) told.add(c.id);
     const ids = F.map((f) => (told.has(f.check) ? 0 : f.id || 0));
     const inside = (await safe('inside', () => tab.eval(`window.__cc.insideMoving(${JSON.stringify(ids)})`))) || [];

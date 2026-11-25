@@ -66,8 +66,7 @@ The card reviewers point at, as x.ai and Figma build it: a 2x2 of cards, each a 
 then an inset panel with its own 8px margin (radius = card radius - margin). The panel holds a bright
 ground and one UI window that runs out through the panel's bottom edge.
 
-- Ground: `painterly-landscape` (default) or `grain-gradient`, still, drawn once as pictures (the
-  cards hold no context at rest).
+- Ground: use the page surface for a product window. A game-world panel can use a still landscape when the plan calls for it.
 - A landscape is a picture, so it takes a natural light near the page, never one hue over everything.
   Each panel names its light in `data-cx-scene` and its composition in `data-cx-params` (horizon,
   side, slope), so no two panels look alike:
@@ -196,7 +195,7 @@ colours: the judges marked a contour pattern standing in for a map as a fake dra
 
 ## Picking the effect
 
-- **Panels in feature cards:** `painterly-landscape` (with a scene), `grain-gradient`;
+- **Panels in feature cards:** `painterly-landscape` for a game-world scene, `grain-gradient` for an inset panel;
   `ruled-grounds` for a technical product's panel that holds no UI (never behind a window or fragment, `cards.md`).
 - **Inside letters and digits:** `silk-folds`, `aurora-curtains` (dark and colour pages), still. On a
   light page, stat digits get a plain ink fade instead (an effect in digits on white reads as scratched

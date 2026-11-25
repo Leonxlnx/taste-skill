@@ -450,8 +450,7 @@ function actionbar() {
   const hrefs = new Set(own.filter(a => a.tagName === 'A').map(a => a.href));
   const labels = new Set(own.map(words).filter(Boolean));
   const twins = [...document.querySelectorAll('a[href], button')].filter(el => !bar.contains(el) && ((el.tagName === 'A' && hrefs.has(el.href)) || labels.has(words(el))));
-  // A form can use an honest submit label (such as “Open email draft”) that differs
-  // from the link leading to it. The visitor has reached that decision all the same.
+  // Hide the shortcut while its destination form is in view.
   for (const link of own.filter(el => el.tagName === 'A' && el.hash && el.origin === location.origin && el.pathname === location.pathname && el.search === location.search)) {
     let id;
     try { id = decodeURIComponent(link.hash.slice(1)); } catch { continue; }

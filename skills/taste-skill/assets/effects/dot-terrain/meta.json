@@ -3,6 +3,7 @@
   "name": "Dot terrain",
   "family": "pattern",
   "look": "Rolling land drawn as a cloud of points, like a laser scan, lit from one side and heaving in slow waves toward a soft horizon.",
+  "kinds": ["gaming"],
   "bestOn": ["hero", "card", "band"],
   "motion": "slow",
   "cost": "mid",

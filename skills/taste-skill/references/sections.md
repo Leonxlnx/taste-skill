@@ -32,7 +32,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
   |---|---|
   | book a slot, a class, a table, a repair | the day and the time as choices (`<fieldset>` of radio pills or two `<select>`s), then name and email |
   | a stay (rooms, a guesthouse, a hotel) | arrival and departure as `type="date"` (text fields on a page not in English), guests, and the room as a `<select>` or radio cards with each room's name and price |
-  | sell online (beans, bread, goods) | an order form: each item with a quantity (`type="number" min="1"`), the total line, collection or delivery, then name and email |
+  | pre-order goods for collection | an order form: each item with a quantity (`type="number" min="1"`), the total line, collection or delivery, then name and email |
   | a product | its price (or "from"), the colours as swatches that change the picture |
   | a place | its street and district (the town alone only when the brief gives no more), its hours |
   | a quote, a project enquiry | the type of work as a `<select>`, the budget or size, a textarea across the form |
@@ -150,7 +150,7 @@ Use the frame and ground map from section 2. A place hero has a dealt form (`ban
 
 For photographs with words, see `sections-library.md`, Compositions. A pair can put the whole room beside its joinery. A trio can show the workshop, a bench and the work in hand. A strip suits four details of the same process. Keep it away from price lists. Give the main picture enough width and check its crop at 390.
 
-In `street-large`, set the supplied street or district beneath the visit h2 in `.type-moment`. If the brief gives only a district, use that. Link the address where the visitor can find it. Align headings, rows, controls and picture edges to the wrap.
+In `street-large`, use the supplied street as the visit heading. With only a district, put it in the lead or fact line under one heading. Link the address where the visitor can find it. Align headings, rows, controls and picture edges to the wrap.
 
 - Link a room to its booking or a product to its order when that is the next task. Use a colour change or title underline for hover (`motion.md`).
 - **Main action.** Use the same words where the visitor books or orders. On a visit page, link the address to directions. The phone bar waits until the hero action scrolls away.
@@ -188,7 +188,7 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
   kind says what to send: date, venue, guests, budget.
 - **Booking.** For a stay, table or class use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).
 - **Close.** Follow the PLAN. A shop states delivery and returns here. Keep booking and newsletter forms distinct.
-- **Footer.** Start with contact or support. Repeat hours and directions, platform links, delivery or returns when they serve a returning visitor. Add a group only for distinct real routes. Keep legal and credits separate.
+- **Footer.** Start with the name and contact line beside one row of return links. Give a column a heading only over three or more links. Repeat hours and directions, platform links, delivery or returns when they serve a returning visitor. Add a group only for distinct real routes. Keep legal and credits separate.
 - **Phone bar** (`nav.actionbar`, required): the order or booking as one full-width button; without
   either, Get directions (primary; "See the area" when the brief gives no street) and Call (secondary, only with a
   phone the brief gives). system.js keeps it off the phone's first screen until the hero's button has scrolled away,

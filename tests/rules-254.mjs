@@ -46,16 +46,16 @@ function fixture(bad) {
   const parts = [
     section('a','<p>Join the team.</p>','',false),
     section('b','<p>Our process.</p><p class="terms" style="font-size:'+(bad?12:16)+'px">From 695 kronor.</p><p style="font-size:'+(bad?12:16)+'px">Ships March 4.</p>','',false),
-    section('c','<p>The drawing.</p>','',false),
+    section('c',(bad?'<p style="font-size:48px">The drawing</p><p>Signup preview.</p><input id="draft-label" type="button" value="Open preview">':'<p>The drawing.</p><div class="app-frame"><small>Demo data</small></div><span hidden>Signup preview.</span>'),'',false),
     section('d','<p class="gone">Hours and rates</p><strong data-count="48">'+(bad?'24':'48')+'</strong><b id="observed">'+(bad?'8':'16')+'</b><div><span style="position:sticky;top:8px">Workshop hours</span></div>'+tabs+figure+(bad?'':'<span data-auto-advance></span><button data-pause>Pause schedule</button>')),
-    section('e','<form action="mailto:test@shop.example"><label>Email<input type="email"></label><button type="submit">'+(bad?'Book a room':'Open email draft')+'</button><p class="terms">'+(bad?'Request a room.':'Opens your email with the request filled in.')+'</p></form>',bad?'':'ground-surface',!bad),
+    section('e','<form action="mailto:test@shop.example"><label>Email<input type="email"></label><button type="submit">'+'Book a room'+'</button><p class="terms">'+(bad?'Request a room.':'Opens your email with the request filled in.')+'</p></form>',bad?'':'ground-surface',!bad),
     section('f',bad?'<div data-auto-advance></div>':'<p>Route map</p>',bad?'':'section--thin',false),
     section('g','<p>Visit us.</p>','',false)
   ];
   if (!bad) for (const i of [2,6]) parts[i]=parts[i].replace('class="section ','class="section ground-surface ');
   // Keep the timer in the single own section on the bad page.
   if (bad) parts[3] = parts[3].replace('</section>','<div data-auto-advance></div></section>');
-  const html = starter.replace(/<!--[\s\S]*?-->/g,'').replace(/<html[^>]*>/i,'<html lang="en" data-type="place" data-density="regular">').replace(/<head>[\s\S]*?<\/head>/i,head).replace(/<body[^>]*>[\s\S]*?<\/body>/i,'<body><header><aside class="service-notice" data-source="brief">Saturday opening changes.'+(bad?'':'<button type="button" data-dismiss-notice>Dismiss notice</button>')+'</aside></header><main>'+hero+parts.join('')+'</main><script>'+tabScript+';const [first,second]=document.querySelectorAll("[role=tab]");second.click();if(document.getElementById("mill").hidden || !document.getElementById("weir").hidden)console.error("Room tab failed");first.click();document.getElementById("observed").textContent="16";document.querySelector(".gone").style.opacity=1</script></body>').replace('document.querySelector(".gone").style.opacity=1','document.querySelector(".gone")?.style.setProperty("opacity","1")');
+  const html = starter.replace(/<!--[\s\S]*?-->/g,'').replace(/<html[^>]*>/i,'<html lang="en" data-type="place" data-density="regular">').replace(/<head>[\s\S]*?<\/head>/i,head).replace(/<body[^>]*>[\s\S]*?<\/body>/i,'<body><header><aside class="service-notice" data-source="brief">Saturday opening changes.'+(bad?'':'<button type="button" data-dismiss-notice>Dismiss notice</button>')+'</aside></header><main>'+hero+parts.join('')+'</main><footer><nav aria-label="Footer"><div><h3>Visit</h3><a href="#a">Hours</a>'+ (bad?'':'<a href="#b">Rates</a><a href="#c">Directions</a>')+'</div><div><h3>Workshop</h3><a href="#d">Hours</a><a href="#e">Enquiries</a><a href="#f">Rates</a></div></nav></footer><script>'+tabScript+';const [first,second]=document.querySelectorAll("[role=tab]");second.click();if(document.getElementById("mill").hidden || !document.getElementById("weir").hidden)console.error("Room tab failed");first.click();document.getElementById("observed").textContent="16";document.querySelector(".gone").style.opacity=1</script></body>').replace('document.querySelector(".gone").style.opacity=1','document.querySelector(".gone")?.style.setProperty("opacity","1")');
   fs.writeFileSync(file,html);
   return file;
 }
@@ -75,30 +75,30 @@ if (!variant || variant==='outcomes') {
     ['Play the trailer','play','pretends','<button class="ly-play">Watch trailer</button><img src="poster.svg">','trailer'],
     ['Wishlist the game','go','works','<a href="https://store.steampowered.com/app/1245/">Wishlist</a>'],
     ['Get the app','go','works','<a href="https://apps.apple.com/us/app/pebble/id1234">Get for iPhone</a><a href="https://play.google.com/store/apps/details?id=com.pebble">Get for Android</a>'],
-    ['Store listing','go','preview','<a href="https://game.example/">Store page preview</a>','store URL'],
+    ['Store listing','go','needs-address','<a href="https://game.example/" data-needs="store URL">Visit store</a>','store URL'],
     ['Visit the shop','go','pretends','<a href="https://store.steampowered.com/search?term=shop">Visit shop</a>','real store page'],
     ['Get both versions','go','pretends','<a href="https://apps.apple.com/us/app/id1234">Download for iPhone</a><a href="https://play.google.com/store/apps">Download for Android</a>'],
     ['Get the store page','go','pretends','<a href="#">Wishlist</a>'],
     ['Join the list','send','works',form('/api/join','<button>Join</button>')],
-    ['Sign up','send','preview',form('mailto:hello@list.example','<button>Draft an email</button>'),'sign-up endpoint'],
-    ['Request news','send','preview',form('https://news.example/join','<button>Preview signup</button>'),'form address'],
+    ['Join the newsletter','send','preview',form('mailto:hello@list.example','<button>Join the newsletter</button><p>Opens your email with the request filled in.</p>'),'sign-up endpoint'],
+    ['Request news','send','pretends',form('https://news.example/join','<button>Preview signup</button>'),'form address'],
     ['Sign up for news','send','pretends',form('#','<button>Join</button><output>Success! You are signed up.</output>')],
     ['Book a table','send','pretends',form('/tables','<button>Book a table</button>')],
     ['Download the facts','file','works','<a download href="press%20kit.txt?v=1">Download facts</a>'],
-    ['Download the guide','file','preview','<p>Guide preview. The PDF is coming soon.</p>','guide PDF'],
+    ['Download the guide','file','pretends','<p>The PDF is coming soon.</p>','guide PDF'],
     ['Download the file','file','pretends','<a download href="absent.zip">Download</a>','file'],
     ['Download the menu','file','pretends','<a href="more.html">Download</a>'],
     ['Download the sheet','file','pretends','<a href="empty.pdf">Download the sheet</a>'],
     ['Read the menu','show','works','<h2>Menu</h2><ul><li>Pea soup, 7 euros</li></ul>'],
-    ['See the area','show','works','<a href="https://www.openstreetmap.org/search?query=Ottensen">See the area</a>'],
+    ['See the area in Ottensen','show','works','<a href="https://www.openstreetmap.org/search?query=Ottensen">See the area</a>'],
     ['Read the menu','show','preview','<h2>Menu</h2><p>Menu preview coming soon.</p>','menu copy'],
     ['Read the menu','show','pretends','<h2>Menu</h2><div hidden>Soup, 7 euros</div>'],
     ['Download the pack',null,'works','<a href="press%20kit.txt">Download</a>'],
     ['Make the connection',null,null,'<h2>Connections</h2>'],
     ['Visit a product','go','pretends','<a href="https://game.example/">Buy now</a>','store URL'],
     ['Preview another product','go','pretends','<a href="https://other.example/">Preview the store</a>'],
-    ['Get the press kit','file','preview','<a href="https://press.example/">Press kit preview</a>','press kit ZIP'],
-    ['Install the preview app','go','preview','<a href="https://shop.example/" aria-describedby="app-note">Store link</a><p id="app-note">Store preview.</p>','app store URL'],
+    ['Get the press kit','file','pretends','<a href="https://press.example/">Press kit preview</a>','press kit ZIP'],
+    ['Install the preview app','go','pretends','<a href="https://shop.example/" aria-describedby="app-note">Store link</a><p id="app-note">Store preview.</p>','app store URL'],
     ['Film from a decoy','play','pretends','<video controls src="more.html"></video>'],
     ['Wishlist the game','go','pretends','<a href="store-hop.html">Wishlist on Steam</a>'],
     ['Wishlist the game','go','preview','<a href="store-hop.html">Find Wren on Steam</a>','official listing'],
@@ -112,6 +112,25 @@ if (!variant || variant==='outcomes') {
     ['Send the enquiry','send','works',form('','<textarea name="message"></textarea><button>Send enquiry</button>','onsubmit="event.preventDefault();fetch(\'/api/send\', {method:\'POST\',body:new FormData(this)})"')],
     ['Join from the kit form','send','works',form('','<button>Join</button>','class="form" data-endpoint="/api/signup"')],
     ['Book a table for four','send','works',form('/api/tables','<input name="name"><input type="date" name="date"><input type="time" name="time"><select name="guests"><option>4</option></select><button>Book</button>')],
+    ['Start the free plan','go','needs-address','<a data-needs="sign-up address" href="https://app.product.example/signup">Start free plan</a>','sign-up address'],
+    ['Start free','go','pretends','<a href="https://app.product.example/signup">Start free</a>','sign-up address'],
+    ['Open the app','go','pretends','<a data-needs="app address" href="https://app.product.example/">Open the app</a>'],
+    ['Start free','send','pretends',form('/api/start','<button>Start free</button>')],
+    ['See the area in Ottensen','go','works','<a href="https://www.openstreetmap.org/search?query=Ottensen">See the area</a>'],
+    ['Ottensen on the map','go','pretends','<a href="https://www.openstreetmap.org/search?query=Paris">See the area</a>'],
+    ['Directions in Ottensen','go','pretends','<a href="https://www.openstreetmap.org/search?query=Ottensen">Get directions</a>'],
+    ['Ottensen on the map','go','pretends','<a href="https://www.google.com/search?q=Ottensen">See the area</a>'],
+    ['See the area around 42 Alder Street in Ottensen','go','pretends','<a href="https://maps.apple.com/?q=Ottensen">See the area</a>'],
+    ['Directions to 42 Alder Street','go','works','<a href="https://maps.apple.com/?q=42+Alder+Street">Get directions</a>'],
+    ['See the area in Ottensen','show','pretends','<p>A visit to the bakery.</p><a href="https://www.openstreetmap.org/search?query=Paris">See the area</a>'],
+    ['Download the app','send','pretends',form('/api/request','<button>Download app</button>')],
+    ['Buy in a store','send','pretends',form('/api/checkout','<button>Buy now</button>')],
+    ['Book via Calendly','go','works','<a href="https://calendly.com/mill-studio/visit">Book now</a>'],
+    ['Start free plan','go','pretends','<a data-needs="sign-up address" href="https://app.product.example/signup">Start free plan</a>','newsletter endpoint'],
+    ['Download the guide','file','works','<a href="https://files.mill.studio/guide.pdf">Download guide</a>'],
+    ['Download the app','file','needs-address','<a data-needs="download URL" href="https://files.mill.example/app">Download the app</a>','download URL'],
+    ['Ottensen on the map','go','works','<a href="https://www.google.de/maps/search/Ottensen/">See the area</a>'],
+    ['See the area in Ottensen','go','pretends','<a href="https://news.mill.studio/">See the area</a>'],
     ['See film two','play','pretends','<button>Play trailer</button><template><video src="film.mp4"></video></template>'],
   ];
   const file = path.join(tmp,'index.html');
@@ -122,7 +141,7 @@ if (!variant || variant==='outcomes') {
   fs.writeFileSync(path.join(tmp,'page-without-extension'),'<!doctype html><title>Home</title>');
   fs.copyFileSync(path.join(skill,'assets/system.js'),path.join(tmp,'system.js'));
   fs.writeFileSync(file,'<script type="module" src="system.js"></script><main>'+cases.map((v,i)=>'<section id="case-'+i+'">'+v[3]+'</section>').join('')+'</main>');
-  fs.writeFileSync(notes,'Asks:\n'+cases.map(([ask,outcome],i)=>'- '+ask+' -> #case-'+i+(outcome?' : '+outcome:'')).join('\n')+
+  fs.writeFileSync(notes,'Download: https://files.mill.studio/guide.pdf\nAsks:\n'+cases.map(([ask,outcome],i)=>'- '+ask+' -> #case-'+i+(outcome?' : '+outcome:'')).join('\n')+
     '\n\n## Client must supply\n'+cases.map((v,i)=>v[4] ? '- #case-'+i+' '+v[4] : '').join('\n'));
   for (const input of [file,notes]) {
     const report = (await run(path.join(skill,'scripts/copy-lint.mjs'),[input,'--json'])).files[0];
@@ -220,7 +239,9 @@ for (const bad of [false,true]) {
     for (const w of report.widths) {
       test(!w.errors?.length,w.width+' consistency width completed');
       const hits=w.findings;
-      for (const rule of ['small-terms','preview-handoff','service-notice', ...(w.width===390 ? ['subject-first'] : [])])
+      test(hits.some(f=>f.check==='builder-words' && f.sev==='FAIL') === bad,w.width+' builder-words');
+      test(hits.some(f=>f.check==='builder-words' && /draft-label/.test(f.sel)) === bad,w.width+' visible input button wording');
+      for (const rule of ['footer-thin','heading-pair','small-terms','preview-handoff','service-notice', ...(w.width===390 ? ['subject-first'] : [])])
         test(hits.some(f=>f.check===rule && f.sev==='WARN') === bad,w.width+' '+rule+' '+(bad?'detected':'clear'));
       test(hits.some(f=>f.check==='small-terms' && /Ships March/.test(f.text))===bad,w.width+' an unlabelled dispatch date is measured');
       for (const name of ['own-count','own-timer','still-wrong','empty-band','visual-caption']) {

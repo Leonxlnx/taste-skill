@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- layout v4 demo: hero-centred (references/layout-v4.md, heroes.json "centred"). type: software. fonts: instrument. dark page. ground: painterly-landscape (assets/effects), CSS fallback under it. -->
+<!-- layout v4 demo: hero-centred (references/layout-v4.md, heroes.json "centred"). type: software. fonts: instrument. dark page. ground: the page surface. -->
 <html lang="en" data-type="software" data-radius="round" data-ground="painting" data-buttons="pill">
 <head>
 <meta charset="utf-8">
@@ -22,12 +22,7 @@
   --font-display: "Instrument Sans", system-ui, sans-serif; --font-text: "Instrument Sans", system-ui, sans-serif;
   --display-weight: 500; --display-tracking: -0.03em; --display-tracking-xl: -.012em; --display-stretch: 92%; --ly-scale: 1.04;
 }
-/* the frame's painted ground when WebGL is not there: sky, far hills, a lit near hill */
-.hero__window { background:
-  radial-gradient(120% 60% at 70% 118%, #6f7f3a 0 40%, transparent 41%),
-  radial-gradient(90% 50% at 10% 108%, #57703f 0 42%, transparent 43%),
-  radial-gradient(80% 40% at 60% 92%, #9fb2c4 0 40%, transparent 41%),
-  linear-gradient(#5f93cc, #a9c7e4 70%, #c8d6dd); }
+.hero__window { background: var(--p-surface); }
 .d-win--dark .d-win__body { grid-template-columns: 250px 1fr; min-height: 420px; }
 .d-win--dark .d-win__bar b { color: #eceef0; font-weight: 500; } .d-win--dark .d-win__bar .sp { flex: 1; }
 /* the exchange stands in the window's top 260px: one-line question, the tool line, a two-line answer, its actions */
@@ -118,7 +113,7 @@
         <p class="hero__lead">It answers the questions it is sure about, drafts the rest for your team and learns from every reply. Works inside Zendesk, Front and Help Scout.</p>
         <div class="btn-row"><a class="btn btn--primary" href="#numbers">Start free for 14 days</a><a class="btn btn--secondary" href="#numbers">Contact sales</a></div>
       </div>
-      <div class="hero__window" data-matte="colour" data-fx="painterly-landscape" data-fx-seed="7" role="img" aria-label="Relay drafting a reply to a customer about a late order">
+      <div class="hero__window" data-matte="flat" role="img" aria-label="Relay drafting a reply to a customer about a late order">
         <div class="ly-piece d-win d-win--dark" aria-hidden="true">
           <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span><b>Heike Brandt</b> · Order 4468</span><span class="sp"></span><span>Shopify · DHL</span></div>
           <div class="d-win__body">

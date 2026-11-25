@@ -1,5 +1,6 @@
 // Inspect the mapped element and the shape of its destination. Never open a URL.
 import fs from 'node:fs';
+import { suppliedStreet, areaInSource } from './place-address.mjs';
 import path from 'node:path';
 
 export const outcomes = ['play', 'go', 'send', 'file', 'show'];
@@ -9,7 +10,12 @@ const purchase = /\b(buy|purchase|pay|checkout)\b/i;
 const order = /\b(?:pre[- ]?)?order\b/i;
 const signup = /\b(sign[- ]?up|register|subscribe|join|start the .+ plan)\b/i;
 const enquiry = /\b(enquir\w*|inquir\w*|quote|contact|message)\b/i;
+function needsLink(ask) {
+  if (/\b(?:newsletter|mailing list|subscribe|news updates|sign up for news|demo request|request a demo)\b/i.test(ask)) return false;
+  return /\b(?:sign[- ]?up|start (?:the |a )?free(?: plan| trial)?|open (?:the |our )?app|buy(?: [\w-]+){0,5} (?:in|on|at|from) (?:the |our |a )?(?:[\w-]+ )?store|book(?:ing)?(?: (?:a |the )?[\w-]+){0,3} (?:through|via|on) [\w-]+)\b/i.test(ask);
+}
 export function inferOutcome(ask) {
+  if (needsLink(ask) || mapAsk.test(ask)) return 'go';
   if (/\b(wishlist|app store|google play|store (?:page|listing)|download page|(?:download|get|install) (?:the )?(?:app|game) on (?:iphone|android)|download.*(?:app|iphone|android))\b/i.test(ask) ||
       /^(?:visit|open|go to)\b.*\b(?:website|site|shop|store|profile|channel)\b/i.test(ask)) return 'go';
   if (/\b(download|press (?:kit|assets)|pdf|zip)\b/i.test(ask)) return 'file';
@@ -90,11 +96,11 @@ function destinationProblem(url) {
   return '';
 }
 const remedies = {
-  go:'Supply the product URL, or label a .example link as a preview and list its URL under Client must supply.',
-  send:'Supply the fields and receiving endpoint, or label the .example form as a draft and list the endpoint under Client must supply.',
+  go:'Use a destination link. For a missing address use a .example URL with data-needs and list that address under Client must supply.',
+  send:'Supply the fields and receiving endpoint, or open an email draft, explain it under the submit button and list the endpoint under Client must supply.',
   play:'Supply the playable file or embed, or show a still without a play control and list the film under Client must supply.',
-  file:'Supply the download, or remove the download control, label the preview and list the file under Client must supply.',
-  show:'Supply the content, or label its preview and list the missing content under Client must supply.'
+  file:'Link to the download. For a missing file URL, use a .example link with data-needs and list the download address under Client must supply.',
+  show:'Show the requested content. List anything still needed under Client must supply.'
 };
 export const remedy = outcome => remedies[outcome];
 
@@ -164,7 +170,32 @@ function fileProblem(href,page) {
   return '';
 }
 
-function linkResult(outcome,page,scope,active,preview,ask) {
+function mapSearch(url,title,ask,context) {
+  if (!url || !mapAsk.test(ask+' '+title)) return false;
+  const host = url.hostname.toLowerCase(), route = url.pathname;
+  const osm = /^(?:www\.)?openstreetmap\.org$/.test(host);
+  const google = /^(?:(?:www|maps)\.)?google\.(?:com|de|fr|se|co\.uk|ca|com\.au)$/.test(host);
+  const apple = host === 'maps.apple.com';
+  if (!(osm && route === '/search' || google && (route.startsWith('/maps/') || host.startsWith('maps.')) || apple)) {
+    return osm && /^\/(?:node|way|relation)\/\d+\/?$/.test(route);
+  }
+  let query = ['query','q','destination','daddr','address'].map(k=>url.searchParams.get(k)?.trim()).find(Boolean);
+  if (!query && google) {
+    try { query = decodeURIComponent(route.match(/\/maps\/(?:search|place|dir)\/+([^/@]+)/)?.[1] || '').replace(/\+/g,' '); }
+    catch { return false; }
+  }
+  if (!query) return !!url.searchParams.get('query_place_id') || !!url.searchParams.get('place_id');
+  const street = /\b(?:street|st\.?|road|rd\.?|avenue|lane|rue|via|calle)\b|(?:straße|strasse|gatan|vägen)\b/i;
+  const norm = value => value.toLowerCase().normalize('NFC').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const source = context+' '+ask;
+  const address = suppliedStreet(source);
+  if (address && !norm(address).every(w => norm(query).includes(w))) return false;
+  if (!areaInSource(query,source)) return false;
+  return !!address || street.test(query) || !/\b(?:directions?|find us|get here)\b/i.test(title) &&
+    (/\b(?:area|district|neighbou?rhood|on (?:the )?map)\b/i.test(title) || norm(title).some(w=>norm(query).includes(w)));
+}
+
+function linkResult(outcome,page,scope,active,preview,ask,context,supply,askId) {
   const fileAsk = outcome==='file';
   const store = !fileAsk && /\b(wishlist|store|steam|app listing)\b/i.test([ask,...active.map(n=>label(page,n))].join(' '));
   const honest = label => /\b(find|search|coming soon|opens? (?:when|once)|not yet available|availability)\b/i.test(label);
@@ -187,23 +218,41 @@ function linkResult(outcome,page,scope,active,preview,ask) {
   const related = active.filter(n=>n.get('download')!==null || (fileAsk
     ? /download|press kit|\b(?:zip|pdf)\b/i
     : /download|wishlist|store|steam|visit|watch|open|view|install|get the/i).test(label(page,n)));
-  const links = related.length ? related : active.filter(n=>n.name==='a');
+  const actionLinks = needsLink(ask) ? active.filter(n => n.name === 'a' && (needsLink(label(page,n)) || n.get('data-needs') || /^(?:register|join|buy now|purchase|get started|create (?:an? |your )?account|book now)$/i.test(label(page,n)))) : null;
+  if ((actionLinks || fileAsk || /\bdownload\b/i.test(ask)) && !active.some(n => n.name === 'a')) return fails('the action needs a direct link to its destination');
+  const links = actionLinks || (related.length ? related : active.filter(n=>n.name==='a'));
   if (!links.length) {
     if (store && !active.length && availability.test(words(scope))) return {state:'preview',detail:needs.go};
-    if (fileAsk && !active.length && previewWords.test(words(scope))) return preview();
     return fails('the target has no destination');
   }
   const problems = [];
-  let waiting = false;
+  let waiting = false, missingAddress;
   for (const node of links) {
     const href = attr(node,'href').trim();
     const title = label(page,node);
     const url = webURL(href);
     let problem;
-    const promised = title+' '+disclosure(page,node);
-    if (example(url) && previewWords.test(promised)) waiting=true;
-    else if (fileAsk) problem = fileProblem(href,page);
-    else if (url) problem = example(url) ? 'an unlabelled placeholder' : destinationProblem(url);
+    if (example(url)) {
+      const piece = attr(node,'data-needs').trim();
+      if (node.name !== 'a' || !piece || !url.hostname.endsWith('.example')) problem = 'a reserved address without a named data-needs link';
+      else {
+        const names = value => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+        const listed = supply.some(line => {
+          const targets = [...line.matchAll(/#([\w-]+)/g)].map(m => m[1]);
+          return (!targets.length || targets.includes(askId)) && names(line).includes(names(piece));
+        });
+        if (!listed) return fails(piece+' is unlisted under Client must supply for #'+askId);
+        missingAddress = piece;
+      }
+    }
+    else if (mapSearch(url,title,ask,context)) continue;
+    else if (mapAsk.test(ask) && url) problem = 'no map destination matching the supplied place and label';
+    else if (fileAsk) {
+      const suppliedDownload = url && context.includes(href) && !destinationProblem(url) &&
+        (/\.(?:pdf|zip|gz|dmg|pkg|msi|exe|apk|epub|csv|txt|xlsx?|docx?|pptx?)$/i.test(url.pathname) || node.get('download') !== null && url.pathname !== '/' && !webPage.test(url.pathname));
+      if (!suppliedDownload) problem = fileProblem(href,page);
+    }
+    else if (url) problem = destinationProblem(url);
     else if (store) problem = storeStep(node,href);
     else {
       const file = localAsset(href,page);
@@ -213,6 +262,7 @@ function linkResult(outcome,page,scope,active,preview,ask) {
     if (problem) problems.push('"'+title+'" opens '+(href || 'nothing')+' ('+problem+')');
   }
   if (problems.length) return fails(problems.join(' / '));
+  if (missingAddress) return {state:'needs-address',detail:missingAddress};
   return waiting ? (store && links.every(n => honest(label(page,n))) ? {state:"preview", detail:needs.go} : preview()) : works();
 }
 
@@ -264,7 +314,8 @@ function sendResult(row,page,scope,active,preview) {
   if (missing.length) return fails(title+' points to '+(endpoint || 'no endpoint')+' but lacks '+missing.join(' and '));
 
   const url = webURL(endpoint);
-  const draft = /^mailto:[^@\s?]+@[^@\s?]+/i.test(endpoint) || example(url);
+  const draft = /^mailto:[^@\s?]+@[^@\s?]+/i.test(endpoint);
+  if (example(url)) return fails(title+' posts to a reserved address instead of opening an email draft');
   const status = fields.filter(n=>n.name==='output' || attr(n,'role')==='status' || n.get('data-form-status')!==null);
   const publicSuccess = fields.some(n=>/^(?:(?:thanks|thank you) for (?:booking|ordering|signing up)|thank you[!.]|(?:your )?(?:order|booking|message|request) (?:is |has been )?(?:sent|confirmed|received)\b)/i.test(n.text.trim()));
   const claimsSent = publicSuccess || status.some(n=>/\b(success|thank you|signed up|(?:order|request|message|booking) (?:is |has been )?(?:sent|received|confirmed))\b/i.test(words(nodesIn(page,n))));
@@ -273,19 +324,18 @@ function sendResult(row,page,scope,active,preview) {
     return fails(title+' claims a send before delivery to '+(endpoint || 'any endpoint'));
   }
   if (draft) {
-    const publicNote = [label(page,submit), words(fields), disclosure(page,form), disclosure(page,submit)].join(' ');
-    if (previewWords.test(publicNote)) return preview();
-    // The old mail fallback opens the visitor's mail app and never shows the
-    // kit's data-sent confirmation. Preserve its advisory verdict during migration.
-    if (row.legacy && /^mailto:[^?]*@[^?\s]+\.example(?:\?|$)/i.test(endpoint)) return preview(needs.send,'Label the submit as an email draft.');
-    return fails(title+' points to '+endpoint+' without disclosing the draft or preview');
+    const publicNote = words(fields.filter(n => n.start > submit.start && !n.inLabel));
+    if (/\bopens? (?:your |an? )?(?:email|mail)(?: app| client)?\b/i.test(publicNote)) return preview();
+    return fails(title+' needs an explanation under the button that the visitor’s email opens');
   }
   const route = /^(?:\/(?!\/)|\.{0,2}\/)?[\w-][\w./-]*(?:\?[^#]*)?$/.test(endpoint);
   if (attr(form,'method').toLowerCase()!=='dialog' && (url || route) && !/\.html?(?:[?#]|$)/i.test(endpoint)) return works();
   return fails(title+' has no receiving endpoint'+(endpoint ? ' ('+endpoint+')' : ''));
 }
 
-function showResult(ask,page,scope,active,preview) {
+function showResult(row,page,scope,active,preview,context,supply) {
+  const {ask,id} = row;
+  if (mapAsk.test(ask) && active.some(n => n.name === 'a')) return linkResult('go',page,scope,active,preview,ask,context,supply,id);
   const content = scope.filter(n=>!n.inLabel && n.text.trim());
   if (previewWords.test(words(scope)) && content.every(n=>previewWords.test(n.text) || n.inHeading)) return preview();
   const visual = scope.some(n=>n.name==='img' && imageSource(attr(n,'src'),page) ||
@@ -294,18 +344,14 @@ function showResult(ask,page,scope,active,preview) {
   const amounts = ask.match(/(?:[€$£]\s*)?\b\d+(?:[.,]\d+)?\b/g) || [];
   const fact = amounts.length && amounts.every(value=>words(scope).includes(value));
   if (content.some(n=>!n.inHeading) || visual || fact) return works();
-  if (mapAsk.test(ask) && active.some(n=>{
-    const url = webURL(attr(n,'href'));
-    return url && /(?:^|\.)(?:openstreetmap\.org|google\.com|maps\.apple\.com)$/.test(url.hostname) &&
-      (['q','query','destination'].some(k=>url.searchParams.get(k)?.trim()) || /\/(?:place|dir)\/[^/]+/.test(url.pathname));
-  })) return works();
   return fails('the target shows only a label or has no visible content');
 }
 
-export function assessAsk(row,page,supply,sharedOutcome) {
+export function assessAsk(row,page,supply,sharedOutcome,context='') {
   const {ask,id,outcome} = row;
   let target = page.ids.get(id);
   if (!target) return fails('#'+id+' is missing');
+  if ((needsLink(ask) && outcome !== 'go') || (/\bdownload\b/i.test(ask) && !['go','file'].includes(outcome))) return fails('the action needs a destination link');
   // Follow a section link to its actual destination; a bare # goes nowhere.
   const seen = new Set();
   while (outcome!=='go' && target.name==='a' && /^#.+/.test(attr(target,'href')) && !seen.has(target)) {
@@ -345,6 +391,6 @@ export function assessAsk(row,page,supply,sharedOutcome) {
     return result;
   }
   if (outcome==='send') return sendResult(row,page,scope,active,preview);
-  if (outcome==='show') return showResult(ask,page,scope,active,preview);
-  return linkResult(outcome,page,scope,active,preview,ask);
+  if (outcome==='show') return showResult(row,page,scope,active,preview,context,supply);
+  return linkResult(outcome,page,scope,active,preview,ask,context,supply,id);
 }

@@ -151,7 +151,7 @@ On a phone, a product or hardware split with offer facts keeps its lead, action 
 
 - **Dealt, never picked:** `start.mjs deal --page <kind>` deals three Google pairings for the
   kind; take the first (the next only when the first clashes with the client's own logo or
-  photographs, or the hero's stress test fails `hero-lines`), then `start.mjs css --page <kind>`. A `word` or
+  photographs, or the page’s headline exceeds its line limit), then `start.mjs css --page <kind>`. A `word` or
   `editorial` hero needs a face with a weight or width axis: deal with `--axis`. Every pairing a
   kind can be dealt, with its exact Google Fonts link: `start.mjs types --page <kind>`.
   `library/type.json` is the one source of every face, weight, tracking and `--ly-scale`: keep the
@@ -185,7 +185,7 @@ node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
 | Finding | Means |
 |---|---|
 | `hero-fold` | the hero misses its height range, a product peek exceeds its allowance, or the fold cuts the next heading or action |
-| `hero-maxchars`, `hero-lines` | with the h1 lengthened to its `maxChars`, the hero runs past the screen or the h1 takes too many lines |
+| `hero-maxchars`, `hero-lines` | the longer stress case pushes the hero past the screen, or the page’s own headline exceeds its line limit |
 | `section-height` | a section stretched past its content: an empty band beyond its padding, or a hole between its parts, a third of its height or more |
 | `section-air` | content in adjacent sections is closer than 72px at 1440 or 56px on a phone |
 | `empty-band` | an empty stretch exceeds 280px at 1440 or 200px on a phone, without a ground change, picture or moment |

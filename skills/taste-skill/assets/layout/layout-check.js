@@ -772,7 +772,19 @@ window.lyFinish = async function lyFinish(opts = {}) {
     const NUM = /(?:[$€£¥]\s?\d[\d.,]*|\b\d{1,3}(?:[,.]\d{3})+(?:[.,]\d+)?|\b\d+(?:[.,]\d+)?\s?(?:ms|µs|s|min|h|%|kb|mb|gb|tb|k|m|x|fps|rpm|kg|g|km|mm|cm)\b|\b\d{3,}\b)/gi;
     const nums = new Map();
     for (const s of secs) {
-      const set = new Set((s.innerText || '').match(NUM) || []);
+      const set = new Set();
+      const actions = [...s.querySelectorAll('a.btn,button,input[type=submit],a.link')].map(a => a.getBoundingClientRect());
+      const reader = document.createTreeWalker(s,NodeFilter.SHOW_TEXT);
+      while (reader.nextNode()) {
+        const el = reader.currentNode.parentElement, text = reader.currentNode.textContent;
+        if (!text.trim() || el.closest('script,style,[hidden]') || !el.getClientRects().length) continue;
+        const r = el.getBoundingClientRect();
+        const beside = actions.some(a => a.width && Math.max(a.left-r.right,r.left-a.right,0) <= 48 && Math.max(a.top-r.bottom,r.top-a.bottom,0) <= 72);
+        for (const value of text.match(NUM) || []) {
+          if (beside && (el.closest('.terms,[data-terms]') || /[$€£¥]|\b(?:per month|a month|up to|ships?|delivery|free)\b/i.test(text))) continue;
+          set.add(value);
+        }
+      }
       for (const n of set) { const k = n.replace(/\s+/g, ' ').toLowerCase(); if (/^(19|20)\d\d$/.test(k)) continue; if (!nums.has(k)) nums.set(k, new Set()); nums.get(k).add(s); }
     }
     // one finding per set of sections: five figures of one mock shown three times are one repeat

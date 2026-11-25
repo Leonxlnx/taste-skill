@@ -53,7 +53,7 @@
 */
 import fs from 'node:fs';
 import {assessAsk, inferOutcome, outcomes, remedy} from './ask-outcome.mjs';
-import { copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { headingSubjects, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
 import { readStory } from './story-check.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -419,7 +419,7 @@ function storyFindings(t, where, page, brief, dealtShape) {
       return true;
     }));
     const quote = S.short.replace(/^["“']|["”']$/g, '').trim();
-    const short = !/[<>]/.test(quote) && /\b(short|small|compact|brief page|one[- ]screen|single[- ]screen|few sections|(?:[1-4]|one|two|three|four) sections)\b/i.test(quote) && (!brief || headKey(brief).includes(headKey(quote)));
+    const short = !/[<>]/.test(quote) && /\b(short|small|compact|brief page|one[- ]screen|single[- ]screen|few sections|(?:[1-4]|one|two|three|four) sections|only (?:the )?hero and (?:the )?(?:close|closing section))\b/i.test(quote) && (!brief || headKey(brief).includes(headKey(quote)));
     if (missing.length) out.push([short ? 'WARN' : 'FAIL', missing.map(b => b.id), 'Missing story beats for ' + shape.id + ': ' + missing.map(b => b.id + ' — ' + b.show).join('; '), 'On each spine line write beat: <id> | section: #id. Short: quotes the client asking for a small page.', 'copy-story']);
   }
   const heads = S.spine.filter((x) => x.kind !== 'h1'), draft = draftH2s(t);
@@ -487,7 +487,7 @@ const LABEL_STOP = /\b(you|your|you're|you'll|we|we're|we'll|our|us|i|i'm|my|me|
 const NUMBERISH = /\d|\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|hundred|thousand|first|second|third|half)\b/i;
 function categoryLabel(h1, cat) {
   const t = tidy(h1).replace(/[.]+$/, '').trim();
-  if (!t || /[?!:;]/.test(t) || NUMBERISH.test(t) || LABEL_STOP.test(t)) return false;
+  if (!t || /[?!:;]/.test(t) || NUMBERISH.test(t) || LABEL_STOP.test(t) || /^(?:see|find|trace|track|follow|choose|compare|make|build|meet|read|open|watch)\s+(?:the|a|an|each|what|how)\b/i.test(t)) return false;
   const words = normWords(t);
   if (words.length < 1 || words.length > 10) return false;
   const p = words.findIndex((w) => /^(for|in|on|at|near|by|from|across|around|beside|off|with|of|since)$/.test(w));
@@ -705,7 +705,7 @@ function briefAsks(notes, page, add, brief) {
     if (skip && !id) { row.state='preview'; row.detail=skip[2]; continue; }
     if (!page) continue; // A writer can lint the notes before the page exists.
     const sharedOutcome = mappings.some(m=>m.row.outcome===outcome && m.row.id && m.row.id!==id);
-    Object.assign(row,assessAsk(row,page,supply,sharedOutcome));
+    Object.assign(row,assessAsk(row,page,supply,sharedOutcome,brief+' '+notes.split('Asks:')[0]));
     if (!target) continue;
     if (outcome==='send' && !target.control && !skip && row.missingForm && !declared) {
       add('FAIL','brief-ask',[line],'#'+id+' needs a field or button for "'+ask+'"',fix);
@@ -789,10 +789,6 @@ function lintRead(R, isHtml) {
     else if (hits.length > max) add('WARN', id, hits, `${msg}: ${hits.length}, budget ${max}`, fix, { budget: max });
     else if (hits.length) add('INFO', id, hits, `${msg}: ${hits.length} of ${max}`, '', { budget: max });
   };
-  const vocabulary = copyTerms({ title: R.title, description: R.meta, heroText: R.headings.find(h => h.level === 1)?.text }, { category: CATEGORY });
-  for (const {h, sev, msg} of headingFindings(R.headings.map(h => ({...h, full:h.text, foot:h.footer})), vocabulary)) {
-    add(sev, 'copy-headings', [h.full], msg, sev === 'WARN' ? 'name the subject if the heading is unclear' : '');
-  }
   const bodyHeadings = R.headings.filter(h => !h.footer && h.level <= 4);
   const hText = bodyHeadings.map(h => h.text);
   const hMain = bodyHeadings.map(h => h.main ?? h.text);
@@ -936,6 +932,11 @@ function lintRead(R, isHtml) {
       dealtShape = plan.story || '';
     } catch {}
   }
+  const sourceNotes = nf && fs.existsSync(nf) ? fs.readFileSync(nf,'utf8') : '';
+  const vocabulary = copyTerms({ title: R.title, description: R.meta, heroText: R.headings.find(h => h.level === 1)?.text }, { category: CATEGORY, products: headingSubjects(brief,sourceNotes) });
+  for (const {h, sev, msg} of headingFindings(R.headings.map(h => ({...h, full:h.text, foot:h.footer})), vocabulary)) {
+    add(sev, 'copy-headings', [h.full], msg, sev === 'WARN' ? 'name the subject if the heading is unclear' : '');
+  }
   if (!isHtml && /^copy\.md$/i.test(path.basename(R.file || ''))) notes = notesFindings(R.raw, path.basename(R.file), page, brief, dealtShape);
   else if (isHtml && !insideSkill) {
     const nf = findNotes(R.file);
@@ -943,7 +944,7 @@ function lintRead(R, isHtml) {
     else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf, page, brief, dealtShape); }
   }
   if ((isHtml && !insideSkill) || (!isHtml && /^copy\.md$/i.test(path.basename(R.file || '')))) {
-    asks = briefAsks(nf ? fs.readFileSync(nf,'utf8') : '',page,add,brief);
+    asks = briefAsks(sourceNotes,page,add,brief);
     if (isHtml && page) for (const node of page.nodes.filter(n => n.get('data-assumed') !== null)) {
       const value = page.nodes.slice(node.start,node.end).map(n => n.text).join(' ').trim();
       const price = /[€£$]\s*\d|\d[\d.,]*\s*(?:[€£$]|USD|EUR|GBP)/i.test(value);

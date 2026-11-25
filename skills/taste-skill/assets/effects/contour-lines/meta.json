@@ -3,6 +3,7 @@
   "name": "Topographic contours",
   "family": "pattern",
   "look": "A topographic map: thin contour lines with accent index lines over stepped elevation tints and a faint hillshade, slowly breathing.",
+  "kinds": ["gaming"],
   "bestOn": ["hero", "card", "band", "footer"],
   "motion": "slow",
   "cost": "low",

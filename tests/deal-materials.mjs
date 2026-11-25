@@ -6,6 +6,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { suppliedStreet } from '../skills/taste-skill/scripts/place-address.mjs';
 import { color } from '../skills/taste-skill/assets/effects/fx.js';
 import { dealScene, readScenes } from '../skills/taste-skill/scripts/moments.mjs';
 
@@ -68,6 +69,25 @@ for (const kind of ['tech', 'product']) {
   const distribution = cli('assets/layout/deal.mjs', '--type', 'product', '--kind', kind, '--has', 'object', '--stats', '40');
   assert.match(distribution, /heroes: split 100%/);
 }
+// Ask through the normal planner. Product windows and photograph heroes own their first screen.
+const planned = (kind,...args) => {
+  cli('scripts/start.mjs','plan','--page',kind,'--temper','quiet','--effect','ask','--seed','effect-fit','--no-recent',...args);
+  return JSON.parse(fs.readFileSync(path.join(dir,'.taste-skill','plan.json'),'utf8'));
+};
+assert.equal(planned('software','--has','ui','--view','wide').effect,null);
+assert.equal(planned('gaming','--has','setting').effect,null);
+const hardwareEffect = planned('tech','--has','ground').effect;
+const catalogue = JSON.parse(fs.readFileSync(path.join(root,'assets/effects/index.json'),'utf8')).effects;
+assert(catalogue.find(e => e.id === hardwareEffect)?.kinds.includes('tech'));
+for (const id of ['caustics','painterly-landscape','dot-terrain','ridgeline','contour-lines','line-engraving']) {
+  const kinds = catalogue.find(e => e.id === id).kinds;
+  assert(!kinds.includes('software') && !kinds.includes('tech'),id);
+}
+assert.equal(suppliedStreet('A bakery in Hamburg-Ottensen. No street was supplied.'),'');
+assert.equal(suppliedStreet('Visit our bakery at 24 Alder Street.'),'24 Alder Street');
+assert.equal(suppliedStreet('Ottensener Hauptstraße 7 in Hamburg.'),'Ottensener Hauptstraße 7');
+assert.equal(suppliedStreet('Street: Via del Corso 12, Roma.'),'Via del Corso 12');
+console.log('Requested effects respect the hero and page kind. Address evidence distinguishes a street from a district.');
 for (const assets of ['photo', 'logo', 'ground', 'art', 'setting', '']) {
   const { hero } = JSON.parse(cli('assets/layout/deal.mjs', '--type', 'gaming', '--has', assets, '--json'));
   assert.notEqual(hero.id, 'film');

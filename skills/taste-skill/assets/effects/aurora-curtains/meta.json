@@ -3,6 +3,7 @@
   "name": "Aurora curtains",
   "family": "mesh",
   "look": "Curtains of light fold in S-curves across a night sky, bright at the hem with a soft glow below, fading upward in long rays, swaying slowly.",
+  "kinds": ["gaming"],
   "bestOn": ["hero", "band", "footer"],
   "motion": "slow",
   "cost": "mid",

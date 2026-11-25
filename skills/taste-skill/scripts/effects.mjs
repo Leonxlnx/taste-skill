@@ -94,6 +94,7 @@ function validateMeta(meta, folder) {
   // focal true = a ground with its own subject (a sphere, a beam, peaks), left out by --quiet
   for (const k of ['random', 'focal', 'treatment']) if (meta[k] != null && typeof meta[k] !== 'boolean') errs.push(`meta.${k} must be true or false`);
   // the fit fields (moments.mjs FIT): tones, intensity, webgl
+  if (!Array.isArray(meta.kinds) || !meta.kinds.length || meta.kinds.some(k => !Object.hasOwn(FIT,k))) errs.push('meta.kinds must list supported page kinds');
   if (!Array.isArray(meta.tones) || !meta.tones.length || meta.tones.some(t => !TONES.includes(t))) errs.push(`meta.tones must list some of ${TONES.join(', ')}`);
   if (!INTENSITIES.includes(meta.intensity)) errs.push(`meta.intensity must be one of ${INTENSITIES.join(', ')}`);
   if (meta.webgl !== 0 && meta.webgl !== 1) errs.push('meta.webgl must be 0 or 1');

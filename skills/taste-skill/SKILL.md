@@ -147,6 +147,8 @@ world within the limits of `expressive.md`, each naming its source.
    and listed in the report. Record a supplied brand in `names.json` if copy-lint flags its name (`copy.md`). Never reviews, quotes, customers, awards, named people or result
    figures. An assumed fact never contradicts the brief.
 
+   Sign-up, free plan, app, download, store purchase or booking through a named service uses a link button. Without its address, use a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List the missing address first under “Client must supply” in the notes and handoff. Enquiries, slot bookings, pre-orders, demo requests and newsletters use short forms. Repeat the action label on submit. Without a receiving address, open an email draft and put one sentence below the button, such as “Opens your email with the order filled in.”
+
 3. **Plan the page from its content** (`compose.md`, `sections.md` section 1). Line 1: the kind.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
@@ -178,7 +180,7 @@ world within the limits of `expressive.md`, each naming its source.
      something else; a seed is never a part to paste.
    - **`sub` lines** name a sub-skill for one job on this page (a mascot, an illustration, a logo
      mark, a chart, photo direction). Read the ones printed and use each where its condition holds: `subskills/<name>/SKILL.md`.
-   - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
+   - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. Background effects are occasional and need a free hero; pass `--effect ask` for a requested effect. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
 
 5. **Build.** Copy the kit into the page once at the start from the installed skill folder, never from a working copy of the skill repository. Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class; copy only the
@@ -234,7 +236,7 @@ world within the limits of `expressive.md`, each naming its source.
 
 7. **Report:** the `GATE:` line first, then every waiver with its reason and every open FAIL;
    the kind and the deal; which sections are your own and what form each took; where each ask of
-   the brief landed and its gate state; what the client must supply for each preview; every assumed fact; the pictures the client must supply, every stand-in
+   the brief landed and its gate state; missing addresses first under “Client must supply”; every assumed fact; the pictures the client must supply, every stand-in
    among them; the form's `.example` stand-in; what you could not check.
 
 ## 3. What to read
@@ -274,7 +276,7 @@ Sub-skills, each one small job, read only when the plan names it:
 For your eyes first, then the gate (its check ids in brackets):
 
 - **First screen:** identify the offer, show its subject at phone width and keep the action with its terms [subject-first, small-terms, hero-screen, fold-action, fold-cut].
-- **Each ask lands at its named element** [brief-ask, ask-outcome]. Put the main action early and label any preview.
+- **Each ask lands at its named element** [brief-ask, ask-outcome]. Keep build notes in the handoff [builder-words].
 - **Sections from their content:** two own sections from six sections up, one below six [own-count]; no section holds a few
   words in an empty band; no content cut or hidden to fit [section-height, empty-area,
   still-wrong].
@@ -285,8 +287,8 @@ For your eyes first, then the gate (its check ids in brackets):
 - **Pictures show their claim** (your eyes: heading says X, picture shows Y); every visual draws
   at every width; no explaining caption [visual-empty, no-visual, visual-caption]; no stand-in of
   the wrong subject.
-- **Nothing ships broken:** no console error or failed file, every link lands, forms send to
-  their `.example` stand-in with real fields and each error under its field [console-error,
+- **Nothing ships broken:** no console error or failed file, every link lands, forms send or open
+  an email draft with real fields and each error under its field [console-error,
   links, forms, form-fields].
 - **Motion.** A still page passes. Check for excessive entrance area, long reveals and moving controls. Keep loops inside a product or media frame with its pause control. Reduced motion shows finished content [entrance-heavy, reveal-heavy, hover-shift, loop-pause, hidden-content].
 - **One system:** one button pair, one card style, one radius scale, one heading scale, text

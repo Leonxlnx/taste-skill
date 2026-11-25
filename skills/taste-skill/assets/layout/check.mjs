@@ -244,9 +244,13 @@ try {
       for (let k = 1; k < frames.length; k++) { await ev(`scrollTo(0, ${frames[k]})`); await sleep(700); await snap(path.join(shots, `screen-${W}-${k}.png`)); }
       await ev('scrollTo(0, 0)');
     }
+    const id = await ev(`(document.querySelector('main > section')?.className.match(/hero--([a-z]+)/) || [])[1] || ''`);
+    const h = heroes.find(x => x.id === id);
+    const authored = await ev("document.querySelector('main h1')?.innerText.trim() || ''");
+    const lines = res.hero?.h1?.lines;
+    const limit = h && (W >= 1400 ? (authored.length <= 45 ? 2 : Math.max(3,h.h1.lines[0])) : W <= 420 ? h.h1.lines[1] : null);
+    if (limit && lines > limit) res.findings.push({ sev:kitDemo ? 'FAIL' : 'WARN', rule:'hero-lines', where:'section.hero h1', detail:'“'+authored+'” wraps to '+lines+' lines at '+W+'px against a limit of '+limit+', so widen the headline column.' });
     if (!opt('no-stress')) {
-      const id = await ev(`(document.querySelector('main > section')?.className.match(/hero--([a-z]+)/) || [])[1] || ''`);
-      const h = heroes.find(x => x.id === id);
       // an h1 set as lettering is the name itself (references/expressive.md): no test headline stands in for it
       const lettering = await ev(`!!document.querySelector('main > section h1[data-lettering], main > section h1 > [data-lettering]')`);
       if (h && !lettering) {
@@ -254,11 +258,11 @@ try {
         if (st) {
           const sev = kitDemo ? 'FAIL' : 'WARN';
           const again = st.changed ? await ev(src + '\n;window.lyCheck()') : res;
-          const lines = again.hero?.h1?.lines ?? 0, allowed = W >= 1400 ? (st.chars <= 45 ? 2 : Math.max(3,h.h1.lines[0])) : W <= 420 ? h.h1.lines[1] : null;
+          const lines = again.hero?.h1?.lines ?? 0;
           res.stress = { hero: id, maxChars: h.h1.maxChars, authored: st.authored, changed: st.changed, chars: st.chars, lines, height: again.hero?.height };
           const sameFold = f => res.findings.some(old => old.rule === f.rule && old.where === f.where && old.detail === f.detail);
           for (const f of again.findings.filter(f => st.changed && f.rule === 'hero-fold' && !sameFold(f))) res.findings.push({ sev, rule: 'hero-maxchars', where: f.where, detail: `With a test headline of ${st.chars} characters, ${f.detail[0].toLowerCase() + f.detail.slice(1)}` });
-          if (st.changed && allowed && lines > allowed && lines !== res.hero?.h1?.lines) res.findings.push({ sev, rule: 'hero-lines', where: 'section.hero h1', detail: `The ${st.chars}-character test headline wraps to ${lines} lines at ${W}px against a limit of ${allowed}, so widen the headline column.` });
+
           const overflow = st.changed && !res.overflowX ? await ev('document.documentElement.scrollWidth - document.documentElement.clientWidth') : 0;
           if (overflow > 0) res.findings.push({ sev, rule: 'hero-maxchars', where: 'page', detail: `The ${st.chars}-character test headline adds ${overflow}px of horizontal scroll where 0px is allowed, so let long words wrap.` });
         }

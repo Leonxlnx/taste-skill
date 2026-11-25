@@ -1700,3 +1700,7 @@ html[data-action]:not([data-temper="lively"], [data-temper="loud"]) .ground-bran
 }
 :root:not([data-temper="lively"], [data-temper="loud"]) .checks li::before { background: var(--ink); }
 :root:not([data-temper="lively"], [data-temper="loud"]) .chapter-nav a[aria-current="true"] { border-bottom-color: var(--ink); }
+.footer__routes { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 24px; }
+@media (max-width: 639px) {
+  .footer__routes a { display: inline-flex; align-items: center; min-height: 44px; }
+}

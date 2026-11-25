@@ -3,6 +3,7 @@
   "name": "Grain gradient",
   "family": "grain",
   "look": "Soft shapes in the page colours drift slowly under fine film grain, like a printed texture.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["hero", "card", "band", "footer"],
   "motion": "slow",
   "cost": "low",

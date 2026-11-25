@@ -1,5 +1,7 @@
 # Effects usage
 
+On a quiet page the usual plan has no background effect. An explicit request or about one in six eligible draws can use an effect fitted to the kind. A product window, wide view or photograph occupies the hero on its own. Pass `--effect ask` for a requested background treatment. Lively and loud plans keep their own textures.
+
 Who gets effects, how many, how they are dealt and where they sit. An effect is anything a shader,
 canvas, WebGL, a print pass or a scroll drive makes: effect grounds (`data-fx`, `assets/effects`),
 the WebGL creative parts (`effects-creative.md`), objects and prints (`effects-objects.md`), big
@@ -36,15 +38,14 @@ Kept off place and service, and why: the light shows (`orb-sphere`, `spotlight-c
 `prism-dispersion`, `aurora-curtains`, `caustics`) are stage lighting with a subject of their own;
 the patterns (`grid-pulse`, `dotted-globe`, `dot-terrain`, `ruled-grounds`, `contour-lines`,
 `ridgeline`) and the dithers (`ascii-shade`, `bayer-dither`, `halftone-screen`) read as data or code;
-`gradient-mesh`, `silk-folds`, `fluted-glass` and `painterly-landscape` are made to sit under a UI
-`edge-glow` lights a prompt box. Use a flat interface on place, service and product. Choose the lead picture with the ladder in `photos.md`. A built drawing, chart or working control can show the subject. Keep shaders, tech gradients, glass and prints off these pages. A requested 3D product view can use its own rendered still.
+`gradient-mesh`, `silk-folds` and `fluted-glass` can fill an inset panel. A painted landscape belongs to a game world. Keep the hero flat beneath a product window. `edge-glow` lights a prompt box. Use a flat interface on place, service and product. Choose the lead picture with the ladder in `photos.md`. A built drawing, chart or working control can show the subject. Keep shaders, tech gradients, glass and prints off these pages. A requested 3D product view can use its own rendered still.
 
 ## What each kind gets
 
 | | tech | product, service (other) | place |
 |---|---|---|---|
 | Lead picture | Client art, product UI or built world | Product, work or a drawing of it | The place or its region |
-| The one effect | A live ground, WebGL part or object | None | None |
+| The one effect | Usually none on a quiet page; otherwise a kind-matched ground | None | None |
 | Card panel grounds | One group from the effect's family, held still | Flat ground | Flat ground |
 | Big scene | 0 or 1, dealt by fit (`scenes.md`) | 0 or 1, dealt by fit | 0 or 1, dealt by fit |
 | Diagram cards | 0 to 2, pulsing | 0 or 1 | none |
@@ -91,7 +92,7 @@ node <skill>/scripts/effects.mjs pick --page <site-kind> --palette <kind> --slot
 fragment, a card group), add the patterns and prints to `--exclude`; `<NOUI>` is
 `ruled-grounds,grid-pulse,contour-lines,dot-terrain,dotted-globe,ridgeline,halftone-screen,bayer-dither,ascii-shade,line-engraving,duotone-grade`.
 
-- **Quiet** grounds are an even field that holds UI (`grain-gradient`, `painterly-landscape`,
+- **Quiet** grounds are an even field that holds UI (`grain-gradient`,
   `gradient-mesh`, `silk-folds`, `fluted-glass`): a soft field behind UI, never a pattern. **Focal**
   grounds have a subject (`orb-sphere`, `spotlight-cone`, `god-rays`, `aurora-curtains`,
   `caustics`): alone in the hero, nothing over them.

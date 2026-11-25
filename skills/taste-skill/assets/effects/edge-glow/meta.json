@@ -3,6 +3,7 @@
   "name": "Edge glow",
   "family": "light",
   "look": "Light runs around the edge of a card or prompt box, a bright head with a long fading tail that washes the box with its colour as it passes.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["card"],
   "motion": "slow",
   "cost": "low",

@@ -351,8 +351,10 @@
           <a class="nav__logo footer__mark" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
           <p class="footer__lede">[What the company does, in one plain line.]</p>
         </div>
-        <div class="span-4 footer__col"><h3>Contact</h3><a class="footer-contact" href="#[contact form id]">[Contact or support route]</a></div>
-        <!-- Optional: real return routes, including the same supplied service links or software Quickstart as the nav. -->
+        <nav class="span-8 footer__routes" aria-label="Footer">
+          <a class="footer-contact" href="#[contact form id]">[Contact or support route]</a>
+          <!-- Add the real return links here. Use a column heading only for three or more related links. -->
+        </nav>
       </div>
       <div class="footer__legal">
         <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="terms.html">Terms</a></span>
@@ -470,10 +472,9 @@
     <div class="field"><label for="f-guests">[Guests]</label>
       <input id="f-guests" name="guests" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="f-guests-err">
       <p class="field__error" id="f-guests-err" hidden>[Write how many people, as a number.]</p></div>
-    <div class="btn-row"><button class="btn btn--primary" type="submit">Open email draft</button></div>
+    <div class="btn-row"><button class="btn btn--primary" type="submit">[Main action]</button></div>
     <p class="terms">Opens your email with the request filled in.</p>
     <p class="form__status" role="status" data-form-status></p>
-    <p class="t-small muted">[We reply within a day.]</p>
   </form>
 </template>
 

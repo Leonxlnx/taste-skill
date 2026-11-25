@@ -3,6 +3,7 @@
   "name": "Duotone grade",
   "family": "photo",
   "look": "The section's own photograph graded into two or three page tones with still grain; without one, a calm study of window light kept clear of the text.",
+  "kinds": ["software", "tech", "gaming"],
   "bestOn": ["hero", "band", "card"],
   "motion": "still",
   "cost": "low",
