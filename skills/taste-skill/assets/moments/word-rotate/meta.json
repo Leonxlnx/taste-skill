@@ -22,7 +22,7 @@
   "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
   "phoneRuns": true,
   "maxPerPage": 1,
-  "weight": 1,
+  "weight": 0,
   "needs": {
     "words": "An h1 or h2 with two to four alternatives in the brief. Refuse it if the widest word changes the line count at 390px.",
     "carry": [

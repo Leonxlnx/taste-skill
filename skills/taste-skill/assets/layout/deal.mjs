@@ -45,14 +45,18 @@ const has = new Set(given ? given.concat('ground') : (gaming ? ['ground'] : (HAS
 // A game can supply its actual playable window with --has ui.
 if (!gaming && has.delete('setting')) has.add('photo');   // only a game has a setting: on any other page it is a photograph
 const weightKey = gaming ? 'gaming' : type;    // the types weights to read
+import { recentIds, recordIds } from './recent.mjs';
+const separateSubjects = Number(opt('subjects') || 1) === 3;
 const histFile = opt('history');
 let hist = { heroes: [] };
 if (histFile) try { hist = { heroes: [], ...JSON.parse(fs.readFileSync(histFile, 'utf8')) }; } catch { /* a new history */ }
 
 // weighted draw, away from the recent ones while others are left
 function draw(list, weight, recent) {
-  const fresh = list.filter(x => !recent.includes(x.id));
-  const pool = (fresh.length ? fresh : list).filter(x => weight(x) > 0);
+  const eligible = list.filter(x => weight(x) > 0);
+  const fresh = eligible.filter(x => !recent.includes(x.id));
+  const oldest = Math.min(...eligible.map(x => recent.lastIndexOf(x.id)));
+  const pool = fresh.length ? fresh : eligible.filter(x => recent.lastIndexOf(x.id) === oldest);
   const total = pool.reduce((a, x) => a + weight(x), 0);
   let r = Math.random() * total;
   for (const x of pool) { r -= weight(x); if (r <= 0) return x; }
@@ -71,7 +75,7 @@ const darkIds = list => (list || []).filter(fits).filter(x => x.dark).map(x => x
 const wideView = opt('view') === 'wide' && has.has('ui') && !gaming && (type === 'software' || opt('kind') === 'tech');
 const worldView = gaming && ['lively','loud'].includes(opt('temper')) && (has.has('art') || opt('illustrate'));
 const productPage = type === 'product' || ['tech', 'product'].includes(opt('kind'));
-function dealOnce(recentHeroes) {
+function dealOnce(recentHeroes, projectHeroes = []) {
   let hero = opt('hero') && opt('hero') !== true ? heroes.find(h => h.id === opt('hero')) : null;
   if (!hero && wideView) hero = heroes.find(h => h.id === 'centred');
   if (!hero && worldView) hero = heroes.find(h => h.id === 'photo');
@@ -82,9 +86,11 @@ function dealOnce(recentHeroes) {
   if (!hero && productPage && !has.has('photo') && !has.has('art') && !has.has('film')) hero = heroes.find(h => h.id === 'split');
   if (!hero && gaming && has.has('setting') && !has.has('ui') && !has.has('film')) hero = heroes.find(h => h.id === 'photo');
   if (!hero) {
-    const ok = heroes.filter(h => h.id !== 'place' && (h.id !== 'product' || !productPage || has.has('photo') || has.has('art')) && (h.types[weightKey] || 0) > 0 && needsMet(h));
+    const ok = heroes.filter(h => h.id !== 'place' && (h.id !== 'triptych' || separateSubjects) && (h.id !== 'product' || !productPage || has.has('photo') || has.has('art')) && (h.types[weightKey] || 0) > 0 && needsMet(h));
     if (!ok.length) { console.error(`deal: no hero for ${gaming ? 'a game' : type} with ${[...has].join(', ')}`); process.exit(1); }
-    hero = draw(ok, h => h.types[weightKey], recentHeroes);
+    const fresh = ok.filter(h => !recentHeroes.includes(h.id));
+    const weight = h => h.types[weightKey] + (h.id === 'centred' && !separateSubjects && type === 'software' ? 2 : 0);
+    hero = fresh.length ? draw(fresh, weight, projectHeroes) : draw(ok, weight, recentHeroes);
   }
   return hero;
 }
@@ -97,8 +103,9 @@ if (opt('stats')) {
 heroes: ${show(H)}`);
   process.exit(0);
 }
-const hero = dealOnce(hist.heroes.slice(-3));
-const variant = hero?.id === 'centred' && wideView ? 'wide' : hero?.id === 'photo' && worldView ? 'world' : null;
+const hero = dealOnce(recentIds('heroes'), hist.heroes.slice(-3));
+if (hero && !opt('hero')) recordIds({heroes: hero.id});
+const variant = hero?.id === 'centred' && (wideView || (!separateSubjects && type === 'software' && has.has('ui'))) ? 'wide' : hero?.id === 'photo' && worldView ? 'world' : null;
 if (!hero) { console.error('deal: unknown --hero id'); process.exit(2); }
 
 // a place's hero has five forms (layout.css 0b), dealt away from the last two: two cafes in a row never share one.

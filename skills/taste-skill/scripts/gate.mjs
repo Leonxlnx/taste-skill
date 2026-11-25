@@ -931,7 +931,7 @@ const LAYOUT_FIX = {
   lines: 'put the block on the .wrap lines or the grid columns', 'section-height': 'let the section be as tall as its content: drop any fixed or min height you set; never cut or hide content to fit (layout-v4.md section 2)',
   'section-air': 'keep the kit padding (--padt, --padb) on the section; never zero it or add your own', sparse: 'give the section the content its heading promises, or merge it into the section next to it',
   neighbour: "keep the next section's heading and picture out of this screen", 'neighbour-ground': 'end the ground with the section',
-  'hero-fold': 'the hero fills the first screen alone, its button inside it', 'hero-maxchars': 'shorten the h1 or give the hero room for the longest headline',
+  'hero-fold': 'the hero contains its offer and action; keep the next heading or control whole at the fold', 'hero-maxchars': 'shorten the h1 or give the hero room for the longest headline',
   'hero-lines': 'widen the headline column so the test headline fits its line limit', 'overflow-x': 'remove what scrolls sideways', container: 'put the content in one .wrap',
 };
 
@@ -948,12 +948,13 @@ async function browserChecks(target, proj, opts, gateDir) {
   {
     const prof = freshProfile('consistency'), out = path.join(gateDir, 'consistency'), t = Date.now();
     try { fs.rmSync(path.join(out, 'rendered.html'), { force: true }); } catch { /* none */ }
-    let products = '';
+    let products = '', askIds = [];
     try {
       const notes = fs.readFileSync(path.join(gateDir, '..', 'copy.md'), 'utf8');
+      askIds = [...notes.matchAll(/^\s*-.*?->\s*#([\w-]+)/gm)].map(m=>m[1]);
       products = notes.match(/^\s*Products:\s*([^\r\n]+)/im)?.[1].trim() || '';
     } catch { /* copy lint reports missing notes */ }
-    const argv = [target, ...(products ? ['--products', products] : []), '--quick', '--widths', widths, '--json', '--profile', prof, '--out', out, ...root,
+    const argv = [target, ...(askIds.length ? ['--ask-ids',askIds.join(',')] : []), ...(products ? ['--products', products] : []), '--quick', '--widths', widths, '--json', '--profile', prof, '--out', out, ...root,
       ...(opts.kind ? ['--page', opts.kind] : []), ...(opts.category ? ['--category', opts.category] : []), ...(opts.primary ? ['--primary', opts.primary] : [])];
     const r = await run(path.join(here, 'consistency.mjs'), argv, proj, 420000, exactProfile ? [] : [prof]);
     rmProfile(prof); res.seconds.consistency = Math.round((Date.now() - t) / 1000);
@@ -962,6 +963,7 @@ async function browserChecks(target, proj, opts, gateDir) {
     else if (!rep || !Array.isArray(rep.widths)) res.crashed.push(`consistency.mjs gave no report (exit ${r.code}${errLine(r.err)})`);
     else {
       if (r.code === 2 || (rep.notCheckedAt || []).length) res.crashed.push(`consistency.mjs could not walk ${(rep.notCheckedAt || []).join(', ') || 'every width'}`);
+      res.previews = rep.widths.map(w => ({width:w.width, scopes:w.previewEvidence || {}}));
       res.frame = rep.widths.find(w => w.frame)?.frame;
       const lists = [...rep.widths.map(w => w.findings.map(f => ({ ...f, width: w.width }))), ...(rep.sweep ? [rep.sweep.findings] : []), ...(rep.narrow ? [rep.narrow.findings] : [])];
       for (const f of lists.flat()) {
@@ -1316,8 +1318,13 @@ else if (state.fp === FP && state.found && Array.isArray(state.found.crashed) &&
     const headingMessages = new Set(b.fails.filter(f => f.check === 'copy-headings').map(f => f.msg));
     const sourceFails = c.fails.filter(f => f.check !== 'copy-headings' || !headingMessages.has(f.msg));
     const covered = new Set((c.asks || []).flatMap(a=>a.playControls || []));
+    const handoffs = [];
+    for (const ask of c.asks || []) if (ask.state === 'preview' && ask.id) {
+      const widths = (b.previews || []).filter(w => w.scopes[ask.id] === false).map(w => w.width);
+      if (widths.length) handoffs.push({check:'preview-handoff',where:'#'+ask.id,widths,msg:'The preview needs a visible body-size handoff beside its action.',fix:'Name what opens and explain it beside the button.'});
+    }
     const staticFails = stat.filter(f=>f.check!=='play-dead' || !covered.has(f.at));
-    found = { asks: c.asks || [], fails: mergeFamilies(merge([...staticFails, ...b.fails, ...sourceFails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
+    found = { asks: c.asks || [], fails: mergeFamilies(merge([...staticFails, ...b.fails, ...sourceFails, ...mo.fails, ...dd.fails])), warns: merge([...b.warns, ...c.warns, ...mo.warns, ...dd.warns, ...handoffs, ...pp, ...thrown]), crashed: [...c.crashed, ...mo.crashed, ...b.crashed, ...skipped], seconds: b.seconds || {} };
   } catch (e) {
     for (const c of children) killTree(c);
     found = { fails: [], warns: [], crashed: ['the gate itself failed: ' + e.message], seconds: {} };

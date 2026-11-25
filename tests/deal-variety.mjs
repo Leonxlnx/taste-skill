@@ -79,7 +79,7 @@ for (const kind of kindsToRun) {
     const p = load(planFile);
     const printed = result.stdout.slice(result.stdout.indexOf('==== PLAN'));
     assert(printed.startsWith('==== PLAN'));
-    assert.deepEqual(Object.keys(p).sort(), [...keys, ...(p.hero === 'place' ? ['heroForm'] : []), ...(p.temper !== 'quiet' && kind==='gaming' ? ['heroVariant'] : [])].sort());
+    assert.deepEqual(Object.keys(p).sort(), [...keys, ...(p.hero === 'place' ? ['heroForm'] : []), ...((p.temper !== 'quiet' && kind==='gaming') || (kind==='software' && p.hero==='centred' && assets.includes('ui')) ? ['heroVariant'] : [])].sort());
     if (p.hero === 'place') assert.ok(['band','bleed','split','name','foot'].includes(p.heroForm));
     assert.equal(p.version, '2.5.4');
     assert.equal(p.kind, kind);
@@ -123,8 +123,11 @@ for (const kind of kindsToRun) {
     for (const key of ['hero', 'nav', 'footer', 'align', 'pictures']) assert(fields[key].startsWith(p[key]));
     assert(fields.palette.startsWith(p.palette + ', type ' + p.type + ':'));
     assert(fields.density.includes('data-density="' + p.density + '"'));
-    assert(fields.grounds.startsWith(p.grounds.pattern));
-    p.grounds.bySection.forEach((g, ix) => assert(fields.grounds.includes((ix + 1) + ' ' + (g === 'page' ? g : '.' + g))));
+    assert.match(fields.grounds, /^Suggested [1-4] grounds/);
+    for (const g of new Set(p.grounds.bySection)) assert(fields.grounds.includes(({ 'ground-surface':'tint','ground-inverse':'dark','ground-brand':'brand' })[g] || 'page'));
+    assert(!p.ideas.includes('meter') || carry.includes('figures'));
+    assert(!p.ideas.includes('week-strip') || carry.includes('steps'));
+    assert.notEqual(p.hero, 'triptych'); // no three distinct subjects declared
     assert(fields.close.startsWith(p.close || 'none'));
     assert(fields.scene.startsWith(p.scene || 'none'));
     assert(fields.effect.startsWith(p.effect || 'none'));

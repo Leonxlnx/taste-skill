@@ -146,10 +146,13 @@ window.lyRules = (() => {
     }
     return 'rgb(255, 255, 255)';
   }
-  function air() {
+  function air(a, b) {
     const root = document.documentElement, phone = root.clientWidth < 640;
     const scale = parseFloat(getComputedStyle(root).getPropertyValue('--density')) || ({open:1.15,compact:.85}[root.dataset.density] || 1);
-    return {min:(phone ? 56 : 72) * scale, max:(phone ? 200 : 280) * scale};
+    const normal = (phone ? 56 : 72) * scale;
+    const compact = a?.matches('.section--compact') || b?.matches('.section--compact');
+    const min = compact ? Math.min(normal, Math.max(32, Math.min(48,root.clientWidth * .0334))) : normal;
+    return {min, max:(phone ? 200 : 280) * scale};
   }
   function emptyRun(above, below, inside, height, limit = air().max) {
     const edge = Math.max(above, below), longest = Math.max(edge, inside);
@@ -518,7 +521,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     'let the section be as tall as its content and its air (no height, min-height or padding of its own) and close a hole between its parts; merge a short block into the section above, or give it the picture it lacks');
   });
   // Measure adjacent occupied edges, including the padding chosen for same-ground and thin sections.
-  const {min: least, max} = window.lyRules.air();
+  const {max} = window.lyRules.air();
   for (let i = 0; i + 1 < info.length; i++) {
     const a = info[i], b = info[i + 1];
     if (a.free || b.free || a.held || b.held || !a.ink.length || !b.ink.length) continue;
@@ -528,7 +531,8 @@ window.lyCheck = function lyCheck(opts = {}) {
       return pic && window.lyRules.edgePicture(pic) && Math.abs(doc(pic.getBoundingClientRect())[side] - extent) <= 2;
     };
     const joinedPhotos = touchesPicture(a, 'bottom', a.cBot) && touchesPicture(b, 'top', b.cTop);
-    if (gap < least - .5 && !joinedPhotos && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + least + 'px');
+    const minimum = window.lyRules.air(a.el,b.el).min;
+    if (gap < minimum - .5 && !joinedPhotos && !(a.el.matches('.hero') && (a.layer || window.lyRules.fullPicture(a.el)))) add('section-air', name(a.el) + ' / ' + name(b.el), Math.round(gap) + 'px between sections, minimum ' + minimum + 'px');
     if (gap > max + .5 && window.lyRules.colour(a.el) === window.lyRules.colour(b.el)) {
       const blank = window.lyRules.blankRun([a.el,b.el],a.cBot,b.cTop);
       if (blank>max+.5) add('empty-band', name(a.el) + ' / ' + name(b.el), Math.round(blank) + 'px of continuous empty ground, limit ' + max + 'px');
@@ -538,7 +542,7 @@ window.lyCheck = function lyCheck(opts = {}) {
     const hero = info[0];
     const navBottom = navH + (navPos === 'static' && navEl ? navEl.getBoundingClientRect().height : 0);
     if (hero.r.top > navBottom + tol) add('hero-fold', name(hero.el), `The hero starts at y ${Math.round(hero.r.top)}px, so remove the gap above it to start by y ${navBottom + tol}px.`);
-    if (hero.r.bottom < vh - tol) add('hero-fold', name(hero.el), `The hero ends at y ${Math.round(hero.r.bottom)}px on a ${vh}px screen, so increase its height to reach the fold within ${tol}px.`);
+    if (hero.r.bottom < vh * .72 - tol) add('hero-fold', name(hero.el), `The hero ends at y ${Math.round(hero.r.bottom)}px on a ${vh}px screen, so increase its height to reach 72% of the screen within ${tol}px.`);
     // taller than one screen: a long h1 or lead pushed it past the fold (test heroes ran 1.2 to 1.38 screens)
     const frame = window.lyRules.peek(hero.el);
     if (window.lyRules.isPeek(hero.el) && !frame) {
@@ -554,10 +558,9 @@ window.lyCheck = function lyCheck(opts = {}) {
     const fold = vh + (window.lyRules.picks(hero.el)?.offsetHeight || 0);
     if (hero.r.bottom > fold + tol && !frame) add('hero-fold', name(hero.el), `The hero ends at y ${Math.round(hero.r.bottom)}px, so reduce its vertical padding to reach y ${fold}px within ${tol}px.`);
     const next = info[1];
-    if (next && next.r.top < vh - tol) add('hero-fold',name(next.el),`The next section starts at y ${R1(next.r.top)}px on a ${vh}px screen, so extend the hero to the fold within ${tol}px.`);
     if (next) {
-      const hit = next.ink.filter(k => k.top < vh - 2);
-      if (hit.length) add('hero-fold', name(next.el), `The next section shows content at y ${Math.round(Math.min(...hit.map(k => k.top)))}px before the ${vh}px fold, so move that content below the fold.`);
+      const cut = [...next.el.querySelectorAll('h1,h2,h3,.btn')].find(el => { const r = el.getBoundingClientRect(); return shown(el) && r.top < vh-2 && r.bottom > vh+2; });
+      if (cut) add('hero-fold', name(cut), 'The fold cuts the next heading or action. Keep that reading group whole.');
     }
   }
   /* the hero's numbers (heroes.json "at1440" / "at390"), measured, not read from the CSS */

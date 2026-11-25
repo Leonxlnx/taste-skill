@@ -118,7 +118,7 @@ nav-mega's small menus.
 ## nav-split
 
 **Job and use.** A place, shop, restaurant or studio people visit: the name in the middle, three
-short words on the left, the main action on the right. One word (Rooms, Menu, Classes, Shop) opens
+short words on the left, the main action on the right. Only a group of related destinations opens
 the panel with photograph cards of what is offered.
 
 **At 1440.** `header.nav.nav--split`: system.css puts the links in the left third, the logo (mark and
@@ -839,16 +839,9 @@ its own. It asks for the main action once more, word for word.
 
 ## close-type
 
-**Job and use.** One big line and one big primary button. Any kind; no picture: the button is the
-picture.
+**Job and use.** A final reason to act. Omit a repeated action when the same decision is directly above.
 
-**At 1440.** `.closing__cta.close--type`: the h2 (at most eight words, on the left line), set
-large by system.css (up to 120px), an optional `.t-small.muted` line (the trial terms, the opening
-hours), then `a.btn.btn--primary.btn--xl` under them, at most half
-the `.wrap` (640 wide, 72 tall). Never across the `.wrap`: in testing that button was the most
-templated part of every page. `.btn--wide` is no longer a width, only the larger label.
-
-**At 390.** The button full width, 48px tall with an 18px label.
+**At both widths.** Set the action immediately under its offer, at the width of its label. Put eligibility, price or other conditions in body-size `.terms` beside it.
 
 **Copy.** Example, Rotaro: "Plan next week's rota in ten minutes" / "Start free trial" / "Free for
 14 days. No card needed."
@@ -1049,3 +1042,5 @@ For a pottery studio, put class times on a week strip. Use a photograph pair to 
 ## Service
 
 For a clinic, match each treatment to the stated fee. Show the steps from check-in to follow-up, the people named in the brief and answers to patients' questions. Put the enquiry fields where the visitor can act.
+
+Keep a project caption inside its own figure. Use a column sized for both menu name and price so they share a row.

@@ -183,34 +183,21 @@ export function hold(el) {
 const ICON_PAUSE = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="4.25" y="3.25" width="2.75" height="9.5" rx="0.9"/><rect x="9" y="3.25" width="2.75" height="9.5" rx="0.9"/></svg>';
 const ICON_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.25 3.7v8.6c0 .62.68 1 1.2.66l6.5-4.3c.47-.31.47-1 0-1.32l-6.5-4.3c-.52-.34-1.2.04-1.2.66Z"/></svg>';
 const boxes = new WeakMap();
-const boxOf = root => root.closest('[data-ui-pause-host], .panel__screen, .panel, .frame') || root.parentElement;
-// a card's title: the first h3 or .card__title in the card that is not inside its panel
-const titleOf = card => [...card.querySelectorAll('h3, .card__title')].find(t => !t.closest('.panel, .frame, .ui') && t.closest('.card') === card);
+const boxOf = root => root.closest('[data-ui-pause-host], .panel__screen, .panel, .frame, figure') || root;
 
 /**
   pausable(box, ctrl): the same pause button for anything else that moves on its own in a panel for
   more than about 5 s (an object from assets/objects, a moving ground): ctrl needs pause() and
   resume(). One button per place, shared by every loop in it. Returns a function that removes it.
   Nothing is added under reduced motion (those hold still by themselves).
-  Where it goes, so it never covers what the panel shows (a cropped panel runs its UI into every corner):
-  - a .panel or .frame in a card, as in the hero: its bottom-right corner, 12px in (beside the title it
-    read as a control of the card, not of the picture);
-  - in a .card with a title and no panel round the fragment: beside the title, at the right of the card's
-    text column (the title keeps 44px clear for it); one button for the card;
-  - a box marked [data-ui-pause-host]: its bottom-right corner, as the page chose;
-  - a .panel or .frame outside a card: its bottom-right corner (keep that corner clear);
-  - a fragment with no panel round it: under its bottom-right corner, in 44px kept free below it.
+  Keep the button in the medium it controls. A bare fragment is its own frame.
 */
 export function pausable(box, ctl) {
   if (!box || reduced()) return () => {};
-  const explicit = box.matches('[data-ui-pause-host]');
-  const panel = box.matches('.panel__screen, .panel, .frame');
-  const card = explicit || panel ? null : box.closest('.card');
-  const title = card ? titleOf(card) : null;
-  const key = title ? card : box;
+  const key = box;
   let p = boxes.get(key);
   if (!p) {
-    if (box.querySelector(':scope > .loop-pause') || (title && card.querySelector(':scope > .loop-pause'))) return () => {};   // the page put its own there
+    if (box.querySelector(':scope > .loop-pause')) return () => {};
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ui-pause loop-pause';
@@ -224,35 +211,8 @@ export function pausable(box, ctl) {
     };
     btn.addEventListener('click', () => { p.paused = !p.paused; show(); p.ctls.forEach(c => (p.paused ? c.pause() : c.resume())); });
     show();
-    if (title) {
-      // beside the title: top on the title's first line, right on the text column's right edge
-      title.classList.add('ui-pause-beside');
-      btn.classList.add('ui-pause--title');
-      const place = () => {
-        const c = card.getBoundingClientRect(), t = title.getBoundingClientRect(), col = title.parentElement;
-        const cs = getComputedStyle(col), r = col.getBoundingClientRect();
-        const colRight = r.right - (parseFloat(cs.paddingRight) || 0) - (parseFloat(cs.borderRightWidth) || 0);
-        const lh = parseFloat(getComputedStyle(title).lineHeight) || 26;
-        const k = c.width / (card.offsetWidth || c.width) || 1;      // a scaled card (fit) measures in its own px
-        btn.style.top = `${Math.round((t.top - c.top) / k + (lh - 32) / 2)}px`;
-        btn.style.right = `${Math.max(8, Math.round((c.right - colRight) / k))}px`;
-      };
-      if (getComputedStyle(card).position === 'static') card.style.position = 'relative';
-      card.append(btn);
-      place();
-      const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null;
-      if (ro) { ro.observe(card); ro.observe(title); }
-      p.off = () => { if (ro) ro.disconnect(); };   // the title keeps its 44px: no reflow when the button goes
-    } else {
-      const bare = !explicit && !box.matches('.panel__screen, .panel, .frame');
-      if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
-      if (bare) {
-        // no panel round it: the fragment fills its box to every corner, so the button sits under it
-        btn.classList.add('ui-pause--below');
-        if (!box.dataset.uiPauseRoom) { box.dataset.uiPauseRoom = ''; box.style.paddingBottom = `calc(${getComputedStyle(box).paddingBottom} + 44px)`; }
-      }
-      box.append(btn);
-    }
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    box.append(btn);
     boxes.set(key, p);
   }
   p.ctls.add(ctl);

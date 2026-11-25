@@ -59,10 +59,10 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
    full-bleed photograph or ground). layout-check.js flags a block that touches one viewport edge. */
 
 /* ---------------------------------------------------------------- the hero (every type) */
-/* the box (exactly the first screen, padded under the fixed header) is system.css's; .hero-text fills
-   what is left, and a type that grows a picture down to the fold lets it take the rest */
+/* Content stays together. Media-led heroes fill the available wrap. */
 .hero { position: relative; isolation: isolate; }
-.hero > .wrap > .hero-text { height: 100%; }
+.hero > .wrap > .hero-text { min-height: 0; }
+.hero:has(.hero__media,.hero__art,.hero__stage,.ly-collage,.hero__window,.hero__bg,.hero-visual) > .wrap > .hero-text { height: 100%; }
 .hero__in { display: flex; flex-direction: column; }
 .hero h1 { font-size: var(--ly-h1); line-height: 1.02; letter-spacing: var(--display-tracking-xl, var(--display-tracking)); text-wrap: balance; }
 .hero .hero__lead { font-size: var(--ly-lead); line-height: 1.5; max-width: 42ch; text-wrap: pretty; color: var(--ink); }
@@ -75,12 +75,10 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
 .hero__grid { align-items: center; align-content: center; }
 /* a hero grid with a picture as tall as the hero (split, collage, triptych): one row, the whole height */
 .hero-text.hero__grid { grid-template-rows: minmax(0, 1fr); align-content: stretch; }
-.hero__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5); align-items: end; }
-.hero__head > :first-child { grid-column: 1 / span 7; }
+.hero__head { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-5); }
 .hero__head > :first-child > * + * { margin-top: var(--s-4); }
-.hero__head > .btn-row { grid-column: 9 / -1; justify-content: flex-end; }
 .hero__foot { margin-top: var(--s-6); align-items: end; }
-.hero__foot > .btn-row { justify-content: flex-end; }
+.hero__foot > .btn-row { justify-content: flex-start; }
 .hero__fill { flex: 1 1 auto; position: relative; min-height: 0; }
 .hero__media { position: relative; overflow: hidden; border-radius: var(--r-lg); background: var(--surface); }
 .hero__media > img, .hero__media > video, .hero__media > picture > img {
@@ -91,15 +89,12 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
   .hero__foot > .btn-row { justify-content: flex-start; }
   .hero__media > img { object-position: var(--ly-pos-phone, var(--ly-pos, 50% 50%)); }
 }
-/* facts docked to the hero's foot: a hairline and four short facts on the column lines */
-.hero__facts { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5);
-               border-top: 1px solid var(--line); padding-top: var(--s-5); margin: 0; }
+.hero__facts { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); margin: var(--s-2) 0 0; }
 .hero__facts > div { grid-column: auto / span 3; display: grid; gap: var(--s-1); }
 .hero__facts dt { font-size: var(--t-small); color: var(--muted); }
 .hero__facts dd { margin: 0; font-size: var(--t-body); font-weight: 500; }
 @media (max-width: 639px) { .hero__facts > div { grid-column: auto / span 6; } }
-/* a proof strip (logos, a rating) docked to the hero's foot instead of a section of its own */
-.hero__dock { margin-top: auto; padding-top: var(--s-7); }
+.hero__dock { margin-top: var(--s-5); }
 
 /* a small card laid on a hero picture, 24px in from a corner (the opening hours, today's bake,
    an order's state): one, opaque, in the page's colours */
@@ -132,6 +127,10 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
   .hero--split .hero__media { height: auto; flex: 1 1 0; min-height: 240px; margin-top: var(--s-6); }
 }
 
+@media (max-width: 639px) and (max-height: 720px) {
+  .hero--split .hero__media { min-height: min(22svh, 150px); margin-top: var(--s-3); }
+}
+
 /* 2. hero--photo (product, service, software): the photograph over the whole first screen and the
       words on its calm side, in a solid box in the page's own colours (the default), or with
       data-box="none" straight on a calm part of the photograph that is dark (data-tone="dark") or
@@ -155,9 +154,6 @@ main > .section:not(:where(.own, [data-own])) .section-head { margin-bottom: var
 @media (max-width: 1023px) { .hero--photo .hero__text { width: 100%; } }
 .hero--photo[data-calm="right"] .hero__text { margin-left: auto; }
 .hero--photo h1 { font-size: var(--ly-h1-xl); max-width: 14ch; }
-.hero--photo .hero__facts { margin-top: var(--s-8); }
-.hero--photo[data-calm="left"] > .wrap > .hero-text, .hero--photo[data-calm="right"] > .wrap > .hero-text { position: relative; }
-.hero--photo[data-calm="left"] .hero__facts, .hero--photo[data-calm="right"] .hero__facts { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; }
 /* the page's own button pair (never a third style) */
 .hero--photo .btn-row { --ink: var(--p-ink); --bg: var(--p-bg); --action: var(--p-action); --action-ink: var(--p-action-ink); --line-strong: color-mix(in oklab, var(--p-ink) 20%, transparent); }
 html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="none"][data-tone="dark"] .btn--secondary { color: #fff; text-decoration-color: rgb(255 255 255 / .6); }
@@ -205,10 +201,10 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 :root[data-type="place"] .hero--photo, :root[data-type="place"] .hero--photo[data-tone] { --ink: var(--p-ink); --muted: var(--p-muted); color: var(--p-ink); }
 :is(.hero--place, :root[data-type="place"] .hero--photo) > .wrap > .hero-text { display: block; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text {
-  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-content: start; align-items: start;
+  display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start;
   width: 100%; margin: 0; padding: 0; background: none; border-radius: 0;
 }
-:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { grid-column: 9 / -1; margin: 0; }
+:is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > * { margin: 0; }
 :is(.hero--place, :root[data-type="place"] .hero--photo) .hero__text > h1 {
   grid-column: 1 / span 8; grid-row: 1 / span 3; max-width: none;
   --place-display: clamp(44px, calc(44px + (100vw - 390px) * 28 / 1050), 72px);
@@ -257,7 +253,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
      bleed  the photograph over the whole first screen; the words on a solid panel of the page ground in
             its lower corner (data-corner="end": the right one). For a calm desktop crop, data-box="none"
             and data-tone="light|dark" put the words directly on the photograph.
-     split  the words on five columns (the h1 at the top, the line and the button at the foot), the
+     split  the words and button in one stack on five columns, the
             photograph on seven down to the fold; under 1024 it stacks as band
      name   band, with the name or the street set large across the .wrap above the h1:
             <p class="hero__name">Henderson Street</p> first in .hero__text
@@ -342,23 +338,6 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   padding: 0; border: 0; border-radius: 0; background: none; overflow: visible;
 }
 .hero--product .hero__stage > [data-product]::before { content: none; }
-/* the head row gives the product its height: the h1 on cols 1-7 (two lines), the lead and the buttons
-   stacked on cols 9-12, their foot on the h1's foot (the head ends at y 278 at 1440x900, against y 373
-   with the lead under the h1); the stage takes the rest: 1280x566 at y 310 */
-@media (min-width: 1024px) {
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head { grid-template-rows: auto auto; row-gap: var(--s-5); }
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > :first-child { display: contents; }
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 7; grid-row: 1 / span 2; align-self: end; margin: 0; }
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead { grid-column: 9 / -1; grid-row: 1; align-self: end; margin: 0; max-width: none; }
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 9 / -1; grid-row: 2; justify-content: flex-start; }
-}
-/* a small laptop (1024-1279): h1 on cols 1-6, the lead and the buttons on cols 7-12, so the two
-   buttons stay on one line and the lead on three */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head h1 { grid-column: 1 / span 6; }
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head .hero__lead,
-  .hero--product:has(.hero__stage > :is([data-product], img, picture)) .hero__head > .btn-row { grid-column: 7 / -1; }
-}
 .hero--product .hero__stage:has(> img:not(.is-cutout), > picture) {
   border-radius: 0; background: none; margin-inline: calc(50% - 50vw); margin-bottom: calc(0px - var(--hpadb, 64px));
 }
@@ -403,7 +382,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
       hairline. No frame under it: the type fills the screen. */
 .hero--editorial .hero__in { justify-content: center; }
 .hero--editorial h1 { font-size: var(--ly-h1-mega); line-height: .98; letter-spacing: var(--display-tracking-xl, -0.04em); max-width: none; margin-block: 0; text-wrap: initial; }
-.hero--editorial .hero__foot { margin-top: 0; padding-top: calc(var(--s-5) - 1px); border-top: 1px solid var(--line); align-items: end; }
+.hero--editorial .hero__foot { display: flex; flex-direction: column; gap: var(--s-5); margin-top: var(--s-5); align-items: flex-start; }
 .ly-pic {
   display: inline-block; position: relative; overflow: hidden; vertical-align: -0.04em;
   height: .8em; width: var(--w, 1.9em); margin-inline: .04em; border-radius: 999px; background: var(--surface);
@@ -441,9 +420,7 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
   .hero__art > .ly-piece:not(.ly-piece--main) { display: none; }
 }
 
-/* 6. hero--word: an oversized headline (144px) across the container with one live word last, then a
-      foot row: the line and the buttons on span-6, the four facts as a column on span-5 start-8
-      (the right half has a job: the prices and promises a visitor checks first) */
+/* 6. hero--word: a single stable headline, followed by its offer and action. */
 .hero--word, .hero--editorial { overflow-x: clip; }
 .hero--word .hero__in { justify-content: center; }
 @media (min-width: 1024px) { .hero--word .hero__in { padding-top: var(--s-7); } }
@@ -453,25 +430,18 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
 .hero--word .hero__facts { margin-top: var(--s-8); }
 /* facts as a column: one row each, the label left and the value right, hairlines between */
 .hero__facts.hero__facts--col { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 0; padding-top: 0; border-top: 0; margin-top: 0; }
-.hero__facts--col > div { grid-column: auto; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4);
+.hero__facts--col > div { grid-column: auto; display: flex; align-items: baseline; justify-content: flex-start; column-gap: 1rem;
                           padding-block: var(--s-3); border-top: 1px solid var(--line); }
 .hero__facts--col > div:last-child { border-bottom: 1px solid var(--line); }
-.hero__facts--col dd { text-align: right; }
+.hero__facts--col dd { text-align: start; }
 @media (max-width: 1023px) {
   .hero--word .hero__foot > .hero__facts--col { margin-top: var(--s-7); grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); }
   .hero__facts--col > div { display: grid; gap: var(--s-1); justify-content: start; }
   .hero__facts--col > div:nth-last-child(2) { border-bottom: 1px solid var(--line); }
   .hero__facts--col dd { text-align: left; }
 }
-/* the live word: one slot in the headline as wide as its widest word (the grid's one cell holds them
-   all), so a change never moves another word or breaks a line; each word carries its own underline in
-   the accent and brings it with it */
-.ly-word { position: relative; display: inline-grid; vertical-align: bottom; overflow: clip; overflow-clip-margin: .14em; margin-bottom: -.1em; }
-.ly-word > span { grid-area: 1 / 1; justify-self: start; white-space: nowrap; padding-bottom: .1em;
-                  background: linear-gradient(var(--accent), var(--accent)) 0 calc(100% - .05em) / 100% max(3px, .05em) no-repeat;
-                  transition: transform .6s var(--ease, ease), opacity .6s var(--ease, ease); }
-.ly-word > span.is-out { transform: translateY(-105%); opacity: 0; }
-.ly-word > span.is-next { transform: translateY(105%); opacity: 0; }
+/* In an earlier heading with several alternatives, keep the first word readable. */
+.ly-word > span ~ span { display: none; }
 /* letters that answer the pointer: each letter's weight (and width, on a face with a wdth axis). The
    headline's lines are locked first (layout.js puts a break where each line ends at rest and stops
    wrapping), so a heavier, wider letter never sends a word to the next line */
@@ -518,34 +488,23 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 .ly-play:hover .ly-play__disc, .ly-play:focus-visible .ly-play__disc { transform: scale(1.06); }
 @media (max-width: 639px) { .ly-play__disc { width: 52px; height: 52px; } }
 
-/* 8. hero--statement: a quiet statement over a ground (assets/backgrounds), facts docked at the foot */
-.hero--statement .hero__in { justify-content: space-between; }   /* the h1 top-aligned at y 120 (layout-v4.md section 3), the facts docked at the foot */
+/* A statement finishes after its action and terms. */
+.hero--statement .hero__in { justify-content: flex-start; }
 .hero--statement h1 { font-size: var(--ly-h1-quiet); line-height: 1.1; max-width: 21ch; }
 .hero--statement .hero__lead { margin-top: var(--s-5); }
 .hero--statement .btn-row { margin-top: var(--s-6); }
-.hero--statement .hero__facts { margin-top: var(--s-8); }
-/* on a phone the facts of a photo or statement hero are a desktop line: the hero stays one screen and the
-   ground's foot (a horizon's rim, the photograph) stays clear; the next section carries them */
-@media (max-width: 639px) { .hero--statement .hero__facts { display: none; } }
 
-/* 9. hero--triptych: the headline on span-3, a collage of three to five pieces on span-6 start-4
-      that changes set every 2.8 s, one large button on span-3 at the right line (Figma's hero).
-      Every set has one piece (a photograph or a piece with a quiet corner) that ends at 96% of the
-      collage's width and height, so the pause disc sits on that piece's corner, never in empty ground;
-      no piece covers a line of another piece's text */
-.hero--triptych .hero__grid > :first-child { align-self: center; }
+/* Three distinct subjects share the exhibit. The offer and its action stay together. */
+.hero--triptych .hero__grid > :first-child { align-self: start; }
 .hero--triptych h1 { font-size: var(--ly-h1-side); line-height: 1.04; }
-.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 30ch; margin-top: var(--s-5); }
-.hero--triptych .hero__cta { display: flex; justify-content: flex-end; }
-.hero--triptych .hero__cta .btn { height: 64px; padding-inline: var(--s-6); font-size: var(--t-lead); }
-/* 1024 to 1279: three columns get too narrow, so it becomes a split: the headline and the button on
-   span-4, the collage on span-7 start-6 to the right line */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .hero--triptych .hero__grid { grid-template-rows: 1fr auto 1fr; }
-  .hero--triptych .hero__grid > :first-child { grid-column: 1 / span 4; grid-row: 1; align-self: end; }
-  .hero--triptych .ly-collage { grid-column: 6 / span 7; grid-row: 1 / span 3; }
-  .hero--triptych .hero__cta { grid-column: 1 / span 4; grid-row: 2; justify-content: flex-start; margin-top: var(--s-2); }
-  .hero--triptych .hero__cta .btn { height: 56px; font-size: var(--t-body); }
+.hero--triptych .hero__lead { font-size: var(--t-body); max-width: 35ch; margin-top: var(--s-5); }
+.hero--triptych .hero__cta { display: flex; justify-content: flex-start; margin-top: var(--s-5); }
+/* Earlier pages placed the button after the exhibit. Keep that markup in reading order. */
+@media (min-width: 1024px) {
+  .hero--triptych .hero__grid:has(> .hero__cta) { grid-template-rows: 1fr auto auto 1fr; row-gap: 0; }
+  .hero--triptych .hero__grid:has(> .hero__cta) > :first-child { grid-area: 2 / 1 / 3 / 5; }
+  .hero--triptych .hero__grid > .hero__cta { grid-area: 3 / 1 / 4 / 5; }
+  .hero--triptych .hero__grid:has(> .hero__cta) > .ly-collage { grid-area: 1 / 6 / -1 / -1; }
 }
 .ly-collage { position: relative; height: 100%; min-height: 0; }
 /* the crossfade only once the sets start to cycle (.is-cycling, layout.js): a set that changes as the
@@ -595,6 +554,7 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 /* ---------------------------------------------------------------- micro-interactions the heroes share */
 /* A product window keeps its own block in the page as the reader scrolls past the fold. */
 main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) {
+  max-height: none;
   --peek-height: clamp(560px, 72vw, 760px); --hgap: var(--s-6);
   height: auto; min-height: 100svh; padding-bottom: var(--padb);
 }
@@ -614,7 +574,8 @@ main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) > .wrap > .hero-
   }
 }
 @media (max-width: 639px) {
-  main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) { --hgap: var(--s-5); }
+  main > .hero:is(.hero--peek, .hero--centred:has(.hero__window)) {
+  max-height: none; --hgap: var(--s-5); }
   .hero--peek .hero__art, .hero--peek .hero__media { margin-top: var(--s-4); }
   .hero--peek .hero__art > .ly-piece--main { min-height: calc(100% - 2 * var(--s-4)); }
 }
@@ -654,12 +615,8 @@ main .hero[data-work-window] .hero__grid > :is(.hero__art, .hero__media) {
   position: relative; inset: auto; width: 100%; min-height: 0; margin: 0;
 }
 @media (min-width: 1024px) {
-  .hero[data-work-window] .hero__text {
-    display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); gap: var(--s-4) var(--gutter);
-    min-height: clamp(176px, 23svh, 216px); align-content: center;
-  }
-  .hero[data-work-window] .hero__text > h1 { grid-column: 1 / 7; grid-row: 1 / 4; align-self: start; }
-  .hero[data-work-window] .hero__text > :not(h1) { grid-column: 8 / -1; margin: 0; }
+  .hero[data-work-window] .hero__text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-4); }
+  .hero[data-work-window] .hero__text > * { margin: 0; }
   .hero[data-work-window] .hero__grid { gap: var(--s-6); }
 }
 
@@ -672,7 +629,7 @@ main > .hero[data-work-window]:not(.hero--peek) > .wrap { min-height: 0; height:
 }
 /* A shop can dock one row of named goods beneath its opening. */
 main > .hero:has(> .hero-picks) {
-  --pick-height: 96px; height: calc(100svh + var(--pick-height));
+  --pick-height: 96px; max-height: none; height: calc(100svh + var(--pick-height));
   padding-bottom: calc(var(--hpadb) + var(--bar) + var(--pick-height));
 }
 .hero--place[data-form="foot"]:has(> .hero-picks) > .hero__bg { max-height: 100svh; }
@@ -703,7 +660,7 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
 }
 .hero-book .field { flex: 1; min-width: 0; }
 .hero-book .field :is(input, select) { min-width: 0; height: var(--btn-h); }
-.hero-book > small { align-self: center; font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+.hero-book > small { align-self: center; font-size: max(16px, var(--t-body)); color: var(--ink); font-variant-numeric: tabular-nums; }
 @media (min-width: 640px) {
   main > .hero--place:not([data-form="bleed"], [data-form="split"], [data-form="foot"]):has(.hero-book) > .hero__bg { min-height: min(18svh, 150px); }
 }
@@ -726,28 +683,11 @@ main > .hero:has(> .wrap > .hero-book) > .wrap {
   :root[data-type="service"] main > .hero--photo:has(.hero-book) { --photo: min(32svh, 70vw); }
 }
 
-@media (max-width: 639px) {
-  :root[data-type="product"] .hero--split .hero__grid:has(.hero-facts, .hero__facts) {
-    --product-media-height: clamp(260px, 41svh, 380px);
-    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: none; gap: var(--s-4) var(--gutter); align-items: start; align-content: start;
-  }
-  :root[data-type="product"] .hero--split .hero__text:has(.hero-facts, .hero__facts) { display: contents; }
-  :root[data-type="product"] .hero--split .hero__text:has(.hero-facts, .hero__facts) > * {
-    grid-column: 1 / -1; margin: 0;
-  }
-  :root[data-type="product"] .hero--split .hero__grid:has(.hero-facts, .hero__facts) > .hero__media {
-    grid-area: 2 / 1 / 3 / 8; width: 100%; min-height: 0; height: var(--product-media-height); margin: 0;
-  }
-  :root[data-type="product"] .hero--split.hero--peek .hero__grid:has(.hero-facts, .hero__facts) > .hero__media > [role="img"] {
-    --peek-height: calc(var(--product-media-height) / .68); zoom: .68;
-  }
-  :root[data-type="product"] .hero--split .hero__text > :is(.hero-facts, .hero__facts) {
-    grid-area: 2 / 8 / 3 / -1; align-self: center; display: grid; grid-template-columns: 1fr; gap: var(--s-4);
-    border: 0; padding: 0;
-  }
-  :root[data-type="product"] .hero--split .hero__text > :is(.hero-facts, .hero__facts) > div { grid-column: 1; }
+/* Previous split markup may still contain a definition list. Keep it in the copy stack. */
+.hero--split .hero__text > :is(.hero-facts,.hero__facts) {
+  display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-top: var(--s-2); padding: 0; border: 0;
 }
+.hero--split .hero__text > :is(.hero-facts,.hero__facts) > div { display: flex; gap: var(--s-2); align-items: baseline; }
 
 :root .hero--place[data-form="split"] .hero__text { gap: 0; }
 :root .hero--place[data-form="split"] .hero__text > .hero__lead { margin-top: var(--s-5); }

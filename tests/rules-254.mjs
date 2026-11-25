@@ -27,24 +27,24 @@ async function run(script,args) {
 const section = (id,body,cls='',own=true) => '<section id="'+id+'" class="section '+cls+'" '+(own?'data-own="'+id+'"':'')+'><div class="wrap"><h2>'+id+'</h2>'+body+'</div></section>';
 function fixture(bad) {
   const label = bad ? 'broken' : 'good', file = path.join(tmp,label+'.html');
-  const head = '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Workshop</title><link rel="stylesheet" href="system.css"><style>body{margin:0}main>.hero{display:block;height:calc(100vh + 240px);min-height:0;padding:0}main>.hero .wrap{display:block;height:auto}.hero h1{margin:0;height:90px;padding-top:16px}.hero__window{margin:clamp(250px,32vh,300px) 0 0;height:650px;background:#ddd}.section h2,.section p{margin:0}.section :is(button,input){min-height:44px}#d figure{margin:16px 0 0;width:100%}#d figure svg{display:block;width:100%;height:240px}'+(bad ? 'main>.hero{height:75vh;overflow:clip}#a{padding-bottom:24px}#b{padding-top:24px;padding-bottom:200px}#c{padding-top:200px}#d .gone{opacity:0}#d{min-height:260vh}' : '')+'</style></head>';
+  const head = '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Workshop</title><link rel="stylesheet" href="system.css"><style>body{margin:0}.service-notice{position:fixed;inset:0 0 auto;z-index:1}main>.hero{display:block;height:calc(100vh + 240px);min-height:0;padding:0}main>.hero .wrap{display:block;height:auto;padding-top:48px}.hero h1{margin:0;height:90px;padding-top:16px}.hero__window{margin:clamp(250px,32vh,300px) 0 0;height:650px;background:#ddd}.section h2,.section p{margin:0}.section :is(button,input){min-height:44px}#d figure{margin:16px 0 0;width:100%}#d figure svg{display:block;width:100%;height:240px}'+(bad ? 'main>.hero{height:65vh;overflow:clip}#a{padding-bottom:24px}#b{padding-top:24px;padding-bottom:200px}#c{padding-top:200px}#d .gone{opacity:0}#d{min-height:260vh}' : '')+'</style></head>';
   const figure = '<figure><svg width="240" height="120" viewBox="0 0 240 120" preserveAspectRatio="none" role="img" aria-label="Room plan"'+(bad?' data-lookalike="replica logo"':'')+'><rect x="1" y="1" width="238" height="118" fill="#d9e6e1"/><path d="M8 8h90v104H8z M104 8h124v48H104z M104 64h124v48H104z" fill="#40877e"/></svg><figcaption class="fact-line">'+(bad ? 'Illustrative photograph' : 'Weir Room · 28 m²')+'</figcaption></figure>';
   const tabs = '<div role="tablist" aria-label="Room"><button role="tab" aria-selected="true" aria-controls="weir">Weir</button><button role="tab" aria-selected="false" aria-controls="mill">Mill</button></div><div id="weir" role="tabpanel">River room, 28 m²</div><div id="mill" role="tabpanel" hidden>Mill room, 36 m²</div>';
   const tabScript = 'document.querySelectorAll("[role=tab]").forEach(b=>b.onclick=()=>{for(const t of document.querySelectorAll("[role=tab]")){t.setAttribute("aria-selected",String(t===b));document.getElementById(t.getAttribute("aria-controls")).hidden=t!==b}})';
-  const hero = '<section class="hero hero--peek"><div class="wrap"><h1>The workshop</h1><div class="hero__window" role="img" aria-label="Workshop schedule"><svg viewBox="0 0 640 300" width="100%" height="100%" aria-hidden="true"><rect width="640" height="300" fill="#dce7e2"/><g stroke="#506963" stroke-width="2"><path d="M40 70h560M40 122h560M40 174h560M40 226h560"/></g><path fill="#376b63" d="M80 48h190v20H80zM200 100h230v20H200zM340 152h195v20H340zM160 204h160v20H160z"/></svg></div></div></section>';
+  const hero = '<section class="hero hero--peek"><div class="wrap"><h1>The workshop</h1><div class="hero__window" role="img" aria-label="Workshop schedule"><span data-subject="schedule" style="display:'+(bad?'none':'block')+';position:absolute;width:100%;height:120px"><svg viewBox="0 0 300 90" role="img" aria-label="Port call"><path d="M20 25h160v15H20zm80 30h180v15H100z"/></svg></span><svg viewBox="0 0 640 300" width="100%" height="100%" aria-hidden="true"><rect width="640" height="300" fill="#dce7e2"/><g stroke="#506963" stroke-width="2"><path d="M40 70h560M40 122h560M40 174h560M40 226h560"/></g><path fill="#376b63" d="M80 48h190v20H80zM200 100h230v20H200zM340 152h195v20H340zM160 204h160v20H160z"/></svg></div></div></section>';
   const parts = [
     section('a','<p>Join the team.</p>','',false),
-    section('b','<p>Our process.</p>','',false),
+    section('b','<p>Our process.</p><p class="terms" style="font-size:'+(bad?12:16)+'px">From 695 kronor.</p><p style="font-size:'+(bad?12:16)+'px">Ships March 4.</p>','',false),
     section('c','<p>The drawing.</p>','',false),
     section('d','<p class="gone">Hours and rates</p><strong data-count="48">'+(bad?'24':'48')+'</strong><b id="observed">'+(bad?'8':'16')+'</b><div><span style="position:sticky;top:8px">Workshop hours</span></div>'+tabs+figure+(bad?'':'<span data-auto-advance></span><button data-pause>Pause schedule</button>')),
-    section('e','<form><label>Email<input type="email"></label><button>Book a room</button></form>',bad?'':'ground-surface',!bad),
+    section('e','<form action="mailto:test@shop.example"><label>Email<input type="email"></label><button type="submit">'+(bad?'Book a room':'Open email draft')+'</button><p class="terms">'+(bad?'Request a room.':'Opens your email with the request filled in.')+'</p></form>',bad?'':'ground-surface',!bad),
     section('f',bad?'<div data-auto-advance></div>':'<p>Route map</p>',bad?'':'section--thin',false),
     section('g','<p>Visit us.</p>','',false)
   ];
   if (!bad) for (const i of [2,6]) parts[i]=parts[i].replace('class="section ','class="section ground-surface ');
   // Keep the timer in the single own section on the bad page.
   if (bad) parts[3] = parts[3].replace('</section>','<div data-auto-advance></div></section>');
-  const html = starter.replace(/<!--[\s\S]*?-->/g,'').replace(/<html[^>]*>/i,'<html lang="en" data-type="place" data-density="regular">').replace(/<head>[\s\S]*?<\/head>/i,head).replace(/<body[^>]*>[\s\S]*?<\/body>/i,'<body><main>'+hero+parts.join('')+'</main><script>'+tabScript+';const [first,second]=document.querySelectorAll("[role=tab]");second.click();if(document.getElementById("mill").hidden || !document.getElementById("weir").hidden)console.error("Room tab failed");first.click();document.getElementById("observed").textContent="16";document.querySelector(".gone").style.opacity=1</script></body>').replace('document.querySelector(".gone").style.opacity=1','document.querySelector(".gone")?.style.setProperty("opacity","1")');
+  const html = starter.replace(/<!--[\s\S]*?-->/g,'').replace(/<html[^>]*>/i,'<html lang="en" data-type="place" data-density="regular">').replace(/<head>[\s\S]*?<\/head>/i,head).replace(/<body[^>]*>[\s\S]*?<\/body>/i,'<body><header><aside class="service-notice" data-source="brief">Saturday opening changes.'+(bad?'':'<button type="button" data-dismiss-notice>Dismiss notice</button>')+'</aside></header><main>'+hero+parts.join('')+'</main><script>'+tabScript+';const [first,second]=document.querySelectorAll("[role=tab]");second.click();if(document.getElementById("mill").hidden || !document.getElementById("weir").hidden)console.error("Room tab failed");first.click();document.getElementById("observed").textContent="16";document.querySelector(".gone").style.opacity=1</script></body>').replace('document.querySelector(".gone").style.opacity=1','document.querySelector(".gone")?.style.setProperty("opacity","1")');
   fs.writeFileSync(file,html);
   return file;
 }
@@ -207,6 +207,9 @@ for (const bad of [false,true]) {
     for (const w of report.widths) {
       test(!w.errors?.length,w.width+' consistency width completed');
       const hits=w.findings;
+      for (const rule of ['small-terms','preview-handoff','service-notice', ...(w.width===390 ? ['subject-first'] : [])])
+        test(hits.some(f=>f.check===rule && f.sev==='WARN') === bad,w.width+' '+rule+' '+(bad?'detected':'clear'));
+      test(hits.some(f=>f.check==='small-terms' && /Ships March/.test(f.text))===bad,w.width+' an unlabelled dispatch date is measured');
       for (const name of ['ground-flat','own-count','own-timer','still-wrong','empty-band','visual-caption']) {
         test(hits.some(v=>v.check===name)===bad,w.width+' consistency '+name+' '+(bad?'detected':'clear'));
       }
@@ -290,7 +293,7 @@ if (!variant || variant==='headings') {
   const mid = host('supply','The workshop stocks a replacement part for every tool that apprentices use on the course');
   const close = host('return','Bring your finished piece back to the studio for firing the following Wednesday afternoon');
   const start=fs.readFileSync(fixture(false),'utf8')
-    .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"><style>body h3{font-size:18px}</style></head>')
+    .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"><style>body h3{font-size:18px}@media(max-width:390px){#supply{max-width:12ch}}</style></head>')
     .replace('<h2>c</h2>',mid)
     .replace('<h2>a</h2>','<h2>Overview</h2><h3>Not in the fee</h3>')
     .replace('<h2>b</h2>','<h2>Features</h2><h3>Listed buildings: do you take them?</h3>')
@@ -324,6 +327,9 @@ if (!variant || variant==='headings') {
     console.log('ok - '+w.size+' content and closing h2 hosts meet the moment contract');
   }
   const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'heading-check')]);
+  const phone = report.widths.find(w => w.width===390);
+  assert.ok(phone.findings.some(f => f.check==='copy-length' && /#supply/.test(f.sel) && /lines/.test(f.msg)), 'wrap check measures the long phone heading');
+  assert.ok(!phone.findings.some(f => f.check==='copy-length' && /Overview/.test(f.text)), 'one-line phone heading needs no wrap warning');
   const terms = report.widths.flatMap(w => w.findings).filter(f => f.check === 'copy-headings');
   checkHeadings(terms);
   for (const generic of ['Overview','Features']) assert.ok(terms.some(f => f.sev === 'FAIL' && f.msg.includes('"'+generic+'"')),generic+' still fails');

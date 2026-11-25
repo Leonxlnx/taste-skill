@@ -5,14 +5,10 @@
   when the pointer enters its box); on a phone (under 640px), on kind other and on a place, and under
   reduced motion each shows its finished picture and holds.
 
-  - [data-ly-word='["offices","pianos"]'] on a span.ly-word in the h1 (hero--word): one live word.
-    The first word is in the markup; it changes every 2 s for two rounds, rests on the first, and
-    plays a round again when the pointer enters the headline. The slot is as wide as the widest word
-    (CSS grid, one cell), so a change never moves another word or breaks a line differently.
   - h1[data-ly-letters] (hero--word, hero--editorial): letters near the pointer take a heavier weight
     (+200), and a wider width (+10%) with data-ly-letters="wdth" on a face with a wdth axis (type.json
     "letters"). Fine pointers only; the h1 keeps one aria-label.
-  - Lines locked: an h1 with a live word or letters keeps the lines it has at rest (a break where each
+  - Lines locked: an h1 with responsive letters keeps the lines it has at rest (a break where each
     line ends, then no wrapping), measured again on resize; a wider letter never re-breaks a line.
   - .ly-collage with two to four .ly-collage__set (hero--triptych): the sets crossfade every 2.8 s;
     nothing moves inside a set.
@@ -33,44 +29,6 @@ const phone = () => innerWidth < 640;
 // kind other (a cafe, a shop, a studio) and a place: nothing moves by itself (MO-07); the first word,
 // the first set and the finished steps show, still
 const other = () => { const m = document.querySelector('meta[name="site-kind"]'); return document.documentElement.dataset.type === 'place' || (!!m && m.content.trim().toLowerCase() === 'other'); };
-
-/* ---------------------------------------------------------------- the live word */
-function liveWord(slot) {
-  let words;
-  try { words = JSON.parse(slot.dataset.lyWord); } catch { return; }
-  const first = slot.textContent.trim();
-  words = [first, ...words.filter(w => w !== first)];
-  if (words.length < 2) return;
-  const h1 = slot.closest('h1');
-  if (h1 && !h1.hasAttribute('aria-label')) h1.setAttribute('aria-label', h1.textContent.replace(/\s+/g, ' ').trim());
-  slot.textContent = '';
-  const spans = words.map((w, i) => {
-    const s = document.createElement('span');
-    s.textContent = w;
-    if (i) s.className = 'is-next';
-    s.setAttribute('aria-hidden', 'true');
-    slot.append(s);
-    return s;
-  });
-  let at = 0;
-  const show = i => {
-    spans.forEach((s, k) => { s.style.transition = 'none'; s.className = k === i ? '' : 'is-next'; void s.offsetWidth; s.style.transition = ''; });
-    at = i;
-  };
-  if (reduced() || phone() || other()) { show(0); return; }
-  const ctl = ui.loop(slot, async api => {
-    for (let n = 1; n <= words.length; n++) {
-      await api.wait(2000);
-      const next = n % words.length, cur = at;
-      spans[cur].className = 'is-out';
-      spans[next].className = '';
-      at = next;
-      await api.wait(620);
-      spans[cur].style.transition = 'none'; spans[cur].className = 'is-next'; void spans[cur].offsetWidth; spans[cur].style.transition = '';
-    }
-  }, { still: () => show(0), rest: 900, cycles: 2, pause: false });
-  if (h1) h1.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') ctl.restart(); });
-}
 
 /* ---------------------------------------------------------------- letters that answer the pointer */
 function letters(h1) {
@@ -324,7 +282,7 @@ function init() {
   const title = document.querySelector('.hero--place h1');
   if (title) title.toggleAttribute('data-long-title', title.textContent.trim().split(/\s+/).length >= 7);
   document.querySelectorAll('form.hero-book').forEach(bookingBar);
-  document.querySelectorAll('[data-ly-word]').forEach(liveWord);
+
   document.querySelectorAll('h1[data-ly-letters]').forEach(letters);
   document.querySelectorAll('h1[data-ly-letters], h1:has(.ly-word)').forEach(lockLines);
   document.querySelectorAll('.ly-collage').forEach(collage);

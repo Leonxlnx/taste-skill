@@ -14,7 +14,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SKILL = path.join(ROOT, 'skills', 'taste-skill');
 const TMP = fs.mkdtempSync(path.join(process.env.TASTE_SKILL_TMP || os.tmpdir(), 'expressive-'));
 const ok = (m) => console.log('ok - ' + m);
-const cli = (args, cwd = TMP) => execFileSync(process.execPath, [path.join(SKILL, 'scripts/start.mjs'), ...args], { cwd, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, TASTE_SKILL_RECENT: '' } });
+const cli = (args, cwd = TMP) => execFileSync(process.execPath, [path.join(SKILL, 'scripts/start.mjs'), ...args], { cwd, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, TASTE_SKILL_RECENT: process.env.TASTE_SKILL_RECENT || 'off' } });
 const types = JSON.parse(fs.readFileSync(path.join(SKILL, 'library/type.json'), 'utf8'));
 const expressiveIds = new Set(types.filter((t) => t.temper === 'expressive').map((t) => t.id));
 

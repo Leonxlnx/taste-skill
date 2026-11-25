@@ -21,13 +21,19 @@
   --font-display: "Mona Sans", system-ui, sans-serif; --font-text: "Mona Sans", system-ui, sans-serif;
   --display-weight: 400; --display-tracking: -0.03em; --display-tracking-xl: -0.04em; --display-stretch: 108%; --ly-scale: .94;
 }
+.hero--editorial .hero__lead { max-width: 52ch; }
+/* The first model belongs to the opening proposition. Keep its heading with it. */
+@media (min-width: 1024px) { #model.section { padding-top: var(--s-6); } }
 .model__photo { position: relative; overflow: hidden; border-radius: var(--r-lg); height: min(600px, var(--ly-fit)); }
 .model__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .steps-n > li { grid-template-columns: 56px minmax(0, 1fr) auto; }
 .steps-n .rows__n { grid-row: 1 / span 2; font: 600 var(--t-small)/1.6 var(--font-text); color: var(--muted); font-variant-numeric: tabular-nums; }
 .steps-n .rows__value { grid-column: 3; color: var(--ink); }
 .steps-n > li > p { grid-column: 2; }
-@media (max-width: 1023px) { .model__photo { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
+@media (max-width: 1023px) { .hero--editorial .hero__lead { max-width: 52ch; }
+/* The first model belongs to the opening proposition. Keep its heading with it. */
+@media (min-width: 1024px) { #model.section { padding-top: var(--s-6); } }
+.model__photo { height: auto; aspect-ratio: 4 / 3; margin-top: var(--s-7); } }
 @media (max-width: 479px) { .steps-n > li { grid-template-columns: 32px minmax(0, 1fr) auto; } }
 </style>
 </head>
@@ -62,8 +68,8 @@
     <div class="wrap"><div class="hero-text hero__in">
       <h1 id="hero-h" data-ly-letters="wdth" aria-label="We design schools and libraries">We design <span class="ly-pic" style="--w: 2.1em; --ly-pos: 50% 70%" aria-hidden="true"><img src="img/photo-1081.jpg" alt="" fetchpriority="high"></span> schools and <span class="ly-pic" style="--w: 1.7em; --d: .55s; --ly-pos: 50% 78%" aria-hidden="true"><img src="img/photo-949.jpg" alt=""></span> libraries</h1>
       <div class="grid hero__foot">
-        <p class="hero__lead span-6">Halvorsen is a practice of 24 architects in Oslo. Since 2004 we have built 31 schools and 9 libraries in timber and brick, most of them for the city.</p>
-        <div class="btn-row span-4 start-9"><a class="btn btn--primary" href="#model">See the projects</a><a class="btn btn--secondary" href="#talk">Talk to us</a></div>
+        <p class="hero__lead">Our Oslo practice has built 31 schools and nine libraries since 2004.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#model">See the projects</a><a class="btn btn--secondary" href="#talk">Talk to us</a></div>
       </div>
     </div></div>
   </section>
@@ -72,7 +78,8 @@
     <div class="wrap grid grid--middle">
       <div class="span-6">
         <div class="section-head">
-          <h2 id="model-h">Every building starts as a card model. <span class="muted">The school sees it before we draw a line.</span></h2>
+          <h2 id="model-h">Card models</h2>
+          <p class="lead">Every building starts as a card model. The school sees it before we draw a line.</p>
         </div>
         <ol class="rows steps-n">
           <li><span class="rows__n">01</span><span class="rows__name">Brief with the people who will use it</span><span class="rows__value">4 weeks</span><p>Teachers, librarians, caretakers and pupils, in their building.</p></li>

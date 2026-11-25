@@ -970,7 +970,7 @@ function lintRead(R, isHtml) {
       const form = notes ? notes.val(/^hero form$/) : '';
       const chosen = form && LABEL_FORM.test(form);
       add(chosen ? 'INFO' : 'WARN', 'copy-h1-category', [S.h1.text], `the h1 is only a category label: "${clip(S.h1.text, 70)}"${chosen ? ' (the voice card chose this form)' : ''}`,
-        'choose a hero form on purpose (copy-moves.md, The hero) and write it on the voice card; let the lead or the eyebrow carry the category and the place or buyer, so a stranger still knows in five seconds what is sold');
+        'choose a hero form on purpose (copy-moves.md, The hero) and write it on the voice card; keep the category in the heading or its pictured subject and use the lead for one decision-bearing fact');
     }
     const C = S.close;
     if (C) {

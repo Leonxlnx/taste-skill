@@ -1,8 +1,8 @@
 {
  "version": 3,
- "generated": "2026-11-24T01:55:52.270Z",
+ "generated": "2026-11-25T11:22:56.013Z",
  "count": 18,
- "dealt": 7,
+ "dealt": 6,
  "kinds": {
   "transition": 4,
   "text": 4,
@@ -822,7 +822,7 @@
     "product"
    ],
    "intensity": "lively",
-   "look": "One photograph gives way to the next while its chapter stays in a reading panel.",
+   "look": "Each step depends on the last and shows a distinct result. For independent details use a compact list or captioned views side by side.",
    "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
    "phone": "Each photograph flows above its title and description.",
    "maxPerPage": 1,
@@ -832,6 +832,9 @@
      "pictures:3"
     ],
     "photo": true,
+    "carry": [
+     "steps"
+    ],
     "words": "Three or four chapters, each with a title and two lines.",
     "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"
    },
@@ -932,7 +935,7 @@
     "warm"
    ],
    "intensity": "lively",
-   "look": "Two steps or short descriptions flow beside their pictures. For a longer sequence each step opens beside a frame sized to its picture or UI.",
+   "look": "Each step depends on the last and shows a distinct result. For independent details use a compact list or captioned views side by side.",
    "reduced": "Each step stays with its text and complete visual. Desktop uses two columns and phones stack them.",
    "phone": "A lighter version on a phone, nothing pinned: each step stands with its title, two lines and its visual under it; the step crossing the middle of the screen takes the accent rule at its left, and each picture settles from a close crop to its framing as it rises.",
    "phoneRuns": true,
@@ -1111,7 +1114,7 @@
    "phone": "It runs on a phone as on a desktop: the word changes every two seconds, the pause button under the headline.",
    "phoneRuns": true,
    "maxPerPage": 1,
-   "weight": 1,
+   "weight": 0,
    "needs": {
     "words": "An h1 or h2 with two to four alternatives in the brief. Refuse it if the widest word changes the line count at 390px.",
     "carry": [
@@ -1133,14 +1136,7 @@
      "wait": 4800
     }
    },
-   "pages": [
-    "tech",
-    "gaming",
-    "software",
-    "place",
-    "product",
-    "service"
-   ]
+   "pages": []
   }
  ]
 }

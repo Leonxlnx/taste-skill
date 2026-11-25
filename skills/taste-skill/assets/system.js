@@ -437,6 +437,15 @@ function actionbar() {
   const hrefs = new Set(own.filter(a => a.tagName === 'A').map(a => a.href));
   const labels = new Set(own.map(words).filter(Boolean));
   const twins = [...document.querySelectorAll('a[href], button')].filter(el => !bar.contains(el) && ((el.tagName === 'A' && hrefs.has(el.href)) || labels.has(words(el))));
+  // A form can use an honest submit label (such as “Open email draft”) that differs
+  // from the link leading to it. The visitor has reached that decision all the same.
+  for (const link of own.filter(el => el.tagName === 'A' && el.hash && el.origin === location.origin && el.pathname === location.pathname && el.search === location.search)) {
+    let id;
+    try { id = decodeURIComponent(link.hash.slice(1)); } catch { continue; }
+    const target = document.getElementById(id);
+    if (target?.matches('form')) twins.push(target);
+    else if (target) twins.push(...target.querySelectorAll('form'));
+  }
   const hero = document.querySelector('main > :is(.hero, .section--hero)');
   const lead = hero ? hero.querySelector('.btn--primary') || hero.querySelector('.btn') || hero : null;
   let past = !lead; // no hero: only the twins on the screen decide
@@ -780,3 +789,16 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else init();
 
 export default { init };
+
+// An operational notice is part of the fixed header, so its height also clears the hero.
+const serviceNotice = document.querySelector('header.nav > .service-notice');
+if (serviceNotice) {
+  const measure = () => document.documentElement.style.setProperty('--notice-height', serviceNotice.offsetHeight + 'px');
+  serviceNotice.querySelector('[data-dismiss-notice]')?.addEventListener('click', () => {
+    serviceNotice.hidden = true;
+    measure();
+    document.querySelector('.nav__logo')?.focus();
+  });
+  new ResizeObserver(measure).observe(serviceNotice);
+  measure();
+}

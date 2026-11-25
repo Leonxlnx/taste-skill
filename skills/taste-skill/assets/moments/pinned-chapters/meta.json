@@ -15,7 +15,7 @@
     "warm"
   ],
   "intensity": "lively",
-  "look": "Two steps or short descriptions flow beside their pictures. For a longer sequence each step opens beside a frame sized to its picture or UI.",
+  "look": "Each step depends on the last and shows a distinct result. For independent details use a compact list or captioned views side by side.",
   "reduced": "Each step stays with its text and complete visual. Desktop uses two columns and phones stack them.",
   "phone": "A lighter version on a phone, nothing pinned: each step stands with its title, two lines and its visual under it; the step crossing the middle of the screen takes the accent rule at its left, and each picture settles from a close crop to its framing as it rises.",
   "phoneRuns": true,

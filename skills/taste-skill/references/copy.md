@@ -120,6 +120,9 @@ Write each request at its target, for example `- Book a double room -> #booking 
 
 Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. Label each line under `## Draft` with its part (`H1:`, `Lead:`, `Button:`).
 
+Cover the paragraph. The first heading or its clearly pictured subject identifies what is sold. Later headings name what the reader can learn, choose or do. Read each at 390. Cut explanations of the column, list or length of the answer.
+Read the destination before naming the button. Say who receives the request and when the visitor leaves the page. Show preview limits in body text beside the action. Source every public total, named project credit and time limit. Without a verified app listing, state availability.
+
 ## Five rules
 
 1. **The hero, its h1 and lead together, tells a stranger in five seconds what is sold and where or

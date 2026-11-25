@@ -17,9 +17,7 @@
       Trades: cafe, bakery, restaurant, hotel, wellness, studio, workshop, wedding, retail, law, clinic,
       agency, saas, devtool, fintech, ai, game, hardware, consumer-product (a brief's word works too:
       guesthouse, yoga studio, bike shop, florist, dentist, developer tool).
-      Besides the --history file, the deals can be shared across folders: set TASTE_SKILL_RECENT=<file> and the
-      deals of every build go in that one small file, so the next cafe in another folder is dealt other palettes.
-      Unset (the default), nothing is written outside the project; --no-recent leaves the file out for one run.
+      Recent palette, type and hero IDs are shared in ~/.taste-skill/recent.json. TASTE_SKILL_RECENT sets another file; off disables it.
   node scripts/start.mjs css --page <kind> --palette <id> --type <id> [--radius sharp|soft|round]
                              [--no-mono|--mono] [--force] [--history <file>]
       prints the Google Fonts link, the six stylesheet links in their order, and the :root block (palette,
@@ -94,18 +92,7 @@ function drawFresh(list, n, recent) {
   return [...fresh, ...stale].slice(0, n);
 }
 
-// the deals of every build that shares one file (shared with photos.mjs): a page in a new folder starts with an empty
-// --history, so without it two cafes built one after the other are dealt from the same start. Opt-in: only a path
-// set in TASTE_SKILL_RECENT is read or written; by default nothing is written outside the project.
-const RECENT_FILE = process.env.TASTE_SKILL_RECENT || null;
-function readRecent() {
-  if (!RECENT_FILE || opt('no-recent')) return null;
-  try { const r = JSON.parse(fs.readFileSync(RECENT_FILE, 'utf8')); return r && typeof r === 'object' && !Array.isArray(r) ? r : {}; } catch { return {}; }
-}
-function writeRecent(r) {
-  if (!r) return;
-  try { fs.mkdirSync(path.dirname(RECENT_FILE), { recursive: true }); fs.writeFileSync(RECENT_FILE, JSON.stringify(r, null, 1) + '\n'); } catch { /* optional: never stop a deal over it */ }
-}
+import { recentIds, recordIds } from '../assets/layout/recent.mjs';
 
 // ---------------------------------------------------------------- trades
 // library/palettes.json gives each palette the trades it is made for; --trade deals those first
@@ -423,9 +410,19 @@ const cueWeight = t => (t.cues || []).some(c => new RegExp('\\b' + c, 'i').test(
 const temperWeight = t => !t.tempers || t.tempers.includes(temper) ? 1 : 0.2;
 function dealTypes(h, { axis = false } = {}) {
   // a quiet page never sees an expressive face; a lively or loud one is dealt two of them and one plain pairing as the exit
-  const pool = allTypes.filter(t => suits(t, page) && (!axis || t.display.letters || isExpressiveType(t)) && (expressive || !isExpressiveType(t)));
+  let pool = allTypes.filter(t => suits(t, page) && (!axis || t.display.letters || isExpressiveType(t)) && (expressive || !isExpressiveType(t)));
+  const recent = recentIds('types');
+  const fresh = pool.filter(t => !recent.includes(t.id));
+  if (fresh.length >= 3) pool = fresh;
   const used = (h.types || []).slice(-3), dealt = (h.dealt || []).slice(-3);
   const out = [];
+  // The first suggestion becomes the project choice. Keep any eligible fresh face ahead
+  // of repeat alternatives when fewer than three fresh faces remain.
+  const choices = () => {
+    if (!fresh.length || !out.length || !recent.includes(out[0].id)) return out;
+    const first = out.find(t => !recent.includes(t.id)) || fresh[0];
+    return [first, ...out.filter(t => t.id !== first.id)].slice(0,out.length);
+  };
   if (placePage) {
     const seen = [...(h.types || []).slice(-6), ...dealt];
     // the trade's group first (sections.md section 4, Look): a serif for a bakery or a guesthouse, a plain sans
@@ -437,7 +434,7 @@ function dealTypes(h, { axis = false } = {}) {
       const pick = wpick(gf.length ? gf : gp, () => 1);
       if (pick) out.push(pick);
     }
-    return out;
+    return choices();
   }
   // the kind's weight counts cubed (3 is 27 times a 1) and a recent face is only dimmed, never removed:
   // the faces that suit the kind keep coming up, a pairing just built or dealt rests
@@ -452,7 +449,7 @@ function dealTypes(h, { axis = false } = {}) {
     out.push(pick); cls.add(pick.class);
     src = src.filter(t => t.id !== pick.id);
   }
-  return out;
+  return choices();
 }
 const pc = n => (Math.round(n * 1000) / 10) + '%';
 function describe(t, withLink) {
@@ -481,8 +478,8 @@ const LISTS = {
   buttons: { software: 'solid|pill|tonal|arrow', gaming: 'solid|pill|block', tech: 'arrow|solid|block|pill', product: 'arrow|solid|block|pill',
     service: 'solid|tonal|block|arrow', place: 'block|solid|arrow' },
   mark: { place: 'dots|arc|ring|petal|leaf|stack', '*': 'wordmark|initial|arc|ring|stack|dots' },
-  grounds: { software: 'blocks|blocks|alternate|calm|islands', gaming: 'islands|islands|alternate|blocks|calm', tech: 'blocks|blocks|alternate|islands|calm',
-    product: 'alternate|alternate|islands|blocks|calm', service: 'calm|calm|blocks|alternate|islands', place: 'calm|calm|islands|alternate|blocks' },
+  grounds: { software: 'blocks|blocks|contrast|calm|islands', gaming: 'islands|islands|contrast|blocks|calm', tech: 'blocks|blocks|contrast|islands|calm',
+    product: 'contrast|contrast|islands|blocks|calm', service: 'calm|calm|blocks|contrast|islands', place: 'calm|calm|islands|contrast|blocks' },
 };
 // an expressive page deals one of the world's button families (assets/expressive/expressive.css), one a page
 const EXPRESSIVE_BUTTONS = 'push|bevel|ribbon|offset';
@@ -512,13 +509,6 @@ if (['plan', 'deal'].includes(cmd)) {
   if (action !== undefined && !['booking', 'order', 'trial', 'visit', 'contact'].includes(action)) { console.error('start: --action needs booking, order, trial, visit or contact'); process.exit(2); }
 }
 
-const groundCopy = {
-  alternate: 'alternate page and tint from section 2, moving the inverse to the strongest picture',
-  blocks: 'repeat two page sections and one tint, ending with an inverse close',
-  islands: 'keep the page ground around two full-width islands, one inverse and one brand or tint',
-  calm: 'change ground at the main picture and at the close when marked',
-  chapters: 'give each chapter run or half one ground and change it only where a chapter or half begins, never inside one',
-};
 // the ground of a chapters or two-part-promise page (references/story.md): one ground per chapter run or half,
 // changing only at their boundaries, never at every section (the study's stripe-grounds)
 function chapterGrounds(story, n) {
@@ -576,8 +566,8 @@ function dealStory(h, { carry, action: act, assets, rand, forced }) {
 function groundsFor(pattern, n) {
   const bySection = Array(n).fill('page');
   const middle = Math.max(1, Math.floor((n - 1) / 2));
-  if (pattern === 'alternate') {
-    for (let i = 1; i < n; i += 2) bySection[i] = 'ground-surface';
+  if (pattern === 'contrast') {
+    if (n > 1) bySection[n - 1] = 'ground-surface';
     if (n > 2) bySection[middle] = 'ground-inverse';
   } else if (pattern === 'blocks') {
     for (let i = 2; i < n; i += 3) bySection[i] = 'ground-surface';
@@ -591,13 +581,13 @@ function groundsFor(pattern, n) {
   }
   return { pattern, bySection };
 }
-function groundLine({ pattern, bySection }) {
-  const map = bySection.map((g, i) => (i + 1) + ' ' + (g === 'page' ? g : '.' + g));
-  return pattern + ' · ' + map.join(', ') + '. If the length changes, ' + groundCopy[pattern] + '.';
+function groundLine({ bySection }) {
+  const names = [...new Set(bySection)].map(g => g === 'ground-surface' ? 'tint' : g === 'ground-inverse' ? 'dark' : g === 'ground-brand' ? 'brand' : 'page');
+  return 'Suggested ' + names.length + ' grounds (' + names.join(', ') + '). Change at a new visitor task. Keep one workflow on one surface.';
 }
-function dealIdeas(h) {
+function dealIdeas(h, carry) {
   const recent = (h.ideas || []).slice(-8);
-  const pool = lib('ideas.json').filter(s => s.kinds.includes(page) && !recent.includes(s.id));
+  const pool = lib('ideas.json').filter(s => s.kinds.includes(page) && !recent.includes(s.id) && (s.id !== 'meter' || carry.has('figures')) && (s.id !== 'week-strip' || carry.has('steps')));
   if (pool.length < 4) throw new Error('too few fresh idea seeds for ' + page);
   const shuffled = drawFresh(pool, pool.length, []);
   const picks = [];
@@ -660,7 +650,7 @@ function dealLayout(h) {
   }
   console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)'
     : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the footer\'s close row; use one full form'
-    : `${out.close}; a page whose last section is a form ends on close-form instead`}; the footer never repeats hours or a form printed above`);
+    : `${out.close}; a page whose last section is a form ends on close-form instead`}; repeat useful hours and directions in the footer; use the form once`);
   return out;
 }
 
@@ -679,13 +669,18 @@ function dealFrame(h, artPalette = false) {
     if (placePage) pals = pals.filter(placeGround);   // a place's ground: light and quiet (backgrounds.md, --g-main)
     // the palettes made for the trade first, away from this folder's last ones and (with TASTE_SKILL_RECENT) the trade's
     // last six in the shared file; topped up from the rest of the kind only when fewer than three are made for it
-    const recent = readRecent();
-    const key = trade || page;
-    const shared = recent && recent.palettes && Array.isArray(recent.palettes[key]) ? recent.palettes[key] : [];
-    const avoid = [...shared.slice(-6), ...h.palettes.slice(-12)];
+    const shared = recentIds('palettes');
+    const avoid = [...shared, ...h.palettes.slice(-12)];
+    const fresh = pals.filter(p => !shared.includes(p.id));
+    if (fresh.length >= 3) pals = fresh;
     const fit = trade ? pals.filter(p => (p.trades || []).includes(trade)) : [];
     const dealt = drawFresh(fit, 3, avoid);
     if (dealt.length < 3) dealt.push(...drawFresh(pals.filter(p => !fit.includes(p)), 3 - dealt.length, avoid));
+    if (fresh.length && dealt.length && shared.includes(dealt[0].id)) {
+      const first = dealt.find(p => !shared.includes(p.id)) || fresh[0];
+      const alternatives = dealt.filter(p => p.id !== first.id);
+      dealt.splice(0,dealt.length,first,...alternatives.slice(0,2));
+    }
     console.log(trade
       ? `PALETTES for ${TRADE_NAME[trade]} (made for the trade; take the first, the next only when the first clashes with the client's own logo or photographs; ignore a "note" about layout):`
       : `PALETTES (take the first; --trade <trade> deals the palettes made for the trade; ignore a "note" about layout):`);
@@ -700,11 +695,6 @@ function dealFrame(h, artPalette = false) {
       const p = dealt[0], tk = tokens(p);
       console.log(`  plan line 2: "palette ${p.id}" and one sentence on why it fits ${trade ? TRADE_NAME[trade] : 'the client'}: what in the trade its ${groundWord(tk.bg)} ground and ${hueWord(tk.accent)} accent answer (the room, the material, the goods; never a fact the brief does not give)`);
     }
-    if (recent && !opt('no-record')) {
-      recent.palettes = recent.palettes && typeof recent.palettes === 'object' && !Array.isArray(recent.palettes) ? recent.palettes : {};
-      recent.palettes[key] = [...shared, ...dealt.map(p => p.id)].slice(-12);
-      writeRecent(recent);
-    }
   }
   console.log(expressive && !placePage
     ? `TYPE for ${page}, ${temper} (take the first; all Google Fonts; two expressive faces and one plain pairing as the exit; the display face at its own weight, capitals only in a face drawn for them, on h1 and h2; reading text stays in the text face at 400; references/expressive.md):`
@@ -716,6 +706,7 @@ function dealFrame(h, artPalette = false) {
   if (cmd === 'deal' && !opt('axis') && !placePage) console.log('  (a word or editorial hero needs a weight or width axis: deal again with --axis)');
   const self = fileURLToPath(import.meta.url).split(path.sep).join('/');
   if (cmd === 'deal') console.log(`\nthen: node ${/\s/.test(self) ? `"${self}"` : self} css --page ${page} --palette <id> --type <id> --radius soft${expressive ? ' --temper ' + temper : ''} --history ${histFile}${placePage ? '\n  (the client\'s own colours, a painted shopfront or a logo the brief gives, in place of the palette: start.mjs brand)' : ''}`);
+  recordIds({ palettes: palette?.id, types: tys[0]?.id });
   return { palette, type: tys[0], layout };
 }
 if (cmd === 'deal') {
@@ -758,6 +749,7 @@ if (cmd === 'deal') {
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
   const { hero, variant, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
     '--type', pageType, '--kind', page, '--has', has, '--temper', temper,
+    '--subjects', String(opt('subjects', 1)), ...(opt('no-recent') ? ['--no-recent'] : []),
     ...(opt('view') === 'wide' ? ['--view','wide'] : []), ...(page === 'gaming' && !assets.has('art') ? ['--illustrate'] : []), '--history', path.join(dir, 'layout-history.json'),
     ...(action ? ['--action', action] : []), ...(bookingSubject ? ['--booking', bookingSubject] : []), ...(opt('no-record') ? ['--no-record'] : []),
   ]);
@@ -804,7 +796,7 @@ if (cmd === 'deal') {
   const closes = h.layout[page + ':close'];
   closes[closes.length - 1] = close;
 
-  const ideas = dealIdeas(h);
+  const ideas = dealIdeas(h, carry);
   h.stories = frameHistory.stories;
   // a chapters or two-part-promise page changes ground only where a chapter or half begins (the dealt pattern stays in the history)
   if (['chapters', 'two-part-promise'].includes(story.id)) layout.grounds = chapterGrounds(story.id, sections);
@@ -831,7 +823,7 @@ if (cmd === 'deal') {
   writeHistory(path.join(dir, 'plan.json'), plan, 2);
 
   const ref = '<skill>';
-  console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, grounds, density. Section forms come from the content.) ====');
+  console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, density. Grounds are suggestions. Section forms come from the content.) ====');
   const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
   line('temper', temper + ': ' + temperWhy + (expressive
@@ -855,9 +847,9 @@ if (cmd === 'deal') {
   if (order) line('order', 'put the configurator or order pad within the first three sections; give supplied delivery and return terms at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
   line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, The entrance deck)');
-  line('nav', plan.nav + ' (starter.html NAV comment)');
+  line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
-  line('footer', plan.footer + (plan.footer === 'footer-visit' ? ' (links-visit template)' : ''));
+  line('footer', plan.footer + ': contact or support and the links a returning visitor needs. Repeat useful hours, directions or purchase terms.');
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');

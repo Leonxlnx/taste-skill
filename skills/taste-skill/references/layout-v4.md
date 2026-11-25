@@ -23,7 +23,7 @@ The kit sets three distances. These are CSS pixels at regular density.
 
 ## 2. Sections as tall as their content
 
-The first screen shows only the hero. The rest of the page grows to fit the whole menu, all rooms or every question. The shell is `header.nav`, `main`, `footer.closing` and the phone's `nav.actionbar`. Keep popups and floating controls out of it.
+A content-led hero may end before the fold. The rest of the page grows to fit the whole menu, all rooms or every question. The shell is `header.nav`, `main`, `footer.closing` and the phone's `nav.actionbar`. Keep popups and floating controls out of it.
 
 ```html
 <section class="section" id="features"><div class="wrap"> the h2 first, then the content </div></section>
@@ -34,17 +34,15 @@ On a place page, or a product or service page with four or more photographs, put
 - Use one in-flow `.wrap` per section. The h2 comes first, with 16px to its lead. Heading block to content is `--head-gap`, 48px at 1440 and 32px on a phone. Grid gaps are 24px, 12px on a phone.
 - On desktop a kit split fills the taller column up to a 2:3 portrait crop. Keep the focal point visible when it crops. Tiles keep `--tile-ratio`, panels `--p-h`. At phone width the stacked picture takes its own ratio.
 - Merge short quotes, logo rows and a few words of statement with their subject. For the page's one main claim that can stand alone, use `.section--thin`.
-- Change ground at the section edge. Use a rule to separate list rows inside the wrap. A tinted box behind the heading cannot replace the section ground.
+- Start neighbours on the page ground. Change at a new question or task. Use `.section--compact` for a short continuation (48px desktop and 32px phone). Use a rule to separate list rows inside the wrap. A tinted box behind the heading cannot replace the section ground.
 - `footer.closing > .wrap` holds the close above the links and legal row. Its bottom padding is 64px plus the phone bar.
 - A composed section can hold one sticky element when the section is at most 2.5 screens tall (`compose.md`). Keep normal scrolling. A pinned kit moment or scene holds at most half a screen per chapter, up to three chapters. A one-sentence scene gets at most one screen in total (`moments.md`, `scenes.md`).
 
 ## 3. The hero
 
-- **The first screen.** The fixed nav, hero heading and main action fit at every width. A standard hero fills `100svh`. Nothing of the next section shows at load.
+- **The first screen.** Content-led heroes occupy 72–100svh. Large pictures and product windows fill the available screen. Keep the next heading or action whole if it appears at load.
 - **Content.** The h1, lead and at most two buttons (one main action on a place). Use the client's subject for the picture. For a place taking dated reservations for stays, tables or classes, dock `.hero-book` at the foot of the hero's wrap. Include dates or day, guests, room or time, the “from” price and the main button. Carry the choices to the full closing form.
-- **The h1** first, top at y 120 (96 on a phone), at most three lines at every width, never
-  smaller than an h2 (28 to 60px on a phone). A notice line (one 14px line in the body face with a
-  number, 4.5:1: changed hours, a delivery cut-off) sits 16px above it; never a bar above the header.
+- **Heading and terms.** Stack the headline, lead, action and one supplied offer line. Check the heading at 390. A still, dismissible `.service-notice` may sit above the nav links for one service fact, change or deadline from the brief. Use the starter’s optional notice with its source. Leave it out for marketing copy.
 - **Product window.** Under a centred headline the complete product window always uses `.hero--peek`. On a split dealt with `.hero--peek` (software, gaming or tech), the hero's own window may continue below the fold. At 1440×900 at least 420px of it shows and its full height is at most 760px. Keep the next section below it. For an ordinary hero keep the picture whole or use the deliberate bleed below.
 - In a work-led software hero the actual window fills 85–100% of the wrap, with at most 40px of stage on either side. Aim for its top at y350–480 at 1440×900 when the copy allows. Use data-work-window on a split or collage to put the view under its heading.
 - A shop selling several kinds can put up to three linked picks under its buttons. Each .hero-picks link carries a small picture, name and price and lands on the item’s section. The hero may extend past the fold by the height of that row.
@@ -56,9 +54,7 @@ On a place page, or a product or service page with four or more photographs, put
     `.stage--fade-b`, the point (the comment, the button, the row worked on) above the fade.
   Avoid accidental cuts through a card or control. A dealt peek keeps the window inside the hero as it extends below the fold. Below 1024 `.at-over` pieces hide; give the main piece a `.fit` width
   (it narrows), never a fixed one. Shoot 820x1180 and 768x1024 and read the first screen's foot.
-- **Docked strip:** software and product may dock one row under the hero's content (real customer
-  logos with permission, a rating line the brief gives, or three facts), at most 96px, still, hidden
-  on a phone unless it clears the action. A place taking dated reservations uses the bar above. On phones its single action links to the full form at the close. A standalone booking form keeps its native submission in a disclosure directly below the hero.
+- **Offer terms.** Put price, delivery, limits or eligibility in a 16px `.terms` line touching its action group. Inspect the first 390×844 crop for the specific part, room, plate or working record sold. Only independent supplied proof or dated inventory merits a separate row. A phone booking action links to the full form.
 - **Phone:** the text first; a photograph above it only when the whole hero ends by H - 24 - bar.
   Hero buttons stack at one width, unless both fit on one line.
 - **Allowed types:** a full-bleed still photograph, a product whole on a stage, an inset frame, a
@@ -89,14 +85,14 @@ dealt only without a strong photograph.
 | id | composition at 1440 | at 390 | its motion |
 |---|---|---|---|
 | `split` | text span-5; the picture span-6 start-7, top-aligned with the h1, ending on the right line; one opaque float card on its lower left | text, then the picture (at least 240 tall) | the float card's dot (tech) |
-| `photo` | a full-bleed photograph layer, the words on its calm, dark side on six columns (h1 80, two lines), four facts at the foot | the photograph cut to the top, the words under it on the ground | none |
-| `product` | a head row (h1 cols 1-7 on two lines; the lead and the buttons stacked on cols 9-12, their foot on the h1's), then the product itself big, nothing on it (hotspots only when the brief asks for them): a product photograph edge to edge down to the fold, square corners; a cut-out or a render (its widest view, `data-product-place="stage"`, only when the brief asks for 3D) on the page's ground across the wrap, no box, gradient or radius, the stage down to 24 above the fold (1280x566 at 1440x900: the city bike's side 1046 wide, 82% of the wrap). A game names itself in the h1; a `[data-print]` or `[data-scene]` on the stage keeps the lit, rounded stage | stacked; the photograph the screen width, a render 86% of the column (294 of 342) | none; a render is a still (live only when asked, `data-product-mode="live"`) |
+| `photo` | One full-screen image with the copy grouped on its calm side | Picture above the group | none |
+| `product` | One copy stack, then the whole object or product window | Keep the bought part visible at 390 | none |
 | `editorial` | the headline is the picture: 156px on three lines across the wrap, one or two photographs set in the line as pills | 56px on four lines | the pills open once on load (tech); still elsewhere |
 | `collage` | work-led copy above a wrap-wide stock window, with a compact order result alongside its rows | the window alone | one card loop (tech) |
-| `word` | an oversized h1 (144px, two lines) with one live word last, underlined; lead and buttons span-6, four facts span-5 start-8 | 54px on three lines | the live word, two rounds then rest (tech only) |
+| `word` | One stable display heading, its lead and action | Keep the heading readable | none |
 | `film` | a cinema frame on the lines holding the poster, h1 white on a calm part, the play disc at its foot | the frame, then the words | plays on a click |
-| `statement` | one calm sentence (56px, two lines) over the page ground (tech: a dark ground on a dark page), lead, buttons, four facts | 34px on three lines | none |
-| `triptych` | h1 52 on span-3, a collage of three to five pieces on span-6 start-4 whose sets change every 2.8 s, one large button ending on the right line | collage 342 wide, button full width | set change (tech only; still elsewhere) |
+| `statement` | A brief statement with its lead and action | One reading group | none |
+| `triptych` | Three separate subjects in the exhibit, one action beneath the lead | Copy and button before the exhibit | Pause inside moving media |
 | `centred` | pill, centred h1 72 with the mark inline, lead, two pill buttons, then the complete product window in flow, on a neutral matte across the wrap | the window less its list column | the window's story (tech) |
 
 Keep one h1 within the hero's `maxChars` (`heroes.json`). Protect the action and the subject at the phone crop. Follow `photos.md` for type over pictures and `copy.md` for fact lines.
@@ -123,7 +119,7 @@ It enters once on load like every hero (`motion.md`, The hero's entrance).
 - On tablet and phone, stack the copy and controls. Use the phone crop and the kit's fluid display size. At 390 show one link to the full booking form at the close. A service enquiry uses one enquiry action.
 - Show the room from the door, the counter in use, flowers in the shop, or the landscape the brief locates. See `photos.md` for choosing and cropping the picture. Keep the visit details high on the page.
 
-On a phone, a product or hardware split with offer facts places the picture and the price and dispatch facts side by side, directly after the h1. The lead and actions follow. At 390×844 show the object the buyer receives, its connection to the host for an accessory, and its offer within the first 844px.
+On a phone, a product or hardware split with offer facts keeps its lead, action and price or dispatch line together beside or above the picture. At 390×844 show the object the buyer receives, its connection to the host for an accessory, and its offer within the first 844px.
 
 ## 4. Equal edges and the grid
 
@@ -191,7 +187,7 @@ node <skill>/assets/layout/check.mjs --url index.html --profile <own dir> \
 
 | Finding | Means |
 |---|---|
-| `hero-fold` | the hero misses the first screen, a window exceeds the dealt peek, or the next section shows |
+| `hero-fold` | the hero misses its height range, a product peek exceeds its allowance, or the fold cuts the next heading or action |
 | `hero-maxchars`, `hero-lines` | with the h1 lengthened to its `maxChars`, the hero runs past the screen or the h1 takes too many lines |
 | `section-height` | a section stretched past its content: an empty band beyond its padding, or a hole between its parts, a third of its height or more |
 | `section-air` | content in adjacent sections is closer than 72px at 1440 or 56px on a phone |

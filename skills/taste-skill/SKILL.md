@@ -31,10 +31,9 @@ figma.com and x.ai are the bar (in words: `layout-v4.md`).
 **How it works.** The skill deals the frame, you compose the content, the kit holds the floor.
 
 - **The frame is dealt**, so two pages never come out alike and none falls back on a model's
-  habits: palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, the rhythm of
-  grounds, the density (step 4). Build the frame as dealt.
+  habits: palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density (step 4). Build the frame as dealt.
 - **The content is yours.** Every section takes the form its content asks for: a timeline for a
-  timeline product, a booking bar for a stay, a slider over the plans, a comparison as two bars,
+  timeline product, a booking bar for a stay, a price beside the offer, a comparison as two bars,
   the product's own screen built large. A dealt photo composition is only for content that is
   photographs with words. `compose.md` is the method; the plan's idea seeds push pages apart.
 - **The kit is the floor:** `assets/starter.html` and the kit carry the type scale, the spacing,
@@ -52,11 +51,7 @@ These nine win over everything else in this skill.
    at most). Licence credits go in one footer line.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390, and every section
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
-3. **The hero alone on the first screen** (its own product window or one row of up to three linked shop picks may run past the fold, nothing
-   of the next section shows at load), **then air in a clear rhythm:** more across a change of
-   ground, less between two sections on the same ground, least round a short block. The tokens do
-   it (`layout-v4.md` section 1); never set a section's height or padding yourself. Grounds carry
-   the rhythm: follow the dealt pattern, never one flat ground from top to bottom.
+3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone). Change ground where the visitor changes tasks.
 4. **Equal left and right content edges.**
 5. **Quiet motion everywhere, set pieces only where the content carries them.** The motion layer
    gives every control a hover and a press, every hero its dealt entrance, every section its
@@ -104,7 +99,7 @@ What each kind leads with (the full plans: `sections.md` section 3):
 - **Gaming:** the game's name and its world. With the client's art, that art everywhere; without
   it, the world drawn in one style (`subskills/illustrate`), never a stock coastline in its place.
 - **Tech hardware and products:** the product big and whole, a different view each section, every
-  headline promise pictured; with no photograph, a drawing of the product and its output before a
+  headline promise pictured; with no photograph, a drawing of the product and its output before a companion screen or
   stand-in of something else.
 - **Service:** the work as cases with a fact line each, the process with what the client gets at
   each step, what it costs, who does it.
@@ -151,7 +146,7 @@ world within the limits of `expressive.md`, each naming its source.
    but, then; never *also*). Write the draft one line per
    part (`H1:`, `Lead:`, `H2:`, `Button:`). Lint it: `node <skill>/scripts/copy-lint.mjs
    .taste-skill/copy.md`. The hero tells a stranger in five seconds what is sold and where or for
-   whom, with one hard fact; a noun in every heading; buttons a verb and an object; the close says
+   whom, with one hard fact; the heading alone or its pictured subject identifies what is sold; every later heading names a choice, answer or task; buttons a verb and an object; the close says
    something new. Nothing is invented but a coined brand name and the plain facts the page needs
    that the brief leaves out (hours, menu items, a district), each marked `data-assumed`
    and listed in the report. Record a supplied brand in `names.json` if copy-lint flags its name (`copy.md`). Never reviews, quotes, customers, awards, named people or result
@@ -172,7 +167,7 @@ world within the limits of `expressive.md`, each naming its source.
    node <skill>/scripts/start.mjs plan --page <kind> --trade <trade> --sections <n> --brief "<client words>" [--view wide] --has <photo,ui,film,object,setting,logo,art> --carry <words,list,photos,steps,figures> --action <booking|order|trial|visit|contact> --history .taste-skill/history.json
    ```
 
-   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold (a price alone is no `figures`). For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
+   `--has` lists material available for this build, including verified stand-ins from the picture ladder; `--carry` is what the copy notes really hold (a price alone is no `figures`; use a meter only with several supplied prices). Pass `--subjects 3` only for three independent subjects that each need an exhibit. A single workflow gets one view. For a dated place reservation pass `--action booking --booking stay|table|class`, choosing the booked item. A service intro call uses `--action contact`. Pass `--last-section form` when the page ends with its own form or booking panel.
    It ends with a PLAN block and writes `.taste-skill/plan.json`. Copy the PLAN into the comment
    at the top of `<body>` and onto plan line 2.
 
@@ -182,9 +177,9 @@ world within the limits of `expressive.md`, each naming its source.
      `expressive.md`.
    - **Built as dealt:** palette and type (the `start.mjs css` line it prints; the client's own
      colours go through `start.mjs brand`), hero and its entrance, nav, footer, close, buttons,
-     mark, the ground of each section (`grounds`), `data-density`, heading alignment, picture
+     mark, `data-density`, heading alignment, picture
      corners. Never violet: deal again.
-   - **Suggestions:** `composition` lines, for sections that are photographs with words.
+   - **Suggestions:** `grounds` gives a count and a set of surfaces. Keep a workflow together. `composition` lines, for sections that are photographs with words.
    - **Prompts:** four `ideas` seeds. Take one where your content has that shape, or compose
      something else; a seed is never a part to paste.
    - **`sub` lines** name a sub-skill for one job on this page (a mascot, an illustration, a logo
@@ -287,14 +282,12 @@ Sub-skills, each one small job, read only when the plan names it:
 
 For your eyes first, then the gate (its check ids in brackets):
 
-- **First screen:** the hero says what is sold, for whom or where, with one hard fact; it fills
-  the screen alone, its main button inside it [hero-screen, hero-fill, fold-action, fold-cut].
+- **First screen:** identify the offer, show its subject at phone width and keep the action with its terms [subject-first, small-terms, hero-screen, fold-action, fold-cut].
 - **Each ask lands at its named element** [brief-ask, ask-outcome]. Put the main action early and label any preview.
 - **Sections from their content:** two own sections from six sections up, one below six [own-count]; no section holds a few
   words in an empty band; no content cut or hidden to fit [section-height, empty-area,
   still-wrong].
-- **Air and grounds:** nothing cramped, no empty stretch on one ground, the dealt rhythm of
-  grounds [section-air, empty-band, ground-flat].
+- **Air and grounds:** leave space for the content and change ground at a change of task [section-air, empty-band, ground-flat].
 - **Equal text edges,** with the page inside the viewport [container-edges, right-edge,
   spill, off-viewport].
 - **Photo-led pages** take a picture to a screen edge after the hero and keep runs of boxed picture sections to two [boxed-run].

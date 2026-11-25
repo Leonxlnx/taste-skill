@@ -104,7 +104,7 @@ function refuse(trade, why) {
 // the frames every build that shares one file was dealt or fetched (shared with start.mjs, which keeps its palettes
 // there): a page in a new folder starts with an empty --history, so without it two builds of one trade show the same
 // frames. Opt-in: only a path set in TASTE_SKILL_RECENT is read or written; by default nothing leaves the project.
-const RECENT_FILE = process.env.TASTE_SKILL_RECENT || null;
+const RECENT_FILE = process.env.TASTE_SKILL_RECENT === 'off' ? null : process.env.TASTE_SKILL_RECENT || null;
 function readRecent() {
   if (!RECENT_FILE || opt('no-recent')) return null;
   try { const r = JSON.parse(fs.readFileSync(RECENT_FILE, 'utf8')); return r && typeof r === 'object' && !Array.isArray(r) ? r : {}; } catch { return {}; }

@@ -21,7 +21,7 @@ Choose a hero form and record it on the voice card (`copy.md`). The h1 and lead 
 | 6 | Imperative or mantra | "Bake one loaf well." / "Sourdough bakery on Mill Street, Leith: one loaf, baked three times a day." | Mailchimp ("Send Better Email"), Hiut Denim ("Do One Thing Well") | one clear action or belief |
 | 7 | Category with a true, unexpected promise | "The tax return app that asks eleven questions" | Linear ("you'll enjoy using"), Pinboard ("Bookmarking for Introverts") | the category is known and the twist is in the brief |
 | 8 | A striking customer as the headline | "The rota planner three night-shift wards run on" | Slack (teams who put "robots on Mars") | the brief names that customer and it may be shown |
-| 9 | Category and scope | "Card payments for market stalls" | Stripe ("Payments infrastructure for the internet") | B2B with a real scope; a label chosen on purpose |
+| 9 | Category and scope | "Card payments for market stalls" | Stripe ("Payments infrastructure for the internet") | An identifiable buyer, service area or place that determines who can use the offer |
 | 10 | Enemy statement | "Most booking forms ask for too much." / "Ours asks for two dates. Guesthouse on the Hardanger fjord." | Tailwind ("frameworks do too much") | the reader already resents the habit or the incumbent |
 | 11 | The outcome without the pain | "Pay your staff the same day, without a bank visit." | Tailwind (build "without ever leaving your HTML") | the pain is specific and well known; it spends one contrast of the budget |
 | 12 | Place and year | "On the lake shore since 1962" / "Twelve-room guesthouse in Bled; the same family runs it." | The Hoxton (a Shoreditch fixture "since 2006") | venues, anything rooted in a place with a year in the brief |

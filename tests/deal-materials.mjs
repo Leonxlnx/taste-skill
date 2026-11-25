@@ -14,7 +14,7 @@ const temp = process.env.TASTE_SKILL_TMP || (process.platform === 'win32' ? 'D:/
 fs.mkdirSync(temp, { recursive: true });
 const dir = fs.mkdtempSync(path.join(temp, 'deal-materials-'));
 const cli = (script, ...args) => execFileSync(process.execPath, [path.join(root, script), ...args], {
-  cwd: dir, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, TASTE_SKILL_RECENT: '' },
+  cwd: dir, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, TASTE_SKILL_RECENT: process.env.TASTE_SKILL_RECENT || 'off' },
 });
 const palettes = JSON.parse(fs.readFileSync(path.join(root, 'library/palettes.json'), 'utf8'));
 let derived = 0, low = Infinity, high = 0;
@@ -88,4 +88,47 @@ for (const page of ['software', 'tech', 'gaming', 'product', 'service', 'place']
   }
   assert(history.length > 65 && history.length < 135, page + ': ' + history.length + ' scenes');
   console.log(page + ': ' + history.length + ' scenes in 300 eligible deals');
+}
+
+// Each deal starts in a different client folder. Only the selected IDs travel between them.
+{
+  const shared = path.join(dir,'machine-recent.json');
+  const runIn = (script, folder, args, recent = shared) => execFileSync(process.execPath,[path.join(root,script),...args],{
+    cwd:folder, encoding:'utf8', windowsHide:true, stdio:['ignore','pipe','pipe'], env:{...process.env,TASTE_SKILL_RECENT:recent},
+  });
+  const weights = JSON.parse(fs.readFileSync(path.join(root,'assets/layout/heroes.json'),'utf8')).heroes;
+  const materials = new Set(['ui','photo','film','ground','art']);
+  const eligible = weights.filter(h => h.id !== 'place' && h.id !== 'triptych' && h.types.software > 0
+    && h.needs.every(n => n.split('|').some(k => materials.has(k))) && !(h.avoid || []).some(k => materials.has(k)));
+  for (let i=0;i<14;i++) {
+    const project = fs.mkdtempSync(path.join(dir,'project-'));
+    const before = fs.existsSync(shared) ? JSON.parse(fs.readFileSync(shared,'utf8')) : {};
+    runIn('scripts/start.mjs', project, ['plan','--page','software','--has','ui,photo,film,ground,art','--carry','list','--sections','6','--brief','Independent example']);
+    const plan = JSON.parse(fs.readFileSync(path.join(project,'.taste-skill','plan.json'),'utf8'));
+    const after = JSON.parse(fs.readFileSync(shared,'utf8'));
+    for (const [key,id,max] of [['palettes',plan.palette,12],['types',plan.type,6],['heroes',plan.hero,6]]) {
+      assert.equal(after[key].at(-1),id);
+      assert.equal(after[key].length,Math.min(max,i+1));
+      const previous = before[key] || [];
+      if (key === 'heroes' && eligible.every(h => previous.includes(h.id))) {
+        assert.equal(previous.lastIndexOf(id), Math.min(...eligible.map(h => previous.lastIndexOf(h.id))));
+      } else assert(!previous.includes(id), key+' repeated an avoidable recent ID');
+    }
+    assert.deepEqual(Object.keys(after).sort(),['heroes','palettes','types']);
+  }
+  const state=fs.readFileSync(shared,'utf8');
+  const crowded = path.join(dir,'constrained-recent.json');
+  const local = path.join(dir,'constrained-project.json');
+  const firstFresh = eligible[0].id;
+  fs.writeFileSync(crowded,JSON.stringify({heroes:eligible.slice(1).map(h=>h.id)}));
+  fs.writeFileSync(local,JSON.stringify({heroes:[firstFresh]}));
+  const result = JSON.parse(runIn('assets/layout/deal.mjs',dir,['--type','software','--has','ui,photo,film,ground,art','--history',local,'--json'],crowded));
+  assert.equal(result.hero.id,firstFresh,'project recency cannot consume the last machine-fresh candidate');
+  const distribution=(subjects)=> runIn('assets/layout/deal.mjs',dir,['--type','software','--has','ui,photo','--subjects',String(subjects),'--stats','600']);
+  assert(!distribution(1).includes('triptych'));
+  assert(distribution(3).includes('triptych'));
+  runIn('scripts/start.mjs',dir,['deal','--page','software'],'off');
+  assert(!fs.existsSync(path.join(dir,'off')));
+  assert.equal(fs.readFileSync(shared,'utf8'),state);
+  console.log('ok - 14 fresh projects share bounded ID histories, off disables recording, and triptych requires three subjects');
 }

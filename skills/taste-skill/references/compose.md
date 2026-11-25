@@ -1,10 +1,6 @@
 # Compose a section
 
-Read before the first page. A dealt composition arranges photographs with words. Everything else
-on a page has a shape of its own, and the section takes that shape. This file is how.
-
-Choose a form that answers the section’s question by showing a change. Three still cards are the last choice.
-Carry a chosen quantity, plan, product or date into the next form using the same `data-choice` name.
+Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
 
 ## The method
 
@@ -16,10 +12,7 @@ Carry a chosen quantity, plan, product or date into the next form using the same
 3. **Give it one dominant element.** One thing is clearly the largest: the chart, the first step,
    the total, the open tab's frame. Everything else is smaller by a clear step, about half, not a
    tenth. A section where everything has the same weight reads as a template.
-4. **Place it on the twelve columns, uneven where that helps:** 7 and 5, 8 and 4, a narrow column
-   of labels beside a wide one of content. Every edge sits on a column line or a `.wrap` line.
-   One element may break the rhythm on purpose (a figure hanging in the margin, a picture crossing
-   into the next ground), never several.
+4. **Keep pairs together.** Use an uneven grid only where the content needs it. Short definition lists use `.facts--compact` (42rem maximum). Put the caption in its own figure and keep menu name and price on one row in a column sized for both.
 5. **Type is the first tool.** One display-size numeral or word for the thing that matters, the
    scale's steps for the rest, tabular numerals in every column of numbers, labels in the small
    size and the muted colour. Hairlines rule a list, space groups, and a ground is for the one
@@ -42,15 +35,15 @@ record, a sum, a booking, a character), with the same identity and a legible cha
 
 | Content | Form |
 |---|---|
-| Ordered steps with times or handoffs | Numbered rail, week strip or route |
+| Ordered steps with times or handoffs | Use order only for dependent steps with a distinct result each |
 | The product's timeline, diff, board or map | That view built large in HTML or SVG |
 | Several uses of one product | One frame with tabs or a switcher |
-| Plans priced by quantity | Slider or stepper above the plans |
+| Plans priced by quantity | Print supported prices. A meter requires several supplied rates and `--carry figures` |
 | A price argument or two costs | Comparison bars or an itemised receipt |
 | A range or spec | Scale with reference points, or spec rows beside a dimension drawing |
 | Projects, rooms or goods with facts | Case rows or an index with a fact line per item |
 | Two states | Toggle or divider |
-| Hours or a schedule | Day bar or week grid |
+| Hours or a schedule | Print identical days together. Use a day bar only for differences |
 | A dated stay, table or class | Booking bar on the hero, full form at the close |
 | Items sold or served | A captioned row of their pictures |
 | Goods sold here | Configurator or order pad within the first three sections |
@@ -97,7 +90,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 - `menu-tabs` Use the menu categories as the heading, the open one in ink and the others muted. Without script all categories show in order.
 - `receipt` The offer as a receipt: items, dotted leaders, a total, what is included ticked off under it.
-- `meter` One slider or stepper for the quantity that sets the price; the plans answer it.
+- `meter` Only with several prices supported by the brief and `--carry figures`.
 - `ladder` Plans as rungs growing left to right, each saying only what it adds to the one before.
 - `menu-board` A list in two sizes like a board: categories in display type, items with leaders, one special set apart.
 
@@ -168,7 +161,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 
 **Booking**
 
-- `booking-bar` Dates, guests and room in one row with a live total, docked under the hero.
+- `booking-bar` Show date and party for real inventory; include a selector only if it changes an available choice.
 - `configurator` Choices as chips (size, colour, set); the picture and the price follow.
 - `order-pad` Items with steppers and a running total, like an order pad.
 - `enquiry-preview` The enquiry fields beside a concrete view of what is being requested; on a phone the submit stays with its fields.

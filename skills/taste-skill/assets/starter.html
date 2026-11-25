@@ -100,8 +100,7 @@
 
 <!-- NAV (references/sections-library.md): one fixed, opaque bar on the page's .wrap. The dealt type is
      a class: nav-mega and nav-cards "nav", nav-centre "nav nav--centre", nav-split "nav nav--split";
-     add nav--tone for the bar on the page's inverse ground. At least one word opens a full-width
-     panel on hover and goes to its section on click; on a phone system.js turns the bar into a sheet.
+     add nav--tone for the inverse bar. Link directly. A panel is for several related destinations.
      aria-current="page" marks the word of the page you are on, on an inner page only (pricing.html);
      a one-page site leaves it off every word.
      The logo: the client's own SVG; without one, the dealt mark and the name in the display face:
@@ -111,39 +110,15 @@
      The skip link is the bar's first child and the page's first stop for the Tab key: hidden until focused, then
      shown over the logo (system.css .skip-link); its words in the page's language ("Zum Inhalt" on a German page). -->
 <header class="nav">
+  <!-- Optional when the brief supplies a deadline or service change:
+  <aside class="service-notice" data-source="brief"><span>[Service fact]</span><button type="button" data-dismiss-notice aria-label="Dismiss notice">×</button></aside>
+  -->
   <div class="wrap nav__bar">
     <a class="skip-link" href="#top">Skip to content</a>
     <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
     <nav class="nav__links" aria-label="Main">
-      <div class="nav__item">
-        <a class="nav__link" href="#[section id]">[Word] <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <div class="nav__menu">
-          <div class="wrap grid">
-            <!-- nav-mega: two or three link columns and one menu card. nav-cards and nav-split: three or
-                 four a.menu-card.span-4 (or .span-3), each a .panel holding the client's photograph
-                 (<img class="frame__img">) or one fragment at its corner, over a title and one line. -->
-            <div class="menu-col span-3">
-              <p class="t-label">[Group]</p>
-              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
-              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
-              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
-            </div>
-            <div class="menu-col span-3">
-              <p class="t-label">[Group]</p>
-              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
-              <a href="#[section id]">[Item]<span>[What it does, five words]</span></a>
-            </div>
-            <a class="menu-card span-3 start-10" href="#[section id]">
-              <div class="panel"><img class="frame__img" src="[photo or screen]" alt="[what it shows]"></div>
-              <span class="t-card">[What is new]</span>
-              <span class="t-small muted">[One line]</span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
-      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
-      <div class="nav__item"><a class="nav__link" href="#[section id]">[Word]</a></div>
+      <div class="nav__item"><a class="nav__link" href="#[destination]">[Visitor destination]</a></div>
+      <!-- Add supplied sign-in, docs, status or store links here and in the footer. Software without one links its setup section as Quickstart in both places. -->
     </nav>
     <!-- the main action is the one button; a plain word before it only for something the client really
          has (Sign in for an app with accounts, Gift cards it sells), else delete it -->
@@ -184,13 +159,8 @@
             <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
             <a class="btn btn--secondary" href="#[section id]">[Second action]</a>
           </div>
-          <!-- three short facts at the foot of the column, on the picture's bottom line (desktop only); on a
-               tech page one of them may count up once on load: <dd data-m-count>[1,240]</dd> -->
-          <dl class="hero-facts">
-            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
-            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
-            <div><dt>[Label]</dt><dd>[Fact]</dd></div>
-          </dl>
+          <!-- Include only a supplied price, condition or delivery detail. -->
+          <p class="terms">[Terms of this offer]</p>
         </div>
         <!-- a photograph of the client's work, place or product. A .fact-line of up to 60 characters may give
              its name, place, size, year or price. Leave out explaining captions;
@@ -370,7 +340,7 @@
      district only, never a house number, a postcode, a phone in a real format or a register number. -->
 <footer class="footer closing" id="contact" aria-labelledby="close-h">
   <div class="wrap">
-    <!-- close--type (this one): the h2 large, a line, the big button (btn--wide sets its size; the close holds it to half the .wrap, never across it).
+    <!-- Omit this offer when the same decision is directly above. Otherwise use a heading, one line and a label-sized action.
          Others below: close-photo, close-word, close-split, close-form. The close's h2 says something new: a fact,
          a reason or the risk taken away, never the button's words or the ask of the section above (copy.md). -->
     <div class="closing__cta close--type">
@@ -386,10 +356,8 @@
           <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
           <p class="footer__lede">[What the company does, in one plain line.]</p>
         </div>
-        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#[section id]">[Link]</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>[Nav word]</h3><ul><li><a href="#[section id]">[Link]</a></li><li><a href="#contact">Contact</a></li></ul></div>
+        <div class="span-4 footer__col"><h3>Contact</h3><a class="footer-contact" href="#[contact form id]">[Contact or support route]</a></div>
+        <!-- Optional: real return routes, including the same supplied service links or software Quickstart as the nav. -->
       </div>
       <div class="footer__legal">
         <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="terms.html">Terms</a></span>
@@ -460,7 +428,7 @@
 
 <template data-part="links-visit">
   <!-- row 2 on a place (footer closing footer--visit): where it is, set large, with the way there;
-       the hours only when no section above prints them (else the nav's words in that column); one row of the nav's words. Street and district only. The link's words
+       the opening hours and any useful return route. Street and district only. The link's words
        follow the visit block's: Get directions with a street, See the area with a district only, none with a town. -->
   <div class="closing__links">
     <div class="grid">
@@ -506,7 +474,8 @@
     <div class="field"><label for="f-guests">[Guests]</label>
       <input id="f-guests" name="guests" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="f-guests-err">
       <p class="field__error" id="f-guests-err" hidden>[Write how many people, as a number.]</p></div>
-    <div class="btn-row"><button class="btn btn--primary" type="submit">[Request a table]</button></div>
+    <div class="btn-row"><button class="btn btn--primary" type="submit">Open email draft</button></div>
+    <p class="terms">Opens your email with the request filled in.</p>
     <p class="form__status" role="status" data-form-status></p>
     <p class="t-small muted">[We reply within a day.]</p>
   </form>

@@ -6,7 +6,7 @@
 2. **A built picture of the thing itself.** Show the product UI in HTML, draw the product, its output or its world in one style, or build a chart or scale from the data. Start here for a game without art files, an unphotographed product or a software claim. Read `subskills/illustrate/SKILL.md` for a drawing and `subskills/data-picture/SKILL.md` for figures.
 3. **A photograph whose subject fits.** A stand-in can show a landscape, street, material, hands at work or a room of the right kind. A room needs the whole room or the building. A detail belongs beside a whole view. Never another maker's product, carrots for breakfast, a pillow for a room or mood beside prices. If no frame shows the claim, build its picture or leave it in type.
 
-For photographs, write `data-source` and `data-subject` on the image. Sources include `client`, `commissioned`, `phone`, `supplier`, `illustration`, a library id or `stand-in`. Keep one drawing style across the page and use real logos.
+For photographs, write `data-source` and `data-subject` on the image. For a drawing of an attachment and its companion screen, put `data-subject` on the bought part, so the phone crop checks that part. Sources include `client`, `commissioned`, `phone`, `supplier`, `illustration`, a library id or `stand-in`. Keep one drawing style across the page and use real logos.
 
 ## Where to find a photograph
 
@@ -180,3 +180,5 @@ prints the same line and list as plain text for a report. Every word on a page i
   folders set `TASTE_SKILL_RECENT` to one file, so a frame another build used lately goes behind the fresh ones.
 - A live search result used without looking at it full size, with another business's name or logo readable, or left
   out of the report's stand-ins.
+
+When a physical product lacks a photograph, draw the object itself in the hero before showing its companion app. At 390×844 check that the actual item and its connection remain visible.

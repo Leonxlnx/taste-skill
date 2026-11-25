@@ -106,9 +106,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 - Four to six plain one-word nouns (ST-09; a place: Menu, Rooms, Workshop, Visit, About) at
   15px/500 that never wrap, each with its own anchor; a second action as a plain word only when the client has one
   (Sign in for an app with accounts, Gift cards for a shop that sells them); the main action as the
-  one button. One word opens a full-width flat panel on hover after 150ms (link columns and a
-  picture card, or picture cards; a place: its photographs with the name and the price from); a click
-  on the word goes to its section. On other the panel has no shadow, only its ground and a 1px line.
+  one button. Link directly to each destination. A panel groups several related destinations with a label that predicts what opens.
   The current page: `aria-current="page"` on one word at most, a 2px bar under it.
 - 640 to 1023: the bar keeps the primary button beside the 44x44 menu button, never a bar of only
   the logo and the menu. The menu button takes the secondary button's look.
@@ -119,7 +117,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
   the nav's button moves into the sheet (system.css). system.js shows the bar only once the hero's
   main button has scrolled off the top, and hides it again while that button, or a link or button
   that does what one of the bar's does (the same address or the same words, such as the close's
-  booking button or the footer's directions), is on the screen: one screen never shows an action
+  booking button or the footer's directions), or the form it links to, is on the screen: one screen never shows an action
   twice [action-repeat]. Hidden, it is off the screen and inert, so nothing in it takes the focus;
   it never hides while the focus is in it. The hero does not pad for it then. Without script the
   bar is simply always at the foot, over the page as it scrolls by; the hero and the footer pad for
@@ -130,13 +128,12 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 `footer.closing` is the page's last section (`layout-v4.md`): row 1 the dealt close, row 2 the
 directory on one ground (link columns, the legal row). Types: `footer-columns`, `footer--dark` (the
 name large, columns right; on a dark page a step darker), `footer--statement` (the lit ground; tech),
-`footer--visit` (the address set large with the way there and the hours beside it, unless a section
-above prints them: then the nav's words beside it). The footer never repeats a form or hours shown above. The legal row:
+`footer--visit` (directions and opening hours). Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
 brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
 unless the brief gives the accounts.
 
-Inside .closing__links, an optional list with class .footer-promises sits directly above the link columns. Give each of its three small facts a kit line icon with aria-hidden="true". Use included items, delivery and returns, or seats, step-free access and dogs for a place. Use facts from the brief or mark each assumption with data-assumed. Set the phone or email in .footer-contact at 18–20px.
+Use the supplied contact at 18–20px in `.footer-contact`. Put supplied sign-in, docs, status or app store routes in both navigation and footer. For software without those URLs, link the setup section as Quickstart in both.
 
 ## Cards, lists and forms
 
@@ -187,7 +184,7 @@ One recipe for every form (booking, enquiry, call request, newsletter); `starter
 - **Where it sends:** `data-endpoint` holds the address of the client's form service when the
   brief gives one; system.js posts to it. Without one the form's `action` is a `mailto:` on
   `.example` (`hello@brand.example`, `copy.md`): a stand-in, listed in the report as the address
-  the client must supply. Never `action="#"`, an empty action or a submit a page script swallows.
+  the client must supply. Keep a message field and its submit group on separate full rows with `.field--full`. Name the actual destination on the button (Open email draft). Explain beside it in a visible `.terms` line that it opens the visitor’s email with the request filled in. Disclose preview limits before the fields.
 - **Size:** fields 48px with labels at 14px and 16px text (on the phone too, so the browser never
   enlarges the page), tap targets 44px, six fields at most, one column under 640.
 - **Labels you can see:** every field has a `<label for>` above it, in words that say what goes in

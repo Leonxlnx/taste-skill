@@ -262,10 +262,12 @@ main > section.statement.section--thin { padding-block: var(--air-thin); }
 /* A thin section spends its own padding on both sides. Its successor can use the
    actual bottom edge to make the same-ground distance, including after a thin section. */
 main > :is(section, .section):not(:where(.hero, .section--hero, .photo-band--hero, [data-moment], .scene, .sc, [data-scene], [data-big-scene])) {
+  &.section--compact { --compact-air: clamp(32px, 3.34vw, 48px); padding-block: var(--compact-air); }
+  &.section--compact + * { --previous-bottom: clamp(32px, 3.34vw, 48px); }
   &.section--thin { padding-block: var(--air-thin); }
   &:has(> .layer) + * { --previous-bottom: 0px; }
   &.section--thin + * { --previous-bottom: var(--air-thin); }
-  & + :where(section, .section):not(:where(.section--thin, .hero, .section--hero, .photo-band--hero, [data-moment], .scene, .sc, [data-scene], [data-big-scene])):where(
+  & + :where(section, .section):not(:where(.section--thin, .section--compact, .hero, .section--hero, .photo-band--hero, [data-moment], .scene, .sc, [data-scene], [data-big-scene])):where(
     :not(.ground-surface, .ground-inverse, .ground-brand) + :not(.ground-surface, .ground-inverse, .ground-brand),
     .ground-surface + .ground-surface,
     .ground-inverse + .ground-inverse,
@@ -437,22 +439,20 @@ main > section:has(> .wrap > .near-stack) { container-type: inline-size; }
 @media (max-width: 1023px) { .comp-three > figure { aspect-ratio: 4 / 5; min-height: 0; } }
 @media (max-width: 639px) { .comp-three { grid-template-columns: repeat(2, minmax(0, 1fr)); } .comp-three > figure { grid-column: auto; } .comp-three > figure:first-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; } }
 
-/* the hero: exactly the first screen, the fixed header over its top. Its words start --hgap under the
-   header (--photo adds a full-bleed photograph's height above them on a place); its content ends
-   --hpadb above the fold, and nothing of the next section shows, at 1440, 1024, 820 and 390.
-     <section class="hero hero--<type>"><div class="wrap"><div class="hero-text"> .. </div>[one strip]</div></section>
-   .hero-text holds the whole composition (the words, and the picture or window beside or under them);
-   one docked strip (logos, three facts) may follow it, at most 96px, desktop only. */
+/* Content leads the height. Reserve a full screen for a large picture or working view. */
 main > :is(.hero, .section--hero) {
-  height: 100vh; height: 100svh; min-height: 0;
+  height: auto; min-height: 72svh; max-height: 100svh;
   padding: calc(var(--nav) + var(--photo, 0px) + max(var(--hgap), var(--hero-clearance))) 0 calc(var(--hpadb) + var(--bar));
 }
-:is(.hero, .section--hero) > .wrap { height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--s-7); }
-:is(.hero, .section--hero) > .wrap > .hero-text { min-height: 0; }
+main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.hero__bg,.hero__art,.hero__window,.hero__stage,.ly-collage,.hero-visual,.frame--hero) { height: 100svh; }
+main > :is(.hero--peek, .hero:has(.hero-picks)) { max-height: none; }
+:is(.hero,.section--hero) > .wrap { height: auto; }
+main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.hero__bg,.hero__art,.hero__window,.hero__stage,.ly-collage,.hero-visual,.frame--hero) > .wrap { height: 100%; }
+:is(.hero,.section--hero) > .wrap > .hero-text { min-height: 0; }
 /* a phone: the hero is at least the first screen and grows when a short phone (320x640) cannot hold its
    words, buttons and picture, so nothing of it lies over the next section or under the header */
 @media (max-width: 639px) {
-  main > :is(.hero, .section--hero) { height: auto; min-height: 100vh; min-height: 100svh; }
+  main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.hero__bg,.hero__art,.hero__window,.hero__stage,.ly-collage,.hero-visual,.frame--hero) { height: auto; min-height: 100svh; }
   main > :is(.hero, .section--hero):has(> :is(.wrap, .container)) { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr; grid-auto-rows: auto; }
   main > :is(.hero, .section--hero) > :is(.wrap, .container) { height: auto; }
 }
@@ -470,21 +470,18 @@ main > :is(.hero, .section--hero) {
   .hero-split > .hero-visual { flex: 1 1 0; min-height: 200px; height: auto; }
 }
 .hero-copy > * + * { margin-top: var(--s-5); }
+@media (max-width: 639px) and (max-height: 720px) {
+  .hero-text.hero-split { gap: var(--s-3); }
+  .hero-split > .hero-visual { min-height: min(22svh, 150px); aspect-ratio: auto; }
+}
 /* the h1 first in the words' column: its capitals start on the picture's top line, not the line box's
    (the leading above the capitals would put the words about 12px under the photograph's top) */
 .hero-copy > h1:first-child { text-box: trim-start cap alphabetic; }
 .hero-copy > .btn-row { margin-top: var(--s-6); }
-/* three short facts at the foot of the words' column, on the picture's bottom line (no dead space
-   under the buttons): <dl class="hero-facts"><div><dt>..</dt><dd>..</dd></div> x3</dl> */
-@media (min-width: 1024px) {
-  .hero-split > .hero-copy { height: 100%; display: flex; flex-direction: column; }
-  .hero-split > .hero-copy > .hero-facts { margin-top: var(--s-6); }
-}
 .hero-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5) var(--gutter); margin: 0; }
 .hero-facts > div { display: grid; gap: var(--s-1); align-content: start; }
 .hero-facts dt { font-size: var(--t-small); color: var(--muted); }
 .hero-facts dd { margin: 0; font-weight: 500; }
-@media (max-width: 1023px) { .hero-facts { display: none; } }
 /* a notice line above the h1 (changed hours, a delivery cut-off): one line with a number, static,
    starting on the left line like the h1 under it */
 .hero-notice { font-size: var(--t-small); font-weight: 500; color: var(--ink); }
@@ -724,7 +721,7 @@ html[data-buttons="arrow"] { --btn-glyph: url("data:image/svg+xml,%3Csvg xmlns='
     }
   }
 }
-/* a split's words as a column: the last block (stats, a link) on the picture's bottom line */
+/* Keep the copy grouped beside its picture. */
 .split-col { display: flex; flex-direction: column; gap: var(--s-5); }
 /* The copy follows its own height beside a taller picture. */
 :is(.split-row, .hero-split, [class*="split-"]) > :is(.split-foot,.split-col,.hero-copy),
@@ -1243,13 +1240,12 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
 /* the close's photograph: across the .wrap at 16:7 (beside the panel in close--split: as tall as the panel, 320px at least) */
 .closing__cta > .close__media { flex: none; aspect-ratio: 16 / 7; min-height: 240px; position: relative; overflow: clip; border-radius: var(--r-lg); background: var(--surface); }
 .close__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--pos, 50% 50%); }
-.closing__cta.close--type > .btn--xl { align-self: flex-start; margin-top: auto; flex-shrink: 0; }
 .closing__cta.close--type h2 { font-size: clamp(var(--t-h2), min(5.6vw, 8svh), 120px); line-height: 1.02; max-width: 16ch; }
 /* close--split: <div class="closing__cta close--split"><div class="close__panel"> h2, line, [dl.close__facts], button </div>
    <div class="close__media"><img ..></div></div> */
 .closing__cta.close--split { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gutter); }
 .close__panel { display: flex; flex-direction: column; gap: var(--s-5); padding: var(--s-7); background: var(--g-alt, var(--surface)); border-radius: var(--r-lg); }
-.close__panel > .btn { align-self: flex-start; margin-top: auto; }
+.close__panel > .btn { align-self: flex-start; }
 .close__panel h2 { margin: 0; font-size: clamp(var(--t-h2), min(4vw, 6svh), 80px); line-height: 1.04; }
 .close__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); margin: 0; }
 .close__facts > div { display: grid; gap: var(--s-1); } .close__facts dt { color: var(--muted); font-size: var(--t-small); } .close__facts dd { margin: 0; font-weight: 500; }
@@ -1271,9 +1267,7 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
   .closing__cta.close--form > .section-head h2 { font-size: clamp(var(--t-h2), min(4.4vw, 6.4svh), 88px); line-height: 1.04; }
 }
 @media (max-width: 639px) { .close__form { padding: var(--s-5); } }
-/* the 640px button (product, service, place) stays within half the .wrap, so it never stands over half of it off its
-   right line: on the 1280px wrap it is 640 (SR-6) */
-@media (min-width: 640px) { .closing__cta.close--type > .btn--xl { width: min(50%, 640px); } }
+.closing__cta.close--type > .btn--xl { width: fit-content; max-width: 100%; height: var(--btn-h); font: inherit; padding-inline: var(--s-5); }
 /* The name wraps naturally without script. system.js fits one line when space permits. */
 .close__word { margin-top: auto; font: var(--display-weight) clamp(64px, 14.5vw, 216px)/1.02 var(--font-display); letter-spacing: -0.045em;
                min-width: 0; overflow-wrap: anywhere; text-wrap: balance; color: var(--ink); }
@@ -1308,18 +1302,11 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
 }
 
 /* ---------------------------------------------------------------- the big close (closing-type) */
-/* the close starts on the left line like every other heading; the big button runs across the .wrap */
+/* Keep the decision and its action on the same reading edge. */
 .cta-type { display: grid; justify-items: start; gap: var(--s-6); text-align: left; }
 .cta-type h2 { max-width: 22ch; }
-/* the primary button at its one large size, once a page: 640px wide and centred; .btn--wide runs it
-   across the container (Figma's close), on a software page only (system.md) */
-.btn--xl { width: min(100%, 640px); height: clamp(64px, 1.4vw + 48px, 72px); font: var(--display-weight) clamp(20px, 0.6vw + 16px, 26px)/1 var(--font-display); letter-spacing: var(--display-tracking); }
-/* never across the whole .wrap (in testing, a button over 1280px read as the most templated part of every page):
-   .btn--wide is the large size, at most 720px */
-.btn--xl.btn--wide { width: min(100%, 720px); height: clamp(64px, 3vw + 40px, 88px); font-size: clamp(22px, 0.95vw + 18px, 32px); justify-content: space-between; padding-inline: var(--s-7); }
-html[data-buttons] .btn--xl::after { width: 0.6em; height: 0.6em; }
-/* on a phone it is the page's own button at full width, one step taller, so the pair stays one look */
-@media (max-width: 639px) { .btn--xl, .btn--xl.btn--wide { width: 100%; height: 48px; font: 500 18px/1 var(--font-text); letter-spacing: 0; } }
+.btn--xl, .btn--xl.btn--wide { width: fit-content; max-width: 100%; height: var(--btn-h); padding-inline: var(--s-5); }
+html[data-buttons] .btn--xl::after { width: .6em; height: .6em; }
 
 /* ---------------------------------------------------------------- photographs
    .photo-band: one photograph (or film) and a few words. Three uses: the older photo hero
@@ -1652,3 +1639,20 @@ html.has-chapter-bar main section[id] { scroll-margin-top: calc(var(--nav) + var
 .record--quiet { background: none; }
 /* an own section's lead sits close under its h2 (2.5.4 story proof: a builder's own section left it touching) */
 main > section.own > .wrap > h2 + .t-lead { margin-top: var(--s-4); }
+
+/* Keep the condition of the offer within one space of its action. */
+.terms, .hero .terms, .form .terms { font-size: max(16px, var(--t-body)); line-height: 1.5; color: var(--ink); margin-block: var(--s-2) 0; }
+.terms + :is(.btn,.btn-row), .form .terms + button { margin-top: var(--s-2); }
+.facts--compact { display: grid; grid-template-columns: max-content minmax(0,1fr); align-items: baseline; gap: var(--s-2) 1rem; max-width: 42rem; }
+.facts--compact > div { display: contents; }
+.facts--compact dd { margin: 0; }
+.ground-surface :is(.form,.card) { border: 1px solid var(--line-strong); background: var(--card); }
+.ground-surface .form :is(input:not([type=checkbox],[type=radio]),select,textarea) { background: var(--bg); border: 1px solid color-mix(in srgb,var(--ink) 45%,var(--bg)); color: var(--ink); }
+
+.service-notice { display: flex; align-items: center; justify-content: center; gap: var(--s-4); padding-inline: var(--gut); background: var(--surface); color: var(--ink); font-size: var(--t-body); }
+.service-notice[hidden] { display: none; }
+.service-notice button { min-width: 44px; min-height: 44px; border: 0; background: none; color: inherit; cursor: pointer; }
+:root:has(.service-notice:not([hidden])) { --nav: calc(72px + var(--notice-height,44px)); }
+@media (max-width: 639px) { :root:has(.service-notice:not([hidden])) { --nav: calc(56px + var(--notice-height,44px)); } }
+.nav:has(.service-notice) .nav__bar { height: calc(var(--nav) - var(--notice-height,0px)); }
+@media (max-width: 639px) { .facts--compact { grid-template-columns: fit-content(45%) minmax(0,1fr); } }

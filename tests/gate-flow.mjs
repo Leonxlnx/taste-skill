@@ -47,7 +47,7 @@ fs.writeFileSync(path.join(SKILL, 'scripts', 'consistency.mjs'), STUB +
   "if (s.consistency === 'crash') { console.error('Error: a stand-in crash'); process.exit(2); }\n" +
   "const f = s.consistency === 'fail' ? [{ check: 'contrast', sev: 'FAIL', sel: 'section#board h2', text: 'The keyboard', msg: 'a stand-in FAIL', fix: 'a stand-in fix' }] : [];\n" +
   "if (s.consistency === 'pair') for (const sel of ['picture.hero__bg','picture.hero__bg > img']) f.push({check:'container-edges',sev:'FAIL',sel,msg:'split photo',fix:'check the slot'});\n" +
-  "console.log(JSON.stringify({ widths: [{ width: 1440, findings: f, frame:s.frame }, { width: 390, findings: [] }] }));\n");
+  "console.log(JSON.stringify({ widths: [{ width: 1440, findings: f, frame:s.frame, previewEvidence:s.previewEvidence }, { width: 390, findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'scripts', 'copy-lint.mjs'), "console.log(JSON.stringify({ files: [{ findings: [] }] }));\n");
 fs.writeFileSync(path.join(SKILL, 'assets', 'layout', 'check.mjs'), "console.log('[]');\n");
 
@@ -387,19 +387,23 @@ for (const whole of [false, true]) {
     '<section><button class="ly-play">Play another film</button></section>';
   fs.writeFileSync(path.join(dir,'index.html'),PAGE('Press desk','a desk',controls));
   gate(dir,['--start','index.html']);
+  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{listing:false}}));
   let run = gate(dir,[]);
   let found = state(dir).found;
   check(found.asks?.map(a=>a.state).join('/')==='pretends/pretends/works/preview' &&
     found.asks.every(a=>run.out.includes(a.line)), 'gate prints every ask after its findings',run.out);
   check(found.fails.filter(f=>f.check==='play-dead').length===1 && found.fails.filter(f=>f.check==='ask-outcome').length===2,
     'one mapped play failure, with the independent unmapped dead control still reported',run.out);
+  check(found.warns.some(f=>f.check==='preview-handoff'), 'mapped preview without adjacent body text is reported',run.out);
   const oldRun = path.join(dir,'.taste-skill',state(dir).latestRun);
   const oldBytes = fs.readFileSync(oldRun,'utf8');
   const snapshot = JSON.parse(oldBytes);
   check(snapshot.fingerprint && snapshot.fails.length===found.fails.length && snapshot.warns.length===found.warns.length && Array.isArray(snapshot.waivers),'immutable run keeps fingerprint, findings and waivers',oldRun);
   fs.writeFileSync(path.join(dir,'kit.txt'),'Studio press contact');
+  fs.writeFileSync(path.join(dir,'stub.json'), JSON.stringify({previewEvidence:{listing:true}}));
   run = gate(dir,[]);
   found = state(dir).found;
+  check(!found.warns.some(f=>f.check==='preview-handoff'), 'mapped preview with an adjacent handoff passes',run.out);
   check(path.join(dir,'.taste-skill',state(dir).latestRun)!==oldRun && fs.readFileSync(oldRun,'utf8')===oldBytes,'the latest pointer advances and the earlier findings are byte-identical',oldRun);
   check(found.asks?.find(a=>a.id==='kit')?.state==='works','adding the missing download refreshes the cached gate result',run.out);
 }

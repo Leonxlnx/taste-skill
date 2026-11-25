@@ -14,7 +14,7 @@
     "product"
   ],
   "intensity": "lively",
-  "look": "One photograph gives way to the next while its chapter stays in a reading panel.",
+  "look": "Each step depends on the last and shows a distinct result. For independent details use a compact list or captioned views side by side.",
   "reduced": "Nothing is pinned: the chapters stand side by side, each photograph over its title and lines, and the section is as tall as they are.",
   "phone": "Each photograph flows above its title and description.",
   "maxPerPage": 1,
@@ -24,6 +24,7 @@
       "pictures:3"
     ],
     "photo": true,
+    "carry": ["steps"],
     "words": "Three or four chapters, each with a title and two lines.",
     "pictures": "one photograph per chapter, all of one place, product or job, none used elsewhere on the page"
   },

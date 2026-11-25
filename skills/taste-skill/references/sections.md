@@ -44,15 +44,15 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 
 | Content | Form |
 |---|---|
-| Ordered steps with times or handoffs | Numbered rail, week strip or route |
+| Ordered steps with times or handoffs | Use order only for dependent steps with a distinct result each |
 | The product's timeline, diff, board or map | Build that view large in HTML or SVG |
 | Several uses of one product | One frame with tabs or a switcher |
-| Plans priced by quantity | Slider or stepper above the plans |
+| Plans priced by quantity | Print supported prices. A meter requires several supplied rates and `--carry figures` |
 | A price argument or two costs | Comparison bars or an itemised receipt |
 | A range or spec | Scale with reference points, or spec rows beside a dimension drawing |
 | Projects, rooms or goods with facts | Case rows or an index with a fact line per item |
 | Two states | Toggle or divider |
-| Hours or a schedule | Day bar or week grid |
+| Hours or a schedule | Print identical days together. Use a day bar only for differences |
 | A dated stay, table or class | Booking bar on the hero, full form at the close |
 | Goods sold here | Configurator or order pad within the first three sections |
 | Photographs with words | A composition from `sections-library.md` |
@@ -74,13 +74,7 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 - **Proof.** Use the brief's named quotes, footnoted figures, reviews or permitted customer logos. A comparison needs comparable numbers and a source.
 - **Two boxes deep at most:** a card and its picture panel, or a panel and its UI. A card whose
   panel holds UI drops its box (`.card--open`) or runs the panel flush (`.panel--flush`).
-- **One page, real links:** every nav word, button and footer link goes to an `#id` on the page, the
-  logo to `#top`. The main action goes where it is done: the booking form's or the order section's
-  id, `#visit` (the visit block) for Get directions, or, when the page has no form or booking system,
-  a `mailto:` on `.example` (`copy.md`). Never `#contact` from outside the footer: `footer.closing`
-  carries that id, and the checker WARNs a link that lands in the footer. Privacy, Terms and
-  Imprint go to small pages you write (Imprint only when the brief gives the company's own details),
-  or are left out. Never `/contact`, `/[page]` or a bare `#`.
+- **Real destinations.** Direct links are the default. Use a panel for several related destinations; its label predicts what opens. Put supplied sign-in, docs, status and store links in both nav and footer. Without those links, a software page links its setup section as Quickstart in both. Use real page IDs for local links.
 - **At 390** the page keeps the desktop's grounds, photographs and order, each photograph after
   its text.
 - **At 768 and 820** (the judges' tablet, held upright) the sections stack and grow; the first
@@ -90,9 +84,9 @@ Write the kind, then the frame from the PLAN. Give each section a row with its i
 
 Run `node <skill>/scripts/start.mjs plan` with the kind, assets, main action and section count. Count the hero and close. Pass the material the copy actually holds with `--carry`. Record the PLAN in the comment at the top of `<body>`. Its machine copy is `.taste-skill/plan.json` beside the default history.
 
-Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark, grounds and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
+Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density as dealt. A client logo takes the mark's place. An order goes within the first three sections. A booking for a stay, table or class gets the hero bar. The close keeps the full booking form or the shop's delivery and return facts.
 
-- `grounds` lists a ground per section. `alternate` alternates page and tint from section two, with inverse for the strongest picture. `blocks` repeats page, page, tint and closes on inverse. `islands` sets an inverse island and a brand or tint island on the page ground. `calm` changes ground at the main picture and sometimes again at the close. `chapters` (dealt with a `chapters` or `two-part-promise` story) gives each chapter run or half one ground and changes it only where one begins. Neighbours may share a ground.
+- `grounds` suggests the number and kinds of ground. Start on the page ground, and place a change where the visitor’s question changes. Use one surface for one software workflow; highlight the changed record. Keep fields visibly distinct from a tinted form.
 - `story` names the dealt shape from `library/stories.json` with its beats, its thread and how it is faked (`story.md`). Keep it or name a better fit on plan line 3. Keep non-tech heroes off bands.
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
 - `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).
@@ -107,7 +101,7 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
   line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
   client's photograph down to the links), `close-word` (the h2 and the button, then the name set
   across the `.wrap`), `close-split` (a tinted panel with the h2, one line, up to three short facts
-  and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. If the visit section already gives the hours, put the address, way there and nav in `footer-visit`.
+  and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. Repeat hours and directions in `footer-visit` when they help a returning visitor.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
 
@@ -115,7 +109,7 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
 
 Start with the material the brief gives. Use these routes to place it.
 
-**Software** (including developer tools and fintech). Show the product's central view near the top. Build its timeline, diff, board or map large enough to read. If the real task is to select a record and read its details, `app-frame` fits. For several uses, switch one frame by click, tap or keyboard. Show real tool icons for integrations. Put quantity-sensitive plans under a meter, then the FAQ and close. Use supplied customer proof only. Rewrite any kit fragment to the client's subject and data (`cards.md`).
+**Software** (including developer tools and fintech). Show the product's central view near the top. Build its timeline, diff, board or map large enough to read. If the real task is to select a record and read its details, `app-frame` fits. For several uses, switch one frame by click, tap or keyboard. Show real tool icons for integrations. Use a meter only for multiple supported price outcomes, then the FAQ and close. Use supplied customer proof only. Rewrite any kit fragment to the client's subject and data (`cards.md`).
 
 **Gaming.** Name the game and its genre in the hero. Give the release date or status from the brief and the main action, such as wishlisting. A supplied trailer gets the film hero only when the dealer picks it. Make the poster playable when there is a film. For a world section show what the player does through in-engine shots or the game's own key art. Without art files, draw the world in one style (`subskills/illustrate/SKILL.md`). Let a player switch the light or inspect an item if that shows how the game works. A game is dealt lively or loud: take its face, frames, edges and stickers from its own world, each with its source, within `expressive.md`.
 
@@ -139,7 +133,7 @@ also teaches or sells online stays a place: the door decides, the web shop is it
 `<html data-type="place">`,
 `<meta name="page-kind" content="place">` and place styles under `html[data-type="place"]`. The door, counter, rooms or work give the pictures their subjects. The plan sets the grounds and picture corners.
 
-A season toggle can share one room view. Hours can use a day bar. A direct-booking price can use comparison bars if the figures support it. Keep shaders, WebGL, tech-looking gradients and prints off a place page. Apply the ordinary rules for contrast, motion and assumed facts.
+A season toggle can share one room view. Group equal hours on one line. A day bar is for days that differ. A direct-booking price can use comparison bars if the figures support it. Keep shaders, WebGL, tech-looking gradients and prints off a place page. Apply the ordinary rules for contrast, motion and assumed facts.
 
 ### Plan and length
 
@@ -172,7 +166,7 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
   street wakes up", not "Bakery in Leith"; the kind and the street go in the sub-line), 48 characters at most; sub-line "Sourdough, rye and cardamom buns from 7:30,
   Tuesday to Sunday." (80 at most). For a stay, table or class, the hero's booking button belongs to `.hero-book` (`layout-v4.md`).
 - **Visit** (`data-place="visit"`, `id="visit"`) near the top:
-  put the address, routes and opening hours where visitors can find them. Give directions to a supplied street, an area link for a district, and a call link only for a supplied phone. Use a day bar, ruled week or a split with a shopfront view, according to the material. `[data-open-now]` requires supplied hours. Mark assumed hours `data-assumed` and leave them as text.
+  put the address, routes and opening hours where visitors can find them. Give directions to a supplied street, an area link for a district, and a call link only for a supplied phone. Print matching opening hours together. Use a day bar only when days differ. `[data-open-now]` requires supplied hours. Mark assumed hours `data-assumed` and leave them as text.
 - **Map** only when the brief gives the street: `fx-map` baked still (`effects-creative.md`) in the
   photograph's frame, the pin on the street line; never an embed, a contour or a dot pattern.
 - **The offer** opens with a head row: the h2 on the left line, one line, 40 characters at most
@@ -194,7 +188,7 @@ In `street-large`, set the supplied street or district beneath the visit h2 in `
   kind says what to send: date, venue, guests, budget.
 - **Booking.** For a stay, table or class use the hero bar to choose dates or day, guests, room or time. Carry those choices into the full form at the close. Label the fields, state the price and use the same action words (`system.md`, Forms).
 - **Close.** Follow the PLAN. A shop states delivery and returns here. Keep booking and newsletter forms distinct.
-- **Footer.** Use the dealt link layout. Keep one credits line. Include directions, delivery or check-in where useful and avoid repeating hours or forms.
+- **Footer.** Start with contact or support. Repeat hours and directions, platform links, delivery or returns when they serve a returning visitor. Add a group only for distinct real routes. Keep legal and credits separate.
 - **Phone bar** (`nav.actionbar`, required): the order or booking as one full-width button; without
   either, Get directions (primary; "See the area" when the brief gives no street) and Call (secondary, only with a
   phone the brief gives). system.js keeps it off the phone's first screen until the hero's button has scrolled away,
