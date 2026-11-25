@@ -812,7 +812,12 @@ function visualProbe(o) {
   // "example" and "sample" count only as a label ("(sample)", "Sample coffees"), never inside an address such as hello@x.example
   const PHRASE = /\b(?:made (?:in|with) code|placeholder|illustration|rendering|render of|pictured|photo of|picture of|image of|view of|shown (?:above|here|below)|fig\.?\s*\d|figure\s*\d|caption)\b|\((?:sample|example)s?\)|^\s*(?:sample|example)s?\b/i;
   const CAPCLS = /(?:^|[\s_-])(?:caption|figcaption|img-?cap|photo-?cap|legend)(?:$|[\s_-])/i;
-  const exempt = b => window.lyRules.fact(b.el) === true || /^h[1-6]$/.test(b.tag) || b.el.closest('a,button,nav,summary,label,header,footer,blockquote,q,[role=heading],[role=button],[role=tab]') || PRICE.test(b.text) || CREDIT.test(b.text);
+  function sampleInside(b) {
+    if (!/^(?:example|sample) [\p{L}\d-]+(?: [\p{L}\d-]+){0,2}$/iu.test(b.text) || b.el.closest('figcaption')) return false;
+    const figure = b.el.closest('figure, [data-ui], .app-frame, [role=img]');
+    return !!figure?.querySelector('img,svg,canvas,video,.panel__screen') && !/\b(?:reviews?|testimonials?|prices?|customers?|awards?)\b/i.test(b.text);
+  }
+  const exempt = b => sampleInside(b) || window.lyRules.fact(b.el) === true || /^h[1-6]$/.test(b.tag) || b.el.closest('a,button,nav,summary,label,header,footer,blockquote,q,[role=heading],[role=button],[role=tab]') || PRICE.test(b.text) || CREDIT.test(b.text);
   const xo = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
   const add = (kind, sev, b, c, note, gap) => out.captions.push({ kind, sev, text: b.text.slice(0, 90), sel: sel(b.el), visual: sel(c.el), what: what(c), note, fs: Math.round(b.fs), rows: b.rows, gap: gap == null ? null : Math.max(0, Math.round(gap)), doc: doc(b.r), vdoc: doc(c.r) });
   // a figcaption counts whenever its figure holds a visual (a markup fault: told at the first width only)
@@ -4032,7 +4037,7 @@ function pageProbe() {
     const sample = exhibit && (/\bexample\b/i.test(caption) || /\bexample (?:incident|record|alert|event)\b/i.test(squash(el.innerText)));
     const record = /\b(?:event|incident|log|alert|timeline)\b/i.test(caption) && el.querySelector('time,details > summary');
     if ((sample || record) && !el.closest('.terms,address,.hours') && !el.querySelector('form')) continue;
-    out.assumed.push({ sel: sel(el), text: squash(el.innerText || el.textContent || el.getAttribute('content') || '').slice(0,60), doc: el.getClientRects().length ? doc(el) : null });
+    out.assumed.push({ sel: sel(el), text: (squash(el.dataset.assumed) || squash(el.innerText || el.textContent) || caption || el.getAttribute('content') || sel(el)).slice(0,60), doc: el.getClientRects().length ? doc(el) : null });
   }
   // run-on: a heading whose later part (a span in another colour or .muted) starts a new sentence with no stop before it
   for (const h of document.querySelectorAll('h1, h2, h3')) {
@@ -4061,7 +4066,7 @@ function pageProbe() {
       const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData: new DataTransfer() });
       const blocked = el.hasAttribute('onpaste') || !el.dispatchEvent(ev);
       if (blocked) info.paste.push(sel(el));
-      const kind = /e-?mail/.test(lab) ? 'email' : /\b(phone|tel|telefon|telephone|mobile|handy)\b/.test(lab) ? 'tel' : /\b(guests?|people|persons?|gäste|personen|quantity|qty|anzahl|number of|count)\b/.test(lab) ? 'count' : /\b(name|vorname|nachname|full name)\b/.test(lab) && !/\b(company|firma|business|event)\b/.test(lab) ? 'name' : '';
+      const kind = /e-?mail/.test(lab) ? 'email' : /\b(phone|tel|telefon|telephone|mobile|handy)\b/.test(lab) && !/\b(?:phone|mobile)[ -]model\b/.test(lab) ? 'tel' : /\b(guests?|people|persons?|gäste|personen|quantity|qty|anzahl|number of|count)\b/.test(lab) ? 'count' : /\b(name|vorname|nachname|full name)\b/.test(lab) && !/\b(company|firma|business|event)\b/.test(lab) ? 'name' : '';
       if (!kind) continue;
       const ac = (el.getAttribute('autocomplete') || '').toLowerCase(), im = (el.getAttribute('inputmode') || '').toLowerCase();
       const miss = kind === 'email' ? [el.type !== 'email' && im !== 'email' ? 'type="email"' : '', !/email/.test(ac) ? 'autocomplete="email"' : ''] : kind === 'tel' ? [el.type !== 'tel' ? 'type="tel"' : '', !/tel/.test(ac) ? 'autocomplete="tel"' : ''] : kind === 'count' ? [el.type !== 'number' && !/numeric|decimal/.test(im) && el.tagName !== 'SELECT' ? 'inputmode="numeric"' : ''] : [!/name/.test(ac) && ac !== 'off' ? 'autocomplete="name"' : ''];
@@ -4191,7 +4196,7 @@ async function run(ctx) {
     const groups = new Map(); for (const x of S.list) { if (!groups.has(x.label)) groups.set(x.label, []); groups.get(x.label).push(x); }
     let shot = null;
     for (const [label, xs] of groups) {
-      if (xs.length < 3 || !xs.some((x) => x.btn)) continue;
+      if (!excessActionCopies(xs)) continue;
       const where = xs.map((x) => x.where);
       const sev = 'FAIL';
       if (shot == null) shot = ctx.addShot(await tab.shot());
@@ -7795,7 +7800,7 @@ function lib(itemContext) {
   function workingExampleLabel(el, text, labelled) {
     if (!/^demo data[.]?$/i.test(text) && !/^(example|sample) [\p{L}\p{N}-]+(?: [\p{L}\p{N}-]+){0,2}$/iu.test(text)) return false;
     if (/\b(?:reviews?|quotes?|testimonials?|prices?|addresses?|contacts?|customers?|awards?)\b/i.test(text)) return false;
-    const object = el.closest('[data-ui], [data-chart], [data-own], .app-frame, .hero__window, .panel__screen, .device');
+    const object = el.closest('figure, [role=img], [data-ui], [data-chart], [data-own], .app-frame, .hero__window, .panel__screen, .device');
     if (!object || labelled.has(object)) return false;
     labelled.add(object);
     return true;
@@ -8664,7 +8669,7 @@ function lib(itemContext) {
       if (items.length < 3) continue;
       const rows = []; for (const e of items) { const r = e.getBoundingClientRect(); const row = rows.find((x) => Math.abs(x.y - r.top) < r.height * 0.5); if (row) row.items.push(e); else rows.push({ y: r.top, items: [e] }); }
       rows.sort((a, b) => a.y - b.y);
-      if (rows.length >= 2 && rows[rows.length - 1].items.length === 1) { const lone = rows[rows.length - 1].items[0]; out.tabWraps.push({ id: idOf(lone), sel: sel(lone), text: label(lone), n: items.length, rows: rows.length, doc: doc(L) }); }
+      if (L.getAttribute('aria-orientation') !== 'vertical' && rows.some(row => row.items.length > 1) && rows.at(-1).items.length === 1) { const lone = rows[rows.length - 1].items[0]; out.tabWraps.push({ id: idOf(lone), sel: sel(lone), text: label(lone), n: items.length, rows: rows.length, doc: doc(L) }); }
       const on = items.find((e) => e.matches('[aria-selected="true"], [aria-current], .is-active, .active, [aria-pressed="true"]'));
       if (on) {
         let L2 = buttonLook(on, true), via = '';
@@ -8768,7 +8773,7 @@ function lib(itemContext) {
     // on a phone, the page's buttons full width but one or two left at their own width (one action in two sizes)
     out.btnWidth = null;
     if (vw < 700) {
-      const full = [], auto = [];
+      const groups = new Map();
       for (const b of document.querySelectorAll(INTER)) {
         if (inDrawn(b) || inFixed(b) || b.closest('header, nav, [role="tablist"], details, dialog, [role="menu"], .nav__menu, [hidden]') || b.matches('summary, [role="tab"], [aria-expanded]')) continue;
         const r = b.getBoundingClientRect(); if (r.width < 1 || r.height < 36 || !shown(b, r)) continue;
@@ -8778,9 +8783,16 @@ function lib(itemContext) {
         if (inner < vw * 0.6) continue; // a button in a card or a narrow column
         // a button beside another one in a row is sized by the row
         if ([...p.children].some((s) => s !== b && s.matches(INTER) && Math.abs(s.getBoundingClientRect().top - r.top) < 4)) continue;
+        const context = b.closest('form,footer,.card,.hero,section');
+        const placement = context?.matches('.card') ? 'card' : context?.matches('.hero') ? 'hero' : context?.localName;
+        const action = (b.getAttribute('aria-label') || b.innerText || b.value || '').trim().replace(/\s+/g,' ').toLowerCase();
+        if (!action) continue;
+        const key = JSON.stringify([action, placement]);
+        if (!groups.has(key)) groups.set(key, {full: [], auto: []});
+        const {full, auto} = groups.get(key);
         (r.width >= inner * 0.9 ? full : auto).push({ id: idOf(b), sel: sel(b), text: label(b), w: Math.round(r.width), inner: Math.round(inner), doc: doc(b) });
       }
-      if (full.length >= 2 && auto.length >= 1 && auto.length <= full.length) out.btnWidth = { full: full.length, auto };
+      for (const {full, auto} of groups.values()) if (full.length && auto.length) { out.btnWidth = { full: full.length, auto }; break; }
     }
     // a split that stacks (a tablet, a phone): its text and its visual one under the other, closer than 24px (the
     // grid's row gap left at 16px glues the picture to the buttons above it)
@@ -9733,7 +9745,7 @@ function extrasFindings(X, PG, AU, first, later, vw) {
   }
   if (X.btnWidth) {
     const a = X.btnWidth.auto[0];
-    push('button-styles', 'WARN', a, `on the phone ${X.btnWidth.full} buttons run the full width of their column, but ${X.btnWidth.auto.length > 1 ? `${X.btnWidth.auto.length} keep their own width, like` : ''} "${a.text.slice(0, 30)}" is ${a.w}px of ${a.inner}px: one action in two sizes`, { more: X.btnWidth.auto.slice(1, 4).map((x) => x.doc), fix: 'give every button the same width rule on the phone: all full width, or all at their own width' });
+    push('button-styles', 'WARN', a, `On the phone, "${a.text.slice(0, 40)}" is ${a.w}px in a ${a.inner}px column and full width in another matching location.`, { more: X.btnWidth.auto.slice(1, 4).map((x) => x.doc), fix: 'Use one phone width for this action in matching contexts.' });
   }
   for (const p of (X.fragPlaces || []).slice(0, 2)) if (vw >= 700) push('ui-centre', 'WARN', p, `in a group of ${p.n} cards, the UI of ${p.odd} sits ${Math.abs(p.off)}% of its panel's width to the ${p.off > 0 ? 'right' : 'left'} of where the others sit (${p.med === 0 ? 'the middle' : `${p.med}% off the middle`}): one card group, two placements`, { more: p.more, fix: 'place the UI the same way in every card of the group: all centred, or all pinned to the same edge' });
   if (first && X.progress && X.progress.length) { const p = X.progress[0]; push('progress-bar', 'WARN', p, `${X.progress.length > 1 ? `${X.progress.length} progress or meter bars` : 'a progress or meter bar'} on the page${p.fixed ? ' (fixed to the screen)' : ''}, like the one in "${p.text.slice(0, 30)}": the house rules have no drag or progress bars`, { more: X.progress.slice(1).map((x) => x.doc) }); }
@@ -10397,7 +10409,7 @@ const sameFault = (f, L) => {
   if (f.check === 'effect-kind') return /WebGL context|shader code|shader source|effect parts/.test(f.msg) && L.some((g) => g.check === 'effects-fit');
   return false;
 };
-import { checkFinish } from './still-finish.mjs';
+import { checkFinish, excessActionCopies, lopsidedNav } from './still-finish.mjs';
 async function runWidth(cdp, helper, { w: width, h }, first) {
   const height = h || HEIGHTS[width] || (width < 700 ? 844 : 900);
   const mobile = width < 700;
@@ -10441,7 +10453,7 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         text:style.getPropertyValue('--font-text').trim().split(',')[0].replace(/["']/g,''),
         heroPeek:hero?.classList.contains('hero--peek') || false, heroBook:!!window.lyRules.booking(hero),
         hero:[...(hero?.classList || [])].find(c=>c.startsWith('hero--') && c!=='hero--peek')?.slice(6), entrance:hero?.getAttribute('data-enter') || 'still', buttons:root.dataset.buttons, density:root.dataset.density || 'regular',
-        nav:nav ? 'nav-' + (['split','centre'].find(v=>nav.classList.contains('nav--'+v)) || (nav.querySelector('.nav__menu .menu-col,.menu-col,.menu__col,.menu-column') || nav.querySelectorAll('.menu-card').length < 3 ? 'mega' : 'cards')) : null,
+        nav:nav && !nav.querySelector('.nav__menu') && nav.querySelector('a[href]:not(.nav__logo)') ? 'direct' : nav ? 'nav-' + (['split','centre'].find(v=>nav.classList.contains('nav--'+v)) || (nav.querySelector('.nav__menu .menu-col,.menu-col,.menu__col,.menu-column') || nav.querySelectorAll('.menu-card').length < 3 ? 'mega' : 'cards')) : null,
         footer:footer ? 'footer-' + (['visit','dark','statement','columns'].find(v=>footer.classList.contains('footer--'+v)) || (footer.querySelector('.links-visit,.visit-links,.footer__address') ? 'visit' : 'columns')) : null,
         close:close ? 'close-' + (variant(close,'close--') || 'form') : footer?.querySelector('.closing__cta') ? 'close-type' : null,
         mark:mark?.querySelector('[data-mark]')?.dataset.mark || (mark?.querySelector('img,svg') ? 'client-logo' : mark ? 'wordmark' : null)
@@ -11024,8 +11036,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
     { const n0 = navs.find((n) => n.stop === 0);
       if (n0 && n0.items && n0.items.length >= 2 && cl != null) {
         const L0 = Math.min(...n0.items.map((o) => o.rect.left)), R0 = Math.max(...n0.items.map((o) => o.rect.left + o.rect.width));
-        const dl = L0 - cl, dr = cr - R0, lone = (a, b) => Math.abs(a) <= 2 && Math.abs(b) > 24;
-        if (lone(dl, dr) || lone(dr, dl)) { const inL = Math.abs(dl) > Math.abs(dr); const o = inL ? n0.items.find((x) => x.rect.left === L0) : n0.items.find((x) => x.rect.left + x.rect.width === R0);
+        const dl = L0 - cl, dr = cr - R0;
+        if (lopsidedNav(dl, dr)) { const inL = Math.abs(dl) > Math.abs(dr); const o = inL ? n0.items.find((x) => x.rect.left === L0) : n0.items.find((x) => x.rect.left + x.rect.width === R0);
           F.push({ check: 'nav', sev: 'WARN', id: o.id, sel: o.sel, text: o.text, stop: 0, rects: n0.items.map((x) => x.rect), msg: `the nav is lopsided: its ${inL ? 'first item starts' : 'last item ends'} ${Math.round(Math.abs(inL ? dl : dr))}px ${(inL ? dl : dr) > 0 ? 'inside' : 'outside'} the content's edge (${inL ? cl : cr}px), while its ${inL ? 'last ends' : 'first starts'} on the other edge`, fix: 'start the nav\'s first item and end its last on the content\'s two edges' }); }
       } }
     if (!navs.some((n) => n.stop === 0) && secCount >= 3) F.push({ check: 'nav', sev: 'FAIL', id: 0, sel: '(the first screen)', text: '', stop: 0, rects: [], msg: 'no nav bar across the top of the first screen (a header with the brand, the section links and the main action)' });

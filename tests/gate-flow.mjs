@@ -378,6 +378,9 @@ for (const whole of [false, true]) {
   gate(dir,['--start','index.html']); gate(dir,[]);
   const good=state(dir).found;
   check(!good.fails.length && good.warns.some(w=>w.check==='deal-drift' && w.where==='density regular'),'matching frame passes and a different density only warns',JSON.stringify(good));
+  fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame:{...frame,nav:'direct'}}));
+  touch(dir,2); gate(dir,[]);
+  check(!state(dir).found.fails.some(f=>f.check==='deal-drift' && f.where.startsWith('nav ')), 'direct links satisfy a dealt panel');
   fs.writeFileSync(path.join(dir,'stub.json'),JSON.stringify({frame:{...frame,bg:'#ffffff',accent:'#abcdef',display:'Arial',mark:'wrong',nav:'nav-centre',close:'close-word',footer:'footer-dark',hero:'word',entrance:'still',buttons:'outline'}}));
   touch(dir,3); gate(dir,[]);
   const bad=state(dir).found.fails.filter(x=>x.check==='deal-drift').map(x=>x.where.split(' ')[0]);

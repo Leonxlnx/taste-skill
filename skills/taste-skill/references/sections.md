@@ -92,7 +92,7 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
 - `density` sets `data-density="open|regular|compact"` on `html`. Follow `align` for left headings throughout or centred heads on proof and close. Apply `pictures` to picture corners: square, soft, or soft with one shaped mask.
 - `composition` suggests a layout for photographs with words. Use it where it fits. A different form for steps, plans or a central view is part of the plan. Name the own sections. Each `ideas <id>: <line>` is one of four prompts to try or leave. `sub <name>: <why>` names the sub-skill to read (`compose.md`).
 - Quiet pages deal no moment or scene unless the brief requests motion. A requested, lively or loud page can take one fitting moment. A scene needs suitable material. See `moments.md` and `scenes.md`.
-- **Nav** (one fixed, opaque bar on the `.wrap`; `system.md`): `nav-mega` (link columns and one
+- **Nav** (direct links unless several related destinations share a panel; one fixed, opaque bar on the `.wrap`; `system.md`): `nav-mega` (link columns and one
   picture card in the panel), `nav-cards` (three or four picture cards), `nav-centre` (the words in
   the middle), `nav-split` (the words left, the name in the middle). `nav--tone` puts the bar on the
   inverse ground (tech only).

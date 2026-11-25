@@ -1,3 +1,13 @@
+export function lopsidedNav(left, right) {
+  const near = Math.min(Math.abs(left), Math.abs(right));
+  const far = Math.max(Math.abs(left), Math.abs(right));
+  return near <= 2 && far > 24;
+}
+
+export function excessActionCopies(controls) {
+  return controls.length >= 3 && controls.some(control => control.btn);
+}
+
 // Runs inside the inspected page after the checker's scroll pass.
 export function measureFinish() {
   if (['loud', 'lively'].includes(document.documentElement.dataset.temper)) return null;
@@ -11,11 +21,15 @@ export function measureFinish() {
     return Array.from(canvas.getImageData(0, 0, 1, 1).data);
   };
   const painted = e => e.checkVisibility({opacityProperty: true, visibilityProperty: true});
+  const actionRects = [];
   let rules = 0, arrows = 0;
   for (const el of document.body.querySelectorAll('*')) {
     const r = el.getBoundingClientRect();
     if (!r.width || !r.height || r.right <= 0 || r.left >= innerWidth || !painted(el)) continue;
     const style = getComputedStyle(el);
+    if (el.matches('a.btn--primary[href],button.btn--primary,input.btn--primary[type=submit]') && r.height >= 36 && r.height <= 64) {
+      actionRects.push({left:r.left, right:r.right, top:r.top+scrollY, bottom:r.bottom+scrollY});
+    }
     if (['Top','Right','Bottom','Left'].some(side => {
       const width = parseFloat(style['border' + side + 'Width']);
       return width > 0 && width <= 1 && rgba(style['border' + side + 'Color'])[3] > 20;
@@ -63,7 +77,7 @@ export function measureFinish() {
   }
   const value = getComputedStyle(document.documentElement).getPropertyValue('--p-accent').trim();
   const accent = value && CSS.supports('color',value) ? rgba(value).slice(0,3) : null;
-  return {height, empty:occupied.filter(v=>!v).length, screens:occupied.length, lines, fraction, rules, arrows, accent};
+  return {height, empty:occupied.filter(v=>!v).length, screens:occupied.length, lines, fraction, rules, arrows, accent, actionRects};
 }
 
 export function finishWarnings(width, m, accentShare) {
@@ -73,7 +87,7 @@ export function finishWarnings(width, m, accentShare) {
   if (width === 1440 && m.lines >= 3 && m.fraction < .5) warn('headline-narrow', m.lines+' headline lines in '+Math.round(m.fraction*100)+'% of the content width.', 'Give the title seven columns or move the picture under it.');
   if (m.arrows > 3) warn('arrow-links', m.arrows+' text links carry arrows.', 'Keep arrows on at most two links whose destination needs one.');
   if (width === 1440 && m.rules > 34) warn('rule-heavy', m.rules+' visible elements have hairlines.', 'Separate repeated items with space.');
-  if (accentShare > (width === 390 ? .012 : .006)) warn('accent-wide', (accentShare*100).toFixed(2)+'% of the page matches the accent.', 'Keep the accent on actions, links, focus and one small mark.');
+  if (accentShare > (width === 390 ? .012 : .006)) warn('accent-wide', (accentShare*100).toFixed(2)+'% of the page matches the accent outside its main buttons.', 'Keep the accent on actions, links, focus and one small mark.');
   return out;
 }
 
@@ -91,7 +105,10 @@ export async function checkFinish(tab, width, decodePng) {
       const [r,g,b] = m.accent;
       const rgb = png.ch >= 3;
       for (let i=0; i<png.data.length; i+=png.ch) {
-        if ((r-png.data[i])**2+(g-png.data[i+(rgb?1:0)])**2+(b-png.data[i+(rgb?2:0)])**2 <= 576) matches++;
+        if ((r-png.data[i])**2+(g-png.data[i+(rgb?1:0)])**2+(b-png.data[i+(rgb?2:0)])**2 <= 576) {
+          const pixel = i/png.ch, x = (pixel%png.w + .5)*width/png.w, pageY = y+(Math.floor(pixel/png.w)+.5)*clip.height/png.h;
+          if (!m.actionRects.some(r => x>=r.left && x<r.right && pageY>=r.top && pageY<r.bottom)) matches++;
+        }
         pixels++;
       }
     }

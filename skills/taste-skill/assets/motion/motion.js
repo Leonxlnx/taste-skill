@@ -318,7 +318,7 @@ function enter() {
       h1.closest('.hero-copy, .hero__copy, .hero__head, .hero__text, .hero__c') || h1.parentElement;
     if (copy === hero || copy.contains(media)) return;
     const rise = variant === 'rise';
-    const options = { duration: time(rise ? '--m-rise' : '--m-fade'), easing: ease() };
+    const options = { id: 'kit-hero-entrance', duration: time(rise ? '--m-rise' : '--m-fade'), easing: ease() };
     const fade = [{ opacity: 0 }, { opacity: 1 }];
     copy.animate(rise ? [{ opacity: 0, translate: '0 10px' }, { opacity: 1, translate: '0 0' }] : fade, options);
     if (media && !media.contains(copy)) media.animate(fade, options);

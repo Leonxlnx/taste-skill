@@ -18,6 +18,13 @@ const cli = (script, ...args) => execFileSync(process.execPath, [path.join(root,
   cwd: dir, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, TASTE_SKILL_RECENT: process.env.TASTE_SKILL_RECENT || 'off' },
 });
 const palettes = JSON.parse(fs.readFileSync(path.join(root, 'library/palettes.json'), 'utf8'));
+assert.throws(() => cli('scripts/start.mjs','css','--page','software','--type','archivo'), error => {
+  const command = error.stderr.match(/node "([^"]+)" types --page software/);
+  assert.equal(command?.[1],path.join(root,'scripts','start.mjs'));
+  const output = execFileSync(process.execPath,[command[1],'types','--page','software'],{cwd:dir,encoding:'utf8',windowsHide:true});
+  assert.match(output,/geist/);
+  return error.status === 2;
+});
 let derived = 0, low = Infinity, high = 0;
 for (const p of palettes) {
   const css = cli('scripts/start.mjs', 'css', '--page', 'software', '--palette', p.id, '--type', 'geist', '--force');

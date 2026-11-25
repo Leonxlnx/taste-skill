@@ -73,8 +73,14 @@ const stockLabels = new Set([
   'solution', 'our solution', 'our solutions', 'why work with us', 'welcome here',
   'welcome to our site', 'welcome to our website', 'find out more', 'read more', 'mission', 'what we do',
 ]);
+const abstractWords = new Set(('built made designed ready delivered reimagined redefined feel feels feeling future tomorrow next today better best more less confidence clarity simplicity possibility possibilities potential empowered effortless excellence inspire inspired inspiration beyond unlimited limitless different difference together starts begins here ahead always peace mind').split(' '));
+function slogan(label) {
+  if (/^(?:you(?: ll| will)|we (?:make|help) you) (?:always )?feel (?:more |less )?(?:confident|empowered|inspired|overwhelmed|anxious)\b/.test(label)) return true;
+  const meaningful = label.split(' ').filter(word => !STOP.has(word) && word !== 's');
+  return meaningful.length > 0 && meaningful.every(word => abstractWords.has(word));
+}
 export function headingFindings(headings, T) {
-  const seen = new Map(), bare = [], cards = [], findings = [];
+  const seen = new Map(), bare = [], findings = [];
   const glossary = [...T.category, ...T.products, ...T.place, ...T.audience, ...T.names, ...SECTION_NOUNS, T.brand].filter(Boolean);
   for (const h of headings) {
     const words = h.full.normalize('NFC').toLowerCase().match(/[\p{L}\p{M}\p{N}]+/gu) || [];
@@ -97,17 +103,11 @@ export function headingFindings(headings, T) {
       findings.push({h, sev:'FAIL', msg:'The heading "' + h.full + '" uses one stock label where none are allowed, so replace it with the subject of this section.'});
       continue;
     }
-    if (h.foot || ![2, 3].includes(h.level) || /\d/.test(h.full) || !norm(h.full) || holdsAny(h.full, glossary)) continue;
-    if (h.level === 3 && h.card) {
-      if (!h.full.split(/\s+/).every(w => /^[A-ZÀ-ÖØ-Þ]/.test(w))) cards.push(h);
-    } else if (h.step) {
-      findings.push({h, sev:'WARN', msg:'the step heading "' + h.full.slice(0,60) + '" names no product, part or place: fine for a step when the section\'s h2 names the product'});
-    } else bare.push(h);
+    if (h.foot || ![2, 3].includes(h.level) || /\d/.test(h.full) || !norm(h.full)) continue;
+    // Unknown trade vocabulary is common. Warn only on identifiable abstract claims.
+    if (slogan(label) && !glossary.some(term => norm(term) === label)) bare.push(h);
   }
-  for (const h of bare) findings.push({h, sev:'WARN', msg:'"' + h.full.slice(0, 60) + '" names no product, part, place or section' + (bare.length >= 2 ? ' (' + bare.length + ' headings like it; at most one brand line per page)' : ' (the one brand line a page may have)')});
-  if (cards.length >= 2 && T.category.length) for (const h of cards) {
-    findings.push({h, sev:'WARN', msg:'the card title "' + h.full.slice(0,50) + '" names no product, part, place or section (' + cards.length + ' card titles like it)'});
-  }
+  if (bare.length) findings.push({h:bare[0], sev:'WARN', msg:'Name the subject in '+bare.map(h => '"'+h.full+'"').join(', ')+'.'});
   return findings;
 }
 export { STOP, norm, words, stem, holds, holdsAny, copyTerms };

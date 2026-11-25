@@ -43,7 +43,7 @@ Use `--m-ease: cubic-bezier(.4, 0, .2, 1)`. Buttons change background or border 
 
 ## Show the product working
 
-Give a visitor an action with a visible result. In a section marked `data-own`, a button can show an order total with `data-m-count` or draw a chart path with `data-m-draw`. Write the complete number and path in HTML. For progress linked to the visitor’s scroll, put `data-m-progress` on the small indicator. It receives `--p` from 0 to 1, with a CSS fallback of 1. Keep prices and headings still.
+Give a visitor an action with a visible result. In a section marked `data-own`, a button can show a count of completed steps with `data-m-count` or draw a chart path with `data-m-draw`. Write the complete number and path in HTML. For progress linked to the visitor’s scroll, put `data-m-progress` on the small indicator. It receives `--p` from 0 to 1, with a CSS fallback of 1. Keep prices and headings still.
 
 A loop belongs inside the product window or media frame it explains. A loop lasting over five seconds has a pause button inside that frame’s corner. Keep each chapter’s text in normal flow. Only its small side picture can stick. Phones show the picture beside its own text in reading order.
 

@@ -912,7 +912,7 @@ if (cmd === 'deal') {
   line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
   line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': name, contact and return links in one row. A column heading needs at least three links. Repeat useful hours, directions or purchase terms.');
-  line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
+  line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + (plan.buttons === 'arrow' ? ' (keep the main button text-only)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');
   line('align', plan.align + (plan.align === 'left' ? '' : ': use .section-head--center on those headings'));
@@ -954,7 +954,7 @@ if (cmd === 'deal') {
     setPage(inferPage(t));
     console.error(`start: note: no --page, taking ${page} from the pairing (display weight, mono). Pass --page <${PAGES.join('|')}> so the block fits the page.`);
   } else if (!suits(t, page) && !opt('force')) {
-    console.error(`start: ${t.id} is not on the ${page} list; pick one from: node scripts/start.mjs types --page ${page} (--force to use it anyway).`);
+    console.error(`start: ${t.id} is not on the ${page} list; pick one from: node "${fileURLToPath(import.meta.url)}" types --page ${page} (--force to use it anyway).`);
     process.exit(2);
   }
   let p;

@@ -46,6 +46,8 @@ same at every depth; a panel opens after 150ms of hover with a fade and a 6px dr
 word goes to its section, never `preventDefault`. system.js adds the phone sheet, Esc and
 `aria-expanded`; never write a second handler.
 
+Every dealt navigation can use direct links alone. Use the panels below only for several related destinations.
+
 ## nav-mega
 
 **Job and use.** The company's map one hover away: the product grouped by what the visitor wants,

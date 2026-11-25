@@ -12,7 +12,11 @@ import {fileURLToPath} from 'node:url';
 await import('./story.mjs');
 
 // Exact boundaries for the full-page finish measurements.
-const {finishWarnings} = await import('../skills/taste-skill/scripts/still-finish.mjs');
+const {checkFinish, finishWarnings, excessActionCopies, lopsidedNav} = await import('../skills/taste-skill/scripts/still-finish.mjs');
+for (const [left,right,warn] of [[0,13,false],[24,0,false],[0,25,true],[-25,1,true],[25,25,false]]) assert.equal(lopsidedNav(left,right),warn);
+const navAndHero = [{where:'nav',btn:true},{where:'hero',btn:true}];
+assert.equal(excessActionCopies(navAndHero),false);
+assert.equal(excessActionCopies([...navAndHero,{where:'bar',btn:true}]),true);
 const base = {empty:7, screens:20, lines:3, fraction:.5, rules:34, arrows:3};
 assert.deepEqual(finishWarnings(1440,base,.006),[]);
 assert.deepEqual(finishWarnings(390,base,.012),[]);
@@ -21,6 +25,16 @@ assert.deepEqual(finishIds(1440,{...base,empty:8,fraction:.49,rules:35,arrows:4}
   ['accent-wide','arrow-links','headline-narrow','picture-sparse','rule-heavy']);
 assert.deepEqual(finishIds(390,base,.0121),['accent-wide']);
 assert.deepEqual(finishIds(1440,{...base,lines:2,fraction:.49},0),[]);
+
+const accentFixture = Buffer.alloc(144*144*3,255);
+accentFixture.fill(0,0,144*16*3);
+for (let i=0; i<144*16*3; i+=3) accentFixture[i]=180;
+for (const hasButton of [false,true]) {
+  const m = {...base, height:390, accent:[180,0,0], actionRects:hasButton ? [{left:0,right:390,top:0,bottom:44}] : []};
+  const tab = {eval:async()=>m, send:async()=>({data:''})};
+  const rows = await checkFinish(tab,390,()=>({data:accentFixture,w:144,h:144,ch:3}));
+  assert.equal(rows.some(f=>f.check==='accent-wide'),!hasButton,'accent on a control versus an equally large decorative band');
+}
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const skill = path.join(root,'skills','taste-skill');
@@ -248,6 +262,7 @@ for (const bad of [false,true]) {
         test(hits.some(v=>v.check===name)===bad,w.width+' consistency '+name+' '+(bad?'detected':'clear'));
       }
       test(hits.some(v=>v.check==='section-air' && v.sev==='FAIL')===bad,w.width+' consistency cramped spacing');
+      if (w.width===1440) test(hits.some(v=>v.check==='form-send' && v.sev==='WARN')===bad,'a named email handoff suppresses the duplicate form warning');
       if (!bad) test(!hits.some(v=>v.sev==='FAIL' && /section#(?:d|e)\b/.test(v.sel || '')),w.width+' own room section passes the general checks');
       if (!bad) test(!hits.some(v=>['effect-kind','button-styles','hero-screen','hero-fill','fold-cut'].includes(v.check) && v.sev==='FAIL'),w.width+' place tabs and peek pass the production checker');
     }
@@ -276,7 +291,7 @@ for (const bad of [false,true]) {
   }
 }
 const assets=path.join(skill,'assets');
-if (!variant || ['booking','headings'].includes(variant)) fs.symlinkSync(assets,path.join(tmp,'assets'),'junction');
+if (!variant || ['booking','headings','motion'].includes(variant)) fs.symlinkSync(assets,path.join(tmp,'assets'),'junction');
 if (!variant || variant==='finish') {
   for (const bad of [false,true]) {
     const file=path.join(tmp, bad?'finish-broken.html':'finish-open.html');
@@ -346,21 +361,25 @@ if (!variant || variant==='headings') {
   const host = (id,words)=>'<h2 id="'+id+'" data-moment="word-highlight">'+words+'</h2>';
   const mid = host('supply','The workshop stocks a replacement part for every tool that apprentices use on the course');
   const close = host('return','Bring your finished piece back to the studio for firing the following Wednesday afternoon');
+  const tabRow = (id, columns) => '<div class="tabs" id="'+id+'" style="display:grid;grid-template-columns:'+columns+'">'+['East','West','South'].map(label=>'<button>'+label+'</button>').join('')+'</div>';
+  const repeatedButtons = '<div class="offer"><div><button class="btn btn--primary" style="width:100%">Reserve seat</button></div><div><button class="btn btn--primary" id="short-reserve" style="width:auto">Reserve seat</button></div></div>';
+  const warningExamples = '<section><h2>Camera fittings</h2>'+repeatedButtons+tabRow('stacked-tabs','1fr')+tabRow('wrapped-tabs','1fr 1fr')+'<figure data-assumed="Illustrated lens dimensions" aria-label="Lens assembly"><small>Example thermal view</small><svg width="180" height="120"><rect width="180" height="120"/></svg></figure><form><label>Phone model<input type="text"></label><label>Telephone<input type="text" id="telephone-fixture"></label></form></section>';
   const start=fs.readFileSync(fixture(false),'utf8').replace('<html ', '<html data-temper="lively" ')
     .replace('</head>','<link rel="stylesheet" href="assets/moments/word-highlight/moment.css"><style>body h3{font-size:18px}@media(max-width:390px){#supply{max-width:12ch}}</style></head>')
     .replace('<h2>c</h2>',mid)
     .replace('<h2>a</h2>','<h2>Overview</h2><h3>Not in the fee</h3>')
     .replace('<h2>b</h2>','<h2>Features</h2><h3>Listed buildings: do you take them?</h3>')
-    .replace('<h2>d</h2>','<h2>How a project runs</h2>' + items)
+    .replace('<h2>d</h2>','<h2>How a project runs</h2><h3>Trace a warm pipe</h3><h2>Built for what’s next</h2><h2>Clarity, delivered</h2>' + items)
     .replace('<h2>e</h2>','<h2>What it costs</h2>' + repeated)
-    .replace('</main>',components + '</main>')
+    .replace('</main>',components + warningExamples + '</main>')
     .replace('</body>','<footer class="footer closing"><div class="wrap"><div class="closing__cta">'+close+'</div><div class="closing__links">Wednesday, 14:00</div></div></footer><script type="module" src="assets/moments/moments.js"></script></body>');
   const file=path.join(tmp,'headings.html');
   fs.writeFileSync(file,start);
   function checkHeadings(terms) {
+    assert.ok(terms.some(f => f.sev === 'WARN' && /Built for what[’']s next/.test(f.msg) && /Clarity, delivered/.test(f.msg)), 'slogans share a summary');
     const has = (severity, text) => terms.some(f => f.sev === severity && f.msg.includes(text));
     for (const text of ['Overview','Features','What we offer','First visit','at the first']) assert.ok(has('FAIL', text),text+' must fail');
-    for (const text of ['How a project runs','What it costs']) assert.ok(has('WARN',text) && !has('FAIL',text),text+' is advisory');
+    for (const text of ['How a project runs','What it costs']) assert.ok(!has('WARN',text) && !has('FAIL',text),text+' is specific');
     for (const text of ['Welcome!','About us','Jordaan canal house','Oud-Zuid study','Our mission','Cherry and ash','Which areas','Learn more','At the second']) {
       assert.ok(!has('FAIL',text) && (!has('WARN',text) || text === 'At the second'),text+' passes');
     }
@@ -381,7 +400,18 @@ if (!variant || variant==='headings') {
     console.log('ok - '+w.size+' content and closing h2 hosts meet the moment contract');
   }
   const report=await run(path.join(skill,'scripts/consistency.mjs'),[file,'--quick','--type','place','--widths','1440,390','--json','--profile',profile,'--out',path.join(tmp,'heading-check')]);
+  for (const width of report.widths) {
+    const hits = width.findings;
+    assert.ok(hits.some(f => f.check === 'tab-wrap' && f.sel.includes('wrapped-tabs')));
+    assert.ok(!hits.some(f => f.check === 'tab-wrap' && f.sel.includes('stacked-tabs')));
+  }
+  const advice = report.widths.flatMap(w => w.findings);
+  assert.ok(advice.some(f => f.check === 'assumed' && f.msg.includes('Illustrated lens dimensions')));
+  assert.equal(advice.filter(f => f.check === 'form-fields' && f.msg.includes('tel field')).every(f => f.sel.includes('telephone-fixture')), true);
+  assert.ok(advice.some(f => f.check === 'form-fields' && f.sel.includes('telephone-fixture')));
   const phone = report.widths.find(w => w.width===390);
+  assert.ok(phone.findings.some(f => f.check==='button-styles' && f.msg.includes('Reserve seat')), 'same action in matching contexts');
+  assert.ok(!phone.findings.some(f => f.check==='visual-caption' && f.msg.includes('Example thermal view')), 'sample label belongs to its exhibit');
   assert.ok(phone.findings.some(f => f.check==='copy-length' && /#supply/.test(f.sel) && /lines/.test(f.msg)), 'wrap check measures the long phone heading');
   assert.ok(!phone.findings.some(f => f.check==='copy-length' && /Overview/.test(f.text)), 'one-line phone heading needs no wrap warning');
   const terms = report.widths.flatMap(w => w.findings).filter(f => f.check === 'copy-headings');
@@ -409,13 +439,13 @@ if (!variant || variant === 'motion') {
     const file = path.join(tmp, 'motion-'+treatment+'.html');
     const hover = bad ? 'button:hover svg { translate: 3px; }' : 'button:hover { background: #ddd; }';
     const frames = bad ? '<h2><span>Frame</span> <span>and</span> <span>glass</span></h2>' : '<h2>Frame and glass</h2>';
-    fs.writeFileSync(file, `<!doctype html><html lang="en" data-ready="1" data-temper="${loud?'loud':'quiet'}">
+    fs.writeFileSync(file, `<!doctype html><html lang="en" class="m-enter" data-ready="1" data-temper="${loud?'loud':'quiet'}">
       <style>body{margin:0}section{min-height:100vh}button{padding:16px}button svg{width:12px;height:12px}
       ${hover} .hero p{display:inline-block} h2 span{display:inline-block}</style>
-      <main><section class="hero" data-enter="${loud?'set-type':'still'}"><h1>Frames</h1><p>Blue</p><p>Red</p>
-      <button>Choose a frame <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="3"/></svg></button></section>
+      <main><section class="hero" data-enter="${loud?'set-type':bad?'still':'rise'}"><div class="hero__copy" style="min-height:60vh"><h1>Frames</h1><p>Blue</p><p>Red</p>
+      <button>Choose a frame <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="3"/></svg></button></div></section>
       <section id="later" ${loud?'data-moment="lines-rise"':''}>${frames}<p>Local glass.</p></section></main>
-      <script>const animate=el=>el.animate([{opacity:0,transform:'translateY(32px) scale(.9)'},{opacity:1,transform:'none'}],350);
+      ${!bad&&!loud?'<script type="module" src="assets/motion/motion.js"></script>':''}<script>const animate=el=>el.animate([{opacity:0,transform:'translateY(32px) scale(.9)'},{opacity:1,transform:'none'}],350);
       ${bad||loud?"document.querySelectorAll('.hero h1,.hero p').forEach(animate);":''}
       ${bad||loud?"addEventListener('scroll',()=>document.querySelectorAll('#later h2 span,#later h2').forEach(animate),{once:true});":''}
       </script></html>`);

@@ -18,8 +18,11 @@
   }
   function sample(animation) {
     const effect = animation.effect, el = effect?.target;
+    if (animation.id === 'kit-hero-entrance') return;
     if (!(el instanceof Element) || seen.has(animation) || effect.getTiming().iterations === Infinity) return;
     seen.add(animation);
+    // The renderer swaps its fallback for the first completed WebGL frame.
+    if (animation.transitionProperty === 'opacity' && el.matches('[data-fx] > canvas.fx-canvas[aria-hidden=true]')) return;
     const frames = effect.getKeyframes();
     const changes = key => frames.some(f => f[key] != null) && new Set(frames.map(f => f[key])).size > 1;
     const geometry = ['transform','translate','scale','rotate'].some(changes);
@@ -103,7 +106,7 @@
       }
     }
     const share = area/(innerWidth*innerHeight);
-    if (boxes.length > 2 || share > 1/3) warn('entrance-heavy', document.body, boxes.length+' entrance elements cover '+Math.round(share*100)+'% of the first screen.');
+    if (boxes.length > 2 || share > 1/3) warn('entrance-heavy', document.body, boxes.length+' entrance '+(boxes.length === 1 ? 'element covers ' : 'elements cover ')+Math.round(share*100)+'% of the first screen: '+[...entrance.keys()].slice(0,3).map(name).join(', ')+'.');
     return [...findings.values()];
   };
 })();

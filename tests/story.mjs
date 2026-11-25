@@ -148,6 +148,7 @@ assert.ok(ids(page([sec('Mara is booked twice on Thursday'), sec('Friday\'s expo
   assert.ok(warning && warning.msg.includes('second-stop'));
 }
 // close-unanswered
+assert.ok(!ids(page(good, { close: { mainAction:true, sel:"#preorder", h2:"Kestrel ships in March", action:"Open email draft" } }), {notes:NOTES(GOOD)}).includes("close-unanswered:WARN"));
 assert.ok(ids(page(good, { close: { sel: 'footer h2', h2: 'Questions before you start', lead: '', text: 'Questions before you start' } }), { notes: NOTES(GOOD) }).includes('close-unanswered:WARN'));
 // stripe-grounds
 const striped = ['ground-surface', 'page', 'ground-surface', 'page', 'ground-surface'].map((g, i) => sec('Chapter text ' + i, 'Mara Lind', { ground: g }));

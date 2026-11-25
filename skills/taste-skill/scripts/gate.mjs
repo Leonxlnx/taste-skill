@@ -716,6 +716,7 @@ async function dealDrift(html, dot, kind, page, frame, source) {
     if (machine.scene && !archived.has(machine.scene) && !has('data-big-scene',machine.scene)) record('scene',machine.scene);
     if (frame) {
       for (const key of ['hero','entrance','nav','footer','close','buttons','mark']) {
+        if (key === 'nav' && frame.nav === 'direct') continue;
         if (key === 'mark' && frame.mark === 'client-logo') continue;
         if (key === 'entrance' && ['still','off','focus','exposure','aperture','doors','product-at-work'].includes(machine.entrance) &&
             (!frame.entrance || ['still','off','focus','exposure','aperture','doors','product-at-work'].includes(frame.entrance))) continue;
@@ -991,7 +992,7 @@ async function browserChecks(target, proj, opts, gateDir) {
 function merge(list) {
   const m = new Map();
   for (const f of list) {
-    const k = f.check + '|' + f.where;
+    const k = f.check + '|' + (f.check === 'copy-headings' && f.msg.startsWith('Name the subject in ') ? 'slogans' : f.where);
     if (m.has(k)) { const g = m.get(k); for (const w of f.widths || []) if (!g.widths.includes(w)) g.widths.push(w); } else m.set(k, { ...f, widths: [...(f.widths || [])] });
   }
   return [...m.values()];

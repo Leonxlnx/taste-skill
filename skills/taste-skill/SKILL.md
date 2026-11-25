@@ -25,7 +25,7 @@ hooks:
 Build the website a good company would ship: it says plainly what is sold, shows the subject on at least three in four desktop screens, and looks made for this client, not from a template and not like an art piece.
 figma.com and x.ai are the bar (in words: `layout-v4.md`).
 
-`<skill>` is this folder. It needs Node 22+ and Chrome, Edge or Chromium (ffmpeg optional).
+`<skill>` is this folder. Run its commands from the page project. It needs Node 22+ and Chrome, Edge or Chromium (ffmpeg optional).
 
 **How it works.** The skill deals the frame, you compose the content, the kit holds the floor.
 
@@ -47,7 +47,7 @@ These nine win over everything else in this skill.
 
 1. **No caption that explains, apologises for or labels a picture.** A work, project, room or
    product may carry one fact line (`.fact-line`: name, place, size, year or price, 60 characters
-   at most). Licence credits go in one footer line.
+   at most). Label example data inside the product view. Licence credits go in one footer line.
 2. **Every visual renders, never an empty ground,** at 1440, 1024, 768 and 390, and every section
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
 3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone).
@@ -183,7 +183,7 @@ world within the limits of `expressive.md`, each naming its source.
    - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. Background effects are occasional and need a free hero; pass `--effect ask` for a requested effect. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
 
 5. **Build.** Copy the kit into the page once at the start from the installed skill folder, never from a working copy of the skill repository. Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
-   data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class; copy only the
+   data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class. Link directly unless several related destinations share a panel; copy only the
    `<section class="hero …" data-enter>` of the dealt `assets/layout/hero-<id>.html` and make
    every word and picture the client's; move the dealt close and footer out of their
    `<template>`s and delete the rest. Content sections are `main > section` with one `.wrap`, h2 first. A final form or booking panel is the close. Put only links in the footer after an own form section. A dealt `close-form` shares the footer with its links. Count hero and close.
@@ -198,7 +198,7 @@ world within the limits of `expressive.md`, each naming its source.
      with `subskills/image-direction` when the page has six photographs or more.
    - **Kit parts** (UI fragments, diagram cards, effects, moments, scenes) are mounted exactly as
      their reference says, with every name, number and logo rewritten to the client's; run
-     `icons.mjs scan index.html --out assets/icons --colour` last. A form is the starter's
+     `node <skill>/scripts/icons.mjs scan index.html --out assets/icons --colour` last. A form is the starter's
      `booking-form` (`system.md`, Forms).
    - Credits: the one footer line from `photos.mjs credits`. After shooting, copy `shots/tiles/desktop-sec-01-a.jpg` beside the page as `share.jpg`.
 
