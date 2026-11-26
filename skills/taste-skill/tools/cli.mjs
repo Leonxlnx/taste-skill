@@ -5,9 +5,20 @@ import {parseArgs} from 'node:util';
 
 const palettes = JSON.parse(fs.readFileSync(new URL('../library/palettes.json', import.meta.url), 'utf8'));
 const roles = ['bg', 'ink', 'accent', 'muted'];
-const switches = {gradient: ['zone','rich','hues','tier','placement'], pattern: ['fade'], divider: ['next']};
-const extraFormats = {gradient: ['settings','png'], grain: ['uri'], shape: ['path']};
+const switches = {share:['name','headline','mark','panel','icons'],object:['motion'],scribble:['draw'],frame:['edge','label'],chart:['values','labels','unit','title','domain','data'],device:['theme','address'], palette:['brand','second','temperature','paper'], gradient: ['zone','rich','hues','tier','placement'], pattern: ['fade'], divider: ['next']};
+const extraFormats = {share:['html','icon','png'],typescale:['metrics'],object:['html'],grade:['defs'],device:['html'], palette:['json'], gradient: ['settings','png'], grain: ['uri'], shape: ['path']};
 
+const usageNotes={
+  palette:'Use --brand "#rrggbb" and optional --second for the tint. JSON exports one dealer entry; CSS includes inverse roles.',
+  device:'Export --format html for the CSS wrapper. In SVG, put artwork in the nested data-device-screen element.',
+  grade:'Cool and duotone require the inline fragment from --format defs. Exposure is measured in stops.',
+  chart:'Supply --values "12,18,9" or --data readings.json. Use --labels, --unit and --title for direct labels. Progress uses used,capacity; range accepts --domain low,high.',
+  frame:'Choose an edge for ruler or measure. Supply the actual measurement with --label.',
+  scribble:'For the kit draw helper, inline the SVG from --draw on inside the interactive media frame.',
+  object:'The SVG is a still. For optional 56-second drift export HTML and CSS and load kit motion.',
+  typescale:'--format metrics returns endpoint sizes, leading, tracking and estimated character counts by column.',
+  share:'Use --name and --headline. --mark takes a dealt mark name or a 24 × 24 SVG path. --icons folder writes 16, 32 and 180 px assets.',
+};
 function colour(value) {
   const token = value.trim();
   if (/^#[a-f\d]{6}$/i.test(token)) return token.toLowerCase();
@@ -72,6 +83,8 @@ export function run(name, tool) {
         ...(tool.showPresets?['Quiet presets: '+tool.presets.join(', '),'Show presets: '+tool.showPresets.join(', ')]:['Presets: '+tool.presets.join(', ')]),
         'Options: '+keys.map(k => '--'+k).join(' '),
         ...ranges,
+        ...(usageNotes[name]?[usageNotes[name]]:[]),
+        ...Object.entries(tool.choices??{}).map(([key,values])=>'  --'+key+' '+values.join('|')),
         ...(name==='gradient'?['Show: --tier show --rich 0..1 --hues "#rrggbb,#rrggbb,#rrggbb,#rrggbb" --placement panel|ground','Raster CSS and SVG require the adjacent PNG. Use --out hero.css to write both.']:[]),
         'Formats: '+formats.join(', '),
         'Colours: ground,ink,accent[,muted] in hex.',
@@ -79,6 +92,12 @@ export function run(name, tool) {
       return;
     }
     if(options.tier && !['quiet','show'].includes(options.tier))throw Error('Choose quiet or show.');
+    if(name==='chart'&&options.data){
+      const input=JSON.parse(fs.readFileSync(options.data,'utf8'));
+      const data=Array.isArray(input)?{values:input}:input;
+      if(!data||typeof data!=='object'||!Array.isArray(data.values))throw Error('Chart JSON needs a values array.');
+      for(const key of ['values','labels','unit','title','domain','preset'])if(options[key]===undefined&&data[key]!==undefined)options[key]=data[key];
+    }
     options.preset ??= options.tier==='show'?tool.showPresets[0]:tool.presets[0];
     if(options.tier && (options.tier==='show')!==tool.showPresets.includes(options.preset))throw Error('Preset belongs to the other tier.');
     if (![...tool.presets,...(tool.showPresets??[])].includes(options.preset)) throw Error('Unknown preset '+options.preset);
@@ -91,15 +110,35 @@ export function run(name, tool) {
     if (options.zone && !['left','centre','top','none'].includes(options.zone)) throw Error('Unknown text zone');
     if (options.fade && !['radial','linear','none'].includes(options.fade)) throw Error('Unknown fade');
     if (options.next) options.next = colour(options.next);
-    const format = options.format ?? (options.out?.endsWith('.png') ? 'png' : options.out?.toLowerCase().endsWith('.svg') ? 'svg' : 'css');
+    const format = options.format ?? (options.out?.toLowerCase().endsWith('.html') && formats.includes('html') ? 'html' : options.out?.toLowerCase().endsWith('.json') ? 'json' : options.out?.endsWith('.png') ? 'png' : options.out?.toLowerCase().endsWith('.svg') ? 'svg' : ['object','chart','share'].includes(name)&&!options.out ? 'svg' : 'css');
     if (!formats.includes(format)) throw Error('Unavailable format '+format);
     const picture=options.out?path.parse(options.out).name+'.png':options.preset+'.png';
-    const result = tool.generate({...options, picture:encodeURIComponent(picture),palette:readPalette(options)});
+    const input={...options,picture:encodeURIComponent(picture),palette:readPalette(options)};
+    const result=tool.generate(input);
+    if(name==='share'){
+      if(format==='png')Object.assign(result,tool.rasterize(input));
+      if(options.icons){
+        fs.mkdirSync(options.icons,{recursive:true});
+        fs.writeFileSync(path.join(options.icons,'favicon.svg'),result.icon);
+        for(const size of [16,32,180]){
+          fs.writeFileSync(path.join(options.icons,'icon-'+size+'.svg'),tool.icon(input,size));
+          if(['ring','dots'].includes(input.mark??'ring'))fs.writeFileSync(path.join(options.icons,'icon-'+size+'.png'),encode(tool.rasterize(input,size)));
+        }
+      }
+      if(options.preset!=='mark'||!['ring','dots'].includes(input.mark??'ring'))console.error('For PNG, export --format html --out share.html, then run node scripts/shoot.mjs --url share.html --w 1200 --h 630 --out share.png --no-tiles');
+    }
     if(result.pixels && options.out && ['css','svg'].includes(format)) fs.writeFileSync(path.join(path.dirname(options.out),picture),encode(result));
     if(format==='png'&&!result.pixels)throw Error('PNG export requires a raster preset.');
     const output = format==='png'?encode(result):typeof result[format] === 'string' ? result[format] : JSON.stringify(result[format], null, 2);
     if (options.out) fs.writeFileSync(options.out, output);
     else process.stdout.write(output);
+    if(result.metrics){
+      console.error('Estimated characters per line (average glyph 0.52 em plus tracking).');
+      console.error('Role · 390 full · 1440 third / half / full');
+      for(const r of result.metrics)console.error(r.role+' · '+r.cpl.phone+' · '+[r.cpl.third,r.cpl.half,r.cpl.full].join(' / '));
+      for(const warning of result.warnings)console.error('Measure: '+warning);
+    }
+    if(result.ratios) console.error(Object.entries(result.ratios).map(([key,value])=>key+' '+value.toFixed(2)+':1').join(' · '));
     if (result.ratio) console.error((result.zone?'Text zone '+result.zone+' · ':'')+'Contrast '+result.ratio.toFixed(2)+':1');
   } catch (error) {
     console.error(error.message);

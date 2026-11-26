@@ -33,3 +33,20 @@ export function spectrum(accent,rich){
     return hex(colour(low*rich));
   });
 }
+
+export function oklch(colour) {
+  const [lightness,a,b]=lab(colour);
+  return [lightness,Math.hypot(a,b),Math.atan2(b,a)];
+}
+
+// Compress chroma at a fixed hue and lightness until the colour fits sRGB.
+export function fromLch(lightness,chroma,hue) {
+  const at=c=>channels([lightness,c*Math.cos(hue),c*Math.sin(hue)]);
+  let lo=0,hi=chroma;
+  if(at(hi).every(v=>v>=0&&v<=255))return hex(at(hi));
+  for(let i=0;i<16;i++){
+    const mid=(lo+hi)/2;
+    if(at(mid).every(v=>v>=0&&v<=255))lo=mid;else hi=mid;
+  }
+  return hex(at(lo));
+}

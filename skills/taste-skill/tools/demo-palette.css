@@ -1,0 +1,20 @@
+:root {
+  --p-bg: #f5fdf4;
+  --p-surface: #ebf2ea;
+  --p-ink: #1b201a;
+  --p-muted: #4c514b;
+  --p-accent: #456d41;
+  --p-accent-ink: #ffffff;
+  --p-action: #456d41;
+  --p-action-ink: #ffffff;
+  --p-inv-bg: #0e120d;
+  --p-inv-surface: #1b201a;
+  --p-inv-ink: #ecf3eb;
+  --p-inv-muted: #a5aba4;
+  --p-inv-accent: #456d41;
+  --p-inv-accent-ink: #ffffff;
+  --p-inv-action: #456d41;
+  --p-inv-action-ink: #ffffff;
+  --line: #cbd3ca;
+  --p-tint: #dde9db;
+}

@@ -1,0 +1,1 @@
+.ts-grade { --grade-exposure: 1; filter: brightness(var(--grade-exposure)) saturate(0.32) contrast(0.85); }

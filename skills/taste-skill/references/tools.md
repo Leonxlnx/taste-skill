@@ -1,9 +1,18 @@
 # Static material tools
 
-From the page project, prefix each tool path below with the skill folder. Add `--palette moss-sand`, `--from page.css` or `--colours "#f5f2ee,#242822,#617451"`. CSS input reads the first definition of each palette token, including hex, rgb() and simple var() aliases. Page-level --p-* tokens take precedence. Add `--out material.css` to save CSS or `--out material.svg` to save a picture. Open `tools/lab.html` locally to compare each preset on two grounds.
+Prefix tool paths with the skill folder. Choose `--palette moss-sand`, `--from page.css` or `--colours "#f5f2ee,#242822,#617451"`. CSS input reads the first hex, rgb() or var() definition, preferring --p-* tokens. Save with `--out material.css` or `--out material.svg`. Compare presets offline in `tools/lab.html`.
 
 | Tool | Output and places to use it | Command | Placement |
 |---|---|---|---|
+| Palette | Brand colours for a page, interface or campaign, with measured ink and action contrasts | `node tools/palette.mjs --brand "#246c56" --preset light --out brand.css` | Check the action on its actual ground. Use `--format json` for a dealer entry. |
+| Device | Browser, terminal and hardware frames for a screenshot, walkthrough or transcript | `node tools/device.mjs --preset phone --out phone.css` | Nest `.device-screen` in `.ts-device`. Export the wrapper with `--format html`. |
+| Grade | One photographic treatment for an essay, property gallery or product series | `node tools/grade.mjs --preset neutral-match --out photos.css` | Compare the set side by side. Cool and duotone also need the inline SVG from `--format defs`. Adjust individual exposure in stops. |
+| Chart | Directly labelled SVG for a usage meter, route profile or measured comparison | `node tools/chart.mjs --preset progress-ring --values 16,31 --unit km` | Use supplied numbers. JSON via `--data file.json` accepts values, labels, unit and title. |
+| Frame | Corner marks, rules and measurements for a media crop, inset panel or drawing | `node tools/frame.mjs --preset ruler --edge bottom` | Leave a gutter around the subject for the marks. Label real measurements with `--label`. |
+| Scribble | A seeded pen mark for a word, margin annotation or directional cue | `node tools/scribble.mjs --preset underline --seed 12` | Mark one word on a quiet page. For the kit’s draw helper, inline the SVG from `--draw on` inside the interactive section. |
+| Object | Seeded linework or planes for an abstract hero, chapter opener or cover | `node tools/object.mjs --preset orbits --seed 18 --out orbit.svg` | Give the form its own frame. For optional drift, export HTML and CSS with `--motion drift` and load kit motion. |
+| Typescale | Six fluid text roles for a product page, long read or dense interface | `node tools/typescale.mjs --preset editorial --ratio 1.25` | Adjust body measure using the real face. Character counts estimate a 0.52 em average glyph. |
+| Share | A link picture, publication card and favicon set | `node tools/share.mjs --name "Plane Press" --headline "Orbital studies" --icons icons --out share.svg` | Keep the page’s mark. Ring and dots support built-in PNG export without text. |
 | Gradient | A still for a hero, share image or product panel | `node tools/gradient.mjs --preset organza --seed 4 --out hero.css` | Use a show preset for the picture. Reserve quiet presets for section grounds. |
 | Grain | A repeating tile for a closing band, print specimen or image placeholder | `node tools/grain.mjs --preset colour-dither --format uri` | Inspect the tile at actual size. |
 | Pattern | Marks for a diagram, section band or map inset | `node tools/pattern.mjs --preset contour --fade linear` | Let the pattern dissolve before the paragraph. |

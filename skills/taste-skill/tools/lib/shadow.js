@@ -4,6 +4,10 @@ export const presets = ['height-1','height-2','height-3','height-4','height-5','
 export const uses = ['floating product window','dialog','menu'];
 export const knobs = {amount:[0,1,.5]};
 
+export function contactLayers() {
+  return [[8,9,-8,136], [20,26,-22,96]];
+}
+
 export function generate(options) {
   const {bg, accent, amount} = config(options);
   const preset = options.preset ?? 'height-2';
@@ -24,7 +28,7 @@ export function generate(options) {
   } else {
     // Offset, blur radius, spread and alpha byte drive both representations.
     const layers = preset === 'contact'
-      ? [[8,9,-8,136], [20,26,-22,96]]
+      ? contactLayers()
       : [[1,2,0,24], [height,height*3,-height,opacity], [lift,lift*2,-Math.round(lift*.55),opacity]];
     shadow = layers.map(([y,blur,spread,a]) =>
       `0 ${y}px ${blur}px ${spread}px ${tint}${a.toString(16).padStart(2,'0')}`).join(', ');
