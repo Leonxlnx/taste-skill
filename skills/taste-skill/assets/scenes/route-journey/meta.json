@@ -1,0 +1,80 @@
+{
+  "id": "route-journey",
+  "name": "Route journey",
+  "family": "camera-through-space",
+  "classic": 1,
+  "look": "A traveller (a top-down truck, a boat, a drone) stays parked on screen while a tilted map slides and turns under it along a route that draws itself, stopping at three to five stops where a board swings up and a gauge counts a real unit, until the camera cranes overhead and the destination, drawn as the subject itself, lights up from its centre out. Use it when the story really is a trip: a delivery, a tour, a supply chain, a process told as a road.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 4,
+  "restH": 2,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same journey with phone numbers: tilt 46, zoom 0.9, the traveller centred, the intro across the top and the stops on a plate at the foot; hold 0.85 of the desktop's.",
+  "maxPerPage": 1,
+  "weight": 0.6,
+  "place": "In the middle, on how it works or the about (the route a shipment, a walker or a season really takes), or as the contact when the way to the place is the story. The arrival line and its action close that part of the argument. Never for a plain list of steps, and only when the map can be drawn as the real place: a coast, a fjord or a mountain road is drawn as one, never as the demo's inland town.",
+  "content": "One route as an SVG path in map pixels, 3000-4200 long, corners of 160px radius or more (300 at the stops), the first leg heading up the map; three to five stops (four by default), each with a 2-4 word title, a 25-40 word body and a gauge value in one real unit (km, days, metres, a year). A heading of 4-8 words, a lede of 30 words or fewer, an arrival line of 6-10 words and a 2-3 word action. Draw the map for this subject as the page's own .route-art, in the scene's classes so it takes the page's colours: the real route and what it really passes, with water, coast and relief where they really lie (traced from an open map of the place, in map px), and the destination drawn as the subject itself seen from above, as #route-dest (the house by the water, the shop front, the farm; never a grid of tiles), with the parts that light up on arrival classed .rd-lit. Without .route-art the scene rides a bare ground with only the road on it: honest but empty, a stand-in, never the place. The demo's town, lakes, fields and tile plot are placeholders, and a fjord or a coast shown as an inland town reads as the demo. The traveller is drawn in SVG; a cut-out of the real vehicle can replace it. Never invent a route for something that does not travel.",
+  "options": "hold 1.6 + 0.8 a leg, 4.0 for four stops, at most 5 (1-6); phoneHold hold x 0.85; phone 'same' | 'rest'; scrub 0.6 (0-1), locked with Lenis; heading 'up' (the road ahead points up the screen) | 'north'; tilt 52 (0-62), 0 a flat map chase; phoneTilt 46; zoom 1.25 (1-1.5); phoneZoom 0.9; push 0.09 (0-0.12) push-in at each stop; phonePush 0.07; arrive 2.0 (1.3-2.4) zoom over the destination; phoneArrive 1.0; orbit 8 (0-12) degrees of swing at each stop; smooth 320 (160-400) map px of heading smoothing; plotGap 96 map px from the route's end to the centre of #route-dest; unit 'auto' or a step such as 0.5; perspective 1000 desktop, 900 compact, 760 phone (600-2400); bake true (the map is painted into bitmaps before the ride) | false.",
+  "roles": [
+    "how-it-works",
+    "about",
+    "features",
+    "showcase",
+    "contact"
+  ],
+  "position": "middle",
+  "sectors": [
+    "hospitality",
+    "event",
+    "consumer-app",
+    "ecommerce",
+    "physical-product",
+    "saas",
+    "nonprofit",
+    "real-estate",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "route"
+    ],
+    "content": "One route as an SVG path in map pixels, 3000-4200 long, corners of 160px radius or more (300 at the stops), the first leg heading up the map; three to five stops (four by default), each with a 2-4 word title, a 25-40 word body and a gauge value in one real unit (km, days, metres, a year). A heading of 4-8 words, a lede of 30 words or fewer, an arrival line of 6-10 words and a 2-3 word action. Draw the map for this subject as the page's own .route-art, in the scene's classes so it takes the page's colours: the real route and what it really passes, with water, coast and relief where they really lie (traced from an open map of the place, in map px), and the destination drawn as the subject itself seen from above, as #route-dest (the house by the water, the shop front, the farm; never a grid of tiles), with the parts that light up on arrival classed .rd-lit. Without .route-art the scene rides a bare ground with only the road on it: honest but empty, a stand-in, never the place. The demo's town, lakes, fields and tile plot are placeholders, and a fjord or a coast shown as an inland town reads as the demo. The traveller is drawn in SVG; a cut-out of the real vehicle can replace it. Never invent a route for something that does not travel."
+  },
+  "never": "Never for a plain list of steps, and only when the map can be drawn as the real place: a coast, a fjord or a mountain road is drawn as one, never as the demo's inland town. never a grid of tiles), with the parts that light up on arrival classed . Never invent a route for something that does not travel.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/route-journey/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"route-journey\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

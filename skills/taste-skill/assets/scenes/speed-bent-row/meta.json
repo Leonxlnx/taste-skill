@@ -1,0 +1,74 @@
+{
+  "id": "speed-bent-row",
+  "name": "A row the scroll speed bends",
+  "family": "horizontal-travel",
+  "classic": 1,
+  "look": "The stage holds for two screens while the page scroll carries one row of six to eight pictures of one body of work sideways along a gentle curved surface in CSS 3D, each with its name set large beneath it, turned to face the viewer. Only the visitor's pace bends it: even a slow scroll flexes the row, and a fast one deepens the curve, leans the leading pictures back, sags the middle and lifts the far end, while any card turned past about 30 degrees fades instead of squashing; once the scroll stops the row eases back over about half a second to its gentle, tidy rest. The whole body of work reads as one flexible object; nothing captures the wheel, nothing is dragged, nothing loops.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "playful",
+    "product",
+    "editorial"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "No pin and no sideways travel: the pictures stand as a vertical stack in the page, each 3:2 picture whole with its name under it, and the stack bows visibly with the speed of the page (a flick of about a screen a second bows it most of the way: pictures above and below the middle of the screen tilt away and recede, the one in the middle stays flat and near), easing back flat over about half a second once the scroll stops. Touch scrolling is never smoothed or captured.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle of the page, on a series, a collection or a line-up (one photographer's series, one season's looks, one maker's pieces), where a grid of cards would otherwise go; each picture one piece, linking to it. Not as the page's work section: each card is about a quarter of the width, and on the work each piece stops at 60% of the width or more (references/scenes.md section 3), so the work is shown at size elsewhere. A quiet section comes before it and after it. Never on the first screen (its row needs the scroll to read as one object) and never beside another horizontal scene.",
+  "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead.",
+  "options": "hold 2 (1.6-2.6; the travel is measured from the row, so a longer hold only slows it); curve 0.04 (0-0.08) the gentle resting curve, never tilted side cards round a flat middle; depth 0.1 (0-0.16) how much deeper the curve gets at full speed (cards turned past 26 degrees fade out by 34 and never turn further); pull 0.06 (0-0.1) how far the row comes nearer at full speed; lean 16 (0-22) degrees the leading pictures lean back; lift 0.08 (0-0.12) how far the far end lifts, as a share of the height; speed 0.55 (0.25-2) screen widths a second of travel that bends it most of the way; settle 0.5 (0.3-0.9) seconds it takes to ease back flat; perspective 950 (800-1400); phone 'same' (the stack bows with speed) | 'rest' (the plain stack); bow 14 (0-20) degrees the phone stack bows; scrub true with Lenis, else 0.5.",
+  "roles": [
+    "gallery",
+    "showcase",
+    "list"
+  ],
+  "position": "middle",
+  "sectors": [
+    "music",
+    "fashion",
+    "culture",
+    "ecommerce",
+    "event"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:6"
+    ],
+    "content": "Six to eight of the client's own photographs of one body of work (one photographer's series, one maker's pieces, one season's looks), each once, in one grade and in full colour; landscape originals 1280px wide or more, cropped to 4:5 on the row with object-position per picture and shown whole at 3:2 on the phone stack. One name per picture, 1-2 words and 14 characters or fewer, naming what it shows (a place, a title, a piece): the names are set at 12% of the card width, and a longer one wraps and shrinks on the far side. A heading of 2-5 words and one line of 6-14 words. The row is plain HTML: an ol of links, each a figure with its picture and a figcaption. Fewer than six pictures make the row thin and the travel short: take a plain row instead."
+  },
+  "never": "Never on the first screen (its row needs the scroll to read as one object) and never beside another horizontal scene.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/speed-bent-row/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"speed-bent-row\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

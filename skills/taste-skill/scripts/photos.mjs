@@ -203,8 +203,13 @@ const DETAIL_SUBJECTS = new Set(['hands', 'detail', 'part', 'load', 'oven', 'dou
 const isDetailIn = (p, trade) => DETAIL_SUBJECTS.has(p.subject) && !(trade === 'bakery' && p.subject === 'food') && !(p.subject === 'breakfast' && trade !== 'hotel');
 const PD = (p) => /public domain/i.test(p.licence || '');
 
+// a Commons file whose author field is empty, "Unknown", or a link to a category ("Category:Government of ...") has no
+// author to name: it is credited as an unknown author on Wikimedia Commons, never by the category's name
+const UNKNOWN_BY = 'unknown author, Wikimedia Commons';
+const noAuthor = (by) => !String(by || '').trim() || /^\s*(category|user talk|template)\s*:/i.test(by) || /^\s*unknown(\s+author)?\b/i.test(by) || /^\s*(anonymous|anonyme?|n\/a)\s*$/i.test(by);
+const commonsBy = (by) => (noAuthor(by) ? UNKNOWN_BY : String(by).trim());
 function credit(p) {
-  return p.source === 'commons' ? `Photo by ${p.by}, ${p.licence}, via Wikimedia Commons (${p.page})` : `Photo by ${p.by} on Unsplash (${p.page})`;
+  return p.source === 'commons' ? `Photo by ${commonsBy(p.by)}, ${p.licence}, via Wikimedia Commons (${p.page})` : `Photo by ${p.by} on Unsplash (${p.page})`;
 }
 const PLACE = {
   lead: 'hero: full-bleed, or the large first picture beside the headline, plain (no print, grade or reveal over it); text only on its calm side',
@@ -641,10 +646,51 @@ function pick() {
 // building and rooms, a wedding, a product of the client's kind). Results are candidates, kept in
 // <out>/.taste-skill/found.json so fetch and credits treat them as library frames; every one is looked at full size and
 // listed in the report as a stand-in for the client's own photograph.
+// the only links that reach credits.json and the credits markup: http(s), on the host each source serves its pages and licences from
+const LINK_HOSTS = { commons: { page: ['commons.wikimedia.org'], licence: ['creativecommons.org'] }, unsplash: { page: ['unsplash.com'], licence: ['unsplash.com'] } };
+function okUrl(u, hosts, httpsOnly) {
+  if (typeof u !== 'string' || u.length > 2000 || /[\s"'<>`\\]/.test(u)) return false;
+  let x; try { x = new URL(u); } catch { return false; }
+  return (x.protocol === 'https:' || (!httpsOnly && x.protocol === 'http:')) && !x.username && !x.password && !x.port && hosts.some((h) => x.hostname === h || x.hostname === 'www.' + h);
+}
 const foundFile = (out) => path.join(out, '.taste-skill', 'found.json');
+// found.json sits in the project and anyone can edit it: an entry is read only when it has the shape search writes (an f and
+// a number, a JPEG on upload.wikimedia.org, its page on Commons, a licence search keeps and its link on creativecommons.org
+// or none, no files), and it is rebuilt from those fields alone, so it never names a file to copy, a path or a link of its own.
+// Anything else is skipped with one warning line.
+const plain = (x, n) => (typeof x === 'string' ? x.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, n) : '');
+function foundEntry(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return 'not an entry';
+  if (typeof p.id !== 'string' || !/^f\d{1,12}$/.test(p.id)) return 'its id is not an f and a number';
+  if ('files' in p) return 'it lists files (only library frames have files)';
+  if (p.source !== 'commons') return 'its source is not commons';
+  if (!okUrl(p.url, ['upload.wikimedia.org'], true) || !/^\/wikipedia\/commons\/\w\/\w\w\/[^/]+$/.test(new URL(p.url).pathname)) return 'its url is not a Commons file on upload.wikimedia.org';
+  if (!okUrl(p.page, LINK_HOSTS.commons.page)) return 'its page is not an http(s) link on ' + LINK_HOSTS.commons.page.join(' or ');
+  if (p.licenceUrl && !okUrl(p.licenceUrl, LINK_HOSTS.commons.licence)) return 'its licenceUrl is not an http(s) link on ' + LINK_HOSTS.commons.licence.join(' or ');
+  const licence = plain(p.licence, 60);
+  if (!LICENCE_OK.test(licence) || /\b(nc|nd)\b/i.test(licence)) return 'its licence is not one search keeps';
+  const width = Math.round(+p.width), height = Math.round(+p.height);
+  if (!(width > 0 && height > 0 && width <= 1e5 && height <= 1e5)) return 'its width or height is not a number';
+  const ratio = Math.round((width / height) * 100) / 100;
+  return { id: p.id, source: 'commons', url: p.url, width, height, ratio, orientation: ratio >= 1.05 ? 'landscape' : ratio <= 0.95 ? 'portrait' : 'square',
+    by: commonsBy(plain(p.by, 200)), licence, licenceUrl: p.licenceUrl || '', page: p.page, alt: plain(p.alt, 300) || p.id,
+    subject: /^[a-z][a-z -]{0,30}$/.test(p.subject) ? p.subject : 'stand-in', tone: 'mid', calm: 'none', standIn: true,
+    ...(plain(p.query, 120) ? { query: plain(p.query, 120) } : {}), ...(plain(p.trade, 60) ? { trade: plain(p.trade, 60) } : {}) };
+}
 function readFound(...outs) {
   const m = new Map();
-  for (const o of outs) { try { for (const p of JSON.parse(fs.readFileSync(foundFile(o), 'utf8')).photos || []) m.set(p.id, p); } catch { /* none */ } }
+  m.refused = new Map();
+  for (const f of [...new Set(outs.map((o) => path.resolve(foundFile(o))))]) {
+    let list;
+    try { list = JSON.parse(fs.readFileSync(f, 'utf8')).photos; } catch { continue; }
+    for (const p of Array.isArray(list) ? list : []) {
+      const q = foundEntry(p);
+      if (typeof q === 'object') { m.set(q.id, q); continue; }
+      const id = JSON.stringify(String(p && p.id).slice(0, 40));
+      m.refused.set(String(p && p.id), q);
+      console.warn(`photos: skipped ${id} in ${slash(f)}: ${q}`);
+    }
+  }
   return m;
 }
 const LICENCE_OK = /^(cc0|cc[ -]by(-sa)?[ -]\d|public domain|pd\b|pdm)/i;
@@ -698,8 +744,8 @@ async function searchCmd() {
       if (mine.some((m) => m.series === series)) continue;
       seen.add(id);
       // the plain file URL (Commons adds tracking words after "?"): fetch makes its 500, 960 and 1280 thumbnails from it
-      mine.push({ id, source: 'commons', url: String(ii.url).split('?')[0], width: ii.width, height: ii.height, ratio, orientation, by: val('Artist') || 'Unknown author', licence,
-        licenceUrl: val('LicenseUrl') || (/public domain|pd/i.test(licence) ? 'https://creativecommons.org/publicdomain/mark/1.0/' : ''), page: String(ii.descriptionurl).split('?')[0],
+      mine.push({ id, source: 'commons', url: String(ii.url).split('?')[0], width: ii.width, height: ii.height, ratio, orientation, by: commonsBy(val('Artist')), licence,
+        licenceUrl: okUrl(val('LicenseUrl'), LINK_HOSTS.commons.licence) ? val('LicenseUrl') : (/public domain|pd/i.test(licence) ? 'https://creativecommons.org/publicdomain/mark/1.0/' : ''), page: String(ii.descriptionurl).split('?')[0],
         alt: val('ObjectName') || title, subject: typeof opt('subject') === 'string' ? opt('subject') : 'stand-in', tone: 'mid', calm: 'none',
         standIn: true, query: q, series, ...(tradeWord ? { trade: tradeWord } : {}), at: new Date().toISOString() });
     }
@@ -834,13 +880,21 @@ function sizesFor(p, hero) {
   return '(max-width: 1023px) 100vw, 50vw';
 }
 const LIB_DIR = path.join(HERE, '..', 'assets', 'photos');
+// a file fetch copies or writes: a plain name (letters, digits, dot, dash, underscore) that resolves inside its folder, never a path
+const SAFE_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]{0,159}$/;
+function fileIn(dir, name) {
+  const base = path.resolve(dir), to = path.resolve(base, String(name));
+  if (!SAFE_NAME.test(String(name)) || path.dirname(to) !== base) throw new Error('refused the file name ' + JSON.stringify(String(name).slice(0, 60)) + ': not a plain name inside ' + slash(base));
+  return to;
+}
+const libFile = (f) => fileIn(path.join(LIB_DIR, 'img'), String(f.file).replace(/^img\//, ''));
 // the page's images together (perf.mjs: WARN above 1,200 KiB, FAIL above 2,400 KiB at 1440; references/perf.md). Counted: the file each
 // photograph of the folder loads on a 1440 screen (a hero at 2x the full width: its largest; any other at 2x half the width: 1440 wide, else its largest); the phone crop is not
 const PAGE_KIB = { warn: 1200, fail: 2400 };
 function pageWeight(dir, photos) {
   const rows = [], crop = /\d+x\d+\.\w+$/;
   for (const c of photos) {
-    const fl = (c.files || []).filter((n) => !crop.test(n)).map((n) => ({ n, w: +(/-(\d+)\.\w+$/.exec(n) || [0, 1e9])[1] || 1e9, p: path.join(dir, n) })).filter((f) => fs.existsSync(f.p)).sort((a, b) => a.w - b.w);
+    const fl = (Array.isArray(c.files) ? c.files : []).filter((n) => SAFE_NAME.test(String(n)) && !crop.test(n)).map((n) => ({ n, w: +(/-(\d+)\.\w+$/.exec(n) || [0, 1e9])[1] || 1e9, p: path.join(dir, n) })).filter((f) => fs.existsSync(f.p)).sort((a, b) => a.w - b.w);
     if (!fl.length) continue;
     const hero = (c.files || []).some((n) => crop.test(n));
     const f = hero ? fl.at(-1) : (fl.find((x) => x.w >= 1440) || fl.at(-1));
@@ -862,19 +916,23 @@ async function fetchCmd() {
   const credFile = path.join(dir, 'credits.json');
   let cred = { note: 'Credits for the photographs in this folder: photos.mjs credits prints the footer block for the ones the pages use.', photos: [] };
   try { cred = JSON.parse(fs.readFileSync(credFile, 'utf8')); } catch { /* new */ }
+  if (!cred || typeof cred !== 'object' || Array.isArray(cred)) cred = { photos: [] };
+  cred.photos = goodCredits(cred, credFile); // an entry with a link of its own is dropped from credits.json, not written back
   const failed = [], tags = [], saved = [];
   // a live search's results (photos.mjs search, .taste-skill/found.json in the site folder or here) fetch like library frames
   const found = readFound(out, '.');
   for (const id of ids) {
     const p = byId.get(id) || found.get(id);
-    if (!p) { failed.push(id + (/^f\d+$/.test(id) ? ': not in .taste-skill/found.json (run photos.mjs search with the same --out first)' : ': not in the library')); continue; }
+    if (!p) { failed.push(id + (found.refused.has(id) ? ': refused, its .taste-skill/found.json entry is not one photos.mjs search writes (' + found.refused.get(id) + ')' : /^f\d+$/.test(id) ? ': not in .taste-skill/found.json (run photos.mjs search with the same --out first)' : ': not in the library')); continue; }
     if (p.weak) { failed.push(id + ': never dealt' + (p.why ? ' (' + p.why + ')' : '')); continue; }
+    const H = LINK_HOSTS[p.source];
+    if (!H || !okUrl(p.page, H.page) || (p.licenceUrl && !okUrl(p.licenceUrl, H.licence))) { failed.push(id + ': refused, its page or licence link is not an http(s) link on its source\'s own host'); continue; }
     const isHero = hero.has(id);
     let files = [], names = [], srcName, srcW;
     try {
-      if (p.files) {
-        // a file of the library: copied, no download. The hero gets every size, any other photograph its 1200 (and the largest with --big)
-        const have = p.files.filter((f) => fs.existsSync(path.join(LIB_DIR, f.file)));
+      if (p.files && byId.get(id) === p) {
+        // a file of the library (a shipped frame only, never a found.json entry): copied, no download. The hero gets every size, any other photograph its 1200 (and the largest with --big)
+        const have = p.files.filter((f) => fs.existsSync(libFile(f)));
         if (!have.length) throw new Error('its files are missing from assets/photos/img');
         let use = isHero ? have : have.filter((f) => f.w <= 1280);
         if (!use.length) use = [have[0]];
@@ -882,19 +940,20 @@ async function fetchCmd() {
         use = [...new Map(use.map((f) => [f.w, f])).values()].sort((x, y) => x.w - y.w);
         for (const f of use) {
           const name = 'photo-' + id + '-' + f.w + path.extname(f.file);
-          fs.copyFileSync(path.join(LIB_DIR, f.file), path.join(dir, name));
-          files.push({ file: name, w: f.w, kb: Math.round(fs.statSync(path.join(dir, name)).size / 1024) });
+          fs.copyFileSync(libFile(f), fileIn(dir, name));
+          files.push({ file: name, w: f.w, kb: Math.round(fs.statSync(fileIn(dir, name)).size / 1024) });
         }
       } else {
         const big = Math.min(isHero ? 1920 : 1280, p.width || 1920);
         const sizes = [...STEPS.filter((w) => w < big), big];
+        fileIn(dir, 'photo-' + id + '.webp'); // the id makes the file names: refused before anything is downloaded
         for (const w of sizes) {
           let buf = await download(fileUrl(p, w));
           const webp = toWebp(buf); // WebP when ffmpeg is on the path (PH-27), else the JPEG as served
           if (webp) buf = webp;
           const ext = webp ? '.webp' : '.jpg';
           const file = w === big ? 'photo-' + id + ext : 'photo-' + id + '-' + w + ext;
-          fs.writeFileSync(path.join(dir, file), buf);
+          fs.writeFileSync(fileIn(dir, file), buf);
           files.push({ file, w, kb: Math.round(buf.length / 1024) });
           if (p.source === 'commons') await sleep(700); // Commons answers 429 to quick runs
         }
@@ -912,7 +971,7 @@ async function fetchCmd() {
     let crop = null;
     if (isHero) {
       const from = files.find((f) => f.w / p.ratio >= HERO_CROP.h) || files.at(-1), name = 'photo-' + id + '-' + HERO_CROP.w + 'x' + HERO_CROP.h + '.webp';
-      if (cropFile(path.join(dir, from.file), path.join(dir, name), p.focus)) crop = { file: name, kb: kb(path.join(dir, name)) };
+      if (cropFile(fileIn(dir, from.file), fileIn(dir, name), p.focus)) crop = { file: name, kb: kb(fileIn(dir, name)) };
     }
     names = [...files.map((f) => f.file), ...(crop ? [crop.file] : [])];
     cred.photos = cred.photos.filter((x) => x.id !== id);
@@ -920,7 +979,7 @@ async function fetchCmd() {
     const h = Math.round(srcW / p.ratio);
     const srcset = files.map((f) => rel + '/' + f.file + ' ' + f.w + 'w').join(', ');
     const style = [p.focus ? 'object-position: ' + p.focus : '', lqip && p.lqip ? 'background: center / cover url(' + p.lqip + ')' : ''].filter(Boolean).join('; ');
-    tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero && (crop ? 'crop' : 'whole')) + '" width="' + srcW + '" height="' + h + '" alt="' + p.alt.replace(/"/g, '&quot;') + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + (isHero && !crop ? ' data-phone-fill' : '') + ' data-source="' + (p.standIn ? 'stand-in' : 'library-057') + '" data-subject="' + p.subject + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));
+    tags.push('<img src="' + rel + '/' + srcName + '" srcset="' + srcset + '" sizes="' + sizesFor(p, isHero && (crop ? 'crop' : 'whole')) + '" width="' + srcW + '" height="' + h + '" alt="' + escH(p.alt) + '"' + (isHero ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + (isHero && !crop ? ' data-phone-fill' : '') + ' data-source="' + (p.standIn ? 'stand-in' : 'library-057') + '" data-subject="' + escH(p.subject) + '"' + (style ? ' style="' + style + '"' : '') + '>' + (p.wide ? '  <!-- wide: style="--ratio: 66.7%" on its frame -->' : ''));
     if (crop) { const i = tags.length - 1; tags[i] = '<picture data-phone-fill><source media="' + HERO_CROP.media + '" srcset="' + rel + '/' + crop.file + ' ' + HERO_CROP.w + 'w" sizes="100vw">' + tags[i] + '</picture>'; }
     // where the hero's tag goes: a full-bleed photograph (hero--place, hero--photo) is the section's one layer
     if (isHero) tags[tags.length - 1] += crop ? '  <!-- full-bleed (hero--place, hero--photo): <picture class="hero__bg">, a direct child of the section beside its .wrap; in a frame (.hero__media): as printed -->'
@@ -956,20 +1015,36 @@ async function fetchCmd() {
 const escH = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const creditSources = (list) => [...new Set(list.map((c) => c.source))].sort().join(' and ');
 function creditLine(list, href) {
-  return '<a class="credits" href="' + escH(href) + '">Photographs via ' + creditSources(list) + '</a>';
+  return '<a class="credits" href="' + escH(href) + '">Photographs via ' + escH(creditSources(list)) + '</a>';
 }
+// credits.json sits in the site folder and anyone can edit it: an entry is credited only when its source is one fetch writes and its
+// page and licence links are http(s) on that source's own host (LINK_HOSTS); any other is skipped with one warning line
+const CREDIT_HOSTS = { 'Wikimedia Commons': LINK_HOSTS.commons, Unsplash: LINK_HOSTS.unsplash };
+function creditWhy(c) {
+  if (!c || typeof c !== 'object' || typeof c.id !== 'string' || !c.id) return 'not an entry';
+  const H = Object.hasOwn(CREDIT_HOSTS, c.source) ? CREDIT_HOSTS[c.source] : null;
+  if (!H) return 'its source is not Wikimedia Commons or Unsplash';
+  if (!okUrl(c.page, H.page)) return 'its page is not an http(s) link on ' + H.page.join(' or ');
+  if (c.licenceUrl && !okUrl(c.licenceUrl, H.licence)) return 'its licenceUrl is not an http(s) link on ' + H.licence.join(' or ');
+  return '';
+}
+const goodCredits = (cred, file) => (Array.isArray(cred && cred.photos) ? cred.photos : []).filter((c) => {
+  const why = creditWhy(c);
+  if (why) console.warn('photos: skipped ' + JSON.stringify(String(c && c.id).slice(0, 40)) + ' in ' + slash(file) + ': ' + why);
+  return !why;
+});
 function creditList(list) {
   const set = [...new Set(list.map((c) => c.source))];
-  const via = (c) => (set.length > 1 ? (c.source === 'Unsplash' ? ' on Unsplash' : ', via Wikimedia Commons') : '');
+  const via = (c) => (set.length > 1 && !(c.source === 'Wikimedia Commons' && noAuthor(c.by)) ? (c.source === 'Unsplash' ? ' on Unsplash' : ', via Wikimedia Commons') : '');
   const items = list.map((c) => c.source === 'Wikimedia Commons'
-    ? '<li><a href="' + escH(c.page) + '">' + escH(c.by) + '</a>, <a href="' + escH(c.licenceUrl) + '">' + escH(c.licence) + '</a>' + (c.adapted ? ', adapted' : '') + via(c) + '</li>'
+    ? '<li><a href="' + escH(c.page) + '">' + escH(commonsBy(c.by)) + '</a>, ' + (c.licenceUrl ? '<a href="' + escH(c.licenceUrl) + '">' + escH(c.licence) + '</a>' : escH(c.licence)) + (c.adapted ? ', adapted' : '') + via(c) + '</li>'
     : '<li><a href="' + escH(c.page) + '">' + escH(c.by) + '</a>' + (c.adapted ? ', adapted' : '') + via(c) + '</li>');
   return '<section class="credits-list" id="credits" aria-labelledby="credits-h">\n  <h1 id="credits-h">Photograph credits</h1>\n  <ul>\n    ' + items.join('\n    ') + '\n  </ul>\n</section>';
 }
 // the same list as plain text (a report, a README): the one footer line, then every photograph
 function creditText(list) {
   const line = 'Photographs via ' + creditSources(list);
-  return [line, ...list.map((c) => '- ' + c.by + (c.source === 'Wikimedia Commons' ? ', ' + c.licence + (c.licenceUrl ? ' (' + c.licenceUrl + ')' : '') : '') + (c.adapted ? ', adapted' : '') + ', ' + c.page + (c.where ? ' [' + c.where + ']' : ''))].join('\n');
+  return [line, ...list.map((c) => '- ' + (c.source === 'Wikimedia Commons' ? commonsBy(c.by) : c.by) + (c.source === 'Wikimedia Commons' ? ', ' + c.licence + (c.licenceUrl ? ' (' + c.licenceUrl + ')' : '') : '') + (c.adapted ? ', adapted' : '') + ', ' + c.page + (c.where ? ' [' + c.where + ']' : ''))].join('\n');
 }
 // the credits page: the site's own legal-page shell (privacy.html, terms.html, else the first other page) with its main replaced by the list
 function creditsPage(out, name, list, brand) {
@@ -999,8 +1074,9 @@ function creditsCmd() {
   const html = pages.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
   const adapted = new Set(String(opt('adapted', '')).split(',').filter(Boolean));
   const on = (c) => new RegExp('photo-' + escRe(c.id) + '(?![0-9A-Za-z])').test(html);
-  const used = cred.photos.filter(on).map((c) => ({ ...c, adapted: adapted.has(c.id) }));
-  const unused = cred.photos.filter((c) => !on(c)).map((c) => c.id);
+  const fine = goodCredits(cred, path.join(dir, 'credits.json'));
+  const used = fine.filter(on).map((c) => ({ ...c, adapted: adapted.has(c.id) }));
+  const unused = fine.filter((c) => !on(c)).map((c) => c.id);
   if (!used.length) die('none of the fetched photographs is on the page');
   const line = creditLine(used, href);
   const text = /<a [^>]*>(.*?)<\/a>/.exec(line)[1];
@@ -1015,6 +1091,12 @@ function creditsCmd() {
   }
   if (text.length > 110) console.log('WARNING: the footer line is ' + text.length + ' characters (110 at most): name the sources only');
   if (unused.length) console.log('not on the page, so not credited (delete their files): ' + unused.join(', '));
+  // every photograph the pages use has its credit: one entry each, counted against the files the markup loads
+  const onPage = [...new Set([...html.matchAll(/photo-([a-z]?\d+)(?![0-9A-Za-z])/g)].map((m) => m[1]))];
+  const bare = onPage.filter((id) => !fine.some((c) => c.id === id));
+  console.log(onPage.length + ' photographs on the page, ' + used.length + ' credited' + (bare.length ? '; NOT CREDITED (no entry in credits.json: fetch them with photos.mjs fetch, or credit them by hand): ' + bare.map((id) => 'photo-' + id).join(', ') : ''));
+  const unknown = used.filter((c) => c.source === 'Wikimedia Commons' && noAuthor(c.by));
+  if (unknown.length) console.log('no author on Commons, credited as "' + UNKNOWN_BY + '": ' + unknown.map((c) => c.id).join(', '));
 }
 
 if (cmd === 'pick') pick();

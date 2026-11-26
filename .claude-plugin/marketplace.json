@@ -1,6 +1,6 @@
 {
   "name": "taste-skill",
-  "description": "tasteskill 2.5.1: professional company websites at the figma.com and x.ai level, checked in a real browser.",
+  "description": "tasteskill 2.5.2: professional company websites at the figma.com and x.ai level, checked in a real browser.",
   "owner": {
     "name": "leonxlnx",
     "email": "hello@tasteskill.dev"
@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "taste-skill",
-      "description": "tasteskill 2.5.1: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser checker and finish gate.",
-      "version": "2.5.1",
+      "description": "tasteskill 2.5.2: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser checker and finish gate.",
+      "version": "2.5.2",
       "source": "./",
       "skills": ["./skills/taste-skill"],
       "author": {

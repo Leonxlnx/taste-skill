@@ -23,7 +23,8 @@
     mounts the dealt moments once; data-ready waits for them.
   - peek: [data-peek] holds rows [data-peek-to="key"] and photographs [data-peek-for="key"] (all but
     the first hidden); the photograph changes at once (MO-07) to the row under the pointer, the
-    keyboard focus or a tap. A place's or a service's one moment (references/sections.md).
+    keyboard focus or a tap; on a phone the photograph sits under the row on show. A place's or a
+    service's one moment (references/sections.md).
   - phone action bar: body > nav.actionbar shows (data-bar="shown") once the hero's main button has
     scrolled off the top, and hides (data-bar="hidden", inert) while that button, or a link or button
     that does what one of the bar's does (the same address, or the same words), is on the screen;
@@ -323,7 +324,26 @@ function peek() {
       const wide = matchMedia('(min-width: 1024px)').matches;
       rows.forEach(r => r.classList.toggle('is-on', wide && r === row));
       pics.forEach(p => { p.hidden = p !== pic; });
+      place();
     };
+    // a phone stacks the photograph under the whole list, off screen from the row a visitor taps: there the
+    // photographs' frame moves into the row on show (under its words), and back to its place from 640px
+    const frame = pics[0].parentElement, home = frame.parentElement, after = frame.nextSibling;
+    const phone = matchMedia('(max-width: 639px)');
+    const movable = frame !== root && pics.every(p => p.parentElement === frame) && !rows.some(r => frame.contains(r));
+    function place() {
+      if (!movable || !cur) return;
+      if (phone.matches) {
+        if (frame.parentElement === cur) return;
+        // the tapped row stays where it was on the screen when the photograph leaves a row above it
+        const y = cur.getBoundingClientRect().top;
+        cur.append(frame);
+        const dy = cur.getBoundingClientRect().top - y;
+        if (Math.abs(dy) > 1) scrollBy({ top: dy, behavior: 'instant' });
+      }
+      else if (frame.parentElement !== home) home.insertBefore(frame, after && after.parentNode === home ? after : null);
+    }
+    phone.addEventListener?.('change', place);
     // every photograph is fetched now, so a swap never shows an empty frame
     pics.forEach(p => { if (p.loading === 'lazy') p.loading = 'eager'; });
     show(rows.find(r => pics.some(p => !p.hidden && p.dataset.peekFor === r.dataset.peekTo)) || rows[0]);
@@ -515,6 +535,39 @@ function tone() {
   document.documentElement.dataset.tone = L < 0.18 ? 'dark' : 'light';
 }
 
+// sRGB (0-255) to OKLab and back (Ottosson), for the ground's hue below
+const lab = c => {
+  const [r, g, b] = c.map(v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+};
+const unlab = ([L, a, b]) => {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, s = (L - 0.0894841775 * a - 1.2914855480 * b) ** 3;
+  return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s]
+    .map(v => { v = Math.min(1, Math.max(0, v)); return 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055); });
+};
+// the lit ground (sand, sky, sage) on a coloured palette whose hue is far from its own (sand on a teal page
+// reads as a second colour that clashes) takes the hue of --p-accent: every --ground-* token keeps its own
+// lightness and strength, so the UI on it reads as before. A neutral palette, one already near the ground's
+// hue and the painting (drawn with its landscape) keep the named ground.
+function groundHue() {
+  const html = document.documentElement;
+  if (html.dataset.ground === 'painting' || document.querySelector('[data-fx="painterly-landscape"]')) return;
+  const cs = getComputedStyle(html), acc = rgb(cs.getPropertyValue('--p-accent')), bg = rgb(cs.getPropertyValue('--ground-bg'));
+  if (!acc || !bg) return;
+  const A = lab(acc), G = lab(bg);
+  if (Math.hypot(A[1], A[2]) < 0.04) return;
+  const h = Math.atan2(A[2], A[1]);
+  let d = Math.abs(h - Math.atan2(G[2], G[1]));
+  if (Math.min(d, 2 * Math.PI - d) < Math.PI / 4) return;
+  for (const k of ['bg', 'surface', 'ink', 'muted', 'accent']) {
+    const c = rgb(cs.getPropertyValue(`--ground-${k}`));
+    if (!c) continue;
+    const [L, a, b] = lab(c), ch = Math.hypot(a, b);
+    html.style.setProperty(`--ground-${k}`, hex(unlab([L, ch * Math.cos(h), ch * Math.sin(h)])));
+  }
+}
+
 /* ------------------------------------------------------------------ pictures always draw
    A photograph never shows as an empty frame: once the page has loaded, every lazy image is fetched
    (so one far down the page is there when a visitor or a screenshot reaches it), and one that fails
@@ -583,6 +636,7 @@ async function moments() {
 
 function init() {
   try { tone(); } catch (e) { console.warn('system.js: tone', e); }
+  try { groundHue(); } catch (e) { console.warn('system.js: ground', e); }
   nav();
   tabs();
   try { faq(); } catch (e) { console.warn('system.js: faq', e); }

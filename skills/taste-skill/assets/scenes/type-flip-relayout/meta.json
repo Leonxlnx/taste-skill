@@ -1,0 +1,71 @@
+{
+  "id": "type-flip-relayout",
+  "name": "Type re-layout",
+  "family": "type-choreography",
+  "classic": 1,
+  "look": "A short list in giant capitals on a held, picture-free stage is re-set three times by the scroll: its ragged lines spread into a justified slab and the short last item slides flush right, then the small heading relays letter by letter to the opposite corner, the slab folds line by line into a small index and the heading swells over a paragraph. It is for what a studio makes, a programme or a set of benefits, on editorial and type-led pages.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 3,
+  "restH": 1,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "By default the finished composition (heading, justified slab, paragraph) as an ordinary section; with phone 'same', a poster that spreads and slides the list without the relay or the fold.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "In the middle, on the services, the programme or the about: a section that is really a list of four to six things.",
+  "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1.",
+  "options": "hold 3 (2-4); phone 'rest' (the finished composition) | 'same' (a poster version that only spreads and slides); phoneHold 1.5 (1-3); scrub 0.8, true with Lenis; size 12 (6-16) the largest display size in vw; gap 1.2 (0.6-3) the tightest justified gap in em; fill 0.94 (0.8-0.98); cols 12 (4-12) columns the list may span; index 'auto' or 14-32 px; relay true (false keeps the heading still and lands the index under it); grow true (the heading swells after the relay); dot 0.3 (0.12-0.4) a letter's scale in flight; stagger 0.016 (0.010-0.025).",
+  "roles": [
+    "features",
+    "about",
+    "list",
+    "intro",
+    "work"
+  ],
+  "position": "middle",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "No pictures. A heading of one word, 4-7 letters (the section's name); a list of 3-6 items (up to twelve work, smaller), one line each: every item but the last 2-4 words and 11-16 characters, the last 1-2 words and 9 characters at most, no item but the last a single word; a paragraph of about 25 words, three lines at most at statement size. One display face in capitals, one flat ground and one ink at 7:1."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/type-flip-relayout/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"type-flip-relayout\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

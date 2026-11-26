@@ -1,0 +1,208 @@
+<!doctype html>
+<!-- taste-skill motion deck: the hero's entrance deck, the section reveals and the micro-interactions any kind may use
+     (rows that answer the pointer, a number that rolls once, swatches that change the photograph, the open-now dot,
+     a label that rolls, a line that draws inside a card's picture), on one warm page: a bakery.
+     Open it served from the skill folder (http://localhost:<port>/assets/motion/deck.html).
+     ?enter=<variant> picks the entrance (rise, set-type, focus, exposure, aperture, line-blocks, doors,
+     product-at-work, still); ?live runs the motion in a headless screenshot; ?theme=dark starts dark.
+     The tech side of the layer (tabs, counts, card stories, switches) is demo.html. -->
+<html lang="en" data-type="place" data-radius="soft" data-buttons="solid" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ofenhaus: rye from a stone oven in Graz</title>
+<meta name="description" content="The taste-skill motion deck on one bakery page: the hero's entrances, section reveals and the quiet micro-interactions.">
+<meta name="page-kind" content="place">
+<script>
+  (() => {
+    const q = new URLSearchParams(location.search), h = document.documentElement;
+    if (q.get('theme') === 'dark') h.dataset.theme = 'dark';
+    if (q.has('live')) h.dataset.motion = 'live';
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../system.css">
+<link rel="stylesheet" href="../ui/cards.css">
+<link rel="stylesheet" href="motion.css">
+<style>
+  :root {
+    --p-bg: #f6f1e9; --p-surface: #ece4d6; --p-ink: #1d1a16; --p-muted: #6b6359;
+    --p-accent: #9a4a22; --p-accent-ink: #fff8f0; --p-action: #1d1a16; --p-action-ink: #f6f1e9;
+    --p-inv-bg: #1d1a16; --p-inv-surface: #2a2520; --p-inv-ink: #f3ece1; --p-inv-muted: #b3a999;
+    --p-inv-accent: #e3a16f; --p-inv-accent-ink: #1d1a16; --p-inv-action: #f3ece1; --p-inv-action-ink: #1d1a16;
+    --font-display: "Fraunces", Georgia, serif; --font-text: "Inter", system-ui, sans-serif;
+    --display-weight: 400; --display-tracking: -0.02em;
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    --p-bg: #17140f; --p-surface: #221e18; --p-ink: #f3ece1; --p-muted: #b3a999;
+    --p-accent: #e3a16f; --p-accent-ink: #17140f; --p-action: #f3ece1; --p-action-ink: #17140f;
+    color-scheme: dark;
+  }
+  /* the deck's switch: a demo control, not part of a page */
+  .deck-bar { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100vw - 32px);
+              padding: 6px; border-radius: 12px; background: color-mix(in oklab, var(--bg) 88%, transparent); backdrop-filter: blur(8px);
+              box-shadow: 0 0 0 1px var(--line), 0 10px 30px -18px rgb(0 0 0 / .4); font-size: 12px; }
+  .deck-bar a { padding: 6px 9px; border-radius: 8px; color: var(--muted); text-decoration: none; }
+  .deck-bar a[aria-current] { background: var(--ink); color: var(--bg); }
+  /* the route card's picture: a plan of the old town drawn in hairlines */
+  .route { position: relative; aspect-ratio: 4 / 3; border-radius: var(--r-sm, 10px); background: var(--surface); overflow: hidden; }
+  .route svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .route .street { fill: none; stroke: color-mix(in oklab, var(--ink) 16%, transparent); stroke-width: 1.2; }
+  .route .m-draw { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  .route .stop { fill: var(--ink); }
+  @media (max-width: 639px) { .deck-bar { bottom: 76px; } }
+</style>
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><span class="mark" data-mark="arc" aria-hidden="true"></span>Ofenhaus</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#bake">The bake</a></div>
+      <div class="nav__item"><a class="nav__link" href="#loaves">Loaves</a></div>
+      <div class="nav__item"><a class="nav__link" href="#crust">Crust</a></div>
+      <div class="nav__item"><a class="nav__link" href="#visit">Visit</a></div>
+    </nav>
+    <div class="nav__actions"><a class="btn btn--primary m-swap" href="#loaves">Order for Saturday</a></div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--split" data-enter aria-labelledby="hero-h">
+    <script>(() => { const v = new URLSearchParams(location.search).get('enter'); if (v) document.currentScript.parentElement.dataset.enter = v; })();</script>
+    <div class="wrap">
+      <div class="hero-text grid hero-split">
+        <div class="hero-copy span-6">
+          <p class="hero-notice" data-open-now>Fresh rye from 7:00</p>
+          <h1 id="hero-h">Rye from a stone oven, baked before the town wakes</h1>
+          <p class="t-lead">Sourdough rye with caraway, fired at 280 degrees on a stone floor since 1962. Forty loaves a morning, gone by noon.</p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="#loaves">See the loaves<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+            <a class="btn btn--secondary" href="#visit">Find the shop</a>
+          </div>
+          <dl class="hero-facts">
+            <div><dt>Oven</dt><dd>Stone, 1962</dd></div>
+            <div><dt>Bake</dt><dd>From 4:30</dd></div>
+            <div><dt>Loaves</dt><dd>40 a day</dd></div>
+          </dl>
+        </div>
+        <div class="hero-visual frame frame--photo span-6 start-7">
+          <img class="frame__img" src="../photos/img/m33603558-2400.webp" alt="A stone bread oven with its iron doors open and a tray of round seeded loaves inside" fetchpriority="high">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="bake" aria-labelledby="bake-h">
+    <div class="wrap grid grid--middle">
+      <div class="span-5 stack-5">
+        <h2 id="bake-h">The dough rests overnight in straw baskets</h2>
+        <p class="t-lead">Rye, water, salt and a starter older than the shop. Sixteen hours in the cold room, then each loaf is turned out by hand onto the peel.</p>
+        <p><a class="link" href="#loaves">What comes out of it</a></p>
+      </div>
+      <div class="frame frame--photo frame--split span-6 start-7">
+        <img class="frame__img" src="../photos/img/m37164269-1200.webp" alt="Rye dough rising in coiled straw and wicker proving baskets on a weathered plank" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="loaves" aria-labelledby="loaves-h">
+    <div class="wrap grid">
+      <div class="span-4 stack-4">
+        <h2 id="loaves-h">Four loaves, every morning</h2>
+        <p class="muted">Order by Thursday for Saturday. Prices per loaf.</p>
+      </div>
+      <ul class="rows span-7 start-6">
+        <li><span class="rows__name">Caraway rye, 1 kg</span><span class="rows__value" data-m-roll>EUR 6.40</span><p>The house loaf: dark crust, a tight moist crumb.</p></li>
+        <li><span class="rows__name">Spelt and seed, 750 g</span><span class="rows__value">EUR 5.80</span><p>Sunflower, linseed and pumpkin in a lighter dough.</p></li>
+        <li><span class="rows__name">Farmer's wheat, 1 kg</span><span class="rows__value">EUR 4.90</span><p>Wheat and a little rye; open crumb, thin crust.</p></li>
+        <li><span class="rows__name"><a href="#visit">Saturday box, four loaves <svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a></span><span class="rows__value">EUR 19.00</span><p>One of each, collected from 7:00.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="crust" aria-labelledby="crust-h">
+    <div class="wrap grid grid--middle">
+      <div class="frame frame--photo frame--split span-6">
+        <img id="crust-photo" class="frame__img" src="../photos/img/m33603672-1200.webp" alt="Rye loaves seeded with caraway on the stone floor of an open bread oven" loading="lazy">
+      </div>
+      <div class="span-5 start-8 stack-5">
+        <h2 id="crust-h">Choose how dark you like the crust</h2>
+        <p>We pull a tray early for anyone who asks. Say so when you order.</p>
+        <div class="m-swatches" data-m-swatches="#crust-photo" role="group" aria-label="Crust">
+          <button type="button" class="m-swatch" style="--sw:#d9b58a" data-src="../photos/img/m37164269-1200.webp" data-alt="Rye dough rising in straw proving baskets" aria-pressed="false" aria-label="Pale"></button>
+          <button type="button" class="m-swatch" style="--sw:#a5652f" data-src="../photos/img/m33603672-1200.webp" data-alt="Rye loaves seeded with caraway on the stone floor of an open bread oven" aria-pressed="true" aria-label="Golden"></button>
+          <button type="button" class="m-swatch" style="--sw:#4a2c19" data-src="../photos/img/m11317510-1200.webp" data-alt="A black iron bakery oven door with a long wooden peel resting in the opening" aria-pressed="false" aria-label="Dark"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="route" aria-labelledby="route-h">
+    <div class="wrap grid">
+      <div class="span-12 stack-4"><h2 id="route-h">Delivered by bike before eight</h2></div>
+      <article class="card span-6">
+        <div class="route" data-m-loop style="--m-cycle: 3.6s; --m-still: .7">
+          <svg viewBox="0 0 400 300" aria-hidden="true">
+            <path class="street" d="M0 80h400M0 190h400M90 0v300M230 0v300M330 0v300M0 260l400-120"/>
+            <path class="m-draw" pathLength="1" d="M60 250 L90 250 L90 190 L230 190 L230 80 L330 80"/>
+            <circle class="stop" cx="60" cy="250" r="5"/><circle class="stop" cx="330" cy="80" r="5"/>
+          </svg>
+        </div>
+        <h3 class="t-card">Old town, Tuesday and Friday</h3>
+        <p class="muted">Ordered by 18:00, at your door by 7:45.</p>
+      </article>
+      <article class="card span-6">
+        <div class="frame frame--photo" style="--ratio: 75%"><img class="frame__img" src="../photos/img/m11317510-1200.webp" alt="A black iron bakery oven door with a long wooden peel resting in the opening" loading="lazy"></div>
+        <h3 class="t-card">From the oven door to the basket</h3>
+        <p class="muted">Every loaf rides in a linen bag, still warm.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="visit" aria-labelledby="visit-h">
+    <div class="wrap grid">
+      <div class="span-5 stack-5">
+        <h2 id="visit-h">Sporgasse 14, by the steps</h2>
+        <p class="t-small" data-open-now></p>
+        <p><a class="btn btn--primary m-swap" href="#loaves">Order for Saturday</a></p>
+      </div>
+      <dl class="hours span-5 start-8" data-tz="Europe/Vienna">
+        <dt data-days="mon tue wed thu fri">Monday to Friday</dt><dd>7:00 to 18:00</dd>
+        <dt data-days="sat">Saturday</dt><dd>7:00 to 13:00</dd>
+        <dt data-days="sun">Sunday</dt><dd>Closed</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__legal"><span>Ofenhaus is a demo bakery.</span><span>Photographs: Johann Jaritz (CC BY-SA 3.0 AT), Wald1siedel (CC BY-SA 4.0), Chmee2 (CC BY 3.0), Wikimedia Commons.</span></div>
+  </div>
+</footer>
+
+<nav class="deck-bar" aria-label="Entrance"></nav>
+<script>
+  (() => {
+    const q = new URLSearchParams(location.search), now = q.get('enter') || 'rise', bar = document.querySelector('.deck-bar');
+    for (const v of ['rise', 'set-type', 'focus', 'exposure', 'aperture', 'line-blocks', 'doors', 'product-at-work', 'still']) {
+      const a = document.createElement('a'), p = new URLSearchParams(q);
+      p.set('enter', v); a.href = '?' + p; a.textContent = v.replace(/-/g, ' ');
+      if (v === now) a.setAttribute('aria-current', 'true');
+      bar.append(a);
+    }
+  })();
+</script>
+<script type="module" src="../system.js"></script>
+<script type="module" src="motion.js"></script>
+</body>
+</html>

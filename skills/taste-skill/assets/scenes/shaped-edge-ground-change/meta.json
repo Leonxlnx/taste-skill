@@ -1,0 +1,77 @@
+{
+  "id": "shaped-edge-ground-change",
+  "name": "Shaped edge carries the new ground",
+  "family": "colour-and-ground",
+  "classic": 1,
+  "look": "A photograph with a wide, even sky zooms slowly while a field painted exactly in the sky's colour rises over it as a full-width arch, a short heading spreading word by word along its curve, until the arch has passed the top and the field is the flat ground of the next chapter, whose title turns in letter by letter over a large picture. It is a chapter divider for places, buildings, travel and property: the sky seems to come loose and become the page.",
+  "fits": [
+    "between"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "warm",
+    "editorial"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.25,
+  "restH": 2,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same scene with a tall arch that reads as a doorway and an arc heading of four words at most; the chapter title's letters turn in on a clock of 0.7s once half the title is on screen, never with the scroll, at every width; the closing picture is square, 84% of the width. Under 600px tall, or with a longer heading, the phone gets the finished composition.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "Between two sections: it ends one chapter on its photograph and opens the next (the intro, the rooms, the gallery, the contact) on the sky's colour, which the next section keeps. Two or three a page at most, each on a different photograph and ground.",
+  "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw.",
+  "options": "hero 'sky' (the headline in --ink straight on the sky; the script reads the sky under the lede and drops its strip where the sky reads, else sets it on a strip of the nearest shade of that sky that reads; serve the photograph from the page's origin or with crossorigin=\"anonymous\" so it can be read, else the strip is --seg-lede-ground, then --ground) | 'band' (a solid band in --ink behind the headline block, the type in --ground, for a busy top left; a translucent fill reads under 4.5:1 over a pale sky); zoom 1.5 (1.2-1.8) end scale of the photograph; phoneZoom 1.3 (1.1-1.5); fade false (true also fades the photograph as it zooms, for dusk or interiors); arc 'spread' | 'static'; spread 0.10 (0.04-0.12) the widest word gap; phoneSpread 0.08 (0.04-0.10); chrome '', the selector of a fixed header, with chromeLight '#fff' its ink over the photograph and chromeX (0-100) for a centred logo; scrub 0.6; phone 'same' | 'rest'. The hold is not an option: the CSS sets it from the arch's height (2.25 screens by default). The inset picture opens on a clock of 0.6s once 40% of it is on screen (about 0.7 of the hold), so it rises with the chapter title.",
+  "roles": [
+    "intro",
+    "about",
+    "gallery",
+    "features",
+    "list",
+    "contact"
+  ],
+  "position": "transition",
+  "sectors": [
+    "architecture",
+    "real-estate",
+    "hospitality",
+    "culture",
+    "event",
+    "restaurant",
+    "nonprofit",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:2"
+    ],
+    "content": "One photograph, 3:2 or 16:10, 3000px wide or more, with open, even sky in the top third and a subject that runs edge to edge across the lower half (a range, a skyline, terraces, a shore; a single tower on a big sky hides the move), plus a 2:3 crop for phones. One inset picture, 2:1, 1600x800 or more (it closes the scene at about 64% of the width), from the next chapter. --ground sampled from the photograph's sky (the median of a 5% patch in the top third), never chosen by eye, and --ink at 7:1 on it. Words: a headline of 3-6 words and a lede of 14 or fewer; an arc heading of 4 words (6 at most on desktop, 34 characters); a statement of 6-10 words; a chapter title of 1-3 words (16 characters). Without a photograph with that sky, redraw."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/shaped-edge-ground-change/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"shaped-edge-ground-change\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

@@ -1,0 +1,79 @@
+{
+  "id": "scrubbed-transformation-sequence",
+  "name": "Scrubbed transformation sequence",
+  "family": "object-scrub",
+  "classic": 1,
+  "look": "One object goes through one change of state as the page scrolls (raw to finished, closed to open, lifted and handed over), played as a frame sequence on a canvas on the page's own ground: the thing it came from slides away, the thing it ends on rises under it and short labels land beside the finished object. Use it only when there are 80-250 rendered or filmed frames, with alpha, of the object changing.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "product",
+    "editorial",
+    "warm"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 4,
+  "restH": 1,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same fractions on the phone frame set, the object centred and wider than the screen, the after line in a top slot at about the before statement's size, and the callouts as a stack of up to four plain rows (no bullets) that takes the statement's slot as it lifts away; hold 3. Data-saving visitors get the finished composition and download no frames.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, on the showcase or how it is made, or as the page's finale before the action: the before statement opens it and the after line with one action closes it.",
+  "content": "A frame sequence of the object changing, about 120 frames (80-250), square with alpha, from a locked-off camera, the object filling most of the frame with its foot in the same place at the end: desktop frames about twice the box's size (1600px), a phone set of every second frame (about 1000px). Optional cut-outs of the before context (what it came from) and the receiver (the plinth, shelf or pad it ends on), rendered by the same cameras. A before statement of 5-7 words (36 characters at most) as the headline, up to six callouts of 2-6 words set beside the last frame's silhouette, with no marker (three is right), an after line of 3-6 words and a 2-3 word action. Never fake it by turning one still: without the footage, redraw.",
+  "options": "frames, the desktop URL pattern (#### is the zero-padded index; required, else the finished composition); count 120 (2-400; 80-250 for a good scrub); phoneFrames and phoneCount (60 with its own pattern); hold 4 (3-5); phoneHold 3 (2-4); scrub 0.6, 0.3 with Stage.smooth(); split 0.85 (0.5-0.95) share of the frames played evenly; ground 'none' (the page's own ground, the default) | 'iris' (old pages only, never dealt: a drawn disc that becomes a second ground); irisAt [0.5, 0.54] the camera's pivot; push 1.25 (1-1.4) how far the camera starts pushed in; firstBox [0.17, 0.3, 0.83, 0.81] the object's outline in the first frame; centre true, the object glides to the centre while the title is away (laptop). Labels, the statement and the after line land on a clock, never half-way on the scroll.",
+  "roles": [
+    "showcase",
+    "how-it-works",
+    "features",
+    "cta"
+  ],
+  "position": "middle",
+  "sectors": [
+    "physical-product",
+    "ecommerce",
+    "fashion",
+    "restaurant",
+    "architecture",
+    "real-estate",
+    "studio-portfolio",
+    "agency",
+    "consumer-app",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "video"
+    ],
+    "content": "A frame sequence of the object changing, about 120 frames (80-250), square with alpha, from a locked-off camera, the object filling most of the frame with its foot in the same place at the end: desktop frames about twice the box's size (1600px), a phone set of every second frame (about 1000px). Optional cut-outs of the before context (what it came from) and the receiver (the plinth, shelf or pad it ends on), rendered by the same cameras. A before statement of 5-7 words (36 characters at most) as the headline, up to six callouts of 2-6 words set beside the last frame's silhouette, with no marker (three is right), an after line of 3-6 words and a 2-3 word action. Never fake it by turning one still: without the footage, redraw."
+  },
+  "never": "Never fake it by turning one still: without the footage, redraw.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scrubbed-transformation-sequence/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scrubbed-transformation-sequence\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

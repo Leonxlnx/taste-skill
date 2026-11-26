@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varde Mountain School</title>
+<meta name="description" content="Two-day guided climbs from the fjord to the summit of the Skarvan ridge, in ropes of four.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #e6e8e7;
+    --ink: #101315;
+    --accent: #f04e1d;
+    --font-display: "Archivo", system-ui, sans-serif;
+    --font-text: "Archivo", system-ui, sans-serif;
+    --margin: clamp(20px, 3.4vw, 48px);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); color: var(--ink); }
+  body { margin: 0; font: 400 18px/1.5 var(--font-text); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+
+  /* the first screen: the bar, the ridge the climb follows, and the title under it */
+  .top { height: 100svh; min-height: 560px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: clamp(20px, 2.4vw, 36px); padding: var(--margin); }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; font-size: 18px; }
+  .bar strong { font-weight: 600; letter-spacing: -0.01em; }
+  .lead { margin: 0; min-height: 240px; overflow: hidden; background: #cfd3d2; }
+  .lead img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); gap: 20px clamp(24px, 4vw, 72px); align-items: end; }
+  .hero h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(44px, 7.2vw, 124px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+  .hero p { margin: 0 0 0.4em; font-size: clamp(18px, 1.45vw, 22px); line-height: 1.45; }
+
+  .close { padding: clamp(112px, 13vw, 208px) var(--margin) var(--margin); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); gap: 32px clamp(24px, 4vw, 72px); }
+  .close h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(36px, 4.6vw, 72px); line-height: 1; letter-spacing: -0.025em; max-width: 14ch; }
+  .close p { margin: 0 0 24px; }
+  .button { display: inline-block; padding: 14px 24px; line-height: 1.2; background: var(--ink); color: var(--ground); text-decoration: none; font-weight: 500; transition: background-color 180ms ease, color 180ms ease; }
+  .button:hover, .button:focus-visible { background: var(--accent); color: var(--ink); }
+  .credits { grid-column: 1 / -1; margin: clamp(80px, 9vw, 140px) 0 0; font-size: 16px; max-width: 60ch; }
+
+  @media (max-width: 1023px) {
+    .hero, .close { grid-template-columns: 1fr; }
+    .hero p { max-width: 34rem; }
+  }
+  @media (max-width: 767px) {
+    .lead { min-height: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <nav class="bar" aria-label="Main">
+    <strong>Varde Mountain School</strong>
+    <a class="button" href="#book">Book a place</a>
+  </nav>
+  <figure class="lead"><img src="https://picsum.photos/id/393/1800/900" alt="A green mountain streaked with snow rising above a dark gravel plain" width="1800" height="900"></figure>
+  <div class="hero">
+    <h1>Fjord to summit in two days</h1>
+    <p>Varde guides ropes of four up the Skarvan ridge every summer weekend, with one night in the hut at the edge of the glacier.</p>
+  </div>
+</header>
+
+<main>
+  <section class="sc scene" id="climb" data-big-scene="instrument-dial-stage" data-big-scene-opts='{}' aria-labelledby="climb-title">
+    <div class="scene-stage">
+      <header class="idl-head">
+        <h2 id="climb-title" class="idl-title">One climb, four heights</h2>
+      </header>
+      <ol class="idl-items">
+        <li class="idl-item" data-at="640" data-tone="#2f3b2a">
+          <h3 class="idl-word">Valley</h3>
+          <figure class="idl-subject"><img src="https://picsum.photos/id/66/840/1050" alt="Open grassland in a wide valley under low grey cloud, a lone peak far behind" width="840" height="1050"></figure>
+          <p class="idl-code">Set off at six</p>
+          <p class="idl-stat"><span class="idl-value">640 m</span> <span class="idl-caption">Car park by the fjord</span></p>
+        </li>
+        <li class="idl-item" data-at="1180" data-tone="#cdd6d0">
+          <h3 class="idl-word">Forest</h3>
+          <figure class="idl-subject"><img src="https://picsum.photos/id/260/840/1050" alt="Dark pines standing in mist, snowy peaks behind them" width="840" height="1050"></figure>
+          <p class="idl-code">Lunch under the pines</p>
+          <p class="idl-stat"><span class="idl-value">1,180 m</span> <span class="idl-caption">Where the trees thin out</span></p>
+        </li>
+        <li class="idl-item" data-at="2350" data-tone="#1d3a4a">
+          <h3 class="idl-word">Glacier</h3>
+          <figure class="idl-subject"><img src="https://picsum.photos/id/29/840/1050" alt="Snow-covered ridges falling into a deep valley under a blue sky" width="840" height="1050"></figure>
+          <p class="idl-code">Roped up at dawn</p>
+          <p class="idl-stat"><span class="idl-value">2,350 m</span> <span class="idl-caption">Hut at the edge of the ice</span></p>
+        </li>
+        <li class="idl-item" data-at="3060" data-tone="#c6dde2">
+          <h3 class="idl-word">Summit</h3>
+          <figure class="idl-subject"><img src="https://picsum.photos/id/327/840/1050" alt="Snow on a summit ridge under a clear teal sky, the moon above" width="840" height="1050"></figure>
+          <p class="idl-code">On top by noon</p>
+          <p class="idl-stat"><span class="idl-value">3,060 m</span> <span class="idl-caption">Cairn on the north top</span></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="close" id="book" aria-labelledby="book-title">
+    <h2 id="book-title">Ropes leave every Saturday at six</h2>
+    <div>
+      <p>From June to September, four climbers and one guide to a rope. Boots, crampons, the harness and the hut night are ours; bring a warm layer and your own lunch for the first day.</p>
+      <a class="button" href="#book">Ask for a place</a>
+    </div>
+    <footer class="credits">Photographs by Alex Talmon, Nicholas Swanson, Sylwia Bartyzel, Go Wild and Ryan Schroeder, through Unsplash and Lorem Picsum. Varde Mountain School and the Skarvan ridge are invented for this demo.</footer>
+  </section>
+</main>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

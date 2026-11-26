@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skerry Air Freight · peel, tear and drag</title>
+<meta name="description" content="Demo of the peel-tear-and-drag scroll scene in its one dealt mode, drag: cloud closes over the sea and a cargo jet drags the next page in behind it.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #f4f4f1;
+    --ink: #121212;
+    --drag-dark: #14204a;
+    --font-display: 'Archivo', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 18px/1.5 'Archivo', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* first screen: the dark chapter the scene will close */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: 8% minmax(0, 1fr) 4% 36% 8%;
+    grid-template-rows: auto 1fr auto auto 10svh;
+    background: var(--drag-dark);
+    color: #fff;
+  }
+  .bar {
+    grid-column: 2 / 5;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding-top: 32px;
+    font-size: 16px;
+  }
+  .bar__mark { font-weight: 800; font-stretch: 112%; font-size: 18px; letter-spacing: -.02em; margin-right: auto; }
+  .bar a { text-decoration: none; }
+  .bar a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .bar .bar__go { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; background: #fff; color: var(--drag-dark); font-weight: 700; }
+  .bar .bar__go:hover { text-decoration: none; background: #dfe3ee; }
+  .hero h1 {
+    grid-column: 2 / 3;
+    grid-row: 3;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(52px, 7.4vw, 128px);
+    font-weight: 800;
+    font-stretch: 112%;
+    line-height: .92;
+    letter-spacing: -.04em;
+  }
+  .hero__lead {
+    grid-column: 2 / 3;
+    grid-row: 4;
+    max-width: 26em;
+    margin: 32px 0 0;
+    font-size: clamp(19px, 1.7vw, 27px);
+    line-height: 1.45;
+  }
+  .hero__photo {
+    grid-column: 4;
+    grid-row: 2 / 5;
+    position: relative;
+    margin: 6svh 0 0;
+  }
+  .hero__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* the chapter after the scene, on the new page's ground */
+  .next {
+    display: grid;
+    grid-template-columns: 8% minmax(0, 7fr) 4% minmax(0, 5fr) 8%;
+    padding: 18svh 0 16svh;
+  }
+  .next h2 {
+    grid-column: 2 / 3;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5.6vw, 96px);
+    font-weight: 800;
+    font-stretch: 112%;
+    line-height: .95;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  .next__body { grid-column: 4 / 5; align-self: end; }
+  .next__body p { margin: 0 0 32px; max-width: 26em; font-size: clamp(19px, 1.7vw, 27px); line-height: 1.45; }
+  .btn {
+    display: inline-block;
+    padding: 18px 28px;
+    background: var(--drag-dark);
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+  }
+  .btn:hover { background: #0d1636; }
+  .next__times { grid-column: 2 / 5; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4%; margin: 14svh 0 0; padding: 0; list-style: none; }
+  .next__times li { padding: 0; }
+  .next__times b { display: block; font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: clamp(19px, 1.7vw, 27px); letter-spacing: -.01em; line-height: 1.2; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  /* the end of the page, a sitemap grid on the old chapter's colour: the wordmark at the h3 step, three
+     columns of real links under short headings in the display face, the small print at the foot */
+  .foot { display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(0, 1fr)); column-gap: 4%; row-gap: clamp(72px, 12svh, 128px); padding: 14svh 8% 5svh; background: var(--drag-dark); color: #fff; }
+  .foot__mark { margin: 0; font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: clamp(19px, 2.2vw, 34px); line-height: 1; letter-spacing: -.02em; }
+  .foot__col { display: grid; gap: 10px; align-content: start; }
+  .foot__col h2 { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: clamp(19px, 1.7vw, 27px); letter-spacing: -.01em; }
+  .foot__col p { margin: 0; }
+  .foot__col a { text-decoration: none; }
+  .foot__col a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .foot__small { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 40px; font-size: 16px; line-height: 1.5; color: #c4cadb; }
+  .foot__small p { margin: 0; }
+  .credits-link { padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .credits { max-width: min(560px, calc(100vw - 32px)); padding: 28px; border: 0; background: var(--ground); color: var(--ink); font-size: 16px; }
+  .credits::backdrop { background: rgb(18 18 18 / .5); }
+  .credits h2 { margin: 0 0 12px; font: 800 22px/1.2 var(--font-display); }
+  .credits p { margin: 0 0 18px; }
+  .credits button { min-height: 44px; padding: 0 18px; border: 0; background: var(--drag-dark); color: #fff; font: 700 16px/1 'Archivo', system-ui, sans-serif; cursor: pointer; }
+
+  /* a tablet and a phone: two columns, the cargo desk across both (its email needs the width) */
+  @media (max-width: 1023px) {
+    .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 56px; }
+    .foot__mark { grid-column: 1 / -1; }
+    .foot__col--fly { grid-column: 1; grid-row: 2; }
+    .foot__col--hangar { grid-column: 2; grid-row: 2; }
+    .foot__col--desk { grid-column: 1 / -1; grid-row: 3; }
+  }
+
+  @media (max-width: 767px) {
+    .hero { grid-template-columns: 16px minmax(0, 1fr) 16px; grid-template-rows: auto 38svh auto auto 6svh; }
+    .bar { grid-column: 2; padding-top: 20px; gap: 20px; }
+    .bar a:not(.bar__go):not(.bar__mark):not([href="#flights"]) { display: none; }
+    .hero__photo { grid-column: 2; grid-row: 2; margin: 20px 0 32px; }
+    .hero h1 { grid-column: 2; font-size: clamp(44px, 13vw, 60px); font-stretch: 100%; }
+    .hero__lead { grid-column: 2; margin-top: 20px; font-size: 18px; }
+    .next { grid-template-columns: 16px minmax(0, 1fr) 16px; padding: 12svh 0 12svh; row-gap: 28px; }
+    .next h2, .next__body, .next__times { grid-column: 2; }
+    .next h2 { font-stretch: 100%; }
+    .next__times { grid-template-columns: 1fr; gap: 12px; margin-top: 32px; }
+    .foot { column-gap: 16px; row-gap: 40px; padding: 72px 16px 32px; }
+    .foot__mark { font-stretch: 100%; }
+    .foot__small { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="bar" aria-label="Main">
+    <a class="bar__mark" href="#">Skerry</a>
+    <a href="#islands">Islands</a>
+    <a href="#flights">Timetable</a>
+    <a class="bar__go" href="#book">Book a pallet</a>
+  </nav>
+  <h1>Skerry Air Freight</h1>
+  <p class="hero__lead">Twice a day we carry fish out and post, parts and medicine in, between forty North Atlantic islands and the mainland.</p>
+  <figure class="hero__photo"><img src="https://picsum.photos/id/1038/1000/1500" alt="A small red fishing boat on a dark, rough sea below snowy mountains" width="1000" height="1500"></figure>
+</header>
+
+<main>
+  <section class="sc scene" id="islands" data-big-scene="peel-tear-and-drag" data-big-scene-opts='{"dir":"ltr"}'>
+    <div class="scene-stage">
+      <div class="drag-old">
+        <img class="drag-old__ground" src="https://picsum.photos/id/997/1600/1000" srcset="https://picsum.photos/id/997/1600/1000 1600w, https://picsum.photos/id/997/2880/1800 2880w" sizes="(max-width: 767px) 100vw, 130vw" alt="" width="1600" height="1000">
+        <div class="drag-old__tint"></div>
+        <p class="drag-old__line">We fly when the ferries can't.</p>
+        <div class="drag-veil" aria-hidden="true">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-1.webp" alt="" width="1200" height="1000">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-5.webp" alt="" width="1000" height="913">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-6.webp" alt="" width="1000" height="917">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-2.webp" alt="" width="1300" height="780">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-7.webp" alt="" width="1150" height="1284">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-8.webp" alt="" width="1000" height="789">
+          <img crossorigin="anonymous" class="drag-veil__piece" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/cloud-3.webp" alt="" width="1200" height="877">
+        </div>
+      </div>
+      <div class="drag-new">
+        <div class="drag-new__inner">
+          <h2 class="drag-new__title">Islands that count on us</h2>
+          <ul class="drag-new__items">
+            <li>
+              <blockquote><p>“The harbour was shut for nine days in February. The insulin still came in on Tuesday, and so did the post.”</p></blockquote>
+              <p class="drag-new__who"><b>Ingrid Hallsdóttir</b>, pharmacist on Ravnsey</p>
+            </li>
+            <li>
+              <blockquote><p>“Our crab leaves the pier at five and is on a plate in Lisbon by dinner. Before Skerry, a third of it went back into the sea.”</p></blockquote>
+              <p class="drag-new__who"><b>Tór Mikkelsen</b>, fish exporter on Fjarholm</p>
+            </li>
+          </ul>
+          <p class="drag-new__aside">One freighter, one hangar on Fjarholm, and pilots who know every island runway by its wind.</p>
+          <figure class="drag-new__figure"><img src="https://picsum.photos/id/574/2000/900" srcset="https://picsum.photos/id/574/1000/750 1000w, https://picsum.photos/id/574/2000/900 2000w" sizes="(max-width: 767px) 100vw, 106vw" alt="A grassy cliff above a black sand beach, sea stacks offshore" width="2000" height="900"></figure>
+        </div>
+      </div>
+      <div class="drag-rig drag-rig--object" aria-hidden="true">
+        <img crossorigin="anonymous" class="drag-object" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/plane.webp" srcset="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/plane-1200.webp 1200w, https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/peel-tear-and-drag/plane.webp 2400w" sizes="(max-width: 767px) 72vh, 100vw" alt="" width="2400" height="2372">
+      </div>
+    </div>
+  </section>
+
+  <section class="next" id="book">
+    <h2>Send it on the 06:10</h2>
+    <div class="next__body">
+      <p>Pallets close at eight the evening before. Tell us what it is, what it weighs and which island it is going to, and we will hold a place on the 06:10.</p>
+      <a class="btn" href="#book">Book a pallet</a>
+    </div>
+    <ul class="next__times" id="flights">
+      <li><b>06:10</b>Mainland to the northern islands, back by eleven with the morning catch.</li>
+      <li><b>13:40</b>Mainland to the southern islands, with the post and the pharmacy run.</li>
+      <li><b>20:00</b>Last pallets in at the Fjarholm hangar for the next morning.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="foot" id="contact">
+  <p class="foot__mark">Skerry Air Freight</p>
+  <nav class="foot__col foot__col--fly" aria-labelledby="foot-fly">
+    <h2 id="foot-fly">Flights</h2>
+    <a href="#flights">Timetable</a>
+    <a href="#islands">Islands we serve</a>
+    <a href="#book">Book a pallet</a>
+  </nav>
+  <div class="foot__col foot__col--desk">
+    <h2>Cargo desk</h2>
+    <a href="mailto:cargo@skerryfreight.com">cargo@skerryfreight.com</a>
+    <p>Answered from 05:00 to 21:00</p>
+  </div>
+  <div class="foot__col foot__col--hangar">
+    <h2>The hangar</h2>
+    <p>Fjarholm airstrip, by the harbour road</p>
+    <a href="https://www.openstreetmap.org/search?query=Fjarholm">Directions</a>
+  </div>
+  <div class="foot__small">
+    <p>An invented carrier for a scroll-scene demo.</p>
+    <button type="button" class="credits-link" onclick="document.getElementById('credits').showModal()">Image credits</button>
+  </div>
+</footer>
+<dialog class="credits" id="credits" aria-labelledby="credits-title">
+  <h2 id="credits-title">Image credits</h2>
+  <p>Photographs from Unsplash via Picsum: Marcelo Quinan, Mickey O'neil, Julien Lavallée.</p>
+  <p>The plane, a freighter: <a href="https://commons.wikimedia.org/w/index.php?curid=195299108">“LX-VCE - Boeing 747-8R7F underside”</a> by Steve Knight, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, modified (cut out, turned, toned, markings and fin removed, nose retouched).</p>
+  <p>The cloud: <a href="https://www.flickr.com/photos/31007250@N03/7322479590">“Cumulus cloud from above”</a> by rpieket and <a href="https://www.flickr.com/photos/30682900@N00/9997120">“Clouds from above”</a> by transreal, both <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>, modified (cut out, turned and toned).</p>
+  <form method="dialog"><button>Close</button></form>
+</dialog>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

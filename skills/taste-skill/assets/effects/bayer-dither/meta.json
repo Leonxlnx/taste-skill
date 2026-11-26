@@ -6,5 +6,9 @@
   "bestOn": ["hero", "card", "band", "footer"],
   "motion": "slow",
   "cost": "low",
-  "palettes": ["light", "dark", "colour"]
+  "palettes": ["light", "dark", "colour"],
+  "tones": ["tech", "playful"],
+  "intensity": "quiet",
+  "webgl": 1,
+  "treatment": false
 }

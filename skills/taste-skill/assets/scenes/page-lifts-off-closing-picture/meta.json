@@ -1,0 +1,69 @@
+{
+  "id": "page-lifts-off-closing-picture",
+  "name": "Page lifts off a closing picture",
+  "family": "section-transition",
+  "classic": 1,
+  "look": "The last content section slides up like a sheet, at its full width and in its own ground, and uncovers a picture that was held underneath it all along; while the sheet clears the screen the picture settles from a close 1.35x zoom to its natural framing, landing exactly as the scroll runs out. A solid band across the top third carries the closing line, a headline at display size, and the contact block in the body face, in the picture's own top-edge colour, so band and picture meet with no seam, and the whole picture is the page's one action with a plain label at its foot. The picture is a photograph, or a full-bleed close crop of the product's interface built in HTML (data-ui) whose app bar takes the band's colour, so a page can close on its product rather than a photograph.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "tech"
+  ],
+  "intensity": "quiet",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same lift: the picture stays held under the page while it slides away at its full width, with a gentler 1.18x settle. The band grows with its words (a 32-40px title over a two-column contact block, about 32-37% of the screen, the words low in it so the title lands by about 0.9 of the lift) instead of squeezing them, the label sits just above the footer line, and the interface crop stays full bleed but drops to the columns that fit, its words inset by --lift-ui-inset so none leaves the screen at the start scale. phone: 'rest' gives the finished composition.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "The end of the page: the contact or the call to action, straight after the last content section, which becomes the sheet that lifts (give it a screen of height or more). The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, and never right after another scene: the section that lifts is the quiet section between them.",
+  "content": "One picture and one line. Photo mode: one photograph 2400px wide or more (3000+ for full sharpness at the 1.35x start), its top edge even (fog, sky, a plain wall, a table top) and its subject in the lower half; a busy or textured top edge shows the seam, so smooth it or redraw. Interface mode: a close crop of the real product in HTML with data-ui, full bleed with no card, frame or rounded edge: an app bar in var(--lift-band-c) (so it meets the band with no seam), a title and two to four rows at true size (labels 14px or more at 1440, any heading in it under 24px), believable figures that add up, one item picked; side padding var(--lift-ui-inset). Its words end in the top ~37% of the stage (about 335px at 1440x900) because it grows 1.35x from its top edge and must never pass under the label; the rest is the product's own empty surface, where the label sits. Its CSS under [data-ui]. Words: a closing line of 3-7 words (h2, display face at clamp(40px, 5vw, 80px) over seven columns, two lines at most), a contact block of one to three short paragraphs at body size (address, email and phone, hours; never a giant name or email), and a label of 1-3 words for the one action. --lift-band set to the photograph's top-edge sample at 1440x900 for no script (the script samples it live), or to a tone step of --ground in interface mode.",
+  "options": "mode 'photo' | 'ui' (default from data-ui on .lift-media); settle 1.35 (1.1-1.5) the start scale, 1 at the end of the scroll; phoneSettle 1.18 (1.05-1.3); lift 1 (0.9-1) the sheet's scale as it leaves (under 1 pulls its sides in over the picture: old pages only); dim 0 (0-0.3) how much it darkens (over 0 turns the page's ground into a grey slab: old pages only); band 'auto' (the median of the photograph's top edge as cropped on this screen; same-origin pictures, or CORS ones with crossorigin=\"anonymous\") | 'token' (--lift-band; the default in ui mode) | a CSS colour, and a dark band turns its words to --ground; focus the settle's transform-origin ('50% 0%', so the seam row never changes, in both modes); label 'foot' | 'centre'; sheet a selector for the section that lifts (default the element before the scene); foot unset by default (the designed footer follows the scene); a selector pulls that element over the picture's foot so the scroll ends on the settled frame, only for a page that ends on the scene with one plain line; scrub true (locked) or 0.1-1 s; phone 'same' | 'rest'. The hold is not an option: it is the lift, the sheet's height up to one screen. Each word block lands whole on a short clock once the sheet's edge has cleared it.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:1"
+    ],
+    "content": "One picture and one line. Photo mode: one photograph 2400px wide or more (3000+ for full sharpness at the 1.35x start), its top edge even (fog, sky, a plain wall, a table top) and its subject in the lower half; a busy or textured top edge shows the seam, so smooth it or redraw. Interface mode: a close crop of the real product in HTML with data-ui, full bleed with no card, frame or rounded edge: an app bar in var(--lift-band-c) (so it meets the band with no seam), a title and two to four rows at true size (labels 14px or more at 1440, any heading in it under 24px), believable figures that add up, one item picked; side padding var(--lift-ui-inset). Its words end in the top ~37% of the stage (about 335px at 1440x900) because it grows 1.35x from its top edge and must never pass under the label; the rest is the product's own empty surface, where the label sits. Its CSS under [data-ui]. Words: a closing line of 3-7 words (h2, display face at clamp(40px, 5vw, 80px) over seven columns, two lines at most), a contact block of one to three short paragraphs at body size (address, email and phone, hours; never a giant name or email), and a label of 1-3 words for the one action. --lift-band set to the photograph's top-edge sample at 1440x900 for no script (the script samples it live), or to a tone step of --ground in interface mode."
+  },
+  "never": "never a giant name or email), and a label of 1-3 words for the one action.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/page-lifts-off-closing-picture/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"page-lifts-off-closing-picture\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

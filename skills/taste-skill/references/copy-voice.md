@@ -21,22 +21,31 @@ copy, used the same way on every page:
 - **Detail invented to look specific:** a batch number, a minute of the morning, a percentage nobody
   measured, and the same few names (Priya, Okafor, Fieldnote) on unrelated sites.
 
-Professional copy uses the same devices. What separates it is five things: its details are **true**
-(and often a little inconvenient); each device is used **once**, where it lands hardest; every brand has
-its **own voice**; it takes **risks** (it names an enemy, admits a limit); and its pages are **uneven**,
-leaving out what has nothing true to say. The cause underneath is missing input: with no facts, a model
+In the test behind this file, ten model pages for ten unrelated trades had a strip of invented
+figures on all ten, 18 two-fragment headings across nine, a pun signing off nine footers, the same
+restored-building origin story six times and the same customer first name on seven. Each page alone
+looked good; together they were one writer.
+
+Professional copy uses the same devices (Allbirds ran a "No flashy logos" negation run; Vercel a
+three-fragment "Develop. Preview. Ship."), so banning them does not help. What separates it is five
+things: its details are **true** and often a little inconvenient (Blue Bottle's beans once taken for
+"camel feed"; innocent thanking a named supplier); each device is used **once**, where it lands
+hardest; every brand has its **own voice** (Oatly, Aesop, Aman, Stripe and Ueno sound nothing alike);
+it takes **risks** (it names an enemy, admits a failure, coins a house word); and its pages are
+**uneven**, leaving out what has nothing true to say. The cause underneath is missing input: with no facts, a model
 fills a template with plausible inventions. **The fix is facts and decisions, never synonyms.** A word
 swapped for its synonym is the next tell.
 
 ## 1. The fact sheet, from the brief
 
-Before a sentence, write down what the brief, the client's files or an existing site give, word for
-word where you can. Each field feeds a part of the page:
+Before a sentence, open `.taste-skill/copy.md` (the block in `copy.md`, The copy notes) and write
+down what the brief, the client's files, an existing site and public reviews give, word for word
+where you can. Each field feeds a part of the page:
 
 | Field | What it holds | Where it goes |
 | --- | --- | --- |
-| What it is | One plain sentence, no adjective | the h1 and the sub-line |
-| For whom, and not for whom | The best-fit buyer; who should look elsewhere | the h1 or sub-line, one line in the FAQ |
+| What it is | One plain sentence, no adjective | the lead (the h1 too when its form is a label) |
+| For whom, and not for whom | The best-fit buyer; who should look elsewhere | the lead or the eyebrow, one line in the FAQ |
 | What they do today instead | A spreadsheet, the big rival, the bakery across town, nothing | the pain line, the comparison |
 | The true difference | What is true here and not elsewhere, with its proof | the claims worth a heading |
 | Customer words | Phrases from reviews, emails, the brief's own quotes | the pain line, headings |
@@ -48,13 +57,17 @@ word where you can. Each field feeds a part of the page:
 | The offer | Price, trial, booking terms, the one action | buttons, the close |
 
 - **Nothing is invented** beyond what `copy.md` allows (a coined name; on a place, plausible hours and
-  prices). An empty field stays empty: its section shrinks or goes, and the report lists what the client
-  must supply. Never a `[NEED]`, a bracket or a "coming soon" on the page.
-- **A thin brief is no reason to stop:** write the best page the facts allow. Only when a person is in
-  the conversation and asks for copy (not a build) ask at most six questions in one message, most useful
-  first: who switched to you from what, and why; the one number you would bet on; the objection you hear
-  most; what you are bad at or not for; a strange true detail of how you work; three real customer
-  messages.
+  prices; on a made-up client, a few odd details listed as assumed). An empty field stays empty: its
+  section shrinks or goes. In the notes a gap is written `[NEED: what]` under "Client must supply",
+  and that list goes into the report. Never a `[NEED]`, a bracket or a "coming soon" on the page.
+- **The six questions, answered by you from the brief.** A copywriter would ask the client these six,
+  most useful first; on a build you answer them yourself in the notes, and each one the brief cannot
+  answer goes to "Client must supply": who switched to them from what, and why; the one number they
+  would bet the business on; the objection buyers raise most; what they are bad at or not for; a
+  strange true detail of how they work; three real customer messages. Only when a person is in the
+  conversation and asks for copy (not a build) do you ask them, in one message, then write anyway.
+- **A thin brief is no reason to stop:** write the best page the facts allow; a thin brief makes a
+  shorter page, never an invented one.
 - **A limit and an enemy come from the brief or from plain facts of the trade** ("closed Mondays",
   "Mac only", "no lift; rooms on three floors" when the brief says so). An invented flaw is still an
   invention.
@@ -65,19 +78,29 @@ word where you can. Each field feeds a part of the page:
 ending paragraphs on a deadpan twist and saying honest, calm or quiet about itself. It is not bad; it is
 what every model writes now, and readers know it.
 
-Pick one register from `copy-registers.md` by the buyer, the price and the client's real character.
-When the brief does not settle it, take the one least like the last page this session wrote. Write the
-card on the plan (step 3), never on the page:
+Pick one register from `copy-registers.md` by the buyer, the price and the client's real character;
+you may borrow one move from a second. When the brief does not settle it, take the one least like the
+last page this session wrote, or deal it (`copy-registers.md`, the last table). Write the card in the
+notes (`.taste-skill/copy.md`), never on the page. A filled card, for a made-up rota app:
 
 ```
-Voice: technical-dry (copy-registers.md 2)
-Pairs: exact, not cold; sure, not loud; dry only in the empty state
+Register: 2 technical-dry; the buyers are ward managers who distrust promises
+Hero form: 10 enemy statement ("Most rota tools stop at the spreadsheet."), the category in the lead
+Admission: web only; the phone app comes next spring
+Enemy: re-typing the rota into three systems every Sunday
+Customer words: "I lose my Sunday evening to the rota" (the brief's survey)
+Pairs: exact, not cold; sure, not loud
 Person: "you" for what the buyer gets, "we" for the work; the product is the subject in feature lines
 Sentences: mostly 8 to 16 words; one long one a section, where it explains
-Humour: none in the hero, the prices or the FAQ
-House words: the brief's own nouns (shifts, rota, cover), the same word every time
+Humour: only the empty state; none in the hero, the prices or the FAQ
+House words: shifts, rota, cover, the same word every time
 Never: virtue words about ourselves, a pun on the name, a strip of claims
+Five seconds: "A rota planner for hospital wards that replaces the Sunday spreadsheet."
 ```
+
+The first five lines are required: copy-lint FAILs a card without a register, a hero form, an
+admission, an enemy or the customer's words. The last line is the five-second test, answered before
+the page exists.
 
 - **Copy the client's own voice first.** A writing sample, an old site or the brief's wording overrides
   the menu (never the five rules or the integrity rules).
@@ -85,9 +108,9 @@ Never: virtue words about ourselves, a pun on the name, a strip of claims
   them, push it further toward this client.
 - **Voice holds, tone moves.** The hero and the story carry the most voice. Prices, the FAQ, booking and
   forms go plain: readers there are anxious. Errors and confirmations are short and kind.
-- **The register never bends copy.md's rules:** the h1 still names the category, every heading still has
-  its noun, every button is still a verb and an object (`copy.md`). Voice lives in which facts you pick,
-  the sentence shapes, the admission and the microcopy.
+- **The register never bends copy.md's rules:** the hero still passes the five-second test, every
+  heading still has its noun, every button is still a verb and an object (`copy.md`). Voice lives in
+  the hero form, which facts you pick, the sentence shapes, the admission and the microcopy.
 
 ## 3. Shape from the reader's questions
 
@@ -103,27 +126,37 @@ what does it cost, what if it goes wrong, what do I do now. How much they alread
   padded ones; on a place, the photographs set the count (`sections.md`).
 - **Counts follow the content:** four real features are four cards, one quote is one quote, two plans
   are two plans. Zero testimonials is a normal page.
-- **Find the organising idea** when the brief has one: the menu as the page, a timetable, a founder's
-  letter, one object carried through every section. Let it break the template once.
+- **Find the organising idea** when the brief has one: the menu as the page (Intelligentsia), a
+  timetable, a founder's letter (HEY), a timeline of failures (innocent), one object carried through
+  every section (Mother's kitchen table), a spec sheet (Apple). Let it break the template once.
+- **A fixed number of sections** (the brief or the plan asks for eight): fill them with different
+  kinds of material, a menu, a timeline, a letter, a map, a spec table, a long FAQ, never eight card
+  grids.
 - **Not the skeleton:** eyebrow, claim heading, two-line lede, three cards, figures, in every section.
   Vary what goes in the sections: a list, a table, a short letter, one longer paragraph (five lines
-  at most, `copy.md`), a heading with one line under it.
+  at most, `copy.md`), a heading with one line under it, a section with no cards at all.
 
 ## 4. Draft
 
-Read `copy-moves.md` before drafting a whole page.
+Read `copy-moves.md` before drafting a whole page. Write the draft under `## Draft` in the notes, each
+line with its part first (`H1:`, `Lead:`, `H2:`, `Button:`), then build the page from it.
 
+- **The hero in the form the card chose,** 2 to 9 words, with the category plain in the lead. Never
+  "Claim. Twist." by default: it is the model's own hero.
 - **Facts where adjectives want to go.** "Fast" is followed within the sentence by the figure or the
   mechanism; adjectives that stay are physical or measurable (wood-fired, 58 mm, ground-floor).
 - **Proper nouns over categories:** the tools by name, the street, the river, the bus line.
 - **The mechanism in verb-led steps.** How it works persuades more than how good it is.
 - **The pain in the customer's words,** before the product, when the brief gives them.
 - **One admission a page,** said plainly, from the brief.
-- **Proof beside its claim,** from named outsiders the brief gives. No proof: a strip of plain facts
-  from the brief, or nothing (`copy.md`).
+- **Proof beside its claim,** from named outsiders the brief gives (a full name and a company or an
+  outlet); a rough real quote beats a polished one; luxury and craft often show none. No proof: a
+  strip of plain facts from the brief, or nothing (`copy.md`).
 - **Numbers in sentences, with their unit,** uneven where real.
 - **Buttons:** a verb and the real object (`copy.md` rule 4). A true risk reversal sits beside the
-  button ("Free for 14 days, no card"), only when the brief gives it.
+  button ("Free for 14 days, no card"), only when the brief gives it; a low-pressure exit for browsers
+  where the register fits.
+- **The close says something new** (`copy.md` rule 5), never the ask of the section above it.
 - **Microcopy carries the voice too:** form labels and errors, the sent message, empty states, the 404
   page, the newsletter confirmation, a cookie notice if the page needs one. Write them in the register;
   this is where a dry line is welcome.
@@ -156,24 +189,29 @@ counts them: over the budget is a WARN, twice the budget plus one or more is a F
 
 ## 6. Check
 
-At step 6, before the gate (which runs the lint again):
+Test with tools and readers; never grade yourself. Before the page: lint the notes
+(`node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`). At step 6, before the gate (which runs
+the lint again):
 
-1. **Lint:** `node <skill>/scripts/copy-lint.mjs index.html --kind <kind>`. Fix every FAIL. Fix each
-   WARN, or keep it on purpose and say why in the report.
+1. **Lint:** `node <skill>/scripts/copy-lint.mjs index.html --kind <kind> --category "<what is sold>"`.
+   Fix every FAIL. Fix each WARN, or keep it on purpose and say why in the report.
 2. **A rival's name:** put a rival's name, or the same trade in another town, into the h1, the sub-line
    and each heading. A line that still reads true says nothing about this client: rewrite it from the
    fact sheet.
 3. **Sameness across pages:** when this session built other pages, pass them all to `copy-lint.mjs`
    at once and read the first headings side by side, and the heading phrases they share. A shared
    cadence or joke is a tic: break it.
-4. **Read it aloud, as the client.** Cut every sentence they would not say about themselves.
+4. **Read it aloud, as the owner, at the counter, to one customer.** Cut every sentence they would
+   not say out loud.
 5. **Over-correction:** after the fixes, look for the habit that replaced the one you removed: "rather
-   than" multiplying, every sentence a fragment, everything in pairs, a joke deleted and nothing in its
-   place. A rule that made a sentence worse is broken on purpose.
-6. **A fresh reader,** when the run can spare a subagent: give it only the page's text and ask what
-   this is, who it is for, why this over the alternative, what it costs, what would make it hesitate,
-   and which three lines sound like any other website. Fix what it finds. Never iterate to beat an AI
-   detector.
+   than" multiplying, every sentence a fragment, everything in pairs, comma-only rhythm, a joke deleted
+   and nothing in its place. A rule that made a sentence worse is broken on purpose (Orwell's sixth
+   rule holds here too).
+6. **A fresh reader:** when the run can start a subagent, give it only the page's text, with no brief
+   and no notes, and ask: what is this, who is it for, why this over the alternative, what does it
+   cost, what would make you hesitate, and which three lines sound like any other website. Without a
+   subagent, answer the same six from the hero and the headings alone, as a stranger, and write the
+   answers under the voice card. Fix what it finds. Never iterate to beat an AI detector.
 
-The report carries the voice card in one line, every assumed price or hour (`copy.md`), and what the
-client must supply.
+The report carries the voice card in one line, every claim the client must check, every assumed price
+or hour (`copy.md`), and the "Client must supply" list from the notes.

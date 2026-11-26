@@ -8,5 +8,9 @@
   "cost": "low",
   "palettes": ["light", "dark", "colour"],
   "random": false,
-  "subjects": ["the one key object of a page: the prompt box or the featured plan"]
+  "subjects": ["the one key object of a page: the prompt box or the featured plan"],
+  "tones": ["tech", "playful"],
+  "intensity": "lively",
+  "webgl": 1,
+  "treatment": false
 }

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Westerly, a small ferry for the outer islands</title>
+<meta name="description" content="Westerly sails one slow loop a week from Oban, calling at thirteen islands between Lismore and Lewis.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #efefed;
+    --ink: #121212;
+    --accent: #ff6a3d;
+    --font-display: "Schibsted Grotesk", system-ui, sans-serif;
+    --margin: clamp(16px, 2.3vw, 32px);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 18px/1.5 var(--font-display);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+
+  .bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px var(--margin);
+    font-size: 18px;
+  }
+  .mark { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; text-decoration: none; }
+  .bar nav { display: flex; gap: 28px; }
+  .bar nav a { text-decoration: none; }
+
+  .hero {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: calc(100svh - 72px);
+    padding: 6svh var(--margin) 0;
+  }
+  .hero-text {
+    display: grid;
+    grid-template-columns: 1fr minmax(260px, 32ch);
+    gap: 48px;
+    align-items: end;
+  }
+  .hero h1 {
+    margin: 0;
+    font-weight: 650;
+    font-size: clamp(38px, 7.4vw, 120px);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+    max-width: 10em;
+  }
+  .hero p { margin: 0 0 24px; font-size: 18px; }
+  .hero-pic { margin: 40px calc(var(--margin) * -1) 0; min-height: 44svh; position: relative; overflow: clip; }
+  .hero-pic img { position: absolute; left: 0; top: 0; width: 100%; height: 112%; object-fit: cover; }
+
+  .after {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: end;
+    padding: clamp(120px, 16vw, 220px) var(--margin) clamp(160px, 16vw, 220px);
+  }
+  .after-pic { margin: 0; overflow: clip; aspect-ratio: 4 / 5; }
+  .after-pic img { width: 100%; height: 112%; object-fit: cover; }
+  .after h2 {
+    margin: 0 0 24px;
+    font-weight: 650;
+    font-size: clamp(34px, 4.6vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    max-width: 14ch;
+  }
+  .after p { margin: 0 0 36px; max-width: 46ch; font-size: 18px; }
+  .button {
+    display: inline-block;
+    padding: 16px 26px;
+    background: var(--accent);
+    color: #121212;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .foot { padding: 0 var(--margin) 28px; }
+  .foot-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 28px; }
+  .foot-row nav { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+  .foot-row nav a { text-decoration: none; }
+  .foot p:last-child { margin: 28px 0 0; max-width: 62ch; font-size: 16px; color: color-mix(in srgb, var(--ink) 68%, transparent); }
+
+  @media (max-width: 1023px) {
+    .hero-text { grid-template-columns: 1fr; gap: 20px; }
+    .hero p { max-width: 40ch; }
+  }
+  @media (max-width: 767px) {
+    .bar { gap: 16px; font-size: 16px; }
+    .bar nav { gap: 16px; }
+    .hero { padding-top: 4svh; }
+    .hero-text { grid-template-columns: 1fr; gap: 20px; }
+    .hero-pic { margin-top: 28px; min-height: 40svh; }
+    .after { grid-template-columns: 1fr; padding: 120px var(--margin); }
+  }
+</style>
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="#top">Westerly</a>
+    <nav aria-label="Main">
+      <a href="#islands">Islands</a>
+      <a href="#book">Fares</a>
+      <a href="#book">Book a berth</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-text">
+        <h1 id="hero-title">A small ferry for the outer islands</h1>
+        <div>
+          <p>Westerly sails one slow loop a week from Oban, calling at thirteen islands between Lismore and Lewis, April to October.</p>
+          <a class="button" href="#book">Book a berth</a>
+        </div>
+      </div>
+      <figure class="hero-pic">
+        <img data-drift src="https://picsum.photos/id/16/1600/1000" srcset="https://picsum.photos/id/16/800/1000 800w, https://picsum.photos/id/16/1600/1000 1600w" sizes="100vw" width="1600" height="1000" alt="Blue sea and distant islands seen over a rocky shore">
+      </figure>
+    </section>
+
+    <section class="sc scene" id="islands" data-big-scene="scroll-turned-drum" data-big-scene-opts='{}' aria-labelledby="drum-title" style="--ground:#0d1113; --ink:#ebebe7">
+      <div class="scene-stage">
+        <header class="drum-head">
+          <h2 class="drum-title" id="drum-title">Every island on the loop, in the order we call</h2>
+        </header>
+        <div class="drum-view">
+          <ol class="drum">
+            <li class="drum-item"><span class="drum-name">Lismore</span>
+              <img src="https://picsum.photos/id/12/900/600" srcset="https://picsum.photos/id/12/600/400 600w, https://picsum.photos/id/12/900/600 900w, https://picsum.photos/id/12/1200/800 1200w, https://picsum.photos/id/12/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="Dark rocks on a sandy beach, calm sea and low islands beyond"></li>
+            <li class="drum-item"><span class="drum-name">Mull</span>
+              <img src="https://picsum.photos/id/1049/900/600" srcset="https://picsum.photos/id/1049/600/400 600w, https://picsum.photos/id/1049/900/600 900w, https://picsum.photos/id/1049/1200/800 1200w, https://picsum.photos/id/1049/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A rock island reflected on a wet beach under a pale sky"></li>
+            <li class="drum-item"><span class="drum-name">Coll</span>
+              <img src="https://picsum.photos/id/347/900/600" srcset="https://picsum.photos/id/347/600/400 600w, https://picsum.photos/id/347/900/600 900w, https://picsum.photos/id/347/1200/800 1200w, https://picsum.photos/id/347/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="Dune grass bending in the wind under a wide white sky"></li>
+            <li class="drum-item"><span class="drum-name">Tiree</span>
+              <img src="https://picsum.photos/id/606/900/600" srcset="https://picsum.photos/id/606/600/400 600w, https://picsum.photos/id/606/900/600 900w, https://picsum.photos/id/606/1200/800 1200w, https://picsum.photos/id/606/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A wooden boardwalk through grassy dunes towards the sea"></li>
+            <li class="drum-item"><span class="drum-name">Colonsay</span>
+              <img src="https://picsum.photos/id/14/900/600" srcset="https://picsum.photos/id/14/600/400 600w, https://picsum.photos/id/14/900/600 900w, https://picsum.photos/id/14/1200/800 1200w, https://picsum.photos/id/14/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A rocky shore meeting a calm pale sea under haze"></li>
+            <li class="drum-item"><span class="drum-name">Barra</span>
+              <img src="https://picsum.photos/id/457/900/600" srcset="https://picsum.photos/id/457/600/400 600w, https://picsum.photos/id/457/900/600 900w, https://picsum.photos/id/457/1200/800 1200w, https://picsum.photos/id/457/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="Faint boats at anchor on a pale, foggy sea"></li>
+            <li class="drum-item"><span class="drum-name">Eriskay</span>
+              <img src="https://picsum.photos/id/941/900/600" srcset="https://picsum.photos/id/941/600/400 600w, https://picsum.photos/id/941/900/600 900w, https://picsum.photos/id/941/1200/800 1200w, https://picsum.photos/id/941/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A small island on a pale, glassy sea under soft cloud"></li>
+            <li class="drum-item"><span class="drum-name">South Uist</span>
+              <img src="https://picsum.photos/id/179/900/600" srcset="https://picsum.photos/id/179/600/400 600w, https://picsum.photos/id/179/900/600 900w, https://picsum.photos/id/179/1200/800 1200w, https://picsum.photos/id/179/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="Waves breaking around dark rocks on a misty shore"></li>
+            <li class="drum-item"><span class="drum-name">Benbecula</span>
+              <img src="https://picsum.photos/id/172/900/600" srcset="https://picsum.photos/id/172/600/400 600w, https://picsum.photos/id/172/900/600 900w, https://picsum.photos/id/172/1200/800 1200w, https://picsum.photos/id/172/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A stone jetty running out into still water and grey fog"></li>
+            <li class="drum-item"><span class="drum-name">North Uist</span>
+              <img src="https://picsum.photos/id/302/900/600" srcset="https://picsum.photos/id/302/600/400 600w, https://picsum.photos/id/302/900/600 900w, https://picsum.photos/id/302/1200/800 1200w, https://picsum.photos/id/302/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A lone marker post standing in still water wrapped in fog"></li>
+            <li class="drum-item"><span class="drum-name">Berneray</span>
+              <img src="https://picsum.photos/id/130/900/600" srcset="https://picsum.photos/id/130/600/400 600w, https://picsum.photos/id/130/900/600 900w, https://picsum.photos/id/130/1200/800 1200w, https://picsum.photos/id/130/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="A gull gliding over a grey sea under pale cloud"></li>
+            <li class="drum-item"><span class="drum-name">Harris</span>
+              <img src="https://picsum.photos/id/66/900/600" srcset="https://picsum.photos/id/66/600/400 600w, https://picsum.photos/id/66/900/600 900w, https://picsum.photos/id/66/1200/800 1200w, https://picsum.photos/id/66/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="Rough grazing in a wide glen under low grey cloud, a lone peak behind"></li>
+            <li class="drum-item"><span class="drum-name">Lewis</span>
+              <img src="https://picsum.photos/id/379/900/600" srcset="https://picsum.photos/id/379/600/400 600w, https://picsum.photos/id/379/900/600 900w, https://picsum.photos/id/379/1200/800 1200w, https://picsum.photos/id/379/1600/1067 1600w" sizes="(max-width: 767px) 100vw, 50vw" width="900" height="600" alt="An empty road running over the moor under a grey sky"></li>
+          </ol>
+        </div>
+        <div class="drum-close">
+          <p class="drum-close-line">Board anywhere on the loop, leave anywhere</p>
+          <a class="drum-button" href="#book">See fares for every crossing</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="after" id="book" aria-labelledby="book-title">
+      <figure class="after-pic"><img data-drift src="https://picsum.photos/id/483/960/1200" width="960" height="1200" alt="Dark sea cliffs with white surf breaking around the rocks below"></figure>
+      <div>
+        <h2 id="book-title">Berths for April open on 1 February</h2>
+        <p>There are twelve cabins and one loop a week. Write with your islands and your dates, and we hold a berth for ten days while you decide.</p>
+        <a class="button" href="#book">Hold a berth</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-row">
+      <a class="mark" href="#top">Westerly</a>
+      <nav aria-label="Footer">
+        <a href="#islands">Islands</a>
+        <a href="#book">Fares</a>
+        <a href="#book">Book a berth</a>
+      </nav>
+    </div>
+    <p>Photographs by Paul Jarvis, Rosan Harmens, Alex Talmon, Aleksandra Boguslawska, Volkan Olmez, Ivan Slade, Angelina Odemchuk, Aleksi Tappura, Billy Lam, Ryan Jacques, Nicholas Swanson and Kamil Lehmann, from Unsplash via Picsum. Westerly is an invented company for this demo, and the pictures stand in for the islands.</p>
+  </footer>
+
+  <script type="module" src="../scenes.js"></script>
+  <script>
+window.addEventListener('sc-classic-ready', () => {
+     
+    // the page around the scene: its words are simply there (a built page takes the entrance its sheet deals), and
+    // its photographs drift slowly with the scroll
+    if (window.gsap && window.ScrollTrigger) gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      // the photograph is 12% taller than its frame and slides inside it, so it never leaves the frame
+      for (const img of document.querySelectorAll('[data-drift]')) {
+        gsap.fromTo(img, { yPercent: 0 }, { yPercent: -10, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+      }
+    });
+  }, { once: true });
+</script>
+</body>
+</html>

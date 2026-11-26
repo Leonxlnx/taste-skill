@@ -1,0 +1,78 @@
+{
+  "id": "sheets-tip-in-and-away",
+  "name": "Sheets tip in and away",
+  "family": "layer-stack",
+  "classic": 1,
+  "look": "Three to five chapters lie in one held stage as full-screen sheets of the page's own ground, each with its name set very large along the top edge and a photograph filling the rest. A sheet comes up out of a lower corner turned about 10 degrees and straightens as it lands over the last one, its photograph trailing a beat behind inside its window and catching up just after; it lies flat for a third of a screen so the name can be read, then tips away toward the opposite upper corner while the next one arrives, so the chapters shuffle like loose pages instead of scrolling past. It is for a studio's projects, a yard's builds, a house's rooms or a label's collections: three to five parallel pieces with one strong photograph each.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "editorial",
+    "warm",
+    "product"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2,
+  "restH": 4,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same shuffle on the same full-width sheets, in 2D with smaller numbers: 5 degrees in and 2.5 out, a twentieth of the width sideways, no lean, 0.45 screen a hand-over (1.92 screens for three). The name runs across the top over its line and link, the photograph fills a 1:2 window under them, the arriving sheet's words come up a little earlier because it turns less, and the leaving sheet starts a little sooner, so its photograph fills the top of the screen down to the next name. phone 'rest' shows the finished composition: every sheet as a plain block, name, line and link over its photograph.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, on the work, the builds, the rooms or the collections, after a quiet section that introduces them; it is that section, told as sheets, not screens in front of it. The first sheet comes in while the section scrolls into place and the stage lets go of the last one lying flat, so the page moves on from a named piece.",
+  "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless.",
+  "options": "tilt 10 (0-16) degrees a sheet is turned as it comes in; tiltOut 5 (0-12) degrees the other way as it leaves; rest 0.34 (0.2-0.8) screens each sheet lies flat; move 0.5 (0.3-0.9) screens each hand-over takes; lag 0.1 (0-0.25) how far the photograph trails its sheet, as a share of a hand-over, inside the 5% margin its box has past every edge of its window (0 keeps it fixed); drift 0.08 (0-0.25) sideways travel as a share of the width; lean 6 (0-12) degrees of perspective lean on wide screens, gone at rest; from 'left' (in from the lower left, out to the upper right) | 'right'; preroll true, the first sheet comes in as the section scrolls into place; hold auto (sheets x rest + (sheets - 1) x move: 2.02 screens for three; a number scales both); scrub true with Lenis, else 0.5 (0.3 on a phone); phone 'same' | 'rest'; phoneTilt 5, phoneTiltOut 2.5, phoneDrift 0.05, phoneMove 0.45. The number of sheets comes from the markup. Per sheet --st-pos and --st-pos-phone; scene tokens --st-name-case (none; uppercase for a face drawn for capitals), --st-name-size, --st-gutter.",
+  "roles": [
+    "work",
+    "showcase",
+    "gallery",
+    "list"
+  ],
+  "position": "middle",
+  "sectors": [
+    "studio-portfolio",
+    "agency",
+    "architecture",
+    "real-estate",
+    "hospitality",
+    "culture",
+    "event",
+    "fashion",
+    "physical-product"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:3"
+    ],
+    "content": "Three to five sheets (three reads best and holds about two screens), each one piece: one photograph of it, never repeated, of one family (the same kind of subject in the same light) with a clear change of colour between neighbours, at least 1920px wide, its subject in the middle third so one picture serves the 2:1 window on wide screens and the 1:2 window on a phone (frame each with --st-pos and --st-pos-phone); a name of one or two short words, set very large on one line (the script sizes every name to the longest); one line of 3-8 words saying what it is (kind, size, year); an optional link, the one accent. A section heading of 2-6 words, shown in the finished composition and kept for screen readers while the stage runs. On the work the photographs are the client's own pieces; a run of similar pictures makes the shuffle pointless."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/sheets-tip-in-and-away/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"sheets-tip-in-and-away\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

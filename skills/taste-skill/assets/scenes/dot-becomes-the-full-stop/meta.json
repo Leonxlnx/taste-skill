@@ -5,6 +5,8 @@
   "look": "One large dot drops onto the page's ground and the claim grows out of it to the left one whole word at a time, the first word right behind the drop; the dot steps right and a step smaller with every word until it is exactly the sentence's own full stop as the last word lands. An optional second beat cuts the ground to the inverse in one step and sets one supporting line under the claim.",
   "fits": ["statement"],
   "types": ["software", "tech", "gaming"],
+  "tones": ["tech", "editorial", "product", "warm", "playful"],
+  "intensity": "lively",
   "trigger": "scroll",
   "hold": 1,
   "restH": 1,
@@ -19,6 +21,19 @@
   },
   "never": "an accent on the dot; a claim of seven words or more; right after another type scene",
   "avoidWith": ["letter-physics", "letter-bar-floods-the-ground"],
-  "states": { "start": { "p": 0.12, "wait": 500 }, "middle": { "p": 0.5, "wait": 500 }, "end": { "p": 0.98, "wait": 600 } },
+  "states": {
+    "start": {
+      "p": 0.12,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
   "avoidMoments": ["word-highlight", "counter-rolls"]
 }

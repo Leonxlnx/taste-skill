@@ -6,5 +6,9 @@
   "bestOn": ["card", "band"],
   "motion": "slow",
   "cost": "low",
-  "palettes": ["light", "dark", "colour"]
+  "palettes": ["light", "dark", "colour"],
+  "tones": ["tech", "product"],
+  "intensity": "quiet",
+  "webgl": 1,
+  "treatment": false
 }

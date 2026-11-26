@@ -30,9 +30,9 @@
     pointer entering its card restarts it from the top; a held fragment plays while the pointer is on
     its card. ui.restart(el) restarts every fragment in el (a tab shown again).
   - A loop runs while on screen and gets a pause button (a solid 32px disc) when it starts to move:
-    in a .card beside the card's title (never over the panel, which a cropped fragment fills to its
-    corners); in [data-ui-pause-host], or a .panel/.frame outside a card, 12px in from its bottom-right
-    corner; with no panel, under the fragment. Not where the place already holds a .loop-pause. Under prefers-reduced-motion nothing
+    in [data-ui-pause-host], or a .panel/.frame (a card's too, as in the hero), 12px in from its
+    bottom-right corner; in a .card with no panel, beside the card's title; with no panel, under the
+    fragment. Not where the place already holds a .loop-pause. Under prefers-reduced-motion nothing
     moves and no button is shown.
   - A fragment's script never writes words of its own over the page's: every state it shows comes
     from the markup (data-* beside the text it changes) or from opts.
@@ -120,7 +120,20 @@ export async function start(root, opts) {
   const init = await script(name).catch(() => null);
   if (!init) return null;
   root.__ui = init(root, opts) || { destroy() {} };
+  seat(root);
   return root.__ui;
+}
+
+/* a small fragment at the corner of a panel far taller than it (a 210px stack in a 400px panel) would
+   leave the panel's lower part empty: while the panel is 1.6 times its height or more it stands in the
+   panel's middle (.is-mid), still on the left inset and cut by the right edge */
+function seat(root) {
+  const at = root.closest('.at-corner');
+  if (!at || !at.matches('.stage > .at-corner:not(.to-edge)') || typeof ResizeObserver !== 'function') return;
+  const stage = at.parentElement;
+  const fit = () => at.classList.toggle('is-mid', stage.clientHeight >= 1.6 * at.offsetHeight && at.offsetHeight > 0);
+  const ro = new ResizeObserver(fit);
+  ro.observe(stage); ro.observe(at);
 }
 
 /*
@@ -180,8 +193,10 @@ const titleOf = card => [...card.querySelectorAll('h3, .card__title')].find(t =>
   resume(). One button per place, shared by every loop in it. Returns a function that removes it.
   Nothing is added under reduced motion (those hold still by themselves).
   Where it goes, so it never covers what the panel shows (a cropped panel runs its UI into every corner):
-  - in a .card with a title: beside the title, at the right of the card's text column (the title keeps
-    44px clear for it); one button for the card;
+  - a .panel or .frame in a card, as in the hero: its bottom-right corner, 12px in (beside the title it
+    read as a control of the card, not of the picture);
+  - in a .card with a title and no panel round the fragment: beside the title, at the right of the card's
+    text column (the title keeps 44px clear for it); one button for the card;
   - a box marked [data-ui-pause-host]: its bottom-right corner, as the page chose;
   - a .panel or .frame outside a card: its bottom-right corner (keep that corner clear);
   - a fragment with no panel round it: under its bottom-right corner, in 44px kept free below it.
@@ -189,7 +204,8 @@ const titleOf = card => [...card.querySelectorAll('h3, .card__title')].find(t =>
 export function pausable(box, ctl) {
   if (!box || reduced()) return () => {};
   const explicit = box.matches('[data-ui-pause-host]');
-  const card = explicit ? null : box.closest('.card');
+  const panel = box.matches('.panel__screen, .panel, .frame');
+  const card = explicit || panel ? null : box.closest('.card');
   const title = card ? titleOf(card) : null;
   const key = title ? card : box;
   let p = boxes.get(key);

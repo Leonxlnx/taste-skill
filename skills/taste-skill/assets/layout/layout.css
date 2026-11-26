@@ -11,9 +11,9 @@
   Type      start.mjs deals the pairing (VI-02) and prints --font-*, --display-weight (400; 400 to 500
             on tech) and --display-tracking; a page may add --display-stretch, --display-axes and
             --ly-scale (the face's optical size against the default grotesk, 1 when unsure).
-  Place     a place's hero is never dealt: always hero--place (Recipe 3: the photograph under the
-            header, the words under it on the ground). Nothing is laid over a photograph to make
-            words readable, on any type: no scrim, gradient or veil (PH-31, VI-49).
+  Place     always hero--place, in the form deal.mjs deals (band, bleed, split, name: section 0b).
+            Nothing is laid over a photograph to make words readable, on any type: no scrim,
+            gradient or veil (PH-31, VI-49); the bleed form's words stand on a solid panel.
 
   Every number here is in references/layout-v4.md with what it was measured on; change it there first.
 */
@@ -243,6 +243,55 @@ html:is([data-buttons="arrow"], [data-buttons="block"]) .hero--photo[data-box="n
     grid-row: 1 / 2; grid-column: 1 / -1; top: 0; bottom: auto; height: min(calc(100% - var(--hgap)), 125vw);
   }
   main > :is(.hero--place, :root[data-type="place"] .hero--photo):has(> .hero__bg[data-phone-fill]):has(> .wrap) > .wrap { grid-row: 2; }
+}
+
+/* 0b. the place hero's four forms, dealt by deal.mjs --type place (data-form on the section; none = band).
+   In testing every place page had the same hero (a photograph band, the h1 left, the line right, then
+   120 to 200px of empty ground under it), so two cafes could not be told apart without their colours.
+     band   the photograph under the header down to the words, which end on the fold (no empty band)
+     bleed  the photograph over the whole first screen; the words on a solid panel of the page ground in
+            its lower corner (data-corner="end": the right one). Never words on the photograph itself
+     split  the words on five columns (the h1 at the top, the line and the button at the foot), the
+            photograph on seven down to the fold; under 1024 it stacks as band
+     name   band, with the name or the street set large across the .wrap above the h1:
+            <p class="hero__name">Henderson Street</p> first in .hero__text
+   The markup is the same for all four: <section class="hero hero--place" data-form=".." data-enter>. */
+@media (min-width: 640px) {
+  /* the photograph is in the flow here: it takes what the words leave, so they end --hpadb above the fold */
+  main > .hero--place:not([data-form="bleed"]) { display: flex; flex-direction: column; padding-top: var(--nav); }
+  main > .hero--place:not([data-form="bleed"]) > .hero__bg {
+    position: relative; inset: auto; flex: 1 1 0; min-height: min(36svh, 340px); height: auto; width: 100%;
+  }
+  main > .hero--place:not([data-form="bleed"]) > .wrap { flex: none; height: auto; margin-top: var(--hgap); }
+  main > .hero--place[data-form="bleed"] { padding-top: calc(var(--nav) + var(--hgap)); }
+  :root .hero--place[data-form="bleed"] > .hero__bg { top: var(--nav); bottom: auto; height: calc(100% - var(--nav)); }
+  :root .hero--place[data-form="bleed"] > .wrap > .hero-text { display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  :root .hero--place[data-form="bleed"] .hero__text { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--s-5); width: min(100%, 580px); padding: var(--s-7); background: var(--bg); }
+  :root .hero--place[data-form="bleed"] .hero__text > * { grid-column: auto; }
+  :root .hero--place[data-form="bleed"][data-corner="end"] .hero__text { margin-left: auto; }
+}
+@media (min-width: 1024px) {
+  main > .hero--place[data-form="split"] { display: block; padding-top: calc(var(--nav) + var(--hgap)); }
+  main > .hero--place[data-form="split"] > .wrap { height: 100%; }
+  main > .hero--place[data-form="split"] > .wrap { margin-top: 0; }
+  main > .hero--place[data-form="split"] > .hero__bg {
+    position: absolute; min-height: 0; top: calc(var(--nav) + var(--hgap)); bottom: auto; left: auto;
+    height: calc(100% - var(--nav) - var(--hgap) - var(--hpadb) - var(--bar));   /* a replaced box never stretches between top and bottom */
+    right: max(var(--gut), calc((100% - var(--container)) / 2));
+    width: calc(min(100% - 2 * var(--gut), var(--container)) * 7 / 12 - var(--gutter) * 5 / 12);
+  }
+  :root .hero--place[data-form="split"] > .wrap > .hero-text { height: 100%; }
+  :root .hero--place[data-form="split"] .hero__text { display: flex; flex-direction: column; gap: var(--s-5); height: 100%; width: calc(100% * 5 / 12 - var(--gutter) * 7 / 12); }
+  :root .hero--place[data-form="split"] .hero__text > h1 { margin-bottom: auto; }
+}
+:root .hero--place[data-form="name"] .hero__name {
+  grid-column: 1 / -1; grid-row: 1; margin: 0 0 var(--s-6);
+  font: var(--display-weight) clamp(52px, 10vw, 160px)/.92 var(--font-display); letter-spacing: -0.035em; text-wrap: balance;
+}
+:root .hero--place[data-form="name"] .hero__text > h1 { grid-row: 2 / span 3; }
+@media (max-width: 639px) {
+  :root .hero--place[data-form="bleed"] .hero__text { padding: 0; background: none; }
+  :root .hero--place[data-form="name"] .hero__name { font-size: clamp(44px, 14vw, 72px); margin-bottom: 0; }
 }
 
 /* 3. hero--product: the head row (h1 and line left, the buttons right on the line's baseline), then
@@ -545,10 +594,16 @@ h1.ly-locked { white-space: nowrap; text-wrap: nowrap; }
 
 /* a short phone (320x640: under 700px tall): the first screen still ends whole with the hero's button on it.
    The photograph over the words takes less of it, the facts under the words go (the lead carries the hard
-   fact), and a collage keeps less height */
+   fact), and a collage keeps less height. The centred hero's window shows its bar and question on that screen:
+   the news pill and the second button go (the first button stays), and the gaps close up */
 @media (max-width: 639px) and (max-height: 700px) {
   :root { --hgap: 24px; }
   .hero--photo, .hero--place, :root[data-type="place"] .hero--photo { --photo: min(26svh, 48vw); }
   main > .hero .hero__facts { display: none; }
   .hero--triptych .ly-collage { min-height: 180px; margin-block: var(--s-5); }
+  .hero--centred .hero__c > .pill, .hero--centred .btn-row > :not(:first-child) { display: none; }
+  .hero--centred .hero__c { gap: var(--s-3); }
+  .hero--centred .btn-row { margin-top: var(--s-1); }
+  .hero--centred .hero__window { margin-top: var(--s-4); }
+  .hero--centred .hero__window > .ly-piece { top: var(--s-3); }
 }

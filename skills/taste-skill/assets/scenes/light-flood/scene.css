@@ -1,0 +1,259 @@
+/* assets/scenes/light-flood/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / light-flood.css — one statement plays out a day in one scroll (light-flood.js).
+
+   Default (no .is-live: no script, a failed CDN, reduced motion, a phone set to 'rest'): one 100svh panel
+   that tells the whole day top to bottom. The top edge is the day ground (it meets the section before
+   with no seam), a wide sunset dome of halo and core fills the middle, the sentence sits on the core, and
+   a band of night closes the bottom edge (it meets the section after with no seam).
+
+   Live (.is-live, added by the script only when motion is allowed): the stage is pinned for the hold;
+   the dome rises from the bottom edge and floods the screen, then night closes in from the top corners
+   until the light left is a dome again, which shrinks, sinks below the edge and goes out.
+
+   No gradients anywhere: every soft edge is a flat shape with a blur, painted once and then only moved,
+   scaled or faded (the script paints the live dome and night into canvases from these same divs).
+   Colours are six tokens, set on the section or on :root:
+     --lf-day    the ground before (falls back to the page's --ground)
+     --lf-halo   the light, saturated outer glow
+     --lf-core   the flood colour; relative luminance 0.15-0.25 so both inks clear 3:1 on it; keep it
+                 out of the terracotta band (hue 6-30 at HSL saturation 0.38-0.85), the inspector fails it
+     --lf-night  the ground after; a blue-black, never indigo
+     --lf-ink    the lead's colour (falls back to the page's --ink)
+     --lf-key    the key phrase's colour, white (a warm cream white reads as the assistant palette)
+   .lf--dawn swaps the story (night first, day last, lead in --lf-key, key phrase in --lf-ink); its
+   light is all core colour (a pale halo would pass behind the white lead at under 3:1 and go brown over
+   the night).
+   .lf--flood ends on the core (the section after starts on --lf-core).
+   .lf-soft is one rung of the rack focus: a copy of the two lines the script blurs once to a fixed
+   radius; there are three, most blurred first, all under the h2 (added by the script, live only).
+   Weights follow the page: --display-weight (the statement; 500 here when the page sets none). A weight
+   the page has not loaded is never faked: the nearest loaded one shows. */
+
+[data-big-scene="light-flood"] { font-synthesis-weight: none; }
+
+[data-big-scene="light-flood"] {
+  --lf-c-day: var(--lf-day, var(--ground, #e6ebee));
+  --lf-c-halo: var(--lf-halo, #f7b08a);
+  --lf-c-core: var(--lf-core, #f0401c);
+  --lf-c-night: var(--lf-night, #101820);
+  --lf-c-ink: var(--lf-ink, var(--ink, #121820));
+  --lf-c-key: var(--lf-key, #ffffff);
+  --lf-from: var(--lf-c-day);
+  --lf-to: var(--lf-c-night);
+  --lf-glow: var(--lf-c-halo);
+  --lf-lead-ink: var(--lf-c-ink);
+  --lf-key-ink: var(--lf-c-key);
+  --lf-gutter: 16px;
+}
+[data-big-scene="light-flood"].lf--dawn {
+  --lf-from: var(--lf-c-night);
+  --lf-to: var(--lf-c-day);
+  --lf-glow: var(--lf-c-core);
+  --lf-lead-ink: var(--lf-c-key);
+  --lf-key-ink: var(--lf-c-ink);
+}
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="light-flood"] > .scene-stage {
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+  isolation: isolate;
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* a nowrap line never widens the stage */
+  place-items: center;
+  background: var(--lf-c-core);
+}
+
+[data-big-scene="light-flood"] .lf-ground,
+[data-big-scene="light-flood"] .lf-sun,
+[data-big-scene="light-flood"] .lf-night { position: absolute; pointer-events: none; }
+
+[data-big-scene="light-flood"] .lf-ground { inset: 0; z-index: 0; background: var(--lf-from); }
+[data-big-scene="light-flood"] .lf-ground--core { background: var(--lf-c-core); display: none; }
+[data-big-scene="light-flood"] .lf-ground--night { background: var(--lf-to); display: none; }
+
+/* The dome: its centre sits on the stage's bottom edge. rx 0.9W, ry 0.8H, so its 50% edge is at 20% of
+   the height in the middle and 34% at the sides, and the whole sentence sits on solid core. */
+[data-big-scene="light-flood"] .lf-sun {
+  z-index: 1;
+  left: 50%;
+  top: 100%;
+  width: 180%;
+  height: 160%;
+  transform: translate(-50%, -50%);
+}
+[data-big-scene="light-flood"] .lf-halo,
+[data-big-scene="light-flood"] .lf-core { position: absolute; border-radius: 50%; }
+[data-big-scene="light-flood"] .lf-halo {
+  inset: -7%;
+  background: var(--lf-glow);
+  filter: blur(min(5svh, 3.5cqw));
+}
+[data-big-scene="light-flood"] .lf-core {
+  inset: 0;
+  background: var(--lf-c-core);
+  filter: blur(min(4.5svh, 3cqw));
+}
+
+/* The night band along the bottom edge: a flat fill whose top edge is blurred, solid at the bottom. */
+[data-big-scene="light-flood"] .lf-night {
+  z-index: 2;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 24%;
+}
+[data-big-scene="light-flood"] .lf-night__fill {
+  position: absolute;
+  inset: 34% 0 -60% 0;
+  background: var(--lf-to);
+  filter: blur(3.5svh);
+}
+
+/* The sentence: one line of lead, one line of key phrase, centred a little below the middle. The soft
+   copy shares the h2's grid cell and every rule that lays it out, so it sits exactly under the h2. */
+[data-big-scene="light-flood"] .lf-line,
+[data-big-scene="light-flood"] .lf-soft {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 4;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 4svh var(--lf-gutter) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.06em;
+  text-align: center;
+  font-family: var(--font-display, inherit);
+  font-size: 1.5rem;
+  font-weight: var(--display-weight, 500);
+  font-style: normal;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-transform: none;
+  text-wrap: balance;
+}
+[data-big-scene="light-flood"] .lf-soft {
+  display: none;
+  z-index: 3;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* the copy's letters: generated content, so the copy holds no text of its own (a <br> in a line comes
+   through as a line break) */
+[data-big-scene="light-flood"] .lf-soft > span { position: relative; }
+[data-big-scene="light-flood"] .lf-soft > span::before { content: attr(data-lf-text); white-space: pre; filter: var(--lf-blur, none); }
+[data-big-scene="light-flood"] .lf-soft > .lf-wrap::before { white-space: pre-line; }
+/* a rung the script could paint shows its canvas (the letters blurred once) and keeps the generated
+   letters only for its layout; otherwise the letters show with the CSS blur, applied when painted */
+[data-big-scene="light-flood"] .lf-soft > span > canvas { display: none; position: absolute; pointer-events: none; }
+[data-big-scene="light-flood"] .lf-soft > .lf-drawn > canvas { display: block; }
+[data-big-scene="light-flood"] .lf-soft > .lf-drawn::before { visibility: hidden; }
+/* Each line stays one line (the headline is two lines at every width). Its size is the smaller of the
+   design size and --lf-*-fit, which the script measures so the line fills the width at most; without
+   the script, a cap from the character count (18 when unset) does the same job roughly. The key's cap
+   allows 0.45em a character and the lead's 0.55em (real sentence-case copy runs 0.39-0.47em), so the
+   size step survives the cap: 36px and 44px at 390px wide, where an even cap would make both 40px. */
+[data-big-scene="light-flood"] .lf-lead,
+[data-big-scene="light-flood"] .lf-key {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: inherit;
+  line-height: 1;
+  padding-bottom: 0.08em; /* room for descenders under a blur */
+}
+/* copy too long for one line at 36px (the script warns): it wraps rather than shrinking further */
+[data-big-scene="light-flood"] .lf-wrap { white-space: normal; text-wrap: balance; }
+[data-big-scene="light-flood"] .lf-lead {
+  --lf-size: clamp(2.5rem, 7.6cqw, 8.5rem);
+  color: var(--lf-lead-ink);
+  font-size: min(var(--lf-size), var(--lf-lead-fit, max(2.25rem, calc((100cqw - 2 * var(--lf-gutter)) / (var(--lf-lead-n, 18) * 0.55)))));
+}
+[data-big-scene="light-flood"] .lf-key {
+  --lf-size: clamp(3.125rem, 9.5cqw, 10.625rem);
+  color: var(--lf-key-ink);
+  font-size: min(var(--lf-size), var(--lf-key-fit, max(2.25rem, calc((100cqw - 2 * var(--lf-gutter)) / (var(--lf-key-n, 18) * 0.45)))));
+}
+
+@media (max-width: 767px) {
+  [data-big-scene="light-flood"] .lf-sun { width: 260%; height: 150%; }
+  [data-big-scene="light-flood"] .lf-halo { filter: blur(9cqw); }
+  [data-big-scene="light-flood"] .lf-core { filter: blur(7cqw); }
+  [data-big-scene="light-flood"] .lf-night { height: 22%; }
+  [data-big-scene="light-flood"] .lf-night__fill { filter: blur(3svh); }
+  [data-big-scene="light-flood"] .lf-line,
+  [data-big-scene="light-flood"] .lf-soft { padding-top: 4svh; gap: 0.1em; }
+  [data-big-scene="light-flood"] .lf-lead { --lf-size: 2.5rem; }
+  [data-big-scene="light-flood"] .lf-key { --lf-size: 3.125rem; }
+}
+
+/* ---------- live ---------- */
+
+/* The stage writes --p on the section every frame. Nothing in this scene reads it, and as an inherited
+   custom property it would make every layer in the stage recalculate its style on every frame; the
+   stage keeps a value of its own, so that work stops at the section (4 elements a frame, not 31). */
+[data-big-scene="light-flood"].is-live > .scene-stage { min-height: 0; --p: 0; }
+/* the rack focus's soft copies: blurred once by the script, then only faded (each its own layer) */
+[data-big-scene="light-flood"].is-live .lf-soft { display: flex; }
+[data-big-scene="light-flood"].is-live .lf-soft > * { will-change: opacity, transform; }
+/* the real lines too, from the start: rastered once at their real size (they are never scaled up), so
+   a fade, the lead's shrink or the key's lift never repaints 100px+ type on a frame */
+[data-big-scene="light-flood"].is-live .lf-line > .lf-lead,
+[data-big-scene="light-flood"].is-live .lf-line > .lf-key { will-change: opacity, transform; }
+[data-big-scene="light-flood"].is-live .lf-ground--core,
+[data-big-scene="light-flood"].is-live .lf-ground--night { display: block; opacity: 0; will-change: opacity; }
+
+/* The glow box is 150% x 150% of the stage (rx 75% W, ry 75% H); GSAP centres it on the bottom edge
+   (xPercent/yPercent -50) and scales it. Core: 50% edge at 60% of the radius; halo at 77.5%. */
+[data-big-scene="light-flood"].is-live .lf-sun {
+  width: 150%;
+  height: 150%;
+  transform: none;
+  will-change: transform, opacity;
+}
+[data-big-scene="light-flood"].is-live .lf-halo { inset: 11.25%; filter: blur(6.5cqw); }
+[data-big-scene="light-flood"].is-live .lf-core { inset: 20%; filter: blur(4.5cqw); }
+/* the script paints these two divs once into canvases and moves those instead */
+[data-big-scene="light-flood"] .lf-sun > canvas { display: none; position: absolute; inset: 0; width: 100%; height: 100%; }
+[data-big-scene="light-flood"].is-live .lf-sun--drawn > canvas { display: block; }
+[data-big-scene="light-flood"].is-live .lf-sun--drawn > .lf-halo,
+[data-big-scene="light-flood"].is-live .lf-sun--drawn > .lf-core { display: none; }
+
+/* The night plate: two stage heights tall, moved down from above. The script paints it into a canvas
+   whose front is dome-shaped (the light that is left is a dome); without a canvas this flat fill with a
+   soft straight front at 60% of the plate does the same job. */
+[data-big-scene="light-flood"].is-live .lf-night {
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: auto;
+  height: 200%;
+  will-change: transform;
+}
+[data-big-scene="light-flood"].is-live .lf-night__fill {
+  inset: -30% -25% 40% -25%;
+  filter: blur(10svh);
+}
+[data-big-scene="light-flood"] .lf-night > canvas { display: none; position: absolute; inset: 0; width: 100%; height: 100%; }
+[data-big-scene="light-flood"].is-live .lf-night--drawn > canvas { display: block; }
+[data-big-scene="light-flood"].is-live .lf-night--drawn > .lf-night__fill { display: none; }
+
+@media (max-width: 767px) {
+  /* a broad mound on a portrait screen, not a spike: rx 120vw, ry 50svh */
+  [data-big-scene="light-flood"].is-live .lf-sun { width: 240%; height: 100%; }
+  [data-big-scene="light-flood"].is-live .lf-halo { filter: blur(13cqw); }
+  [data-big-scene="light-flood"].is-live .lf-core { filter: blur(9cqw); }
+}
+
+/* ending "flood": no night at all */
+[data-big-scene="light-flood"].lf--flood .lf-night,
+[data-big-scene="light-flood"].lf--flood.is-live .lf-night { display: none; }

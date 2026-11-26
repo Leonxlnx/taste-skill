@@ -1,0 +1,75 @@
+{
+  "id": "window-relay-with-stamps",
+  "name": "Window relay with a trail of stamps",
+  "family": "media-sequence",
+  "classic": 1,
+  "look": "A short set of four to six pictures of one family is told as a relay on a held stage. The current picture rests whole in a large main slot (64% of the width, the full height) with its name set large beside it in the accent and one line under it in the ink. The next waits as a small window in the slot's top left corner, showing that picture whole and small. At the hand-over that window opens over the current picture, growing from its corner until it covers the slot, while the name changes in one step. The window leaves a stamp-sized box open in the opposite corner, where the old picture stays on top and shrinks into its stamp, then slides out whole into a trail of stamps along the bottom edge of the caption band, which moves one place along (four at most, the oldest leaving at the far end). The next chip grows out of the corner and each arrival rests whole for a beat. It is for a collection, the rooms of a house, the courses of a menu, the pieces of a small show.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.4,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same relay rearranged for a tall screen (under 768px, and any portrait screen): the window takes the full width at the photographs' own 4:3 (75vw tall, two thirds of the screen at most), so every subject rests whole, with the chip in its top left corner and the heading just above it; the trail (two places on a phone) runs along the window's bottom edge with the newest stamp at the right, the name and its line sit under the trail, and the group is centred on the screen. The stamp forms in the window's lower right corner and drops into the trail, so nothing moving reaches the caption. On a screen under 620px tall the heading is kept for screen readers while it runs. Hold 2.2 for five; touch scrolling is never smoothed. phone 'rest' shows the finished composition: the heading over the pieces in one column, each picture with its name and line.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "In the middle, as the section that shows the set, after a quiet section that introduces it; it is that section, told as a relay, not screens in front of it. A quiet section follows. Not on the work as the page's main showcase: the name sits beside the picture, not on it, and the chip lies over the picture's top left corner at rest (scenes.md section 3 asks the title on the piece and the piece unobstructed); there use sheets that tip in and away.",
+  "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene.",
+  "options": "hold 0.6 a hand-over (1.2-3.2): 2.4 for five, 1.8 for four, 3 for six; phoneHold 0.55 a hand-over (1.2-3.2): 2.2 for five; phone 'same' | 'rest'; swap 0.3 (0.3-0.55) share of the hold the hand-overs take, the rest are beats where one picture rests whole with its name; trail 4 (1-4) places in the trail; phoneTrail 2 (1-4; 1 with fewer than five pictures) places on phones, where the chip and the stamps are about one size and a longer trail shows one picture on three screens of the scroll; peek 0.74 (0.5-1) share of its photograph's width the waiting chip shows; crop 0.56 (0.35-0.9) share of its photograph's width a stamp shows; radius the page's --radius, else square (0-24px), one radius for every frame, chip and stamp, drawn by the clip at the same visible size at every scale; scrub true with Lenis, else 0.5 (0-1). The number of pieces comes from the markup; the layout of the slots (main, chip, trail) is the CSS's .wr-plan boxes, one set for wide screens and one for portrait screens and phones.",
+  "roles": [
+    "showcase",
+    "gallery",
+    "list"
+  ],
+  "position": "middle",
+  "sectors": [
+    "culture",
+    "hospitality",
+    "restaurant",
+    "real-estate",
+    "architecture",
+    "physical-product",
+    "fashion",
+    "education"
+  ],
+  "needs": {
+    "list": [
+      "pictures:4"
+    ],
+    "content": "Four to six photographs of one family (five reads best): the same light, grade and ground, one kind of subject, each one piece shown once, at least 2000px wide with width and height set, landscape between 4:3 and 3:2, the subject whole in the middle with plain ground round it, and the top left corner plain ground on every picture but the last (the chip lies there). The chip shows the whole picture small, the stamp a tall crop through the subject; --wr-focus on an img moves the slot, chip and stamp together. A name for each of one or two words, 9 characters or fewer, set large in the display face; one line of 6-14 words in the text face saying what the picture shows. A section heading of about 32 characters at most, shown above the trail on wide screens and in the finished composition. With fewer than three pictures the trail says nothing: take another scene."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/window-relay-with-stamps/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"window-relay-with-stamps\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

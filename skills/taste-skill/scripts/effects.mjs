@@ -4,8 +4,8 @@
 
     node scripts/effects.mjs index                 scan assets/effects/<id>/meta.json into index.json
     node scripts/effects.mjs list [--json] [--on hero] [--palette dark] [--family light] [--quiet]
-    node scripts/effects.mjs pick --page tech|gaming|software --palette light|dark|colour --slots card,card,hero [--seed S]
-                                  [--history file.json] [--exclude a,b] [--quiet] [--tech-subject] [--json]
+    node scripts/effects.mjs pick --page <kind> --palette light|dark|colour --slots card,card,hero [--seed S]
+                                  [--history file.json] [--exclude a,b] [--quiet] [--tone t] [--tech-subject] [--json]
     node scripts/effects.mjs pick --page software --palette light --count 3 --on card [...]   (one kind of slot)
     node scripts/effects.mjs gallery [--palettes file]     write assets/effects/gallery.html and lab.html
     node scripts/effects.mjs publish [--out publish]       the gallery as one folder: index.html, system.css,
@@ -27,9 +27,13 @@
   meta "random": false (the dotted globe, the photo grade) are never dealt; name one in its slot when
   the content calls for it: --slots hero:dotted-globe,card,card (still refused on a kind or slot it is
   not made for, when named twice, or with an effect it avoids). Effects that list each other in
-  meta.avoidWith never share a page. --page is required (like moments.mjs): effects are dealt only on tech, gaming and
-  software pages (and a product with a technical subject: --page product --tech-subject); a place, shop, cafe, service
-  or other product page gets an empty deal (exit 0), so the caller places no effect (house rule: effects fit the trade). --quiet leaves out the focal grounds (meta "focal": true: a sphere,
+  meta.avoidWith never share a page. --page is required (like moments.mjs) and deals by fit: each effect
+  carries meta.tones, meta.intensity and meta.webgl, and the kind takes what moments.mjs FIT lists
+  (--tone narrows it to one tone of the brief). Tech, software and gaming take any effect that fits; a
+  place, service or product page (no WebGL there) only the quiet treatments, meta.treatment true:
+  grain-gradient, soft-light-bars, line-engraving, film-light-leak and the named duotone-grade, never a
+  tech-looking ground; one slot at most there. A product with a technical subject: --page product
+  --tech-subject. When none fits, the deal is empty (exit 0) and the caller places no effect. --quiet leaves out the focal grounds (meta "focal": true: a sphere,
   a beam, peaks), for slots that carry a big UI window, a screenshot or text.
 */
 import fs from 'node:fs';
@@ -39,7 +43,7 @@ import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { pick as dealEffects, filterEffects, SLOTS, KINDS } from '../assets/effects/pick.js';
-import { pageKind } from './moments.mjs';
+import { pageKind, fitsKind, FIT, TONES, INTENSITIES } from './moments.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FX = path.join(ROOT, 'assets', 'effects');
@@ -88,7 +92,11 @@ function validateMeta(meta, folder) {
   for (const k of ['motion', 'cost']) if (!ENUMS[k].includes(meta[k])) errs.push(`meta.${k} must be one of ${ENUMS[k].join(', ')}`);
   // optional: random false = never dealt, only named (a literal subject); avoidWith = ids never on the same page;
   // focal true = a ground with its own subject (a sphere, a beam, peaks), left out by --quiet
-  for (const k of ['random', 'focal']) if (meta[k] != null && typeof meta[k] !== 'boolean') errs.push(`meta.${k} must be true or false`);
+  for (const k of ['random', 'focal', 'treatment']) if (meta[k] != null && typeof meta[k] !== 'boolean') errs.push(`meta.${k} must be true or false`);
+  // the fit fields (moments.mjs FIT): tones, intensity, webgl
+  if (!Array.isArray(meta.tones) || !meta.tones.length || meta.tones.some(t => !TONES.includes(t))) errs.push(`meta.tones must list some of ${TONES.join(', ')}`);
+  if (!INTENSITIES.includes(meta.intensity)) errs.push(`meta.intensity must be one of ${INTENSITIES.join(', ')}`);
+  if (meta.webgl !== 0 && meta.webgl !== 1) errs.push('meta.webgl must be 0 or 1');
   for (const k of ['avoidWith', 'subjects']) {
     if (meta[k] != null && (!Array.isArray(meta[k]) || meta[k].some(v => typeof v !== 'string' || !v))) errs.push(`meta.${k} must be an array of strings`);
   }
@@ -187,7 +195,8 @@ function readHistory(file) {
   try {
     const h = JSON.parse(fs.readFileSync(file, 'utf8'));
     if (Array.isArray(h)) return { picks: h.map(x => (typeof x === 'string' ? { id: x } : x)) };
-    return { picks: Array.isArray(h.picks) ? h.picks : [] };
+    // the file is shared with start.mjs and moments.mjs (palettes, layout, moments, scenes, entrances): keep their keys
+    return { ...(h && typeof h === 'object' ? h : {}), picks: Array.isArray(h.picks) ? h.picks : [] };
   } catch (_) { return { picks: [] }; }
 }
 
@@ -196,16 +205,31 @@ async function pick(a) {
   // --palette is required: only effects made for the page's ground (meta.palettes) are dealt. The
   // dealing itself is assets/effects/pick.js, which the gallery runs in the browser too.
   if (!a.palette || a.palette === true) die('pick: pass --palette light, dark or colour (the kind of the page\'s ground)');
-  // the page's kind gates the deal: no shader for a cafe, a shop, a guesthouse or a service page (moments.mjs and backgrounds/pick.mjs refuse the same way)
+  // the page's kind deals by fit (moments.mjs FIT, references/effects-usage.md): every effect carries
+  // tones, an intensity and webgl; a kind without WebGL (place, service, product) is dealt only the
+  // quiet treatments (meta.treatment: a photo grade, a print or film texture, window light), never a
+  // tech-looking shader ground. A product with a technical subject: --page product --tech-subject.
   const pgWord = a.page != null && a.page !== true ? a.page : a.type;
-  if (pgWord == null || pgWord === true) die('pick: pass --page tech|gaming|software (the page\'s kind). A place, shop, cafe or service page gets no effect; a product with a technical subject: --page product --tech-subject.');
+  if (pgWord == null || pgWord === true) die('pick: pass --page <kind> (tech, gaming, software, place, product or service). A product with a technical subject: --page product --tech-subject.');
   const pg = pageKind(pgWord);
-  if (!pg.page && !(a['tech-subject'] && /^(product|tech-?product|hardware|device)$/i.test(String(pgWord)))) {
-    const why = String(pg.none).replace('moments are dealt only on', 'effects are dealt only on').replace('gets no moment', 'gets no effect');
+  if (!pg.page) die('pick: ' + pg.none);
+  const kind = pg.page === 'product' && a['tech-subject'] ? 'tech' : pg.page;
+  const tone = a.tone != null && a.tone !== true ? String(a.tone).toLowerCase() : undefined;
+  if (tone && !FIT[kind].tones.includes(tone)) die(`pick: --tone ${tone} is not a tone a ${kind} page takes (${FIT[kind].tones.join(', ')})`);
+  const fitting = idx.effects.filter(e => fitsKind(e, kind, { tone, webglOk: e.treatment === true }) && (FIT[kind].webgl || e.treatment === true));
+  if (!fitting.length) {
+    const why = `no effect fits a ${kind} page${tone ? ` in the ${tone} tone` : ''}: the page carries its photographs and moments`;
     console.error(why);
-    if (a.json) console.log(JSON.stringify({ seed: null, page: String(pgWord), picks: [], reason: why })); else console.log('no effect: ' + why);
+    if (a.json) console.log(JSON.stringify({ seed: null, page: kind, picks: [], reason: why })); else console.log('no effect: ' + why);
     return;
   }
+  if (!FIT[kind].webgl) {
+    const asked = a.slots && a.slots !== true ? String(a.slots).split(',').filter(Boolean).length : +(a.count || 1);
+    if (asked > 1) die(`pick: a ${kind} page takes one quiet treatment at most: pass one slot (--slots hero or --slots band); it may be ${fitting.map(e => e.id).join(', ')}`);
+    const named = a.slots && a.slots !== true && String(a.slots).includes(':') ? String(a.slots).split(':')[1] : null;
+    if (named && !fitting.some(e => e.id === named)) die(`pick: ${named} does not fit a ${kind} page: a ${kind} page takes only ${fitting.map(e => e.id).join(', ')} (quiet treatments, no tech-looking shader)`);
+  }
+  idx.effects = fitting;
   checkFilters(a, idx.effects);
   const slots = a.slots && a.slots !== true ? String(a.slots).split(',').map(s => s.trim()).filter(Boolean) : null;
   const hist = readHistory(a.history);

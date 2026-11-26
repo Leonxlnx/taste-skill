@@ -1,0 +1,75 @@
+{
+  "id": "raster-cut",
+  "name": "Raster cut between chapters",
+  "family": "section-transition",
+  "classic": 1,
+  "look": "On a held stage the next chapter's full-bleed picture prints over the current ground through a raster of horizontal slats with whole-pixel edges, while the chapter title, drawn twice in exact register, changes from the old ink to the new one line by line without ever breaking. It is the one repeating joint of a site, always the same pattern and the same direction.",
+  "fits": [
+    "between"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.2,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same cut with twelve slats and the title fitted to two lines; hold 1.2.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "Between two sections, carrying the title of the one it opens (the intro, the work, the menu, the rooms, the contact). Up to three a page, three or more screens apart, never in neighbouring sections.",
+  "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage.",
+  "options": "pattern 'slats' | 'blinds' | 'bands'; count 12 (slats 3-24, bands 3-8, blinds 2-5); phoneCount 12; order 'interlace' | 'bottom' | 'top' (a footer curtain) | 'centre' | 'shuffle' (blinds 'right' | 'left'); steps 4 (0-8) whole steps a slat grows in; amount 0.40 (0.2-0.5) stagger spread; ease 'power2.out' | 'none' | 'power3.out'; flip 0.5 (0.25-1); hold 1.2 (0.8-2; above 1.5 only with the bands line); phoneHold 1.2 (0.8-2); phone 'same' | 'rest'; fold 'auto' (a B picture lifts off the stage's foot so the next section joins on flat ground) | false; seed 7; nav '', the selector of a fixed nav that takes each ground's ink; scrub 0.5, true with Lenis.",
+  "roles": [
+    "intro",
+    "about",
+    "work",
+    "features",
+    "gallery",
+    "list",
+    "how-it-works",
+    "contact"
+  ],
+  "position": "transition",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:1"
+    ],
+    "content": "Two grounds: A, the current chapter (a full-bleed picture with a calm middle band, or flat), and B, the next. B is a full-bleed picture, never flat: a title alone on two flat grounds reads as an empty screen. Pictures 16:10 or wider, 2400px or more. Four colours, --a-ground, --a-ink, --b-ground and --b-ink, each ink 7:1 or better on its ground and the two grounds 50 or more apart in lightness; the next section's background is exactly --b-ground. A title of 2-4 words, 22 characters at most, written in both layers, and a deck of 12-22 words in B only. Nothing else on the stage."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/raster-cut/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"raster-cut\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

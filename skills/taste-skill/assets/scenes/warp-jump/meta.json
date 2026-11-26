@@ -1,0 +1,77 @@
+{
+  "id": "warp-jump",
+  "name": "Warp jump",
+  "family": "camera-through-space",
+  "classic": 1,
+  "look": "Over a full-bleed field of radial streaks that speeds up and heats from ink into the accent with the scroll, a centred manifesto in capitals changes in timed beats, letters arriving out of the vanishing point and flying past the camera, until a disc of the accent opens at the centre and swallows the field into the next section. It is for one long statement on a technical, research or launch page, or (enter 'photo') the way from a photographic chapter into an abstract one.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "tech",
+    "playful"
+  ],
+  "intensity": "bold",
+  "webgl": 1,
+  "trigger": "scroll",
+  "hold": 3,
+  "restH": 1,
+  "cost": "high",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same ride with fewer rays and the principles in a centred column, four at most a beat, standing in a dark mouth of the column's shape (a tablet held upright too); hold one screen a beat.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "In the middle, as the intro or the about: the page's principles in one ride. The section after it starts on the accent (any colour with exit 'release'). Once per page. Three beats (the anchor with one ending, up to four principles, the final line) hold three screens, since the hold is one screen a beat; more beats only on a page with no other long scene.",
+  "content": "No pictures. Words written fresh for the subject, 35-60 in all: an anchor of 1-2 words (10 letters or fewer); two or three endings of 2-4 words (16 letters or fewer, 12 on a phone); three to twelve principles of two short sentences each (4-8 words, 40 letters or fewer); a final line of 3-6 words on two lines. One accent of any hue but violet, indigo or purple, light enough to read as a 1px line on black. enter 'photo' adds one photograph 1600px wide or more (an aerial view, terrain, a machine, a city at night) and a lead sentence of 8-16 words.",
+  "options": "exit 'disc' (an accent disc swallows the field) | 'flood' (the streaks become a tunnel of accent that closes like an iris) | 'release' (no exit; the field holds and the page scrolls on); enter 'field' | 'photo' (opens on a photograph and zooms through it, one more screen); speed 1 (0.5-1.4) and accentMax 0.5 (0.2-0.7), the restraint dials: 0.5 and 0.25 calm, 1.4 and 0.7 a loud launch; rays 1100 (600-1600); hold beats (3-8), one screen a beat; phoneHold beats (3-7); phone 'same' | 'rest'; scrub 0.5; count true, a plain \"2 of 4\" while the beats run; progressVar false.",
+  "roles": [
+    "intro",
+    "about",
+    "features",
+    "how-it-works"
+  ],
+  "position": "middle",
+  "sectors": [
+    "saas",
+    "dev-tool",
+    "ai-product",
+    "consumer-app",
+    "finance",
+    "physical-product",
+    "event",
+    "music",
+    "agency",
+    "studio-portfolio",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "No pictures. Words written fresh for the subject, 35-60 in all: an anchor of 1-2 words (10 letters or fewer); two or three endings of 2-4 words (16 letters or fewer, 12 on a phone); three to twelve principles of two short sentences each (4-8 words, 40 letters or fewer); a final line of 3-6 words on two lines. One accent of any hue but violet, indigo or purple, light enough to read as a 1px line on black. enter 'photo' adds one photograph 1600px wide or more (an aerial view, terrain, a machine, a city at night) and a lead sentence of 8-16 words."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/warp-jump/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"warp-jump\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

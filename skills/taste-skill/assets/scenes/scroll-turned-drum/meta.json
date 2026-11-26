@@ -1,0 +1,73 @@
+{
+  "id": "scroll-turned-drum",
+  "name": "Scroll-turned drum",
+  "family": "type-choreography",
+  "classic": 1,
+  "look": "A list of short names sits on the face of a horizontal drum that the scroll cranks like a slot reel, the name on the front line in full ink while the others roll back into ghosted depth, with nothing else on that line: no count, no clock. Give every name a photograph of that place, dish or room and a second drum of pictures turns against it on the right, each picture holding while its name is up. It turns a list of places, products, dishes, rooms or real clients into one pinned set piece.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "warm",
+    "product",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 2.6,
+  "restH": 2,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The drum stays, since a portrait screen suits a reel, with a smaller radius (0.34 of the height) and wider names (82vw), and the picture drum turning behind a full-width window above the names. Under 340px wide, or when the longest name cannot fit at 26px, the finished list.",
+  "maxPerPage": 1,
+  "weight": 0.35,
+  "place": "In the middle, on the list, the work or the proof: where eight to twenty names would otherwise sit in a column or a row of logos.",
+  "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue.",
+  "options": "hold 0.16 a name + 0.2, kept to 1.6-3.2 (1-4); tempo 0.16 (0.12-0.22) screens a name, when hold is not given; scrub true with Stage.smooth(), else 0.5; size 1 (0.7-1.4) the name size; spacing 1.03 (0.9-1.3); radius 0.5, phone 0.34 (0.3-0.6) the drum's radius as a share of the height; depth 3 (2.5-8); width 56, phone 82 (40-72) the widest name in vw; ghost 0.32 (0.18-0.45); ghostFar 0.1 (0.04-0.12); highlight 'ink' | 'accent'; count false (true shows \"4 of 15\": a progress readout, never beside the picture drum); of 'of'; pictures true; gear 'counter' | 'same'; pictureTurn 'step' | 'smooth'; pictureStep 36 (24-50) degrees between pictures; ends true (the first and the last picture fill the right of the screen); detent false (true settles on a name when the scroll stops; use it for the picture drum under Lenis); phone 'same' | 'rest'.",
+  "roles": [
+    "list",
+    "work",
+    "proof",
+    "gallery",
+    "features"
+  ],
+  "position": "middle",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "names:8",
+      "pictures:8"
+    ],
+    "content": "Eight to twenty names (3-30 work), 1-3 words and 22 characters at most each. Every name has a landscape photograph of the named thing itself (900, 1200 and 1600px wide), the whole set from one family and graded as one set (same light, same grade, same kind of subject), and no detail. Never a time or a date that steps with the names: beside them it reads as a second readout. Real names only: clients only when they are real clients; otherwise the subject's own places, products, dishes or rooms. A statement of two lines, and an optional closing line of seven words or fewer with a button. One ground and one ink; the ghosts are the ink at a lower opacity, never a second hue."
+  },
+  "never": "Never a time or a date that steps with the names: beside them it reads as a second readout.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scroll-turned-drum/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scroll-turned-drum\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

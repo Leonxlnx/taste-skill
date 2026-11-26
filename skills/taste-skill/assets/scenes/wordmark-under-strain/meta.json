@@ -1,0 +1,73 @@
+{
+  "id": "wordmark-under-strain",
+  "name": "Wordmark under strain",
+  "family": "type-choreography",
+  "classic": 1,
+  "look": "A closing word in giant type is held and put under load by the scroll: it is crushed onto its baseline and springs back, and its full stop loosens, falls out and lands flat as the call-to-action button, leaving the word whole. It is the closing moment of a page for a loud brand: the word is the page's last call, never the brand's name.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "playful",
+    "editorial"
+  ],
+  "intensity": "bold",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same strain with phone numbers and no echo: the word fitted to the width (narrower if the face has a width axis), its full stop falling into the button under the word's centre, the meta row in two lines; hold 1.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "At the end of the page, as the call to action; the footer after it keeps the same ground. Once per page. For a loud brand only (a band, a race or a sports brand, a studio that shouts): never deal it to a calm house, a guesthouse, a craft or a care practice, where the strain reads as a broken word. At rest the word reads whole.",
+  "content": "One word of 4-8 letters (4-6 best), a closing word and never the brand's name (a giant name fails giant-contact), in capitals, best with no I, l or 1. A square full stop is added after it, hangs in the margin and is what falls, so the word rests whole and centred. A button label of 2-3 words, 18 characters at most; a sentence of 45 characters or more about the offer and a place line for the top row; a meta row of three short items (an email, a city, a link). Type only: one heavy display face, one flat ground shared with what follows, one ink at 7:1, an optional accent for the landed button.",
+  "options": "hold 1 (1-4); phoneHold 1 (1-2); phone 'same' | 'rest'; scrub 0.8, true with Lenis; echo false (true adds the stepped echo of stacked copies at 768px and wider; it reads as a winged badge, so leave it off); copies 6 (4-8) in the echo; step 1/13 (1/16-1/9) scale each copy loses; shift 2 (1-4) % of the word's height each copy sinks; squash 0.14 (0-0.15), 0.10 with echo; spring 3 (1.5-3); drop true (false keeps the word as it is and the button under it from the start); letter 'stop' | 'straight' | index, what falls ('stop', an added square full stop, keeps the word whole; 'straight' drops its I, l or 1 and leaves a gap); size [300, 64] the landed button in px, phoneSize [240, 52]; radius 0 (0-8); accent '', the button's colour as it lands; reveal 'wipe' | 'fade', on a 0.4s clock once the bar is flat; fill 0.92 (0.8-0.96); maxHeight 0.42 (0.3-0.45); stretch 'normal'; phoneStretch 'condensed'.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "music",
+    "event",
+    "fashion",
+    "agency",
+    "studio-portfolio"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "One word of 4-8 letters (4-6 best), a closing word and never the brand's name (a giant name fails giant-contact), in capitals, best with no I, l or 1. A square full stop is added after it, hangs in the margin and is what falls, so the word rests whole and centred. A button label of 2-3 words, 18 characters at most; a sentence of 45 characters or more about the offer and a place line for the top row; a meta row of three short items (an email, a city, a link). Type only: one heavy display face, one flat ground shared with what follows, one ink at 7:1, an optional accent for the landed button."
+  },
+  "never": "never deal it to a calm house, a guesthouse, a craft or a care practice, where the strain reads as a broken word.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/wordmark-under-strain/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"wordmark-under-strain\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)",
+  "oldTones": [
+    "bold",
+    "playful"
+  ]
+}

@@ -11,6 +11,12 @@
     "gaming",
     "software"
   ],
+  "tones": [
+    "tech",
+    "playful",
+    "product"
+  ],
+  "intensity": "bold",
   "trigger": "scroll",
   "hold": 1,
   "restH": 1,

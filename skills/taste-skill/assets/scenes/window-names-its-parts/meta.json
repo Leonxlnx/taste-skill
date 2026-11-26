@@ -1,0 +1,67 @@
+{
+  "id": "window-names-its-parts",
+  "name": "Window names its parts",
+  "family": "layer-stack",
+  "classic": 1,
+  "look": "The product's own window takes stock of itself. On a held stage the window, built in HTML from 12 to 18 separate flat parts on the page ground (a frame, a sidebar, a header, figure blocks, rows, buttons), sits beside a short list that has only its heading. Under the scroll the window steps back to about 0.92 and tips about 15 degrees in CSS 3D while its parts lift apart in depth tier by tier (sidebar and header a little, figure blocks more, rows further, buttons furthest), shown only by the gaps between them, never by shadows. Then a solid band in the accent crosses the window from left to right, behind every part's words; each part it reaches turns to the accent for a beat (a fill, never an outline) while its plain sentence-case name, said as what it does for the user, drops into the next slot of the list, one row at a time. Last, the parts settle flat and the tilt eases out, the list complete beside the window. The visitor watches the product name its parts instead of reading feature copy. Unlike parts lock into the whole, nothing flies in: the screen is whole from the first frame and the scene names it; unlike the product replay, no task is played, no query typed and no cursor drawn.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.5,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The window cropped to its central parts (the figure blocks, the rows, the two buttons; every part marked data-crop leaves, with its slot in the list), flat, with no tilt and no lift, at the full width on 16px margins; the heading over it and the list under it in one column at 17px. The band crosses it and the parts it reaches take their beat while their names drop into the list, as on desktop; the stack starts lowered by half the list's room, so the first frame is balanced, and rises as the names arrive. Phones under 820px tall drop the lead from the live stage; under 640px tall, or with phone 'rest', the phone shows the finished composition. Hold 1.2. Narrow screens (768-1099px) stack the heading, the whole window (tipping and lifting as on desktop) and the list in two columns, and drop the lead from the live stage when under 1100px tall.",
+  "maxPerPage": 1,
+  "weight": 0.7,
+  "place": "In the middle of a software or AI product page (saas, dev tools, ai products, finance and bookkeeping tools), on the features or how it works, where the product's real screen can be shown at size and its parts each do something worth naming. The second big moment beside the product replay, in another section and with another view of the product; a quiet section before and after it. Its last frame (the flat window beside the complete list) is a finished section, so the next section simply follows. Never the opening or the closing scene.",
+  "content": "The product's real screen rebuilt in HTML as 12 to 18 separate parts, each a direct child of the window and its own interface fragment (data-ui): the frame, and parts a user knows (a sidebar, a header, three or so figure blocks, three or four rows, a search, two buttons), told apart by flat fills mixed from the page's ground and ink and by the gaps of the grid, never by borders, outlines, hairlines or shadows. Believable names and figures that add up, at 16px or more at rest. One table in the options: each named part's key, its tier (1-4) and its name in plain sentence case, what it does for the user ('Receipts read from a photo', 'Tax to set aside, worked out daily'), a short clause after the name at most, never a code-style tag or numbering. A section heading that is a plain sentence (two lines at most), an optional lead of one or two sentences, and the list's names in the HTML for no script. An accent the ink reads on at 4.5:1 (the window's words sit on it), and never violet, indigo or lavender. A screenshot, a product without parts worth naming, or parts named as dashboard furniture ('Sidebar', 'Card') take a redraw.",
+  "options": "hold 1.5 (1.2-2); phoneHold 1.2 (1-1.6); scrub true with Lenis, else 0.3 (a number sets it); tilt 15 (6-22) degrees the window tips back; turn 8 (-12-12) degrees it turns toward the list; depth 0.92 (0.84-1), the scale it steps back to; lift [30, 72, 120, 170] px per tier; narrowLift 0.65 (0.3-1), the lifts on the stacked layout; band 0.15 (0.08-0.2), the band's width as a share of the window; beat 0.11 (0.06-0.2), how far the band travels while a reached part stays in the accent; gap 0.06 (0.03-0.1), the least band travel between two names; parts [{part, tier, name, at?}], the part table, in order (at, 0-1 across the window, sets where a wide part is named so the names interleave); phone 'same' | 'rest'. Per part: data-part (its key), data-crop (left out on phones, with its list slot). CSS tokens: --wn-bg, --wn-ink, --wn-accent, --wn-frame, --wn-fill (per part), --wn-radius, --wn-frame-radius, --wn-gx, --wn-gap, --wn-win, --wn-side, --wn-persp, --wn-persp-origin, --wn-name-size.",
+  "roles": [
+    "features",
+    "how-it-works",
+    "showcase"
+  ],
+  "position": "middle",
+  "sectors": [
+    "saas",
+    "dev-tool",
+    "ai-product",
+    "finance"
+  ],
+  "needs": {
+    "list": [
+      "product-ui"
+    ],
+    "content": "The product's real screen rebuilt in HTML as 12 to 18 separate parts, each a direct child of the window and its own interface fragment (data-ui): the frame, and parts a user knows (a sidebar, a header, three or so figure blocks, three or four rows, a search, two buttons), told apart by flat fills mixed from the page's ground and ink and by the gaps of the grid, never by borders, outlines, hairlines or shadows. Believable names and figures that add up, at 16px or more at rest. One table in the options: each named part's key, its tier (1-4) and its name in plain sentence case, what it does for the user ('Receipts read from a photo', 'Tax to set aside, worked out daily'), a short clause after the name at most, never a code-style tag or numbering. A section heading that is a plain sentence (two lines at most), an optional lead of one or two sentences, and the list's names in the HTML for no script. An accent the ink reads on at 4.5:1 (the window's words sit on it), and never violet, indigo or lavender. A screenshot, a product without parts worth naming, or parts named as dashboard furniture ('Sidebar', 'Card') take a redraw."
+  },
+  "never": "Never the opening or the closing scene.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/window-names-its-parts/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"window-names-its-parts\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

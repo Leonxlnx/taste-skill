@@ -140,7 +140,8 @@ under the h2). A place sets `--t-h2: clamp(24px, .762vw + 21px, 32px)`.
 `footer.closing` is the page's last section (`layout-v4.md`): row 1 the dealt close, row 2 the
 directory on one ground (link columns, the legal row). Types: `footer-columns`, `footer--dark` (the
 name large, columns right; on a dark page a step darker), `footer--statement` (the lit ground; tech),
-`footer--visit` (the address set large with the way there and the hours beside it). The legal row:
+`footer--visit` (the address set large with the way there and the hours beside it, unless a section
+above prints them: then the nav's words beside it). The footer never repeats a form or hours shown above. The legal row:
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
 brief) and the one credits line (`<details class="credits">`, `copy.md`). `.socials` stays empty
 unless the brief gives the accounts.
@@ -158,7 +159,23 @@ unless the brief gives the accounts.
   open-now line: system.js never fills it from them [open-now].
 - Forms: the recipe below.
 - A `[bracketed placeholder]` or "(sample)" tag left in visible text is outlined in red by
-  system.js, as is a visual that fails to draw: fix both.
+  system.js, as is a visual that fails to draw: fix both. `[data-placeholder]` (a stand-in such as
+  an `.example` address) is outlined only while the checker runs (`html[data-check]`), never for a
+  visitor; the finish gate fails a page that still holds one.
+- On a phone the hours are a ruled list (days left, times right, one line each) and the footer has at
+  most two columns; system.css does both, so never set a footer's spans for the phone yourself.
+
+## Fill, statements and compositions
+
+- The last block of a one-screen section grows to the section's foot: a split's picture
+  (`.pl-photo`, `figure.media`, `.frame--fill`) takes the row's height, tiles give the rest to their
+  photographs, open cards to their panels (`layout-v4.md`, Fill). `.pl-photo--keep` opts one out.
+- A statement is `<section class="section statement">` with a `.t-label` and one
+  `.statement__text`; `.statement--short` for 12 to 20 words. Its size comes from the screen's height.
+- The compositions `start.mjs deal` deals per section (`.grid--mirror`, `.comp-bleed` with
+  `.comp-panel`, `.comp-offset`, `.comp-three`) and the five closes (`.close--photo`, `--type`,
+  `--word`, `--split`, `--form`): markup in `sections-library.md`, Compositions and Closes.
+  `.btn--xl` is at most 640px wide (720 with `.btn--wide`), never across the `.wrap`.
 
 ## Forms
 

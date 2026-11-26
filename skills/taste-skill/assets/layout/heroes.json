@@ -7,7 +7,7 @@
   "grid": "where each block stands on the 12 columns at 1440 (from 1024 up); below 1024 everything stacks in the order given",
   "at1440": "measured on the demo at 1440x900 (the fixed header 72 over the hero's top, the hero exactly 900, words from y 120, content ending by y 836, container x 80 to 1360)",
   "at390": "measured on the demo at 390x844 (header 56, the hero exactly 844, words from y 96, content ending by y 820, container x 24 to 366)",
-  "moment": "the hero's own small motion (layout.js) after the entrance every hero makes once on load (data-enter, motion.md), how it rests, and what reduced motion and a phone show; 'none' means nothing more than that entrance. The page's dealt moments are apart (moments.mjs pick). On kind other (site-kind other) and on a place nothing moves by itself: the live word, the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
+  "moment": "the hero's own small motion (layout.js) after the entrance every hero makes once on load (data-enter, motion.md), how it rests, and what reduced motion and a phone show; 'none' means nothing more than that entrance. The page's dealt moments are apart (moments.mjs pick). On kind other (site-kind other) and on a place the hero's own loops rest (the page's moments and scene are dealt by fit, moments.mjs): the live word, the collage sets and the steps rest on their first or finished picture (pointer-driven letters and hover stay)",
   "moments": "assets/moments/index.json ids that may be dealt onto this hero (one at most; moments.mjs pick --fits hero decides), as { id, only? }: only \"tech\" means software, AI and gaming briefs only",
   "grounds": "assets/backgrounds/index.json ids the hero may stand on, as { id, only?, dark? }: only \"tech\" for software, AI and gaming briefs only; dark true for a dark page only",
   "effects": "assets/effects ids the hero's visual may carry, as { id, as? }: every effect is for tech, software, AI and gaming briefs only, never a place or a local business; 'as' says where it goes when that is not the visual itself",
@@ -17,10 +17,10 @@
  "heroes": [
   {
    "id": "place",
-   "name": "Place, Recipe 3: the photograph under the header, the words under it",
+   "name": "Place: the client's photograph leads, in one of four dealt forms",
    "from": "local-business Recipe 3 (bakeries, cafes, guesthouses, shops: Pentreath and Hall, Tartine, Ace Hotel)",
    "demo": "hero-place.html",
-   "job": "The only place hero, never dealt (ST-53, ST-55, PH-47, PH-81): the client's own photograph of the place full-bleed under the header with nothing on it, and on the ground under it the h1 left and, from the split line, the kind of place, where and today's hours, and one filled button.",
+   "job": "The place hero (ST-53, ST-55, PH-47, PH-81) in the form deal.mjs deals (data-form: band, bleed, split, name; layout.css 0b): the client's own photograph of the place leads the first screen, the h1, the kind of place, where and today's hours, and one filled button end on the fold, never over an empty band.",
    "types": {
     "place": 1
    },
@@ -58,7 +58,7 @@
     "text": "--hgap 24: h1 32/37 on at most 3 lines from y 373, sub 18/28 (the opening days and time), one full-width 48px button; ends by 844 - 24 - the bar",
     "measured": "hero 844/844, h1 32px on 2 lines from y 373"
    },
-   "moment": "none: the entrance only, then nothing moves by itself (a place is kind other); the page's moments are dealt apart",
+   "moment": "the dealt entrance only (start.mjs plan deals it from the deck: rise, set-type, focus, exposure or aperture), then the hero rests; the page's moments and scene are dealt apart, by fit",
    "moments": [],
    "grounds": [
     {
@@ -68,8 +68,9 @@
    ],
    "effects": [],
    "mistakes": [
-    "words, a scrim, a gradient or a box on the photograph",
-    "a dealt hero (split, photo, film, editorial) on a place",
+    "words, a scrim or a gradient on the photograph (the bleed form's words stand on a solid panel of the page ground)",
+    "a form chosen by taste, or another hero (split, photo, film, editorial) on a place",
+    "an empty band under the words: the band and name forms end the words on the fold",
     "the visit block or the address inside the first screen",
     "a stock photograph standing in for the client's own place",
     "rounded corners on the photograph (place photographs are square)",

@@ -1,0 +1,72 @@
+{
+  "id": "closing-object-turns",
+  "name": "Closing object turns over",
+  "family": "object-scrub",
+  "classic": 1,
+  "look": "In the last screen the one object the page is about, a cut-out photograph of something flat (a book, a card, a ticket, a box lid, a label), rises from below, square, with a slight drift to one side and settles flat and whole; then, over the middle of the scroll, it tips back, comes a little nearer and up, and turns over about its horizontal axis from -180 to 0 degrees in CSS 3D, edge-on half-way, while the closing ground comes up behind it as one flat, hard-edged field whose edge crosses the object's axis at edge-on. It settles as the scroll runs out, showing its plain other face set in the page's own type: the closing line at display size across the face, the one action right under it, and a sentence and a colophon on its bottom edge. The scene ends on the object showing its other side.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software"
+  ],
+  "tones": [
+    "product",
+    "editorial"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same turn over the same stretch of scroll: the object at the full width less 18px margins, centred above the footer line; the drift becomes a short rise from lower on the screen (under 8% of it), there is no lift towards the viewer or upwards and the view is deeper, so the near edge never passes the screen's sides and edge-on stays mid-screen with the closing ground's edge across it; the action stays 48px tall or more. phone: 'rest' gives the finished composition, the photograph and the plain face stacked on the closing ground.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "The end of the page: the call to action or the visit, straight after one quiet section. The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, never right after another scene. Calm pages that sell or show one physical thing: a book, an edition, a ticket, a print, a product in its box.",
+  "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw.",
+  "options": "hold 1 (0.6-1); from 0.3 (0.15-0.4) where the turn starts (rise, drift, tilt and lean are home by then); to 0.85 (0.7-0.95) where it ends, edge-on half-way between, the rest a settle; ground 'rise' (one flat, hard-edged field comes up over the turn, its edge crossing the object's measured axis exactly at edge-on) | 'cut' (the whole ground steps at once at edge-on); lean 4 (0-20) degrees tipped back as the hold starts; drift 4 (0-16) vw it starts off to one side (none on a phone); side 'left' | 'right'; tilt 0 (0-6) degrees in its own plane; rise 45 (0-70) svh it rises faster than the page as the scene arrives; lift 0.28 (0-0.3) how much nearer it comes at the turn; phoneLift 0 (0-0.06); size 0.92 (0.7-0.96) share of the stage height it fills; shade 0.3 (0-0.45) how dark a face gets edge-on (a flat shade, no moving light); foot unset by default (the designed footer follows the scene); a selector pulls that element up over the stage's foot, only for a page that ends on the scene with one plain line; scrub true | 0.1-1; phone 'same' | 'rest'. Tilt, drift, rise and both lifts are fitted to each screen, cut down until every corner of the object stays on screen at every point of the hold. Scene tokens: --cot-ground-a (default --ground), --cot-ground-b (default --ink), --cot-paper (default --ground), --cot-ink, --cot-radius, --cot-btn-radius.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "physical-product",
+    "ecommerce",
+    "studio-portfolio",
+    "culture",
+    "education",
+    "architecture"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:1"
+    ],
+    "content": "One photograph of the object's front, straight on and cut to its own edges (no background, no shadow, no table left in the crop), 1200px tall or more, its width and height set on the img; best between 0.72 and 0.9 wide to 1 tall (a book, a card, a box lid), which fills a phone at full width and a desktop at about 92% of its height. The front must differ clearly from the plain face (colour, pattern, a picture on it), or the turn does not read. The other face: a closing line of 3-5 words on two lines, its longest line about 10 letters so it can run across the face at display size; the one action of 2-4 words right under it (a booking, an order, a download; never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Its paper is the page's ground (never pure white on near-black), its words the page's ink, the action the only accent. Never a drawn object: without a real photograph of the thing, redraw."
+  },
+  "never": "never an email address or a phone number); then, on the face's lower edge, an optional sentence of 10-20 words and a colophon of 4-10 words naming what the front shows. Never a drawn object: without a real photograph of the thing, redraw.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-object-turns/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-object-turns\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

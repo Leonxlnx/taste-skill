@@ -1,5 +1,8 @@
 /* notify: a short stack of notifications; a new one slides in on top, the oldest leaves */
 .ui-notify { width: 380px; }
+/* each note is its own box: a window (.ui-panel) round the stack draws no ground of its own, so no empty
+   slot shows while a note leaves; the frame is the notes on view */
+.ui-notify.ui-panel { background: none; border-color: transparent; box-shadow: none; }
 .ui-notify__list { position: relative; display: grid; gap: 8px; }
 .ui-note {
   display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 14px 0 12px;

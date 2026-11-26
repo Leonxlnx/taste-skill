@@ -3,7 +3,9 @@
 The voices to choose from, drawn from how professional sites wrote before language models (2014 to
 2021). Choose one per client; borrow a single move from a second. Every sample line is written for this
 file, for a made-up client. A register shapes the sub-line, the body, the story and the microcopy; it
-never bends the rules of `copy.md` (the h1's category, the headings' nouns, the buttons' verbs).
+never bends the rules of `copy.md` (the five-second hero, the headings' nouns, the buttons' verbs).
+The brands named under "Learn from" made the register famous; their words are quoted five at most,
+to recognise the move, never to reuse.
 
 **None is the default.** Choose by the buyer, the price and the client's real character; when the brief
 does not settle it, take the register least like the last page this session wrote.
@@ -16,6 +18,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 1. Facts only
 
+- **Learn from:** Paul Graham's one-line bio in the third person, Pinboard, Soho House stating its two-member nomination rule.
 - **Sounds like:** "Kessler Partners advises family firms on succession. Founded 1994, nine partners,
   offices in Basel and Freiburg."
 - **Moves:** plain declaratives with names, dates and counts; third person or a terse first person;
@@ -25,6 +28,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 2. Technical and dry, with proof
 
+- **Learn from:** Stripe (its API deploys "16x per day"), Linear ("Built for speed" over a figure), Tailwind naming a category as the enemy, Panic's Transmit.
 - **Sounds like:** "Every pull request gets its own database, seeded from last night's backup. Branch
   in 4 seconds; delete it on merge."
 - **Moves:** a label paired with a hard figure; the mechanism in verb-led steps; real commands, UI
@@ -36,6 +40,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 3. The founder's letter
 
+- **Learn from:** HEY (an essay that named Gmail and Outlook as the enemy), Basecamp ("We've been expecting you"; the reader's pain as "hair on fire").
 - **Sounds like:** "We ran a print shop for eleven years and lost a day a week to quotes. So we built
   the quoting tool we wanted, and now 300 shops use it."
 - **Moves:** first person; a named habit or a category as the enemy; the reader's pain in their own
@@ -47,6 +52,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 4. Self-aware and playful
 
+- **Learn from:** Oatly (its "computerized oatmilk locator"), innocent (the "bananaphone"), Ueno ("Much digital, very agency").
 - **Sounds like:** "Hot sauce from one farm in Kent. Medium is hot. Hot is a mistake you make once."
 - **Moves:** a straight face about a small product; the joke in the sub-line or a card, with the fact
   right under it; house words the brief gives; the microcopy in full voice; failures on display. Hype
@@ -57,6 +63,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 5. Literary and formal
 
+- **Learn from:** Aesop (exact botanical names, "clients", "Sincere thanks for subscribing").
 - **Sounds like:** "A balm for hands worn by cold water and rope. Citrus, cedar, a little smoke. 75 ml,
   34 euro."
 - **Moves:** an exact, slightly raised vocabulary; "clients", not "customers"; sensory notes in tight
@@ -66,6 +73,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 6. Proper nouns and restraint
 
+- **Learn from:** Aman ("Formerly the king's guest house"; the word luxury never in its body copy).
 - **Sounds like:** "The old customs house above the harbour, built 1871. Eight rooms face the strait;
   the ferry to the island leaves below the terrace at 7:40."
 - **Moves:** places, history, buildings and geography do the work; unhurried physical verbs (overlook,
@@ -76,6 +84,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 7. Sensory facts, second person, present tense
 
+- **Learn from:** Stumptown (the mug warming your hand), Barry's (the doors close, the lights dim), Y7 (studios with "no mirrors").
 - **Sounds like:** "You order at the counter beside the roaster. The cardamom buns come out at 8:00
   and again at 11:00."
 - **Moves:** what the reader will see, smell, hear or carry, each one a literal fact of the place (the
@@ -87,6 +96,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 8. Historical scene
 
+- **Learn from:** Blue Bottle (1683 Vienna, beans thought "camel feed"), Dishoom (a run of who sat where at breakfast).
 - **Sounds like:** "In 1958 the tram stopped outside, and the bakery opened at five for the drivers. It
   still does."
 - **Moves:** opens on a dated moment, not on the brand; streets, furniture and people named; old
@@ -96,6 +106,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 9. Plain-spoken activist
 
+- **Learn from:** Patagonia (a "Shop Used Gear" button), Tony's Chocolonely ("It won't be easy").
 - **Sounds like:** "Every jacket we sell, we take back. In 2025 that was 3,140 jackets, and 2,200 went
   back on sale."
 - **Moves:** a mission in one measurable sentence; the hard subject said plainly; admits its own harm;
@@ -105,6 +116,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 10. Refusal and narrowness
 
+- **Learn from:** Hiut Denim ("Do One Thing Well"; a weekly limit on pairs; its "No Wash Club").
 - **Sounds like:** "We repair bicycles. Not e-bikes, not scooters. Bicycles, in two days, at the bench
   you can see from the street."
 - **Moves:** positioned by what it will not do; scarcity stated as an honest limit; the makers named
@@ -114,6 +126,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 11. The product as the hero
 
+- **Learn from:** Apple's iPhone 11 page (a moment, then the water spec), AirPods Pro ("Arrival of the fittest" over the tip sizes).
 - **Sounds like:** "The X2 runs 140 minutes on a charge and climbs a 2 cm sill. It maps the flat on the
   first run."
 - **Moves:** almost no "we"; the product is the subject of every sentence; a turn of phrase is followed
@@ -123,6 +136,7 @@ the footer. Use it only when the client asks for it, and then within the device 
 
 ## 12. Hurried and conversational
 
+- **Learn from:** Ueno ("Tell us everything"; permission to leave), Warby Parker (asides in brackets), Frank Chimero's self-deprecating bio.
 - **Sounds like:** "Packaging for small food brands, by three people in one studio in Bristol (the one
   who answers the phone also draws the box)."
 - **Moves:** talks to one busy person; asides in brackets; self-deprecation; casual section labels that
@@ -131,6 +145,11 @@ the footer. Use it only when the client asks for it, and then within the device 
 - **Fails when:** it gets chummy ("We get it.") or the jokes replace the information.
 
 ## Matching voice to the trade (starting points only)
+
+The brief decides first. When it does not, deal the register so two pages of one trade do not share
+a voice: count the letters of the brand name; an even count takes the first register in the row, an
+odd count the second, and a name of more than ten letters the third when the row has one. Write the
+register and the reason on the voice card.
 
 | Trade | Try first | Avoid |
 | --- | --- | --- |
@@ -141,11 +160,11 @@ the footer. Use it only when the client asks for it, and then within the device 
 | Agency, studio | 1 facts only, 12 hurried, 4 playful | stacked category nouns ("digital brand experience company") |
 | Portfolio | 12 hurried, 1 facts only | a list of credits with no person in it |
 | Luxury hotel | 6 restraint | the word "luxury" |
-| Guesthouse, small hotel | 12 hurried, 7 sensory, 6 restraint | "boutique", "curated experiences" |
+| Guesthouse, small hotel | 12 hurried (room names as copy, as The Hoxton did), 7 sensory, 6 restraint | "boutique", "curated experiences" |
 | Fitness, yoga | 7 sensory, 10 refusal | "the best version of yourself" |
 | Architecture | 6 restraint, 1 facts only | "spaces that inspire" |
 | Course, teaching | 3 the teacher's letter, 7 sensory for a physical skill | "transform your life" |
-| Skincare, beauty | 5 literary, 10 refusal | "clean", "glow" with no ingredient |
+| Skincare, beauty | 5 literary, 10 refusal, the customer as the brand (Glossier) | "clean", "glow" with no ingredient |
 | Finance | 1 facts only, 3 founder's letter | jokes about money worries, unsourced savings |
 | Hardware, appliances | 11 product as hero, 2 technical-dry | adjectives where the spec should be |
 | Game | the game's own world and tone, 12 for the studio | the default register on the store page |

@@ -47,6 +47,8 @@ export async function mount(el) {
   const mod = await import(new URL(`${id}/scene.js`, BASE).href);
   const api = mod.default(el, opts, lib) || {};
   el.__scene = api;
+  // a classic scene builds after its library loads: data-scenes-ready waits for it (a failure leaves the rest showing)
+  if (api.ready && typeof api.ready.then === 'function') await api.ready.catch(() => {});
   el.dataset.bigSceneMounted = '1';
   return api;
 }

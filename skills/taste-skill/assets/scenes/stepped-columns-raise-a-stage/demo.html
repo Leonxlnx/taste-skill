@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wren Street Joinery</title>
+<meta name="description" content="Tables, benches and desks in oak and ash, made one at a time in a workshop behind Wren Street.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #ffffff;
+    --ink: #d2232a;
+    --accent: #d2232a;
+    --font-display: "Schibsted Grotesk", system-ui, sans-serif;
+    --font-text: "Schibsted Grotesk", system-ui, sans-serif;
+    --margin: clamp(16px, 1.67vw, 24px);
+    /* the weights every scene takes from the page: only ones the page loads (400, 500, 600) */
+    --display-weight: 600;
+    --strong-weight: 500;
+    --text-weight: 400;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: var(--text-weight) 17px/1.5 var(--font-text); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+
+  .bar { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding: 22px var(--margin); font-size: 16px; }
+  .bar .mark { font-weight: var(--display-weight); text-decoration: none; letter-spacing: -0.01em; }
+  .bar nav { display: flex; gap: 28px; }
+  .bar nav a { text-decoration: none; }
+  .bar nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  .hero { display: grid; grid-template-columns: 5fr 7fr; gap: var(--margin); padding: 0 var(--margin) var(--margin); min-height: calc(100svh - 70px); }
+  .hero-copy { display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8px; }
+  .hero h1 { margin: 0 0 28px; font: var(--display-weight) clamp(48px, 7.2vw, 112px)/0.94 var(--font-display); letter-spacing: -0.045em; }
+  .hero p { margin: 0; max-width: 30ch; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.4; }
+  .hero-pic { margin: 0; min-height: 0; }
+  .hero-pic img { width: 100%; height: 100%; object-fit: cover; }
+
+  .visit { display: grid; grid-template-columns: 5fr 7fr; gap: var(--margin); padding: clamp(96px, 14svh, 160px) var(--margin) var(--margin); }
+  .visit h2 { margin: 0 0 24px; font: var(--display-weight) clamp(36px, 4.4vw, 68px)/1 var(--font-display); letter-spacing: -0.035em; }
+  .visit p { margin: 0 0 28px; max-width: 34ch; font-size: clamp(18px, 1.4vw, 21px); line-height: 1.45; }
+  .visit .action { display: inline-block; padding: 14px 22px; background: var(--accent); color: var(--ground); text-decoration: none; font-weight: var(--strong-weight); }
+  .visit .action:hover { background: #b51d23; }
+  .visit figure { margin: 0; }
+  .visit img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; padding: 64px var(--margin) 32px; font-size: 15px; }
+
+  @media (max-width: 859px) {
+    .bar nav { gap: 18px; }
+    .bar nav a:first-child { display: none; }
+    .hero, .visit { grid-template-columns: 1fr; }
+    .hero { min-height: 0; }
+    .hero-copy { padding: 40px 0 28px; }
+    .hero h1 { font-size: clamp(48px, 14vw, 72px); }
+    .hero-pic img { aspect-ratio: 4 / 5; height: auto; }
+    .visit { padding-top: 88px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="mark" href="#">Wren Street Joinery</a>
+  <nav><a href="#process">How a table is made</a><a href="#visit">Visit the workshop</a></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <h1>Wren Street Joinery</h1>
+    <p>Tables, benches and desks in oak and ash, made one at a time in a workshop behind Wren Street. About five weeks from the timber yard to your room.</p>
+  </div>
+  <figure class="hero-pic">
+    <img src="https://picsum.photos/id/625/1100/1000" width="1100" height="1000" alt="A long wooden dining table with white chairs beside tall windows" fetchpriority="high">
+  </figure>
+</section>
+
+<section class="sc scene" id="process" data-big-scene="stepped-columns-raise-a-stage" style="--n:4" data-big-scene-opts='{"order":"descending"}' aria-labelledby="sr-title">
+  <div class="scene-stage">
+    <header class="sr-head">
+      <h2 class="sr-title" id="sr-title">Every table starts out rough</h2>
+    </header>
+    <ol class="sr-cols">
+      <li class="sr-col">
+        <div class="sr-panel">
+          <p class="sr-note">Week one</p>
+          <h3 class="sr-col-title">Rough-sawn oak</h3>
+          <p class="sr-col-text">We pick the boards at the yard ourselves.<span class="sr-more"> Then they settle in the shop for a week before the first cut.</span></p>
+        </div>
+      </li>
+      <li class="sr-col">
+        <div class="sr-panel">
+          <p class="sr-note">Weeks two and three</p>
+          <h3 class="sr-col-title">Cut and fitted</h3>
+          <p class="sr-col-text">Mortise and tenon, cut by hand and dry-fitted twice.<span class="sr-more"> Nothing is glued until every joint closes under the push of a palm.</span></p>
+        </div>
+      </li>
+      <li class="sr-col">
+        <div class="sr-panel">
+          <p class="sr-note">Week four</p>
+          <h3 class="sr-col-title">Five grits of sand</h3>
+          <p class="sr-col-text">From 80 grit to 320, always with the grain.<span class="sr-more"> Each pass takes out the scratches the pass before it left behind.</span></p>
+        </div>
+      </li>
+      <li class="sr-col">
+        <div class="sr-panel">
+          <p class="sr-note">Week five</p>
+          <h3 class="sr-col-title">Oiled by hand</h3>
+          <p class="sr-col-text">Three coats of hard-wax oil, rubbed in and buffed off.<span class="sr-more"> The top ends up feeling like a river stone under your arm.</span></p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="visit" id="visit">
+  <div>
+    <h2>Come and see the boards first</h2>
+    <p>The workshop is open on Saturday mornings. Bring the size of your room and how many sit at the table, and we will show you the boards we would cut it from.</p>
+    <a class="action" href="#visit">Book a Saturday visit</a>
+  </div>
+  <figure>
+    <img src="https://picsum.photos/id/491/1200/900" width="1200" height="900" alt="An axe, a hammer, pliers and leather gloves laid out on dark wood" loading="lazy">
+  </figure>
+</section>
+
+<footer>
+  <span>Wren Street Joinery, workshop 4, Wren Street. Saturdays 9 to 1.</span>
+  <span>Photographs by Breather and Todd Quackenbush on Unsplash.</span>
+</footer>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

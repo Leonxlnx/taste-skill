@@ -1,0 +1,70 @@
+{
+  "id": "stepped-columns-raise-a-stage",
+  "name": "Stepped columns raise a stage",
+  "family": "colour-and-ground",
+  "classic": 1,
+  "look": "A row of three to five columns of short copy on one flat page colour fills with solid ink from the foot, each column at its own pace, so the row reads first as a falling bar chart and then levels into one block, the copy turning from ink on the page to page on the ink. It is for a process or a set of tiers, on a page that can commit to one bold colour. Short copy, no pictures, no drawing.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "editorial",
+    "product",
+    "tech"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.8,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The scene turns 90 degrees: stacked rows turn to ink one after another, each in one short fade (a sideways wipe would cut its words); hold about 1.6 for four steps.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "In the middle, on how it works, the steps or the tiers of the pricing. Keep the default {\"ghost\":false}: each column opens as an ink stub that already holds its copy, so no ink edge crosses words being read.",
+  "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more.",
+  "options": "hold 0.45 a step, 1.4-2.2 (1.8 for four); phoneHold 0.4 a step, 1.4-2; scrub 0.5, 0.3 with Lenis (0.2-0.8); order 'descending' (the first column fills first) | 'ascending' (a rising chart, for tiers) | 'centre' (odd counts); ends [0.30, 0.92], when the first and the last column are full (first 0.20-0.40, last 0.75-0.95); ghost false (each column opens as an ink stub that already holds its copy) | true (the copy waits in ink on the page and the rising edge jumps past it).",
+  "roles": [
+    "how-it-works",
+    "features",
+    "stats"
+  ],
+  "position": "middle",
+  "sectors": [
+    "*"
+  ],
+  "needs": {
+    "list": [
+      "pictures:0"
+    ],
+    "content": "No pictures, no footage, no icons, no drawing. A heading of 8 words or fewer on two lines at most; per step an optional note in plain words (never an index number), a title of two short lines (18 characters a line) and 16-28 words, whose optional .sr-more part the phone drops (keep the rest to 70 characters). Three to five steps is the design; up to twelve run as rows. Exactly two colours: one flat page colour and one ink at 4.5:1 or more."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/stepped-columns-raise-a-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"stepped-columns-raise-a-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

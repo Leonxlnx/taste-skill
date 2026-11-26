@@ -1,0 +1,89 @@
+{
+  "id": "depth-card-flythrough",
+  "name": "Fly-through of photo cards",
+  "family": "camera-through-space",
+  "classic": 1,
+  "look": "The camera runs forward into one picture with a strong vanishing point (a jetty, a road, a long hall) while captioned photo cards grow out of the distance on alternating sides and pass the screen edges, one short statement changing at the top with each card. It turns five to twelve proof points, lines of a manifesto or views of a place into one journey through the subject's world.",
+  "fits": [
+    "statement"
+  ],
+  "types": [
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "warm",
+    "editorial",
+    "product",
+    "playful"
+  ],
+  "intensity": "bold",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 3,
+  "restH": 4,
+  "cost": "mid",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same fly-through with phone numbers: two cards in the air, each coming out at the foot of the focal object, growing to about 72% of the width and leaving through the bottom edge. More than nine cards and the phone gets the finished composition.",
+  "maxPerPage": 1,
+  "weight": 0,
+  "retired": "Not dealt since the 2.4 audits (rounds 10 and 11); kept for reference. A page takes it only by id, after its demo has been checked again.",
+  "place": "In the middle of the page, after the hero: the intro, the work or the proof, where the visitor should feel the size of the subject's world. On the work it flies through the pieces themselves; before the work it holds three screens at most, so the work is not kept waiting. A quiet text section follows it.",
+  "content": "One backdrop picture, landscape, 2400px wide or more, with a strong one-point perspective (a jetty, a road, a runway, a rail line, a long hall) whose lines meet on the vertical centre line, and a calm band above that point for the statement; or a 6-10 s muted forward move as a video encoded with a keyframe on every frame. Five to twelve card photographs (six hold three screens, and each more adds about 0.36), landscape 3:2 at 1200x800, at most two 4:5 portraits and never two in a row, all of the subject's world and all in one grade baked into the files; on the work, the cards are the work itself, each piece once. The cards stand apart from the backdrop: dim, soften or flatten the backdrop, or mat each card in the ground colour, so a card never melts into a busy picture of the same grade, and keep endScale near 4 so each card passes at more than half the screen's width. On the work, 4-6 pieces in stop mode (byRole below), each stopped flat and large with its own title. One statement per card, 4-7 words (about 34 characters); one caption per card, 1-4 words. Set --fly-vp, --fly-ground and --fly-focus-w to the backdrop's own lines. Without a picture whose lines meet at one point, or with photographs that cannot be made to look like one place, redraw.",
+  "options": "stop 0 (0.3-0.8) screens each card rests flat at the centre, 0 = the flight; inAir 3 (2-4) cards in the air at once; phoneInAir 2 (2-3); hold 0.36 a card slot, 3.3 for seven cards (1.5-6); sideX 0.32 (0.28-0.38) how far out the cards fly; endScale 4 (2.5-5): 4 a bold pass at the edge, 2.5 a calm drift; yaw 8 (0-10) degrees the cards turn inward, 0 flat; perspective 300 (240-600); title 1.3 (1-1.6) how much larger the first statement opens; dolly 1.8 for a still (1.6-2), 1.08 for a video (1-1.3); run 0.45 (0-0.7) how far the camera runs over the ground of a still, 0 for a backdrop with no ground; arrive true, a short settling beat at the end; haze 0 (0-0.3) fog left on the nearest card; count true, a plain \"3 of 7\" under the statement; phone 'same' | 'rest'; phoneMax 9 (3-12), more cards and the phone rests; phoneSideX 0.33 (0.1-0.45); phoneDy (0-40, measured when left out); phoneYaw 3 (0-10).",
+  "roles": [
+    "intro",
+    "proof",
+    "work",
+    "gallery",
+    "showcase",
+    "about",
+    "features"
+  ],
+  "position": "middle",
+  "sectors": [
+    "agency",
+    "studio-portfolio",
+    "personal-portfolio",
+    "ecommerce",
+    "physical-product",
+    "fashion",
+    "hospitality",
+    "restaurant",
+    "real-estate",
+    "architecture",
+    "event",
+    "health",
+    "education",
+    "nonprofit",
+    "culture",
+    "music",
+    "other"
+  ],
+  "needs": {
+    "list": [
+      "pictures:6"
+    ],
+    "content": "One backdrop picture, landscape, 2400px wide or more, with a strong one-point perspective (a jetty, a road, a runway, a rail line, a long hall) whose lines meet on the vertical centre line, and a calm band above that point for the statement; or a 6-10 s muted forward move as a video encoded with a keyframe on every frame. Five to twelve card photographs (six hold three screens, and each more adds about 0.36), landscape 3:2 at 1200x800, at most two 4:5 portraits and never two in a row, all of the subject's world and all in one grade baked into the files; on the work, the cards are the work itself, each piece once. The cards stand apart from the backdrop: dim, soften or flatten the backdrop, or mat each card in the ground colour, so a card never melts into a busy picture of the same grade, and keep endScale near 4 so each card passes at more than half the screen's width. On the work, 4-6 pieces in stop mode (byRole below), each stopped flat and large with its own title. One statement per card, 4-7 words (about 34 characters); one caption per card, 1-4 words. Set --fly-vp, --fly-ground and --fly-focus-w to the backdrop's own lines. Without a picture whose lines meet at one point, or with photographs that cannot be made to look like one place, redraw."
+  },
+  "never": "a page whose brief lacks what the content asks for",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/depth-card-flythrough/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"depth-card-flythrough\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

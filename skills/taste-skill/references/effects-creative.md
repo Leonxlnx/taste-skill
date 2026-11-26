@@ -6,9 +6,12 @@ map. The parts are in `assets/components/` (a folder each: `component.html`, `.c
 `meta.json`); `index.html` there shows them live with a palette switcher, starting each part only
 while it is near the screen.
 
-**Tech pages only** (site-kind software, gaming or tech: hardware), except `fx-photo` (every kind, as
-a plain photograph) and `fx-map` (every kind with a door, a place included, baked still, and only
-for a street the brief gives). What each kind may carry: `effects-usage.md`. `fx-band` is out: a
+**By fit** (`effects-usage.md`, The fit rule): a part that holds a WebGL context or reads as a screen
+(the dither object, the globe, the prompt glow, `fx-button`'s fill) goes on the kinds that take WebGL
+and the tech tone (software, gaming, tech: hardware, and a product passed as `--tech-subject`);
+`fx-photo` (every kind, as a plain photograph) and `fx-map` (every kind with a door, a place
+included, baked still, and only for a street the brief gives) go on every kind. A place, service or
+product page takes its motion from the dealt moments, the scene and its one quiet treatment instead. `fx-band` is out: a
 drawn band between sections is not a section. `fx-logos` is out: real logos show in their full
 colours and never move (rule 7, MO-57; `sections-library.md` logo-row).
 

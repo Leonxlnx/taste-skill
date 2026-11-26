@@ -3,19 +3,24 @@
   "name": "Lines rise",
   "kind": "text",
   "fits": [
-    "section",
     "statement"
   ],
   "trigger": "enter",
   "cost": "low",
   "webgl": 0,
-  "pages": [],
-  "retired": "Not dealt: every hero now rises line by line on load (references/motion.md, The hero's entrance), so a section heading that rises the same way repeats the entrance.",
-  "look": "One section's heading rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once.",
+  "tones": [
+    "editorial",
+    "warm",
+    "product",
+    "tech",
+    "playful"
+  ],
+  "intensity": "quiet",
+  "look": "One statement heading of two or three lines rises line by line out of masks the first time it comes on screen, 90 ms between lines; its lead, link and visual fade up behind it. Once. Slower and larger than the automatic section reveal, so it reads as the statement arriving.",
   "reduced": "The section stands as written.",
   "phone": "The heading and the lines after it stand as written.",
   "maxPerPage": 1,
-  "weight": 0,
+  "weight": 0.7,
   "needs": {
     "words": "a heading of 2 to 3 lines"
   },

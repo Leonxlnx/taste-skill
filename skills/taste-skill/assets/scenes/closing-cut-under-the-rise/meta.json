@@ -1,0 +1,75 @@
+{
+  "id": "closing-cut-under-the-rise",
+  "name": "Closing cut under the rise",
+  "family": "camera-through-space",
+  "classic": 1,
+  "look": "In the last section the one thing the page is about stands, as a cut-out masked from the closing photograph itself, in a flat room of two tints: that photograph's own wall and floor, split exactly on the row where its floor meets its wall, the cut-out starting low on the flat floor. From the first frame a carrier lifts it steadily up the frame, whole on every frame and never sliced by the top edge, onto the row where the thing stands in the picture, while the stage counter-moves a fifth of a screen down and back at most, so the camera seems to duck under the rise. There, in one frame and under the motion, the flat room and the cut-out are gone and the full-bleed closing photograph that was waiting beneath fills the screen, the same thing in the same place and the floor line on the same row, so the cut reads as the room coming into focus rather than a jump; the camera's return carries on through it. On a short flat band of the floor's tint at its foot the page's last sentence arrives in two or three whole phrases, the one plain action together with the last, and the frame rests finished for about the last tenth of the hold.",
+  "fits": [
+    "close"
+  ],
+  "types": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+  ],
+  "tones": [
+    "product",
+    "warm",
+    "playful"
+  ],
+  "intensity": "lively",
+  "webgl": 0,
+  "trigger": "scroll",
+  "hold": 1.6,
+  "restH": 1,
+  "cost": "low",
+  "reduced": "The finished composition: the markup as the page writes it, nothing moving.",
+  "phone": "The same rise and cut at full width: the cut-out fitted to the width less 16px margins, starting low and rising whole onto the subject's place in the portrait crop, the closing photograph's own portrait crop with its own floor line and the subject whole, a shallower dip (phoneDip 0.1, lowered where it would sink the subject's foot under the band) so the crop keeps its height and the subject stays whole above the band, the line over the action on the short band at the foot, the caption left out (it would sit on the cut-out). phone: 'rest' gives the finished composition, the closing photograph a screen tall with the band, the line and the action.",
+  "maxPerPage": 1,
+  "weight": 1,
+  "place": "The end of the page: the order, the booking or the visit, straight after one quiet section. The footer after it is a designed section of its own and follows the finished frame: leave `foot` unset (it pulls the element it names over the stage's foot, so it suits only a page that ends on the scene). Once per page, never right after another scene. Pages that sell or show one ordinary physical thing: a teapot, a jug, a stool, a lamp, a bottle, a dish, a garment.",
+  "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient.",
+  "options": "hold 1.6 (1.4-2.4); rise 1 (1-2.4) the rise's speed in screens over the whole hold (only the stretch before the cut shows): the cut-out starts lower by the distance it travels before the cut, so at the cut it stands on the subject's own row, never under the stage's foot margin (there the rise is shortened to the room it has, so the cut still lands it on its row), and the rise slows where the top edge would slice it, so it is whole on every frame; phoneRise (rise) (1-2.4) the same below 768px, where the cut-out is fitted to the width and smaller; ease 'none' (steady, so it is visibly moving within the first tenth; an in-out ease starts slower); dip 0.2 (0-0.3) screens the stage counter-moves down and back (the camera ducks; deepest at the cut, settled at 100%; the script lowers it where it would sink the subject's foot under the band); phoneDip 0.1 (0-0.3) the same on portrait screens; cut 0.3 (0.25-0.6) where the room and the cut-out give way to the photograph (0.28 for a short thing standing low): the rise before it is the part that shows; size 0.5 (0.35-0.6) the cut-out's height share of the stage, about the subject's own height in the photograph as cropped (larger has no room to rise and shrinks at the cut; fitted to the width less the margins); from (cut + 0.04) where the first phrase has arrived (the band is solid from the cut frame, so it never sits empty); to 0.88 (0.65-0.9) where the last phrase and the action have arrived, the rest of the hold the finished frame settling; band 'floor' (a short flat band of the floor's tint at the photograph's foot, the same field as the flat room's floor, so it does not change at the cut) | 'none' (straight on the photograph's calm area, the words riding with the picture so they stay on it); place 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'; tint 'token' (--ccr-wall, --ccr-floor) | 'auto' (medians of the photograph's wall and floor as cropped on this screen; same-origin pictures); foot unset by default (the designed footer follows the scene); a selector pulls that element up over the stage's foot, only for a page that ends on the scene with one plain line; scrub true | 0.1-1; phone 'same' | 'rest'. Scene tokens: --ccr-wall, --ccr-floor, --ccr-ink, --ccr-band, --ccr-band-ink, --ccr-object, --ccr-object-portrait, --ccr-base, --ccr-btn-radius.",
+  "roles": [
+    "cta",
+    "contact"
+  ],
+  "position": "closing",
+  "sectors": [
+    "physical-product",
+    "fashion",
+    "ecommerce",
+    "hospitality",
+    "consumer-app",
+    "studio-portfolio",
+    "event"
+  ],
+  "needs": {
+    "list": [
+      "product-photo",
+      "pictures:1"
+    ],
+    "content": "One full-colour closing photograph of the subject in place: the very object standing clear of its surroundings (a distinct colour or a plain ground behind it, so it can be masked) on a floor, a table top or a counter that meets the wall, trees or sky behind on a clear line, with a calm area or room at its foot for a short band; landscape 2400px wide or more, and a portrait crop as its own <source> in which the subject stays whole (or one file framed with --ccr-object-portrait). The rising cut-out is masked from that same photograph (keyed or traced, transparent PNG or WebP, the object only, nothing of the table under it), so the cut lands the very thing back in its own room; never a drawing, never a second photograph of a lookalike. On the img and each <source>: data-horizon (that file's floor line, 0-1) and data-subject (the subject's centre across and its foot, 0-1). Words: the page's last sentence (not the brand name, no invented history) of 6-12 words in two or three phrases, each a .ccr-step; one action of 2-4 words (an order, a booking; never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object. --ccr-wall and --ccr-floor set to the photograph's wall and floor (or tint 'auto'); --ccr-band-ink with 4.5:1 or more on the band. Flat tints only: no fade through black or white, no glow, no gradient."
+  },
+  "never": "never a drawing, never a second photograph of a lookalike. never an email address or phone number), arriving with the last phrase; an optional caption of 2-6 words naming the object.",
+  "avoidWith": [],
+  "avoidMoments": [],
+  "states": {
+    "start": {
+      "p": 0.02,
+      "wait": 500
+    },
+    "middle": {
+      "p": 0.5,
+      "wait": 500
+    },
+    "end": {
+      "p": 0.98,
+      "wait": 600
+    }
+  },
+  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-cut-under-the-rise/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-cut-under-the-rise\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
+}

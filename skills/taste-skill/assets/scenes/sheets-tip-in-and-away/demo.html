@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hovdenes Boatyard</title>
+<meta name="description" content="Open clinker boats built one at a time on the west coast of Norway: a færing, a Nordland boat and a light rowing boat this year.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@800&family=Public+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #e6e8e3;
+    --ink: #13201b;
+    --accent: #c4291c;
+    --font-display: "Big Shoulders", "Arial Narrow", sans-serif;
+    --font-text: "Public Sans", system-ui, sans-serif;
+    --display-weight: 800;
+    --strong-weight: 600;
+    --text-weight: 400;
+    --gutter: clamp(16px, 1.8vw, 28px);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 18px/1.5 var(--font-text);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  #builds { --st-name-case: uppercase; }
+  #builds .st-heading { text-transform: uppercase; }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 24px;
+    padding: 22px var(--gutter);
+    font-size: 16px;
+  }
+  .bar .mark { font-weight: 600; text-decoration: none; }
+  .bar nav { display: flex; gap: 24px; }
+  .bar nav a { text-decoration: none; }
+  .bar nav a:hover, .bar nav a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+  .bar nav .go { color: var(--accent); font-weight: 600; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 52px;
+    margin-top: 28px;
+    padding: 0 26px;
+    background: var(--accent);
+    color: var(--ground);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .button:hover { background: color-mix(in srgb, var(--accent) 86%, var(--ink)); }
+  .button:active { transform: scale(0.98); }
+  .button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+  .intro {
+    min-height: calc(78svh - 70px);
+    padding: clamp(40px, 8vh, 96px) var(--gutter) clamp(56px, 9vh, 112px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 36ch);
+    column-gap: 6vw;
+    align-content: end;
+    align-items: end;
+  }
+  .intro h1 {
+    margin: 0;
+    max-width: 14ch;
+    font-family: var(--font-display);
+    font-size: clamp(64px, 9.6vw, 164px);
+    font-weight: 800;
+    line-height: 0.86;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .intro p { margin: 0; font-size: 20px; line-height: 1.5; max-width: 36ch; }
+
+  .after {
+    padding: clamp(96px, 12vw, 180px) var(--gutter) clamp(64px, 8vw, 120px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 40ch);
+    column-gap: 6vw;
+    align-items: start;
+  }
+  .after h2 {
+    margin: 0;
+    max-width: 12ch;
+    font-family: var(--font-display);
+    font-size: clamp(48px, 6.4vw, 104px);
+    font-weight: 800;
+    line-height: 0.88;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .after p { margin: 0 0 28px; }
+  .after dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; }
+  .after dt { font-weight: 600; }
+  .after dd { margin: 0; }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    padding: 28px var(--gutter) 32px;
+    font-size: 15px;
+  }
+  footer p { margin: 0; }
+  .credits-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .credits-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  dialog#credits {
+    max-width: min(640px, calc(100vw - 32px));
+    padding: 28px;
+    border: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  dialog#credits::backdrop { background: rgb(19 32 27 / 0.4); }
+  dialog#credits form { display: flex; justify-content: flex-end; margin: 0 0 12px; }
+  dialog#credits form button { height: 40px; padding: 0 16px; border: 0; background: var(--ink); color: var(--ground); font: 600 15px/1 var(--font-text); cursor: pointer; }
+  dialog#credits form button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  dialog#credits ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
+
+  @media (max-width: 1023px) {
+    .intro, .after { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  }
+  @media (max-width: 767px) {
+    .intro { min-height: calc(70svh - 70px); }
+    .intro h1 { font-size: 54px; }
+    .intro p { font-size: 18px; }
+    .after h2 { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="mark" href="#top" id="top">Hovdenes Boatyard</a>
+  <nav aria-label="Main">
+    <a href="#builds">Builds</a>
+    <a href="#order">The slip</a>
+    <a class="go" href="#order">Order a boat</a>
+  </nav>
+</header>
+
+<main>
+<section class="intro" aria-labelledby="intro-title">
+  <h1 id="intro-title">Wooden boats, one at a time</h1>
+  <div>
+    <p>Three of us build open clinker boats on the old west-coast lines: larch planks on oak frames, copper rivets, tar and linseed oil. These are this year's three.</p>
+    <a class="button" href="#order">Order a boat</a>
+  </div>
+</section>
+
+<section class="sc scene" id="builds" data-big-scene="sheets-tip-in-and-away" aria-labelledby="st-title" data-big-scene-opts='{"tilt":10,"rest":0.34,"lag":0.1}'>
+  <div class="scene-stage">
+    <h2 class="st-heading" id="st-title">This year's three builds</h2>
+
+    <article class="st-sheet" data-piece="Færing" style="--st-pos: 50% 58%; --st-pos-phone: 46% 50%">
+      <div class="st-paper">
+        <header class="st-words">
+          <h3 class="st-name">Færing</h3>
+          <div class="st-meta">
+            <p class="st-line">Four oars, 5.4 metres, larch on oak</p>
+            <a class="st-link" href="#order">Order a færing</a>
+          </div>
+        </header>
+        <figure class="st-window"><div class="st-pan">
+          <img class="st-photo" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/sheets-tip-in-and-away/faering.jpg" width="1920" height="1440" loading="eager" decoding="async" alt="A varnished four-oared færing lying on still, clear water, with a rocky shore and trees behind">
+        </div></figure>
+      </div>
+    </article>
+
+    <article class="st-sheet" data-piece="Nordlandsbåt" style="--st-pos: 50% 62%; --st-pos-phone: 30% 50%">
+      <div class="st-paper">
+        <header class="st-words">
+          <h3 class="st-name">Nordlandsbåt</h3>
+          <div class="st-meta">
+            <p class="st-line">Square sail and five oars, 7.2 metres</p>
+            <a class="st-link" href="#order">Order a Nordland boat</a>
+          </div>
+        </header>
+        <figure class="st-window"><div class="st-pan">
+          <img class="st-photo" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/sheets-tip-in-and-away/nordlandsbat.jpg" width="1920" height="1440" loading="eager" decoding="async" alt="A tarred Nordland boat with a white and blue top strake on clear shallow water, a second boat and a green hillside behind">
+        </div></figure>
+      </div>
+    </article>
+
+    <article class="st-sheet" data-piece="Robåt" style="--st-pos: 50% 58%; --st-pos-phone: 50% 65%">
+      <div class="st-paper">
+        <header class="st-words">
+          <h3 class="st-name">Robåt</h3>
+          <div class="st-meta">
+            <p class="st-line">A light rowing boat for the fjord, 4.2 metres</p>
+            <a class="st-link" href="#order">Order a robåt</a>
+          </div>
+        </header>
+        <figure class="st-window"><div class="st-pan">
+          <img class="st-photo" src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/sheets-tip-in-and-away/robat.jpg" width="1920" height="2000" loading="eager" decoding="async" alt="A small yellow rowing boat alone on a still green fjord below a steep wooded mountainside">
+        </div></figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="after" id="order" aria-labelledby="order-title">
+  <h2 id="order-title">Twelve weeks on the slip</h2>
+  <div>
+    <p>Every boat is built to order on the slip beside the boathouse. You come three times: when the keel is laid, when the last plank goes on, and for the launch.</p>
+    <dl>
+      <dt>Next free slip</dt><dd>March 2027</dd>
+      <dt>Delivery</dt><dd>By sea along the coast, or on a trailer</dd>
+      <dt>Visits</dt><dd>Weekdays, eight to four</dd>
+    </dl>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>Hovdenes Boatyard, on the Sunnmøre coast</p>
+  <button type="button" class="credits-link" onclick="document.getElementById('credits').showModal()">Image credits</button>
+</footer>
+<dialog id="credits" aria-label="Image credits"><form method="dialog"><button aria-label="Close">Close</button></form>
+  <ul>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Sunnm%C3%B8rsf%C3%A6ring_-_Her%C3%B8y_kystmuseum.jpg">“Sunnmørsfæring - Herøy kystmuseum”</a> by Silje L. Bakke, <a href="https://creativecommons.org/licenses/by-sa/2.5">CC BY-SA 2.5</a>, via Wikimedia Commons</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:Nordlandsb%C3%A5tar.JPG">“Nordlandsbåtar”</a> by Knut, public domain, via Wikimedia Commons</li>
+    <li><a href="https://commons.wikimedia.org/wiki/File:14_2024_Sogn_og_Fjordane_01.jpg">“14 2024 Sogn og Fjordane 01”</a> by Øyvind Holmstad, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons; cropped by us, shared under the same licence</li>
+  </ul>
+</dialog>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

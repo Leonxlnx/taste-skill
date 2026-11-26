@@ -3,18 +3,25 @@
   "name": "Word rotates",
   "kind": "text",
   "fits": [
-    "hero"
+    "hero",
+    "statement",
+    "closing"
   ],
   "trigger": "loop",
   "cost": "low",
   "webgl": 0,
-  "pages": [],
-  "retired": "Not dealt: the word hero carries its own live word (layout-v4.md), and a second rotating word in a headline repeats it.",
-  "look": "One word of the headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests.",
+  "tones": [
+    "playful",
+    "tech",
+    "product",
+    "warm"
+  ],
+  "intensity": "lively",
+  "look": "One word of a headline changes every two seconds, sliding up out of its mask as the next rises in, underlined in the accent; three rounds, then it rests on the written word. In a statement or the close (\"Bread for breakfast / lunch / Sunday\"), or the hero unless the hero is the word hero, which has its own live word.",
   "reduced": "The written word stands.",
   "phone": "The written word stands; the other words are not shown.",
   "maxPerPage": 1,
-  "weight": 0,
+  "weight": 1,
   "needs": {
     "words": "a headline with one word that can take 2 to 4 alternatives (what the product is for)"
   },

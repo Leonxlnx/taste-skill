@@ -8,8 +8,15 @@
   "trigger": "load",
   "cost": "low",
   "webgl": 0,
-  "pages": [],
-  "retired": "Not dealt: every hero now enters on load through the motion layer (references/motion.md, The hero's entrance: data-enter on the hero), with its text visible without script, under reduced motion and after a 700ms safety mark. A moment that also moves the headline would be a second entrance.",
+  "tones": [
+    "editorial",
+    "warm",
+    "product",
+    "tech",
+    "playful"
+  ],
+  "intensity": "quiet",
+  "retired": "Not dealt as a moment: its look (the headline words rising out of masks, 38 ms apart) is one of the hero entrances dealt from the deck (motion.md, The hero's entrance); a moment that also moves the headline would be a second entrance.",
   "look": "The hero headline's words rise once out of their masks, 38 ms apart, and settle; the sub-line and the buttons fade up behind them.",
   "reduced": "The headline stands as written; nothing moves.",
   "phone": "The headline or button stands as written.",

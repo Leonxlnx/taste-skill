@@ -8,11 +8,12 @@
   "trigger": "pointer",
   "cost": "low",
   "webgl": 0,
-  "pages": [
+  "tones": [
     "tech",
-    "gaming",
-    "software"
+    "playful",
+    "product"
   ],
+  "intensity": "quiet",
   "look": "A soft light on the hero's ground follows the pointer with a short lag and shows a fine dot grid around it; it drifts back to its resting spot when the pointer leaves.",
   "reduced": "The light rests at its spot; also on touch screens.",
   "phone": "The light rests at its spot; there is no pointer.",

@@ -1,28 +1,63 @@
 {
   "name": "motion",
-  "title": "Micro-interactions",
-  "shows": "Buttons (they step 1px up on hover, 2px on the large size, and press 1px down on click), arrows, links, the nav underline and menu, the current page, tabs, focus, cards, photographs, fields, switches, checks, numbers that tick once, and the cadence of the loops inside a card's panel.",
+  "title": "Motion: the entrance deck, section reveals and micro-interactions",
+  "shows": "The hero's entrance deck (nine variants), the automatic section reveals (each section's h2 and lead photograph, once), buttons (1px up on hover, 2px on the large size, 1px down on press), arrows, links, the nav underline and menu, tabs, focus, cards, photographs, fields, switches, checks, rows that answer the pointer, a label that rolls, a number that rolls once, swatches that change the photograph, the open-now dot, numbers that tick once, and the loops inside a card's picture.",
   "files": {
     "motion.css": "link after system.css and ui/cards.css; rules apply under <html data-motion>",
     "motion.js": "type=module, after system.js; starts by itself; export { init, refresh }",
-    "demo.html": "every interaction on one company page; ?theme=dark, ?live (number tick in a headless shot)"
+    "demo.html": "the tech side on one software page: tabs, counts, card stories, switches; ?theme=dark, ?live",
+    "deck.html": "the deck on one bakery page: every entrance (?enter=<id>), the section reveals, rows, roll, swatches, open-now dot, rolling label, a drawing loop in a card; ?live, ?theme=dark"
   },
   "requires": ["assets/system.css", "assets/ui/cards.css", "assets/system.js"],
   "tokens": ["--bg", "--surface", "--ink", "--muted", "--accent", "--accent-ink", "--action", "--action-ink", "--line", "--line-strong", "--card", "--r-sm", "--r-btn"],
+  "entrances": [
+    { "id": "rise", "name": "Line rise", "default": true, "markup": "data-enter (or data-enter=\"rise\")", "sees": "the h1 rises line by line out of word masks, then the lead, buttons and facts fade up 12px; the picture settles from 1.05", "ms": 1150, "needs": [], "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "quiet", "webgl": 0 },
+    { "id": "set-type", "name": "Set type", "markup": "data-enter=\"set-type\"", "sees": "the h1's lines rise while the picture opens downward like a blind", "ms": 1320, "needs": ["picture"], "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "lively", "webgl": 0 },
+    { "id": "focus", "name": "Focus pull", "markup": "data-enter=\"focus\"", "sees": "the picture racks into focus from soft and a touch large; the h1 from half strength; nothing travels", "ms": 1100, "needs": [], "tones": ["warm", "editorial", "product", "tech"], "intensity": "quiet", "webgl": 0 },
+    { "id": "exposure", "name": "Exposure", "markup": "data-enter=\"exposure\"", "sees": "the type stands; the photograph starts pale and its light and colour come up (use a mid or dark photograph)", "ms": 1200, "needs": ["photograph"], "tones": ["warm", "editorial", "product"], "intensity": "quiet", "webgl": 0 },
+    { "id": "aperture", "name": "Aperture", "markup": "data-enter=\"aperture\" (style=\"--m-window: 30% 32%\" centres the window on the subject)", "sees": "the type stands; the picture opens from a window in its middle out past its edges, from a detail to the whole", "ms": 1300, "needs": ["picture at least half the hero"], "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "lively", "webgl": 0 },
+    { "id": "line-blocks", "name": "Line blocks", "markup": "data-enter=\"line-blocks\" (--m-block on the hero sets the colour; the accent by default)", "sees": "each line of the h1 starts under a block of one palette colour as long as its words; the blocks slide off toward the line ends", "ms": 1250, "needs": [], "tones": ["editorial", "product", "tech", "playful"], "intensity": "bold", "webgl": 0 },
+    { "id": "doors", "name": "Doors", "markup": "data-enter=\"doors\" (--m-door: the cover's colour, --m-door-at: where it parts)", "sees": "a cover in one palette colour lies over the hero, parts along one line and slides off both ways; only the picture eases back", "ms": 1200, "needs": ["hero at least 70% of the screen"], "tones": ["editorial", "tech", "playful"], "intensity": "bold", "webgl": 0 },
+    { "id": "product-at-work", "name": "Product at work", "markup": "data-enter=\"product-at-work\" and data-enter-step on two to four parts inside the hero's window (a row that lands, a figure, a selected item)", "sees": "the h1 rises while the window's marked parts appear one after another: the product shows it is live", "ms": 1320, "needs": ["window or UI fragment in the hero"], "tones": ["tech", "product"], "intensity": "lively", "webgl": 0 },
+    { "id": "still", "name": "Already there", "markup": "data-enter=\"still\"", "sees": "nothing arrives: the first frame is the finished hero; the motion is the hero's own clip, scene or loop", "ms": 0, "needs": ["moving picture or scene in the hero"], "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "quiet", "webgl": 0 }
+  ],
+  "reveals": {
+    "what": "each main section's first h2 (outside cards, rows and lists) rises out of its line masks in 620ms, and its lead photograph (the first img at least 280x160 outside cards, tiles and lists) settles from inset 7% 6% and scale 1.06 in 700ms, once, as each comes on screen",
+    "automatic": true,
+    "never": "in the first screen, on a card, row, tile or list, in a section with data-moment, data-big-scene or data-scene, under reduced motion, without script, in a headless shot (unless data-motion=\"live\")",
+    "optOut": "data-still on the section",
+    "marks": "data-m-rv=\"heading\" or \"photo\" on what reveals; .m-rv-wait while it waits",
+    "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "quiet", "webgl": 0
+  },
   "hooks": {
-    "svg.m-arrow": "<svg class=\"m-arrow\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path class=\"m-arrow__stem\" d=\"M1 6h8\"/><path class=\"m-arrow__head\" d=\"M4.5 2.5 8 6l-3.5 3.5\"/></svg> as the last child of a button, link or pill",
-    "[data-m-count]": "on a stat whose text holds one count (8,402 / 4.5 h / 64%); data-m-count=\"1600\" sets the time in ms",
-    "[data-m-loop]": "on a panel holding the page's own CSS keyframe loop; style --m-cycle (2.5s-4s) and --m-still (0-1, the finished frame)",
+    "svg.m-arrow": "<svg class=\"m-arrow\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path class=\"m-arrow__stem\" d=\"M1 6h8\"/><path class=\"m-arrow__head\" d=\"M4.5 2.5 8 6l-3.5 3.5\"/></svg> as the last child of a button, link, pill or a row's link",
+    "[data-m-count]": "on a stat whose text holds one count (8,402 / 4.5 h / 64%); data-m-count=\"1600\" sets the time in ms; once a page, in the hero",
+    "[data-m-roll]": "on a price or a number: its digits roll up into place once when first seen (any kind)",
+    "[data-m-loop]": "on a panel holding the page's own CSS keyframe loop; style --m-cycle (2.5s-4s) and --m-still (0-1, the finished frame); any kind with card visuals",
+    ".m-draw": "<path class=\"m-draw\" pathLength=\"1\" d=\"...\"/> inside a [data-m-loop] svg: a route, a signature, steam, a path draws, holds and draws again",
+    ".m-swap": "on a .btn or nav link: its label rolls up and comes back from below on hover and focus (editorial, product, tech, playful)",
+    "[data-m-swatches]": "<div class=\"m-swatches\" data-m-swatches=\"#photo-id\" role=\"group\" aria-label=\"Colour\"><button type=\"button\" class=\"m-swatch\" style=\"--sw:#2f3a2c\" data-src=\"olive.jpg\" data-alt=\"...\" aria-pressed=\"true\" aria-label=\"Olive\"></button>...</div>",
+    "[data-open-now]": "system.js writes the line; motion.js adds the dot that breathes twice while it says Open now",
     ".m-switch": "<button class=\"m-switch\" type=\"button\" role=\"switch\" aria-checked=\"false\" aria-label=\"...\"></button>",
     ".m-check": "<input type=\"checkbox\" class=\"m-check\">",
     ".m-link": "an underline that draws, on any other link",
     ".m-zoom": "a wrapper whose img or video scales 1.03 on hover",
     ".m-nolift": "a card that must not lift",
+    "data-still": "on a section: no reveal in it",
     "aria-current=\"page\"": "on the nav word of the page you are on"
   },
-  "automatic": [".btn", ".btn--arrow", ".link", "a.pill", "p a without a class", ".footer ul a", ".nav__links (drawn underline)", ".nav__menu", ".tabs[role=tablist]", ":focus-visible", ".card", ".card--open > .panel", ".frame__img and .tile__media img in a link or a card with a link", ".field input/select/textarea"],
-  "reducedMotion": "colours change; nothing moves or scales (a button keeps its colour change only); loops hold the --m-still frame; numbers show their final text; no pause buttons",
-  "phone": "no hover states; the sheet fades in 8px; loops hold their finished frame like ui.js fragments",
-  "screenshot": "a HeadlessChrome page shows final numbers unless <html data-motion=\"live\">",
-  "cost": "motion.css 17 KB, motion.js 12 KB unminified (about 4 KB and 4 KB gzipped); one IntersectionObserver per feature; transforms and opacity only (the tab indicator also animates width)"
+  "micro": [
+    { "id": "row-line", "hook": ".rows > li (automatic)", "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "quiet", "webgl": 0 },
+    { "id": "number-roll", "hook": "[data-m-roll]", "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "quiet", "webgl": 0 },
+    { "id": "swatch-photo", "hook": "[data-m-swatches]", "tones": ["warm", "product", "editorial"], "intensity": "quiet", "webgl": 0 },
+    { "id": "open-dot", "hook": "[data-open-now] (automatic)", "tones": ["warm"], "intensity": "quiet", "webgl": 0 },
+    { "id": "label-roll", "hook": ".m-swap", "tones": ["editorial", "product", "tech", "playful"], "intensity": "lively", "webgl": 0 },
+    { "id": "line-draw-loop", "hook": "[data-m-loop] .m-draw", "tones": ["warm", "editorial", "product", "tech", "playful"], "intensity": "lively", "webgl": 0 }
+  ],
+  "automatic": [".btn", ".btn--arrow", ".link", "a.pill", "p a without a class", ".footer ul a", ".nav__links (drawn underline)", ".nav__menu", ".tabs[role=tablist]", ":focus-visible", ".card", ".card--open > .panel", ".frame__img and .tile__media img in a link or a card with a link", ".field input/select/textarea", ".rows > li (the line under the pointer)", "[data-open-now] (the open dot)", "main section h2 and lead photograph (reveals)"],
+  "reducedMotion": "colours change; nothing moves or scales (a button keeps its colour change, a press shows as a deeper tone); the hero stands; no reveals; loops hold the --m-still frame; numbers show their final text; no pause buttons",
+  "phone": "no hover states; the hero enters and sections reveal; the sheet fades in 8px; loops hold their finished frame like ui.js fragments",
+  "screenshot": "a HeadlessChrome page shows the hero at rest, no reveals and final numbers unless <html data-motion=\"live\">",
+  "lint": "node <skill>/scripts/motion-lint.mjs <page.html> (motion-* ids, the copy-lint CLI)",
+  "cost": "motion.css 42 KB, motion.js 37 KB unminified (about 7 KB and 10 KB gzipped); one IntersectionObserver per feature; transform, opacity and clip-path only in the layer (a hero variant also filter)"
 }

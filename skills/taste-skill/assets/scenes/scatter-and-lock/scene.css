@@ -1,0 +1,264 @@
+/* assets/scenes/scatter-and-lock/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / scatter-and-lock.css — see scatter-and-lock.js for the DOM and the options.
+   By default (no script, reduced motion, a phone set to 'rest') this is the finished composition: the
+   title, the poster under it and the caption, in normal flow on the dark stage. Under .is-live the stage
+   is held and the poster is rebuilt from scattered cells. Portrait screens (phones, and tablets held
+   upright) get the 4:5 art; landscape screens the 16:9 art.
+
+   Tokens it takes from the page: --ink (the stage colour), --ground (the text on it), --font-display,
+   --font-text. Its own, all optional:
+     --sl-bg         stage colour (default since fix-002: a mid-dark tone, the page's ink lifted 14% toward
+                     its ground, about #2b302e on a near-black ink, so the photograph's darkest pieces
+                     never read as holes in the locked grid; set it to a mid-dark tone of the photo)
+     --sl-ink        title and caption colour
+     --sl-gutter     side margin of the title and caption (6vw; 16px on phones)
+     --sl-W          frame width (default min(72vw, 120svh), 16:9; portrait min(90vw, 56svh), 4:5)
+     --sl-word-size  poster word size (7.5cqi of the frame; 12cqi on portrait art)
+     --sl-word-x/y   where the word's centre sits on the poster (50% / 50%); on the 4:5 art keep it inside
+                     the middle 60% of the width: a phone's full-bleed end keeps only that much of it. The
+                     word is never cut into the shards: it fades in whole on the poster after the lock
+     --sl-word-ink   poster word colour (#f4f4f1)
+     --sl-scrim      a flat translucent fill over the whole picture, for a word on a light photograph
+     --sl-flash      the lock flash colour (#fff; the flash is off unless the flash option is set)
+   Weights follow the page: --display-weight (the headline and the words; 600 here when the page sets
+   none). A weight the page has not loaded is never faked: the nearest loaded one shows. */
+
+[data-big-scene="scatter-and-lock"] { font-synthesis-weight: none; }
+
+[data-big-scene="scatter-and-lock"] {
+  --sl-bg: color-mix(in srgb, var(--ink, #0e0e0c) 86%, var(--ground, #f1f1ee));
+  --sl-ink: var(--ground, #f1f1ee);
+  --sl-W: min(72vw, 120svh);
+  --sl-gutter: 6vw;
+  --sl-word-size: 7.5cqi;
+  --sl-word-x: 50%;
+  --sl-word-y: 50%;
+  --sl-word-ink: #f4f4f1;
+  --sl-scrim: transparent;
+  --sl-flash: #fff;
+}
+
+/* ---- the finished composition (default) ---- */
+[data-big-scene="scatter-and-lock"] > .scene-stage {
+  background: var(--sl-bg);
+  color: var(--sl-ink);
+  padding: 10vh var(--sl-gutter) 10vh; /* the title sits where the live stage puts it: no jump when it starts */
+}
+[data-big-scene="scatter-and-lock"] .sl-title { max-width: min(44vw, 680px); }
+[data-big-scene="scatter-and-lock"] .sl-headline {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 600);
+  font-size: clamp(36px, 4.4vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: inherit;
+}
+[data-big-scene="scatter-and-lock"] .sl-frame {
+  position: relative;
+  width: var(--sl-W);
+  aspect-ratio: 16 / 9;
+  margin: 6vh auto 0;
+}
+[data-big-scene="scatter-and-lock"] .sl-solid { position: absolute; inset: 0; transform-origin: 50% 50%; }
+[data-big-scene="scatter-and-lock"] .sl-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+[data-big-scene="scatter-and-lock"] .sl-art picture { display: block; width: 100%; height: 100%; }
+[data-big-scene="scatter-and-lock"] .sl-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+[data-big-scene="scatter-and-lock"] .sl-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--sl-scrim);
+  pointer-events: none;
+}
+[data-big-scene="scatter-and-lock"] .sl-word {
+  position: absolute;
+  left: var(--sl-word-x);
+  top: var(--sl-word-y);
+  z-index: 1;
+  /* --sl-word-dx (set by the script, in cqi) moves the word a fraction of a letter off the grid lines */
+  transform: translate(calc(-50% + var(--sl-word-dx, 0) * 1cqi), -50%);
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 600);
+  font-size: var(--sl-word-size);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--sl-word-ink);
+}
+[data-big-scene="scatter-and-lock"] .sl-micro {
+  position: absolute;
+  left: 4cqi;
+  bottom: 4cqi;
+  z-index: 1;
+  margin: 0;
+  max-width: 34cqi;
+  font-family: var(--font-text, inherit);
+  font-size: max(calc(14px * var(--sl-up, 1)), 1.3cqi); /* --sl-up: the growing poster's scale-down, set by the script */
+  line-height: 1.35;
+  color: var(--sl-word-ink);
+}
+[data-big-scene="scatter-and-lock"] .sl-caption {
+  max-width: min(24vw, 360px);
+  margin: 3vh calc((100% - var(--sl-W)) / 2) 0 auto;
+  font-family: var(--font-text, inherit);
+  font-size: 16px;
+  line-height: 1.5;
+}
+[data-big-scene="scatter-and-lock"]:not(.is-live) .sl-cells,
+[data-big-scene="scatter-and-lock"]:not(.is-live) .sl-flash { display: none; }
+
+/* Until the script has decided (live, or the finished composition), keep the poster and the caption back,
+   so a scene that opens the page never shows the static poster and then drops it into a dark stage. The
+   title stays: it is already where the live scene puts it. After 800ms without a decision (a slow or
+   failed CDN), the finished composition shows. Reduced motion is always the finished composition. */
+@media (prefers-reduced-motion: no-preference) {
+  html.sc-js [data-big-scene="scatter-and-lock"].scene:not(.is-live):not(.is-rest) :is(.sl-field, .sl-caption) {
+    visibility: hidden;
+    animation: sl-undecided 0s linear 0.8s forwards;
+  }
+}
+@keyframes sl-undecided { to { visibility: visible; } }
+
+/* ---- live: the held stage ---- */
+html.sc-js [data-big-scene="scatter-and-lock"].is-live > .scene-stage { padding: 0; }
+[data-big-scene="scatter-and-lock"].is-live .sl-title {
+  position: absolute;
+  left: var(--sl-gutter);
+  top: 10vh;
+  z-index: 2;
+}
+[data-big-scene="scatter-and-lock"].is-live .sl-caption {
+  position: absolute;
+  right: var(--sl-gutter);
+  bottom: 7vh;
+  z-index: 2;
+  margin: 0;
+}
+[data-big-scene="scatter-and-lock"].is-live .sl-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  /* The stage writes --p on the section at every frame. Stopped here, it never reaches the 28 cells and
+     their copies of the poster (about 200 elements): otherwise every frame would restyle all of them. */
+  --p: initial;
+}
+/* Nothing between the field and the cells may group (opacity, filter, overflow, clip-path, blend):
+   that would flatten every shard onto one plane. Fade, blur and clip only the cells. */
+[data-big-scene="scatter-and-lock"].is-live .sl-frame {
+  position: absolute;
+  left: calc(50% - var(--sl-W) / 2);
+  top: calc(50% - var(--sl-W) * 9 / 32);
+  margin: 0;
+  transform-style: preserve-3d;
+}
+[data-big-scene="scatter-and-lock"].is-live .sl-solid { visibility: hidden; opacity: 0; }
+/* With the hand-off (.sl-grow), the poster is laid out at its full-bleed size and the script scales it down
+   to the frame until the hand-off: it is rastered once, sharp at its largest, and never again while it
+   grows (a poster rastered at frame size and scaled up 1.5x goes soft, and re-rastering it at every step
+   of the growth stalls frames). */
+[data-big-scene="scatter-and-lock"].is-live.sl-grow > .scene-stage { container-type: size; }
+[data-big-scene="scatter-and-lock"].is-live.sl-grow .sl-solid {
+  --sl-full: calc(max(100cqw, 100cqh * 16 / 9) * 1.004);
+  inset: auto;
+  left: calc(50% - var(--sl-full) / 2);
+  top: calc(50% - var(--sl-full) * 9 / 32);
+  width: var(--sl-full);
+  height: calc(var(--sl-full) * 9 / 16);
+  will-change: transform;
+}
+[data-big-scene="scatter-and-lock"] .sl-cells {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+[data-big-scene="scatter-and-lock"] .sl-cell {
+  position: absolute;
+  left: calc(var(--c) * 100% / var(--cols));
+  top: calc(var(--r) * 100% / var(--rows));
+  width: calc(100% / var(--cols));
+  height: calc(100% / var(--rows));
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+/* Each shard keeps one rastered layer through its flight (no new raster at every scale step). */
+[data-big-scene="scatter-and-lock"].is-live .sl-cell { will-change: transform, opacity, filter; }
+[data-big-scene="scatter-and-lock"] .sl-cell > .sl-art {
+  inset: auto;
+  left: calc(var(--c) * -100%);
+  top: calc(var(--r) * -100%);
+  width: calc(var(--cols) * 100%);
+  height: calc(var(--rows) * 100%);
+}
+[data-big-scene="scatter-and-lock"] .sl-cell [data-sl-text]::before,
+.sl-still[data-sc-still="scatter-and-lock"] .sl-still-pic [data-sl-text]::before { content: attr(data-sl-text); }
+[data-big-scene="scatter-and-lock"].sl-pending .sl-cell > .sl-art { visibility: hidden; }
+[data-big-scene="scatter-and-lock"] .sl-flash {
+  position: absolute;
+  inset: 0;
+  background: var(--sl-flash);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateZ(2px);
+  pointer-events: none;
+}
+
+/* ---- the hand-off still (optional, see the DOM in scatter-and-lock.js) ----
+   While the scene runs, the still starts one screen up, under the stage, where the stage's last frame
+   will be. When the stage releases, the script hides the stage (.sl-released); the still's sticky picture,
+   the same frame, stays exactly where it was and the next section slides up over it. Without a live scene
+   (no script, reduced motion) there is no picture, only the next section. */
+.scene[data-big-scene="scatter-and-lock"].is-live { z-index: 1; }
+.scene[data-big-scene="scatter-and-lock"].is-live + .sl-still { margin-top: -100svh; }
+.sl-still[data-sc-still="scatter-and-lock"] { position: relative; z-index: 0; }
+.sl-still[data-sc-still="scatter-and-lock"] > .sl-still-pic {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+  background: var(--sl-bg);
+}
+.sl-still[data-sc-still="scatter-and-lock"] > .sl-still-pic > .sl-art {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  width: calc(max(100%, 100svh * 16 / 9) * 1.004);
+  aspect-ratio: 16 / 9;
+  transform: translate(-50%, -50%);
+}
+/* after a fast scroll the still finishes the poster's growth (the script moves it): keep it on its own layer */
+.scene[data-big-scene="scatter-and-lock"].is-live.sl-grow + .sl-still > .sl-still-pic > .sl-art { will-change: transform; }
+.sl-still[data-sc-still="scatter-and-lock"] > :not(.sl-still-pic) { position: relative; z-index: 1; }
+.scene[data-big-scene="scatter-and-lock"].is-live.sl-released > .scene-stage { visibility: hidden; }
+.scene[data-big-scene="scatter-and-lock"]:not(.is-live) + .sl-still > .sl-still-pic { display: none; }
+
+/* ---- portrait: a 4:5 poster, a 3 x 4 grid, the title across the top ---- */
+@media (max-width: 767px), (orientation: portrait) {
+  [data-big-scene="scatter-and-lock"] { --sl-W: min(90vw, 56svh); --sl-word-size: 12cqi; }
+  [data-big-scene="scatter-and-lock"] > .scene-stage { padding: 8vh var(--sl-gutter) 8vh; }
+  [data-big-scene="scatter-and-lock"] .sl-title { max-width: none; }
+  [data-big-scene="scatter-and-lock"] .sl-headline { font-size: clamp(30px, 6.4vw, 56px); }
+  [data-big-scene="scatter-and-lock"] .sl-frame { aspect-ratio: 4 / 5; }
+  [data-big-scene="scatter-and-lock"] .sl-caption { width: var(--sl-W); max-width: none; margin: 3vh auto 0; }
+  [data-big-scene="scatter-and-lock"].is-live .sl-title { right: var(--sl-gutter); top: 8vh; }
+  [data-big-scene="scatter-and-lock"].is-live .sl-frame { top: calc(50% + 6vh - var(--sl-W) * 5 / 8); }
+  [data-big-scene="scatter-and-lock"].is-live.sl-grow .sl-solid {
+    --sl-full: calc(max(100cqw, 100cqh * 4 / 5) * 1.004);
+    top: calc(50% - var(--sl-full) * 5 / 8);
+    height: calc(var(--sl-full) * 5 / 4);
+  }
+  [data-big-scene="scatter-and-lock"].is-live .sl-caption { width: auto; max-width: min(64vw, 420px); }
+  .sl-still[data-sc-still="scatter-and-lock"] > .sl-still-pic > .sl-art { width: calc(max(100%, 100svh * 4 / 5) * 1.004); aspect-ratio: 4 / 5; }
+}
+@media (max-width: 767px) {
+  [data-big-scene="scatter-and-lock"] { --sl-gutter: 16px; }
+  [data-big-scene="scatter-and-lock"].is-live .sl-caption { display: none; }
+}

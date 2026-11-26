@@ -381,10 +381,15 @@ const inProject = (p, name) => {
 // default profile folder: --profile, else $TASTE_SKILL_TMP/chrome/perf, else a folder under the system temp dir
 const profileBase = path.resolve(profileArg ? inProject(profileArg, 'perf') : (process.env.TASTE_SKILL_TMP ? path.join(process.env.TASTE_SKILL_TMP, 'chrome', 'perf') : path.join(os.tmpdir(), 'taste-skill-perf')));
 fs.mkdirSync(profileBase, { recursive: true });
-for (const d of fs.readdirSync(profileBase)) if (/^run-\d+$/.test(d)) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* another run, or locked */ } }
+// sweep only folders whose run has exited: run-<pid> of a live run is still that run's Chrome profile.
+// run-<own pid> is always stale (left by an earlier run whose PID was reused), so it is swept too.
+const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+for (const d of fs.readdirSync(profileBase)) { const m = /^run-(\d+)$/.exec(d); if (m && (Number(m[1]) === process.pid || !alive(Number(m[1])))) { try { fs.rmSync(path.join(profileBase, d), { recursive: true, force: true }); } catch { /* locked */ } } }
 const profile = path.join(profileBase, 'run-' + process.pid);
 fs.mkdirSync(profile, { recursive: true });
 const portFile = path.join(profile, 'DevToolsActivePort');
+// if the sweep could not remove run-<own pid> (a file still locked), its old port file must not be read as this Chrome's
+try { fs.rmSync(portFile); } catch { /* none */ }
 const loadBefore = await hostLoad();
 const child = spawn(findChrome(), ['--headless=new', `--user-data-dir=${profile}`, '--remote-debugging-port=0', '--no-first-run', '--no-default-browser-check', '--disable-extensions',
   '--hide-scrollbars', '--mute-audio', '--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--window-size=1440,900', 'about:blank'], { stdio: 'ignore', windowsHide: true });

@@ -31,7 +31,7 @@
      (type software, site-kind software); a game (type software, site-kind gaming); hardware or a
      tech device (type product, site-kind tech). Every other product or brand (type product), a
      service firm or studio (type service) and a place (type place) are site-kind other:
-     photographs, type and flat colour; their motion is the hero's entrance, the hover layer and one dealt photo- or type-led moment. A place adds
+     photographs, type and flat colour, no shader ground. Every kind's motion is the hero's dealt entrance, the section reveals, the hover layer, two dealt moments (three on a long page), a scene when one is dealt and loops inside card visuals, each by fit (start.mjs plan deals them all). A place adds
      <meta name="page-kind" content="place">. -->
 <meta name="site-kind" content="[software]">
 <meta name="page-type" content="[software]">
@@ -60,7 +60,7 @@
 <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
 <!-- the grounds' page tokens before the first paint (assets/backgrounds; plain, not deferred) -->
 <script src="assets/backgrounds/backgrounds.js"></script>
-<!-- moments (every kind is dealt one, two on a long page: moments.mjs pick --page <kind>): the guard, then one
+<!-- moments (every kind is dealt two, three on a long page: start.mjs plan, or moments.mjs pick --page <kind>): the guard, then one
      preload for the core, its lib and each dealt moment (assets/moments/<id>/moment.js). system.js mounts them.
 <script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
 <link rel="modulepreload" href="assets/moments/moments.js">
@@ -81,8 +81,10 @@
      ground class at all, and no data-ground on <html>: flat colour and photographs. -->
 <body>
 <!-- type: [software | product | place | service]
-     deal: hero [..], nav [..], close [..], footer [..], rhythm [..], buttons [..], mark [..], grounds [..]
-     moments: [dealt ids and their sections]
+     plan (start.mjs plan prints it; build exactly this): palette [..], type [..], hero [..] form [..], entrance [..],
+     nav [..], close [..], footer [..], buttons [..], mark [..], bands [..], compositions [section: id, ..], grounds [..]
+     moments: [dealt ids and their sections] · scene: [id and its section, or none] · effect: [id or none]
+     copy: .taste-skill/copy.md written and linted before this page (references/copy.md, The copy notes)
      The page is a stack of screens (layout-v4.md): the hero alone on the first, every other section
      and the footer exactly one or two (style="--h: 2" or class="g2"), its h2 first. Plan the content
      of each before building: one screen holds 708px of content at 1440x900.
@@ -153,9 +155,13 @@
   <!-- HERO: exactly the first screen; the fixed header lies over its top. Paste the dealt hero from
        assets/layout/hero-<id>.html (layout/deal.mjs deals it; heroes.json has its numbers) in place of
        this one, keeping its shape: section.hero > .wrap > .hero-text (+ one docked strip at most), and give it
-       data-enter (its one entrance on load, motion.md; the head line above makes it run).
-       A place's hero is never dealt: it is always assets/layout/hero-place.html (Recipe 3, the
-       photograph under the header with nothing on it, the words under it on the ground).
+       data-enter="<the dealt entrance>" (its one entrance on load from the deck: rise, set-type, focus, exposure,
+       aperture, line-blocks, doors, product-at-work, still; data-enter alone is the rise; motion.md, The entrance
+       deck; the head line above makes it run).
+       A place's hero is always assets/layout/hero-place.html in the form deal.mjs deals: copy its section and set
+       data-form="band|bleed|split|name" (layout.css 0b); never words, a scrim or a gradient on its photograph.
+       Every later section's h2 and lead photograph rise once as it comes on screen (motion.js, automatic; never a
+       card, row or tile); data-still on a section keeps it still.
        This default is the split: the words on span-6, the client's photograph on span-6 start-7 (the
        page's split pair, the same on every split: 6/6, 5/7 or 7/5), as tall as the hero's content box. The primary button carries the drawn arrow (svg.m-arrow). -->
   <section class="hero hero--split" data-enter aria-labelledby="hero-h">
@@ -164,8 +170,10 @@
         <div class="hero-copy span-6">
           <!-- optional notice line: one line with a number (changed hours, a delivery cut-off) -->
           <p class="hero-notice">[One line with a number]</p>
-          <h1 id="hero-h">[What it is] [for whom or where]</h1>
-          <p class="t-lead">[How it works and the main benefit, with one hard fact.]</p>
+          <!-- the h1 in the hero form on the voice card (copy-moves.md); the eyebrow or the notice may carry the
+               category when the h1 does not, and the lead always says it plainly -->
+          <h1 id="hero-h">[The hero line, in your voice card's form]</h1>
+          <p class="t-lead">[What is sold and where or for whom, plainly; then one hard fact or how it works.]</p>
           <div class="btn-row">
             <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
             <a class="btn btn--secondary" href="#[section id]">[Second action]</a>
@@ -367,10 +375,12 @@
      district only, never a house number, a postcode, a phone in a real format or a register number. -->
 <footer class="footer closing" id="contact" aria-labelledby="close-h">
   <div class="wrap">
-    <!-- close--type (this one): the h2 and a line, the big button across the .wrap. Others below. -->
+    <!-- close--type (this one): the h2 large, a line, the big button (btn--wide sets its size; the close holds it to half the .wrap, never across it).
+         Others below: close-photo, close-word, close-split, close-form. The close's h2 says something new: a fact,
+         a reason or the risk taken away, never the button's words or the ask of the section above (copy.md). -->
     <div class="closing__cta close--type">
       <div class="section-head">
-        <h2 id="close-h">[The main action, plainly]</h2>
+        <h2 id="close-h">[Something new: a fact or a reason, never the button]</h2>
         <p>[One line: the trial, the price or the reply time.]</p>
       </div>
       <a class="btn btn--primary btn--xl btn--wide" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
@@ -401,7 +411,7 @@
   <!-- row 1 as close--photo: the head row, then the client's photograph down to the links -->
   <div class="closing__cta close--photo">
     <div class="section-head--split">
-      <div><h2 id="close-h">[The main action, plainly]</h2><p class="t-lead">[One line with the price or the hours.]</p></div>
+      <div><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p class="t-lead">[One line with the price or the hours.]</p></div>
       <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
     </div>
     <div class="close__media"><img src="[a second photograph, never the hero's]" alt="[what it shows]" loading="lazy" data-source="[client | library | shoot]" data-subject="[what it is of]"></div>
@@ -412,16 +422,53 @@
   <!-- row 1 as close--word: the h2 and the button, then the name across the .wrap -->
   <div class="closing__cta close--word">
     <div class="section-head--split">
-      <div><h2 id="close-h">[The main action, plainly]</h2><p class="t-lead">[One line: the trial or the reply time.]</p></div>
+      <div><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p class="t-lead">[One line: the trial or the reply time.]</p></div>
       <a class="btn btn--primary" href="#[section id]">[Main action]<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
     </div>
     <p class="close__word" aria-hidden="true">[Name]</p>
   </div>
 </template>
 
+<template data-part="close-split">
+  <!-- row 1 as close--split: the main action on a tinted panel with the facts that decide it, beside a photograph
+       (data-side="end" puts the panel on the right); three facts at most, each one the brief gives -->
+  <div class="closing__cta close--split">
+    <div class="close__panel">
+      <h2 id="close-h">[Something new: a fact or a reason, never the button]</h2>
+      <p class="t-lead">[One line: the notice, the price or the reply time.]</p>
+      <dl class="close__facts"><div><dt>[Label]</dt><dd>[Fact]</dd></div><div><dt>[Label]</dt><dd>[Fact]</dd></div><div><dt>[Label]</dt><dd>[Fact]</dd></div></dl>
+      <a class="btn btn--primary" href="#[section id]">[Main action]</a>
+    </div>
+    <div class="close__media"><img src="[a photograph not used above]" alt="[what it shows]" loading="lazy" data-source="[client | library | shoot]" data-subject="[what it is of]"></div>
+  </div>
+</template>
+
+<template data-part="close-form">
+  <!-- row 1 as close--form: a page whose last section would be the booking or order form ends on it, so the page
+       never asks twice in a row; paste the booking-form's fields into the form (class form close__form) -->
+  <div class="closing__cta close--form">
+    <div class="section-head"><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p>[One line: the reply time.]</p></div>
+    <form class="form close__form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Your request is in. We reply within a day.]" novalidate>
+      <!-- the booking-form fields below -->
+    </form>
+  </div>
+</template>
+
+<template data-part="statement">
+  <!-- STATEMENT: one sentence set large, its label at the top and the words at the foot of the screen (system.css
+       sizes them from the screen height); .statement--short for 12 to 20 words. A dealt lines-rise, letters-assemble
+       or word-rotate moment may carry it (moments.md). -->
+  <section class="section statement" id="[section id]">
+    <div class="wrap">
+      <p class="t-label">[Label]</p>
+      <p class="statement__text">[One sentence of 20 to 40 words in the voice on the card, with one concrete detail.]</p>
+    </div>
+  </section>
+</template>
+
 <template data-part="links-visit">
   <!-- row 2 on a place (footer closing footer--visit): where it is, set large, with the way there;
-       the hours from the split line; one row of the nav's words. Street and district only. The link's words
+       the hours only when no section above prints them (else the nav's words in that column); one row of the nav's words. Street and district only. The link's words
        follow the visit block's: Get directions with a street, See the area with a district only, none with a town. -->
   <div class="closing__links">
     <div class="grid">
@@ -457,9 +504,11 @@
     <div class="field"><label for="f-email">[Email]</label>
       <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="f-email-err">
       <p class="field__error" id="f-email-err" hidden>[Write an email address with an @, like name@example.com.]</p></div>
+    <!-- the day as a real date field; a stay asks for arrival and departure (two type="date" fields) and the room
+         (<select> with the brief's rooms); a slot booking offers the day and the times as radio choices -->
     <div class="field"><label for="f-date">[Date]</label>
-      <input id="f-date" name="date" type="text" autocomplete="off" required aria-describedby="f-date-err">
-      <p class="field__error" id="f-date-err" hidden>[Write the day you want to come.]</p></div>
+      <input id="f-date" name="date" type="date" required aria-describedby="f-date-err">
+      <p class="field__error" id="f-date-err" hidden>[Choose the day you want to come.]</p></div>
     <div class="field"><label for="f-guests">[Guests]</label>
       <input id="f-guests" name="guests" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="f-guests-err">
       <p class="field__error" id="f-guests-err" hidden>[Write how many people, as a number.]</p></div>
@@ -488,6 +537,8 @@
 <script type="module" src="assets/diagrams/mount.js"></script>
 <!-- a print object (data-print) loads its script after these (assets/objects/_print-core/README.md):
 <script type="module" src="assets/objects/_print-core/auto.js"></script>
-     a big scene (data-big-scene) loads assets/scenes/scenes.js instead (references/scenes.md) -->
+     a dealt scene (data-big-scene) loads assets/scenes/scenes.js after these, its two stylesheets in the head, and
+     <link rel="preconnect" href="https://cdn.jsdelivr.net"> for a classic scene (references/scenes.md):
+<script type="module" src="assets/scenes/scenes.js"></script> -->
 </body>
 </html>

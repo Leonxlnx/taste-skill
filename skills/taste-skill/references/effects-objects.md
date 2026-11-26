@@ -14,9 +14,11 @@ Thirteen objects in three families and one builder; each family's README is the 
 
 - **One strong object moment a page.** Never beside a second effect or over a moving ground.
 - **Place, service and every page of site-kind other** (cafe, guesthouse, shop, studio, clinic,
-  product brand): no object, print or scene; plain photographs lead. House rule: shader
-  effects only where the trade has a technical subject. The one exception is below: a product
-  whose brief asks for 3D shows its own render.
+  product brand): no object or print; plain photographs lead. Objects and prints carry the tech
+  tone and WebGL, so the fit rule (`effects-usage.md`, The fit rule) keeps them on tech, software
+  and gaming; a place or service page takes its motion from its dealt moments, a scene dealt by fit
+  (`scenes.md`) and at most one quiet treatment. The one exception is below: a product whose brief
+  asks for 3D shows its own render.
 - **Product with photographs**: the photograph leads.
 - **Any physical product without photographs** (a lamp, a chair, a bike, a stroller, a robot arm),
   of site-kind other or tech: **photographs first, never a render by default.** The client's own
@@ -33,7 +35,7 @@ Thirteen objects in three families and one builder; each family's README is the 
   parts carry the others (Views, below; `sections.md` section 1, One object, and Product). It is
   the product's picture, not an effect: on the page's flat ground or the lit ground on tech, stills
   by default, live only when asked (`data-product-mode="live"`), at most one live context, no
-  print, no shader ground or moment beside it on site-kind other, no props unless a headline's
+  print and no shader ground beside it on site-kind other (the dealt moments go in other sections), no props unless a headline's
   promise needs one. Never an object of another kind (a wheel is not a bicycle), a drawn SVG, a
   model of loose primitives the helper did not compose, mood stock or another maker's product. A
   curved shell is composed of rounded boxes, cylinders and fillets at its real measurements; never

@@ -1,0 +1,312 @@
+/* assets/scenes/orbit-to-formation/scene.css - the 2.4 stylesheet, selectors moved to [data-big-scene] and html.sc-js. */
+/* tasteskill / scenes / orbit-to-formation.css
+   Without .is-live (no script, a failed CDN, reduced motion, phone: 'rest') this is the finished
+   composition: the statement, a still ring of the photographs with the figure in its middle, and the
+   figures in a row. With .is-live the stage is held and orbit-to-formation.js places every card.
+   Takes the page's tokens: --ground, --ink, --font-display, --font-text, and --orbit-lit for the
+   lit figures (the ink by default). The live stage does not pass the shared stage's --p down to its
+   children (see below), so style this scene's content from the script's classes, not from --p.
+   Weights follow the page: --display-weight (the lede, the figure and the stat figures; 500 here when
+   the page sets none). A weight the page has not loaded is never faked: the nearest loaded one shows. */
+
+[data-big-scene="orbit-to-formation"] { font-synthesis-weight: none; }
+
+[data-big-scene="orbit-to-formation"] {
+  --orbit-ground: var(--ground, #0f0e0c);
+  --orbit-ink: var(--ink, #ecebe7);
+  --orbit-accent: var(--orbit-lit, var(--orbit-ink));
+  --orbit-card-ground: rgb(128 128 128 / .16);
+  background: var(--orbit-ground);
+  color: var(--orbit-ink);
+  font-family: var(--font-text, inherit);
+}
+
+/* ---------- the finished composition ---------- */
+
+[data-big-scene="orbit-to-formation"] > .scene-stage {
+  --S: min(88vw, 76svh, 760px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "lede" "ring" "stats";
+  row-gap: clamp(48px, 9svh, 112px);
+  padding: clamp(64px, 12svh, 140px) var(--gutter, clamp(16px, 3.4vw, 56px));
+}
+
+/* a headline of two lines: up to about 48 characters at any width (the script fits longer ones) */
+[data-big-scene="orbit-to-formation"] .orbit-lede {
+  grid-area: lede;
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  font-size: clamp(32px, 7vw, 124px);
+  line-height: .96;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-wheel {
+  grid-area: ring;
+  justify-self: center;
+  position: relative;
+  width: var(--S);
+  height: var(--S);
+  --cs: calc(var(--S) * .13);
+  --rr: calc(var(--S) * .435 - 8px);
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  width: var(--cs);
+  height: var(--cs);
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--orbit-card-ground);
+  transform: translate(-50%, -50%) rotate(calc(var(--i, 0) * 360deg / var(--n, 14))) translateY(calc(var(--rr) * -1));
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-anchor {
+  grid-area: ring;
+  align-self: center;
+  justify-self: center;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  /* as wide as the ring's clear middle; the caption keeps its own measure */
+  max-width: calc(var(--S) * .74);
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-figure {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  font-size: min(clamp(96px, 14vw, 220px), calc(var(--S) * .24));
+  line-height: .9;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  text-wrap: balance;
+}
+/* the optional second line of the figure: here a smaller line under the number, always one line (the
+   script sets it smaller when a long one would not fit the ring); on the live stage both lines are one
+   two-line headline at display size */
+[data-big-scene="orbit-to-formation"] .orbit-figure:has(.orbit-figure-line) { font-size: min(clamp(64px, 9vw, 150px), calc(var(--S) * .15)); }
+[data-big-scene="orbit-to-formation"] .orbit-figure-line {
+  display: block;
+  width: fit-content;
+  margin: .1em auto 0;
+  font-size: .6em;
+  line-height: 1;
+  letter-spacing: -.03em;
+  white-space: nowrap;
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-caption {
+  margin: 16px auto 0;
+  max-width: min(28ch, calc(var(--S) * .6));
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-stats {
+  grid-area: stats;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px clamp(16px, 3vw, 48px);
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-stat-figure {
+  font-family: var(--font-display, inherit);
+  font-weight: var(--display-weight, 500);
+  font-size: clamp(48px, 7vw, 124px);
+  line-height: .9;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--orbit-accent);
+}
+
+[data-big-scene="orbit-to-formation"] .orbit-stat-label {
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.3;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+/* wide screens: a spread — the statement across the top, the figures bottom left, the ring on the right */
+@media (min-width: 1024px) {
+  [data-big-scene="orbit-to-formation"] > .scene-stage {
+    --S: min(52vw, 80svh, 820px);
+    grid-template-columns: minmax(0, 1fr) var(--S);
+    grid-template-areas: "lede lede" "stats ring";
+    column-gap: clamp(32px, 4vw, 72px);
+  }
+  [data-big-scene="orbit-to-formation"] .orbit-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-self: end;
+    row-gap: clamp(32px, 6svh, 64px);
+  }
+}
+
+@media (max-width: 767px) {
+  [data-big-scene="orbit-to-formation"] > .scene-stage { --S: min(calc(100vw - 24px), 72svh); }
+  [data-big-scene="orbit-to-formation"] .orbit-lede { font-size: clamp(30px, 9vw, 44px); }
+  [data-big-scene="orbit-to-formation"] .orbit-wheel { --cs: calc(var(--S) * .16); --rr: calc(var(--S) * .42 - 4px); }
+  [data-big-scene="orbit-to-formation"] .orbit-card { transform: translate(-50%, -50%) rotate(calc(var(--i, 0) * 360deg / min(var(--n, 10), 10))) translateY(calc(var(--rr) * -1)); }
+  [data-big-scene="orbit-to-formation"] .orbit-card:nth-child(n + 11) { display: none; }
+  [data-big-scene="orbit-to-formation"] .orbit-caption { max-width: calc(var(--S) * .5); }
+  [data-big-scene="orbit-to-formation"] .orbit-figure,
+  [data-big-scene="orbit-to-formation"] .orbit-figure:has(.orbit-figure-line) { font-size: clamp(48px, 15vw, 68px); }
+  [data-big-scene="orbit-to-formation"] .orbit-figure-line { font-size: .4em; }
+  [data-big-scene="orbit-to-formation"] .orbit-caption { font-size: 14px; margin-top: 10px; }
+  [data-big-scene="orbit-to-formation"] .orbit-stat-figure { font-size: clamp(44px, 13vw, 60px); }
+}
+@media (max-width: 639px) {
+  [data-big-scene="orbit-to-formation"] .orbit-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---------- the live stage ---------- */
+
+html.sc-js .scene.is-live[data-big-scene="orbit-to-formation"] > .scene-stage {
+  display: block;
+  padding: 0;
+  background: var(--orbit-ground);
+  /* The shared stage writes the scroll progress (--p) on the section on every frame. Nothing in this
+     scene reads it (the script writes every moving value itself), and a custom property that changes
+     restyles every element that inherits it, so the stage stops it here: a frame restyles only what moved. */
+  --p: initial;
+}
+
+/* (the finished layout centres these as grid items; absolutely positioned, they must stretch) */
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-wheel,
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-anchor,
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-lede,
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stats { justify-self: stretch; align-self: stretch; }
+
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-wheel {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  z-index: 1;
+}
+
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-card {
+  left: 0;
+  top: 0;
+  width: var(--sa, 230px);
+  height: var(--sa, 230px);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-card.is-spare { display: none; }
+
+/* the text layers fade and move on their own layers, so a fade never repaints the stage */
+.scene.is-live[data-big-scene="orbit-to-formation"] :is(.orbit-lede, .orbit-anchor, .orbit-stats) { will-change: transform, opacity; }
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stat { will-change: opacity; }
+/* a faded layer (under 2% opacity) stays in the accessibility tree, like visually hidden text, but is
+   clipped to nothing, so it never catches the pointer, a text selection or a hit test over the text
+   being read */
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-faded { pointer-events: none; user-select: none; clip-path: inset(50%); }
+
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-lede {
+  position: absolute;
+  z-index: 2;
+  top: var(--orbit-lede-top, 59%);
+  left: 10%;
+  right: 10%;
+  max-width: none;
+  text-align: center;
+}
+
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-anchor {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  max-width: none;
+  pointer-events: none;
+}
+/* a bare figure is a big number; with a second line it is a two-line headline the ring frames, sized by
+   the stage's height too so it stays inside the ring on short screens. The script moves and scales the
+   whole layer with the wheel (transform only). The second line stays on one line: the script fits its
+   size to the ring's inner width (--orbit-inner-w) when it would not fit. */
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure { font-size: min(clamp(96px, 14vw, 220px), 26svh); }
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure:has(.orbit-figure-line) { font-size: min(clamp(64px, 8.6vw, 148px), 14svh); line-height: .92; }
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure-line { width: fit-content; margin: 0 auto; font-size: 1em; line-height: inherit; letter-spacing: inherit; white-space: nowrap; }
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-caption { margin-top: clamp(14px, 2.4svh, 24px); max-width: 36ch; }
+
+/* the column of figures: big rows, one lit at a time as the column rises past the reading line */
+/* (--orbit-bar: the height of a fixed bar at the top of the window, which the script finds; the column
+   stays below it) */
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stats {
+  position: absolute;
+  z-index: 2;
+  top: var(--orbit-bar, 0px);
+  bottom: 5%;
+  left: 46%;
+  right: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+
+/* each row closes as a block: a two-line label rises so its last line sits on the figure's baseline */
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stat {
+  flex: 0 0 min(20%, calc(88% / var(--orbit-rows, 4)));
+  flex-direction: row;
+  align-items: last baseline;
+  gap: clamp(16px, 2.2vw, 36px);
+}
+
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stat-figure {
+  flex: 0 0 auto;
+  min-width: 2.6ch;
+  font-size: min(clamp(72px, 11vw, 180px), 18svh, calc(72svh / var(--orbit-rows, 4)));
+  line-height: .86;
+}
+.scene.is-live[data-big-scene="orbit-to-formation"] .orbit-stat-label {
+  min-width: 0;
+  font-family: var(--font-display, inherit);
+  font-size: min(clamp(22px, 3.1vw, 54px), 5.6svh, calc(22svh / var(--orbit-rows, 4)));
+  line-height: 1.04;
+  letter-spacing: -.02em;
+  max-width: 14ch;
+}
+
+@media (max-width: 767px) {
+  .scene.is-live[data-big-scene="orbit-to-formation"] .orbit-lede { top: var(--orbit-lede-top, 56%); left: 16px; right: 16px; font-size: clamp(30px, 9.6vw, 46px); }
+  .scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure,
+  .scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure:has(.orbit-figure-line) { font-size: clamp(48px, 17vw, 76px); line-height: .9; }
+  .scene.is-live[data-big-scene="orbit-to-formation"] .orbit-figure-line { margin-top: .08em; font-size: .46em; line-height: 1; letter-spacing: -.02em; }
+  .scene.is-live[data-big-scene="orbit-to-formation"] .orbit-caption { max-width: min(36vw, var(--orbit-inner-w, 36vw)); margin-top: 12px; }
+}
+
+/* a tall stage (phones, portrait tablets; the script sets .orbit-tall): the wheel sinks to the bottom edge
+   and the column of figures rises out from behind it into the space above, from 0.06H (below a fixed
+   bar) to 0.62H; the script sinks the wheel until its cap clears the last row */
+.scene.is-live.orbit-tall[data-big-scene="orbit-to-formation"] .orbit-stats { top: calc(6% + var(--orbit-bar, 0px)); bottom: 38%; left: max(16px, 6%); right: max(16px, 6%); justify-content: space-between; }
+.scene.is-live.orbit-tall[data-big-scene="orbit-to-formation"] .orbit-stat { flex: 0 0 auto; }
+.scene.is-live.orbit-tall[data-big-scene="orbit-to-formation"] .orbit-stat-figure { min-width: 2.6ch; font-size: min(clamp(56px, 22vw, 128px), 10.5svh, calc(42svh / var(--orbit-rows, 4))); }
+.scene.is-live.orbit-tall[data-big-scene="orbit-to-formation"] .orbit-stat-label { font-family: inherit; font-size: clamp(17px, 4.8vw, 32px); line-height: 1.15; letter-spacing: 0; max-width: 14ch; }

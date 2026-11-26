@@ -6,5 +6,9 @@
   "bestOn": ["hero", "band"],
   "motion": "slow",
   "cost": "low",
-  "palettes": ["light", "dark", "colour"]
+  "palettes": ["light", "dark", "colour"],
+  "tones": ["editorial", "playful", "tech", "product"],
+  "intensity": "lively",
+  "webgl": 1,
+  "treatment": false
 }

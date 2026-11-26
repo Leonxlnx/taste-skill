@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wrenfold School of Making</title>
+<meta name="description" content="A small school of making in the old rope works by the river: a year at the bench in clay, weaving, type, glass or green wood.">
+<script>document.documentElement.classList.add('js','sc-js');setTimeout(()=>document.documentElement.classList.add('sc-safe'),2500)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="../scenes.css">
+<link rel="stylesheet" href="../classic/stage.css">
+<link rel="stylesheet" href="scene.css">
+<style>
+  :root {
+    --ground: #e6e7e2;
+    --ink: #1b1e1c;
+    --muted: #444945;
+    --accent: #1450b8;
+    --accent-ink: #ffffff;
+    --font-display: "Young Serif", Georgia, serif;
+    --font-text: "Source Serif 4", Georgia, serif;
+    --display-weight: 400;
+    --strong-weight: 600;
+    --text-weight: 400;
+    --radius: 0px;
+    --gutter: clamp(16px, 2vw, 32px);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--ground); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 400 18px/1.5 var(--font-text);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 28px;
+    padding: 18px var(--gutter);
+    font-size: 18px;
+  }
+  .bar .mark { margin-right: auto; font-family: var(--font-display); font-size: 22px; text-decoration: none; }
+  .bar nav { display: flex; gap: 24px; }
+  .bar nav a { text-decoration: none; }
+  .bar nav a:hover, .bar nav a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 20px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .button:hover { background: color-mix(in srgb, var(--accent) 84%, var(--ink)); }
+  .button:active { transform: scale(0.98); }
+  .button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  /* the quiet section before: the school in a sentence */
+  .intro {
+    min-height: calc(100svh - 82px);
+    padding: clamp(40px, 7vh, 96px) var(--gutter) clamp(56px, 9vh, 120px);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 2vw;
+    row-gap: clamp(32px, 6vh, 72px);
+    align-content: space-between;
+  }
+  .intro h1 {
+    grid-column: 1 / -1;
+    margin: 0;
+    max-width: 12ch;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(56px, 10.4vw, 176px);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+  }
+  .intro__text { grid-column: 8 / -1; align-self: end; margin: 0; font-size: clamp(18px, 1.6vw, 22px); line-height: 1.4; text-wrap: pretty; }
+
+  /* the quiet section after: how to come and see it */
+  .visit {
+    padding: clamp(96px, 16vh, 180px) var(--gutter) clamp(64px, 10vh, 120px);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 2vw;
+    row-gap: 40px;
+  }
+  .visit h2 {
+    grid-column: 1 / 6;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(44px, 5.4vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .visit__text { grid-column: 7 / -1; display: grid; gap: 20px; align-content: start; font-size: 18px; }
+  .visit__text p { margin: 0; }
+  .visit__costs { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .visit__costs b { font-weight: 600; }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 32px;
+    padding: 28px var(--gutter) 36px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+  .foot p { margin: 0; }
+  .credits-link { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .credits { max-width: min(560px, calc(100vw - 32px)); padding: 28px; border: 0; background: var(--ground); color: var(--ink); font-size: 16px; }
+  .credits::backdrop { background: rgb(27 30 28 / 0.5); }
+  .credits h2 { margin: 0 0 12px; font: 400 28px/1.1 var(--font-display); }
+  .credits p { margin: 0 0 18px; }
+  .credits button { min-height: 44px; padding: 0 18px; border: 0; background: var(--ink); color: var(--ground); font: 600 16px/1 var(--font-text); cursor: pointer; }
+
+  @media (max-width: 1023px) {
+    .visit { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+    .visit h2, .visit__text { grid-column: 1; }
+    .intro__text { grid-column: 6 / -1; }
+  }
+  @media (max-width: 767px) {
+    .bar { gap: 10px 18px; padding: 14px 16px; font-size: 16px; }
+    .bar .mark { font-size: 18px; flex-basis: 100%; }
+    .bar nav { margin-right: auto; }
+    .button { min-height: 42px; padding: 0 16px; }
+    .intro { min-height: calc(100svh - 141px); padding: 32px 16px 72px; grid-template-columns: minmax(0, 1fr); row-gap: 28px; align-content: center; }
+    .intro h1, .intro__text { grid-column: 1; }
+    .intro h1 { font-size: 10.2vw; text-wrap: balance; }
+    .visit { padding: 72px 16px 48px; grid-template-columns: minmax(0, 1fr); row-gap: 24px; }
+    .visit h2 { font-size: 10.2vw; }
+    .visit h2, .visit__text { grid-column: 1; }
+    .foot { padding: 24px 16px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="mark" href="#top">Wrenfold School of Making</a>
+  <nav aria-label="Main">
+    <a href="#workshops">Workshops</a>
+    <a href="#visit">Open Saturdays</a>
+  </nav>
+  <a class="button" href="#visit">Book a visit day</a>
+</header>
+
+<main id="top">
+  <section class="intro" aria-labelledby="intro-title">
+    <h1 id="intro-title">A school for the slow trades</h1>
+    <p class="intro__text">A small school of making in the old rope works by the river, taught by people who still make for a living.</p>
+  </section>
+
+  <section class="sc scene" data-big-scene="panels-reproportion-on-arrival" id="workshops" aria-labelledby="pr-title" data-big-scene-opts='{}'>
+    <div class="scene-stage">
+      <div class="pr-held">
+        <h2 class="pr-statement" id="pr-title">A year by hand.</h2>
+        <p class="pr-sub">Full-time workshops for beginners, each with its own teacher and a bench for every student.</p>
+      </div>
+      <div class="pr-rail">
+        <article class="pr-panel" style="--pr-pos: 36% 50%; --pr-pos-phone: 34% 50%">
+          <figure class="pr-picture"><img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/panels-reproportion-on-arrival/weaving.jpg" width="1920" height="1277" alt="Hands passing a shuttle across bright pink warp threads on a loom, a striped cloth growing below" loading="eager" decoding="async"></figure>
+          <div class="pr-band">
+            <h3 class="pr-name">Hand Weaving</h3>
+            <p class="pr-line">Floor looms, dye and yarn</p>
+          </div>
+        </article>
+        <article class="pr-panel" style="--pr-pos: 52% 58%; --pr-pos-phone: 50% 52%">
+          <figure class="pr-picture"><img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/panels-reproportion-on-arrival/clay.jpg" width="1280" height="1920" alt="A potter's hands drawing up a pot on a wheel, wet clay ridged under the fingers" loading="eager" decoding="async"></figure>
+          <div class="pr-band">
+            <h3 class="pr-name">Thrown Clay</h3>
+            <p class="pr-line">Wheel, glaze and wood kiln</p>
+          </div>
+        </article>
+        <article class="pr-panel" style="--pr-pos: 46% 50%; --pr-pos-phone: 46% 50%">
+          <figure class="pr-picture"><img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/panels-reproportion-on-arrival/type.jpg" width="1920" height="1440" alt="A jumble of worn wooden printing type, large letters and spacers in brown and blue" loading="eager" decoding="async"></figure>
+          <div class="pr-band">
+            <h3 class="pr-name">Moveable Type</h3>
+            <p class="pr-line">Wood type and two presses</p>
+          </div>
+        </article>
+        <article class="pr-panel" style="--pr-pos: 58% 50%; --pr-pos-phone: 58% 50%">
+          <figure class="pr-picture"><img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/panels-reproportion-on-arrival/glass.jpg" width="1920" height="1280" alt="A glassblower drawing out a glowing orange piece of molten glass with tweezers" loading="eager" decoding="async"></figure>
+          <div class="pr-band">
+            <h3 class="pr-name">Blown Glass</h3>
+            <p class="pr-line">Furnace, pipe and annealer</p>
+          </div>
+        </article>
+        <article class="pr-panel" style="--pr-pos: 48% 50%; --pr-pos-phone: 50% 44%">
+          <figure class="pr-picture"><img src="https://cdn.jsdelivr.net/gh/Leonxlnx/taste-skill@scene-media/panels-reproportion-on-arrival/wood.jpg" width="1280" height="1920" alt="A woodworker in a barn bent over a chopping stump, shaping a spoon blank with a hatchet" loading="eager" decoding="async"></figure>
+          <div class="pr-band">
+            <h3 class="pr-name">Green Wood</h3>
+            <p class="pr-line">Axe, shave horse and lathe</p>
+          </div>
+        </article>
+      </div>
+      <a class="pr-action" href="#visit">Book a visit day</a>
+    </div>
+  </section>
+
+  <section class="visit" id="visit" aria-labelledby="visit-title">
+    <h2 id="visit-title">Open Saturdays</h2>
+    <div class="visit__text">
+      <p>On the first Saturday of every month the workshops are open from ten until four. Watch a class at the wheel or the press, talk to the teachers, and try a bench for an hour.</p>
+      <p>The school is in the old rope works on the river, ten minutes on foot from the station, with a café in the yard and room for bikes inside the gate.</p>
+      <ul class="visit__costs">
+        <li><b>A whole year,</b> September to July, five days a week</li>
+        <li><b>Tuition</b> with materials and firing: £8,600</li>
+        <li><b>Bursaries</b> cover half the fee for half the places</li>
+        <li><b>No portfolio needed,</b> only the wish to learn by doing</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Wrenfold School of Making, the old rope works</p>
+  <p>Open Saturdays, the first of every month</p>
+  <button type="button" class="credits-link" onclick="document.getElementById('credits').showModal()">Image credits</button>
+</footer>
+
+<dialog class="credits" id="credits" aria-labelledby="credits-title">
+  <h2 id="credits-title">Image credits</h2>
+  <p>Hand Weaving: <a href="https://commons.wikimedia.org/wiki/File:The_moving_of_the_hand_shuttle.jpg">“The moving of the hand shuttle”</a> by Bright Kwame Ayisi. Thrown Clay: <a href="https://commons.wikimedia.org/wiki/File:Pottery_at_the_Chokhi_Dhani_Resort_Panchkula_27.jpg">“Pottery at the Chokhi Dhani Resort Panchkula 27”</a> by Kritzolina. Moveable Type: <a href="https://commons.wikimedia.org/wiki/File:Wood_letterpress_type.jpg">“Wood letterpress type”</a> by Michellecornelison. Blown Glass: <a href="https://commons.wikimedia.org/wiki/File:Bongani_pulling_an_elephant_trunk_from_molten_glass.jpg">“Bongani pulling an elephant trunk from molten glass”</a> by Bentaylor13413. All four <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Green Wood: <a href="https://commons.wikimedia.org/wiki/File:Nova_Scotia_DSC01450_-_Making_a_Spoon_(7815317126).jpg">“Nova Scotia DSC01450 - Making a Spoon”</a> by Dennis G. Jarvis, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a>. All via Wikimedia Commons, resized and graded as one set by us and shared under the same licences. The school is invented for this demo, and these pictures stand in for its workshops.</p>
+  <form method="dialog"><button>Close</button></form>
+</dialog>
+
+<script type="module" src="../scenes.js"></script>
+
+</body>
+</html>

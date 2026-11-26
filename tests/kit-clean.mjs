@@ -129,7 +129,8 @@ for (const [i, page] of todo.entries()) {
     }
     row.notCheckedAt = report.notCheckedAt || [];
   }
-  // the layout check, as the gate runs it: every finding fails (a template's stand-ins are words, never layout)
+  // the layout check, as the gate runs it: every FAIL finding fails (a template's stand-ins: its placeholders and the
+  // files its brackets name, held below)
   if (LAYOUT && !row.error) {
     const lprof = join(PROFILE, slug + '-layout');
     mkdirSync(lprof, { recursive: true });
@@ -139,7 +140,14 @@ for (const [i, page] of todo.entries()) {
     if (!l.timedOut && l.status !== 2) try { rep = JSON.parse(l.stdout.slice(l.stdout.indexOf('['))); } catch {}
     if (!Array.isArray(rep)) row.error = `check.mjs: ${(l.error && l.error.message) || (l.stderr || '').trim().split('\n').pop() || `exit ${l.status}`}`;
     else for (const sz of rep) for (const f of sz.findings || []) {
+      // a finding marked WARN is listed by the gate and never blocks (2.5.2 finish checks), so it never fails the run
+      if (f.sev === 'WARN') { row.warns++; continue; }
       const id = `layout ${f.rule}`;
+      // the template's stand-ins again: system.js marks every bracket left as data-placeholder, and its "[photo]" files 404
+      if (template && (f.rule === 'placeholder' || (f.rule === 'console-error' && /\[[^\]]{1,60}\]|%5B[^%]{1,60}%5D/.test(`${f.where || ''} ${f.detail || ''}`)))) {
+        (row.held[id] = row.held[id] || []).push(Number(String(sz.size).split('x')[0]));
+        continue;
+      }
       (row.fails[id] = row.fails[id] || []).push(Number(String(sz.size).split('x')[0]));
       (row.layout = row.layout || []).push(`${sz.size} ${f.rule} ${f.where}: ${f.detail}`);
     }

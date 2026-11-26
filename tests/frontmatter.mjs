@@ -47,12 +47,33 @@ for (const dir of readdirSync(SKILLS)) {
   }
 }
 
-// plugin manifests: valid JSON, and every skill path they list exists
-for (const rel of ['.claude-plugin/marketplace.json', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json']) {
+// plugin manifests: valid JSON, every skill path they list exists, and they agree on the plugin's name and
+// version (Claude Code installs the version in .claude-plugin/plugin.json over the marketplace entry's)
+const isDir = p => existsSync(p) && statSync(p).isDirectory();
+const holdsSkills = s => existsSync(join(ROOT, s, 'SKILL.md')) || (isDir(join(ROOT, s)) && readdirSync(join(ROOT, s)).some(d => existsSync(join(ROOT, s, d, 'SKILL.md'))));
+const versions = new Map();
+const manifests = {};
+for (const rel of ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', '.codex-plugin/plugin.json', '.agents/plugins/marketplace.json']) {
   const p = join(ROOT, rel);
   if (!existsSync(p)) continue;
   let j; try { j = JSON.parse(readFileSync(p, 'utf8')); } catch (e) { fail(rel, 'invalid JSON: ' + e.message); continue; }
-  for (const plugin of j.plugins || []) for (const s of [].concat(plugin.skills || [])) if (!existsSync(join(ROOT, s, 'SKILL.md'))) fail(rel, `plugin "${plugin.name}" lists ${s}, which has no SKILL.md`);
+  manifests[rel] = j;
+  for (const plugin of rel.endsWith('plugin.json') ? [j] : j.plugins || []) {
+    for (const s of [].concat(plugin.skills || [])) {
+      if (!holdsSkills(s)) fail(rel, `plugin "${plugin.name}" lists ${s}, which has no SKILL.md`);
+      if (rel.startsWith('.claude-plugin/') && !s.startsWith('./')) fail(rel, `plugin "${plugin.name}" lists ${s}; Claude Code needs a path that starts with ./`);
+    }
+    if (plugin.version === undefined) continue;
+    const seen = versions.get(plugin.name);
+    if (!seen) versions.set(plugin.name, { version: plugin.version, rel });
+    else if (seen.version !== plugin.version) fail(rel, `plugin "${plugin.name}" is version ${plugin.version}, but ${seen.rel} says ${seen.version}`);
+  }
+}
+const claudePlugin = manifests['.claude-plugin/plugin.json'], claudeMarket = manifests['.claude-plugin/marketplace.json'];
+if (claudePlugin && claudeMarket) {
+  const root = (claudeMarket.plugins || []).find(e => e.source === './' || e.source === '.');
+  if (!root) fail('.claude-plugin/marketplace.json', 'no entry has source "./", so nothing installs .claude-plugin/plugin.json');
+  else if (root.name !== claudePlugin.name) fail('.claude-plugin/plugin.json', `name "${claudePlugin.name}" differs from the marketplace entry "${root.name}"`);
 }
 
 // the default skill's data files
