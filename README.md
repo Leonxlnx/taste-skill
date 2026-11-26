@@ -62,9 +62,14 @@
     <td align="center" width="104"><a href="https://www.sent.dm"><img src="assets/sponsors/sentdm.png" alt="Sent.dm" width="52" height="52" /></a></td>
     <td><sub><a href="https://www.sent.dm"><strong>Sent.dm</strong></a> · messaging APIs for SMS, WhatsApp, and RCS</sub></td>
   </tr>
+  <!-- sponsor: BrandPush.co (GitHub: vfrago) · started 2026-11-24 · paid through ~2026-12-24 (first paid month) · do not auto-extend -->
+  <tr>
+    <td align="center" width="104"><a href="https://www.brandpush.co/?utm_source=tasteskill&utm_medium=sponsor"><img src="assets/sponsors/brandpush-icon.svg" alt="BrandPush.co" width="52" height="52" /></a></td>
+    <td><sub><a href="https://www.brandpush.co/?utm_source=tasteskill&utm_medium=sponsor"><strong>BrandPush.co</strong></a> · Launching what you built? Get it published on news sites ChatGPT and Google cite.</sub></td>
+  </tr>
 </table>
 
-<p align="center"><sub><a href="https://github.com/sponsors/Leonxlnx">Become a sponsor</a></sub></p>
+<p align="center"><sub>Want to sponsor? Send an inquiry to <a href="mailto:leon@tasteskill.dev">leon@tasteskill.dev</a></sub></p>
 
 **Taste Skill** (`tasteskill 2.5.1`) is an Agent Skill that makes coding agents build professional company websites at the `figma.com` and `x.ai` level instead of assembling a generic landing page. Every build uses plain copy, one design system, one section per screen, equal left and right edges, real photographs (licensed stand-ins when the client has none), real brand icons and real product UI, a hero entrance and one or two dealt moments on every page, quiet micro-interactions, and shader effects and scroll scenes kept strictly for tech, gaming and software pages, all verified in a real browser by a checker and a finish gate that enforce the rules.
 
