@@ -188,7 +188,7 @@ world within the limits of `expressive.md`, each naming its source.
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class. Link directly unless several related destinations share a panel; copy only the
    `<section class="hero …" data-enter>` of the dealt `assets/layout/hero-<id>.html` and make
    every word and picture the client's; move the dealt close and footer out of their
-   `<template>`s and delete the rest. Content sections are `main > section` with one `.wrap`, h2 first. A final form or booking panel is the close. Put only links in the footer after an own form section. A dealt `close-form` shares the footer with its links. Count hero and close.
+   `<template>`s and delete the rest. Content sections are `main > section` with one `.wrap`, h2 first. A final form or booking panel is the close. Place the close and its ground in the last section of main. Follow with the name, links and legal line in the footer. Count hero and close.
 
    - **Own sections:** `<section class="section own" id="…" data-own="<what it is>">`, styled in
      the one `<style id="own-css">` block with the kit's tokens only (spacing, type, colour,

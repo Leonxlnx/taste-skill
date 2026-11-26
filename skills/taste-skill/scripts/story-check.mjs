@@ -196,11 +196,10 @@ export function storyProbe() {
     const ch = s.querySelector('.chapter-head');
     return { id: s.id || '', sel: sel(s), hero: s === hero, action: txt(s.querySelector('.btn--primary, [type="submit"], a.btn')), h2: h2 ? txt(h2) : '', text: txt(s).slice(0, 6000), ground: ground(s), chapter: s.getAttribute('data-chapter') || (ch ? txt(ch).replace(/^\d+\s*/, '') : ''), chapterHead: ch ? txt(ch) : '' };
   });
-  const foot = document.querySelector('footer.closing');
-  const action = el => txt(el?.querySelector('.btn--primary, [type="submit"], a.btn'));
-  const ch2 = foot ? foot.querySelector('h2') : null;
-  let close = ch2 ? { action: action(ch2.closest('.closing__cta, .closing__close, .close, section') || foot), sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement && ch2.parentElement.querySelector('p')), text: txt(ch2.closest('.closing__cta, .closing__close, .close, section') || ch2.parentElement) } : null;
-  if (!close) { const last = sections.filter((s) => !s.hero && s.h2).pop(); if (last) close = { action: last.action, sel: last.sel, h2: last.h2, lead: '', text: last.text }; }
+  const action = el => txt(el?.querySelector('.btn--primary,[type="submit"],a.btn'));
+  const last = main.querySelector(':scope > section:last-of-type');
+  const ch2 = last?.querySelector('h2');
+  const close = ch2 ? { action: txt(last.querySelector('.btn--primary,[type="submit"],a.btn')), sel: sel(ch2), h2: txt(ch2), lead: txt(ch2.parentElement?.querySelector('p')), text: txt(last) } : null;
   if (close) {
     const heroButton = hero?.querySelector('a.btn--primary,a.btn');
     const closeRoot = ch2?.closest('.closing__cta,section') || main.querySelector(':scope > section:last-of-type');

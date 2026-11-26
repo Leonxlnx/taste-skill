@@ -321,19 +321,8 @@
       <span class="drawing__dim" style="left: [x]%; top: [y]%">[1,400 mm]</span>
     </figure>
   </template>
-</main>
-
-<!-- FOOTER.CLOSING: the close and the footer in one last section (system.css). Its .wrap holds exactly
-     two children: the dealt close (row 1) and the links (row 2). The ground is dealt too: the page's
-     ground (this one), "footer closing footer--dark ground-inverse", or "footer closing
-     footer--statement" (the lit ground, full bleed). A place swaps row 2 for links-visit below.
-     The close repeats the main action word for word; its h2 is eight words or fewer.
-     Links go to the page's sections (#ids) and #contact; Privacy, Terms (and Imprint only when the
-     brief gives the details) go to pages you write, never left dead. The legal row ends with the
-     credits line when the page shows photographs that are not the client's: one short line naming the
-     sources actually used, which opens the list. No address the brief does not give: street and
-     district only, never a house number, a postcode, a phone in a real format or a register number. -->
-<footer class="footer closing" id="contact" aria-labelledby="close-h">
+<!-- Put the dealt ground directly on the final section. -->
+<section class="section closing" data-family="closing-action" id="contact" aria-labelledby="close-h">
   <div class="wrap">
     <!-- Omit this offer when the same decision is directly above. Otherwise use a heading, one line and a label-sized action.
          Others below: close-photo, close-word, close-split, close-form. The close's h2 says something new: a fact,
@@ -345,11 +334,15 @@
       </div>
       <a class="btn btn--primary btn--xl btn--wide" href="#[section id]">[Main action]</a>
     </div>
+  </div>
+</section>
+</main>
+<footer class="footer" aria-label="Footer">
+  <div class="wrap">
     <div class="closing__links">
       <div class="grid">
         <div class="span-4 stack-4">
           <a class="nav__logo footer__mark" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
-          <p class="footer__lede">[What the company does, in one plain line.]</p>
         </div>
         <nav class="span-8 footer__routes" aria-label="Footer">
           <a class="footer-contact" href="#[contact form id]">[Contact or support route]</a>
@@ -378,7 +371,7 @@
 </footer>
 
 <template data-part="close-photo">
-  <!-- row 1 as close--photo: the head row, then the client's photograph down to the links -->
+  <!-- closing section as close--photo: the head row, then the client's photograph down to the links -->
   <div class="closing__cta close--photo">
     <div class="section-head--split">
       <div><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p class="t-lead">[One line with the price or the hours.]</p></div>
@@ -389,7 +382,7 @@
 </template>
 
 <template data-part="close-word">
-  <!-- row 1 as close--word: the h2 and the button, then the name across the .wrap -->
+  <!-- closing section as close--word: the h2 and the button, then the name across the .wrap -->
   <div class="closing__cta close--word">
     <div class="section-head--split">
       <div><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p class="t-lead">[One line: the trial or the reply time.]</p></div>
@@ -400,7 +393,7 @@
 </template>
 
 <template data-part="close-split">
-  <!-- row 1 as close--split: the main action on a tinted panel with the facts that decide it, beside a photograph
+  <!-- closing section as close--split: the main action on a tinted panel with the facts that decide it, beside a photograph
        (data-side="end" puts the panel on the right); three facts at most, each one the brief gives -->
   <div class="closing__cta close--split">
     <div class="close__panel">
@@ -414,7 +407,7 @@
 </template>
 
 <template data-part="close-form">
-  <!-- row 1 as close--form: a page whose last section would be the booking or order form ends on it, so the page
+  <!-- closing section as close--form: a page whose last section would be the booking or order form ends on it, so the page
        never asks twice in a row; paste the booking-form's fields into the form (class form close__form) -->
   <div class="closing__cta close--form">
     <div class="section-head"><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p>[A supplied booking fact.]</p></div>
@@ -434,23 +427,14 @@
 </template>
 
 <template data-part="links-visit">
-  <!-- row 2 on a place (footer closing footer--visit): where it is, set large, with the way there;
-       the opening hours and any useful return route. Street and district only. The link's words
-       follow the visit block's: Get directions with a street, See the area with a district only, none with a town. -->
+  <!-- Link to the visit section. Its address, directions and hours stay together there. -->
   <div class="closing__links">
-    <div class="grid">
-      <div class="span-6 stack-4">
-        <address class="footer__address">[Street], [district]</address>
-        <p><a class="link" href="https://www.openstreetmap.org/search?query=[street%20district%20city]">Get directions</a></p>
-      </div>
-      <div class="span-6 start-7 stack-4">
-        <h3>Opening hours</h3>
-        <!-- data-tz: the venue's time zone; system.js marks today's row there. Never .is-today by hand. -->
-        <dl class="hours" data-tz="[Europe/Berlin]"><dt>[Mon to Fri]</dt><dd>[8 to 18]</dd><dt>[Sat]</dt><dd>[9 to 16]</dd><dt>Sun</dt><dd>Closed</dd></dl>
-      </div>
-    </div>
+    <nav class="footer__routes" aria-label="Footer">
+      <a class="footer__mark" href="#top">[Name]</a>
+      <a href="#[visit section id]">Hours and directions</a>
+    </nav>
     <div class="footer__legal">
-      <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a></span>
+      <span>&copy; 2026 [Company] <!-- Add supplied legal destinations. --></span>
       <a class="credits" href="credits.html">Photographs via [sources used]</a>
     </div>
   </div>

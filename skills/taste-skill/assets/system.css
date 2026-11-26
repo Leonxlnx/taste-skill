@@ -284,7 +284,7 @@ main > :is(section, .section):not(:where(.hero, .section--hero, .photo-band--her
   }
 }
 /* the phone action bar covers the foot of the screen, not of a section: the page's last block pads for it */
-footer.closing { padding-bottom: calc(var(--s-8) + var(--bar)); }
+footer.footer { padding-bottom: calc(var(--s-8) + var(--bar)); }
 main > :is(section, .section):not(:where(.own, [data-own])) > :is(.wrap, .container), footer.closing > .wrap { position: relative; z-index: 1; }
 main > :is(section, .section):not(:where(.own, [data-own])) > :is(.wrap, .container):not(.grid) { display: flex; flex-direction: column; }
 /* a .wrap that is the section's grid too (class="wrap grid"): its rows start at the top */
@@ -601,7 +601,6 @@ main > .hero:where(:not(.hero--peek):not(:has(.hero-picks))):has(.hero__media,.h
 .btn--primary:hover { background: color-mix(in oklab, var(--action) 86%, var(--bg)); }
 /* an inverted primary (the action is the ground's ink: a brand band, a lit ground): its hover steps toward the ground, as the filled one steps toward the ink */
 :root .ground-brand .btn--primary:is(:hover, :active) { background: color-mix(in oklab, var(--action) 88%, var(--bg)); }
-:root[data-buttons] .ground-brand .btn.btn--secondary { background: var(--bg); }
 /* the ground's own colour with a clear border: never grey on grey, readable on an effect too */
 .btn--secondary { background: var(--bg); color: var(--ink); border-color: var(--line-strong); }
 .btn--secondary:hover { background: color-mix(in oklab, var(--bg) 94%, var(--ink)); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
@@ -1220,13 +1219,8 @@ html[data-tone="dark"] .footer--dark {
 .credits > :not(summary) { margin-top: var(--s-2); max-width: 110ch; }
 .credits a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
 
-/* ---------------------------------------------------------------- footer.closing: the close and the footer, one section
-   The page ends on one more section: <footer class="footer closing [footer--dark | footer--statement |
-   footer--visit]"> whose .wrap holds exactly two children, the close (.closing__cta, row 1) and the
-   links (.closing__links, row 2: the columns, then the legal row), 128px apart (64 on a phone), each as
-   tall as what it holds, so a form or a photograph never runs under the columns. The
-   close sits on the footer's own ground, so it is never a slab flush on a footer under it. Its five
-   looks (dealt by start.mjs deal, sections.md):
+/* The last section of main owns the closing action and its ground. The footer follows with links and legal information.
+   Closing forms (sections.md):
      .close--photo  the h2 and the button on one head row, then the client's photograph across the
                     .wrap down to the links (never the hero's photograph)
      .close--type   the h2 set large, a line, the big button under them
@@ -1648,6 +1642,7 @@ main > section.own > .wrap > h2 + .t-lead { margin-top: var(--s-4); }
 
 /* Keep the condition of the offer within one space of its action. */
 .terms, .hero .terms, .form .terms { font-size: max(16px, var(--t-body)); line-height: 1.5; color: var(--ink); margin-block: var(--s-2) 0; }
+.form > .btn-row + .terms { margin-block-start: 0; } /* The form grid already separates the handoff from its action. */
 .terms + :is(.btn,.btn-row), .form .terms + button { margin-top: var(--s-2); }
 .facts--compact { display: grid; grid-template-columns: max-content minmax(0,1fr); align-items: baseline; gap: var(--s-2) 1rem; max-width: 42rem; }
 .facts--compact > div { display: contents; }
@@ -1718,3 +1713,33 @@ html[data-action]:not([data-temper="lively"], [data-temper="loud"]) .ground-bran
 
 .show-field { position:relative; isolation:isolate; overflow:hidden; width:100%; aspect-ratio:16/9; min-height:inherit; }
 .show-field > [data-show-field] { position:absolute; inset:0; z-index:-1; }
+
+/* Pair the button surface and ink on a colour field. */
+:root :is(.ground-inverse, .ground-brand, .ts-gradient) .btn.btn--primary { background: var(--p-inv-action); color: var(--p-inv-action-ink); border-color: transparent; }
+:root :is(.ground-inverse, .ground-brand, .ts-gradient) .btn.btn--secondary { background: var(--p-bg); color: var(--p-ink); border-color: transparent; }
+
+/* Two FAQ columns share the page grid, including the middle gutter. */
+.faq.faq--columns { display: grid; column-gap: var(--gutter); }
+@media (min-width: 768px) { .faq.faq--columns { grid-template-columns: repeat(2, minmax(0, 1fr)); } .faq--columns > :nth-child(2) { padding-top: 0; } }
+
+/* Sparse footer destinations share the page grid with the name and legal line. */
+@media (min-width: 768px) {
+  .footer:not([data-wordmark="large"]) .closing__links:has(> .grid .footer__routes):not(:has(.footer__group, .footer__col)) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: baseline;
+    & > .grid { display: contents; }
+    & > .grid > :first-child { grid-column: 1 / span 3; }
+    & .footer__routes { grid-column: 4 / span 5; justify-content: start; }
+    & > .footer__legal { grid-column: 9 / -1; padding-top: 0; border-top: 0; }
+  }
+}
+
+.ts-gradient[data-text-zone="left"] .section-head--center {
+  text-align: left;
+  justify-items: start;
+  justify-content: start;
+  margin-inline: 0 auto;
+}
+.ts-gradient[data-text-zone="left"] .section-head--center :is(div, h2, p) { margin-inline: 0 auto; }

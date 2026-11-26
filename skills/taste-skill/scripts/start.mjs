@@ -232,23 +232,25 @@ const setPage = p => { page = p; placePage = p === 'place'; techPage = TECH.has(
 // then supplied art with a strong style moves it one step toward loud. --temper sets it outright.
 const TEMPERS = ['quiet', 'lively', 'loud'];
 const TEMPER_WORDS = {
-  quiet: /\b(calm|serious|premium|clinical|minimal(?:ist)?|trusted|enterprise|regulated|sober|understated)\b/i,
+  quiet: /\b(calm|serious|premium|clinical|financial|legal|minimal(?:ist)?|trusted|enterprise|regulated|sober|understated)\b/i,
   loud: /\b(loud|punk|metal|retro|arcade|pixel(?:[- ]?art)?|pixels|8[- ]?bit|16[- ]?bit|horror|chiptune|comedy)\b/i,
-  lively: /\b(fun|playful|weird|cute|cos[yz]|mascot|kids?|toys?|snacks?|candy|drinks?|soda|music|festival|merch|silly|cartoon)\b/i,
+  lively: /\b(fun|playful|weird|cute|cos[yz]|mascot|character|kids?|toys?|snacks?|candy|drinks?|soda|music|festival|merch|silly|cartoon)\b/i,
 };
 const ART_STYLE = /\b(pixel|sprites?|hand[- ]?drawn|painted|drawn|cartoon|illustrated)\b/i;
 const briefWords = typeof opt('brief') === 'string' ? opt('brief') : '';
 function decideTemper({ kind, words = '', has = '', forced } = {}) {
   if (forced !== undefined) return { temper: forced, why: 'set with --temper' };
-  const hit = k => (words.match(TEMPER_WORDS[k]) || [])[0];
+  const cues = mascotRequest(words) === false ? words.replace(/\bmascots?\b/gi, '') : words;
+  const hit = k => (cues.match(TEMPER_WORDS[k]) || [])[0];
   if (hit('quiet')) return { temper: 'quiet', why: `"${hit('quiet').toLowerCase()}" in the brief: the client's words win` };
   // a place or a service is quiet whatever its words: only --temper makes one expressive
-  if (kind==='software' && (['fintech','devtool','saas'].includes(trade) || /\b(?:health|medical|finance|banking|business software|developer tool)\b/i.test(words))) return {temper:'quiet',why:'business, developer, finance or health software'};
+  if (kind==='software' && (['fintech','devtool'].includes(trade) || /\b(?:medical|finance|banking|business|b2b|payroll|invoicing|employees?|developer tools?|for (?:[\w-]+ ){0,3}(?:teams|staff)|health app)\b/i.test(words))) return {temper:'quiet',why:'business, developer, finance or health software'};
   if (pageArg==='event' || kind !== 'place' && /\b(?:ticketed event|conference|festival|concert|event page|event website)\b/i.test(words)) return { temper:'lively', why:'an event' };
-  if (['place', 'service'].includes(kind)) return { temper: 'quiet', why: `a ${kind} page` };
+  if (['place', 'service'].includes(kind) && !/\b(?:mascot|character)\b/i.test(cues)) return { temper: 'quiet', why: `a ${kind} page` };
   let t = 'quiet', why = `a ${kind} page`;
   if (hit('loud')) { t = 'loud'; why = `"${hit('loud').toLowerCase()}" in the brief`; }
   else if (hit('lively')) { t = 'lively'; why = `"${hit('lively').toLowerCase()}" in the brief`; }
+  else if (kind === 'software' && /\b(?:iphone|android|habits?|fitness|food|travel|games?|children|hobbies|hobby|character)\b/i.test(words)) { t = 'lively'; why = 'an app for personal use'; }
   else if (kind === 'gaming') {
     if (/\b(strategy|simulation|management|4x|wargame)\b/i.test(words)) why = 'a strategy or simulation game with a sober brief';
     else { t = 'lively'; why = 'a game'; }
@@ -695,8 +697,8 @@ function dealLayout(h) {
     for (const l of lines) console.log('    ' + l);
   }
   console.log(`  ${out.close === 'close-type' ? 'close-type: the h2 large, the button at its own width (never across the .wrap)'
-    : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the footer\'s close row; use one full form'
-    : `${out.close}; a page whose last section is a form ends on close-form instead`}; repeat useful hours and directions in the footer; use the form once`);
+    : out.close === 'close-form' ? 'close-form: the booking or order form is the close, in the last section of main; use one full form'
+    : `${out.close}; a page whose last section is a form ends on close-form instead`}; keep the name, link groups and legal line in the footer; use the form once`);
   return out;
 }
 
@@ -726,8 +728,9 @@ function dealFrame(h, artPalette = false) {
       if (group.length >= 3 && (!shared.length || fresh.length >= 3)) pals = group;
     }
     const fit = trade ? pals.filter(p => (p.trades || []).includes(trade)) : [];
-    const dealt = drawFresh(fit, 3, avoid);
-    if (dealt.length < 3) dealt.push(...drawFresh(pals.filter(p => !fit.includes(p)), 3 - dealt.length, avoid));
+    const consumerFields = page === 'software' && temper === 'lively' ? fit.filter(p => p.tags.some(t => ['pastel-fields','flat-loud'].includes(t))) : [];
+    const dealt = drawFresh(consumerFields.length ? consumerFields : fit, 3, avoid);
+    if (dealt.length < 3) dealt.push(...drawFresh(pals.filter(p => !dealt.includes(p)), 3 - dealt.length, avoid));
     if (fresh.length && dealt.length && shared.includes(dealt[0].id)) {
       const first = dealt.find(p => !shared.includes(p.id)) || fresh[0];
       const alternatives = dealt.filter(p => p.id !== first.id);
@@ -809,7 +812,8 @@ if (cmd === 'deal') {
     if (reaction >= 0) reactionSection = rows[reaction].split('|')[0].trim() + ' showing ' + shows[reaction];
     if (!expressive && shows.filter(subject => /^nothing[.]?$/i.test(subject)).length * 4 > sections) throw new Error('More than a quarter of the section plan shows nothing. Show the subject or merge a section.');
   }
-  const rhythm = dealRhythm(page, rows, shows);
+  const physical = page === 'product' || trade === 'hardware' || ['hardware','device','technical-product'].includes(pageArg) || page === 'tech' && (assets.has('object') || /\b(?:hardware|camera|sensor|keyboard|device|headphones|drone)\b/i.test(briefWords));
+  const rhythm = dealRhythm(physical ? 'physical' : page, rows, shows);
   if (rhythm.families.includes(null)) throw new Error('Each section row needs | family <layout-family>.');
   if (rhythm.families.some((f,i,a) => f === 'split' && a[i-1] === f && a[i-2] === f)) throw new Error('Three consecutive splits. Choose another family for one subject.');
   const artPalette = expressive && (assets.has('art') || page === 'gaming');
@@ -914,7 +918,8 @@ if (cmd === 'deal') {
     product:['slider','stat'], service:['calendar','doc'], place:['calendar','checklist']
   };
   let views = fragmentSets[page];
-  if (trade==='devtool' || page==='software' && /\b(build|repository|developer tool|commit)\b/i.test(briefWords)) views=['diff-review','terminal-run','stat'];
+  if (physical) views = ['object in use', 'two or three close details with callouts (tools/frame.mjs)', 'specification table', 'box contents', 'connections and compatibility', 'comparison if supplied', 'price and delivery'];
+  else if (trade==='devtool' || page==='software' && /\b(build|repository|developer tool|commit)\b/i.test(briefWords)) views=['diff-review','terminal-run','stat'];
   else if (page==='software' && /\b(schedule|scheduling|calendar|booking)\b/i.test(briefWords)) views=['calendar','checklist','notify'];
   const plan = {
     rhythm,
@@ -922,7 +927,7 @@ if (cmd === 'deal') {
     version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
     hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, reveals, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
-    align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
+    align: gradient?.slot === 'close' && layout.align !== 'left' ? 'centred heads on proof, left on the closing band' : layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
     ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
     parts, gradient, demo, tools, seed, scene: motion.scene, effect, story: story.id, ...(briefWords ? { brief: briefWords } : {}),
   };
@@ -934,10 +939,11 @@ if (cmd === 'deal') {
   const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
   line('rhythm', rhythm.usualSections + ' ± 2 sections when supported: ' + rhythm.sequence.map((family,i) => family + ' (' + rhythm.widths[i] + ')').join(' → '));
-  line('widths', rhythm.rules);
+  line('widths', rhythm.rules + (physical ? ' Set data-physical on html. Draw the object with illustrate or use the picture ladder. Give it five of twelve columns or more and 420px height. At 1440px start copy within 200px below navigation when the hero is shorter than the viewport.' : ''));
   if (rows.length) line('mapped', rhythm.mapped.map(({subject,family,width}) => subject + ' (' + family + ', ' + width + ')').join(' → '));
 
-  line('views',views.map(f=>'assets/ui/'+f).join(', ')+'; tools/device.mjs for the frame, tools/chart.mjs for a chart.');
+  if (!physical && (rhythm.families.includes('pricing') || rhythm.sequence.includes('pricing'))) line('plans','Give each plan its supplied inclusions, price and action in a full column or card.');
+  line('views',physical ? views.join(', ') : views.map(f=>'assets/ui/'+f).join(', ')+'; tools/device.mjs for the frame, tools/chart.mjs for a chart.');
   line('temper', temper + ': ' + temperWhy + (expressive
     ? '. Set data-temper="' + temper + '" on <html> and enable the expressive.css line in starter.html. Every expressive move names its source in the game or brand on the plan comment ("torn edge: the game\'s menus are paper"); no source, no move. Permissions, limits and the never list: ' + ref + '/references/expressive.md'
     : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
@@ -965,12 +971,12 @@ if (cmd === 'deal') {
   line('action', actionColour + ': set data-action="' + actionColour + '" on html.');
   if (shows) shows.forEach((subject,i) => line('section ' + (i+1), 'shows  ' + subject));
   line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
-  line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
-  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': group supplied product parts, page sections, company routes and legal links by task. Use a row for sparse destinations. A column heading needs at least three links. Repeat useful hours, directions or purchase terms.');
+  line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the last section of main, starter.html close-form template)' : ' in the last section of main (use only if the final section has no form or booking panel)'));
+  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': group supplied product parts, page sections, company routes and legal links by task. Set the name, links and supplied legal line in a row for sparse destinations. A column heading needs at least three links. Put a statement or gradient ground on the closing section, leaving the links on their own ground.');
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + (plan.buttons === 'arrow' ? ' (keep the main button text-only)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');
-  line('align', plan.align + (plan.align === 'left' ? '' : ': use .section-head--center on those headings'));
+  line('align', plan.align + (plan.align === 'left' ? '' : gradient?.slot === 'close' ? ': use .section-head--center on proof only' : ': use .section-head--center on those headings') + '. Keep headings left on bands with a left text zone.');
   line('pictures', plan.pictures + ': set data-pictures="' + (plan.pictures === 'square' ? 'square' : 'soft') + '" on <html>' + (plan.pictures.includes('mask') ? ' and data-picture-mask on one inset picture frame' : ''));
   for (const [key, v] of Object.entries(comps)) {
     if (key === 'feature' && !assets.has('photo')) continue;
@@ -1000,7 +1006,7 @@ if (cmd === 'deal') {
     const command = 'node "' + path.join(skill,'tools','gradient.mjs') + '" --tier show --preset ' + gradient.preset +
       ' --from index.html --zone left --seed ' + gradient.seed + (gradient.placement ? ' --placement ' + gradient.placement : '');
     line(gradient.moving ? 'moving field' : 'gradient', 'show ' + gradient.preset + ' · ' +
-      gradient.place + '; white ink in the left 38%; hues ' + (gradient.hues?.join(', ') || 'art accent at 0, −29, −58 and −87 degrees; brand resolves the four colours') + '. ' +
+      gradient.place + (gradient.slot === 'close' ? '; set data-text-zone="left" on the closing section' : '') + '; white ink in the left 38%; hues ' + (gradient.hues?.join(', ') || 'art accent at 0, −29, −58 and −87 degrees; brand resolves the four colours') + '. ' +
       command + (gradient.moving ? ' --format settings --out assets/field.json' : ' --out assets/field.css'));
     if (gradient.moving) line('mount', 'node "' + path.join(skill,'scripts','effects.mjs') + '" mount --settings assets/field.json');
   }

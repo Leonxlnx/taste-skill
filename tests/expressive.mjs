@@ -78,6 +78,19 @@ for (let i = 0; i < 8; i++) {
   assert.match(out, /no source, no move/);
 }
 ok('a game with "pixel" in its brief is loud and dealt two expressive faces and a plain exit');
+for (const [brief, expected] of [
+  ['Daily habits on iPhone','lively'], ['A running log for Android','lively'], ['Fitness sessions at home','lively'],
+  ['A family food diary','lively'], ['A music collection','lively'], ['Travel notes','lively'],
+  ['Games for children','lively'], ['A calendar for hobbies','lively'], ['Draw a small character','lively'],
+  ['Personal notebook on iPhone','lively'], ['Running routes for Android','lively'], ['A habit tracker with a mascot','lively'],
+  ['Clinical habit tracking','quiet'], ['Financial planning for iPhone','quiet'], ['Legal services on Android','quiet'],
+  ['Business travel for teams','quiet'], ['Developer tools with a mascot','quiet'], ['Enterprise Android deployment','quiet'],
+  ['Travel approvals for small reporting teams','quiet'], ['Inventory for warehouse staff on Android','quiet'],
+  ['Payroll on iPhone','quiet'], ['A banking app with a character','quiet'], ['A B2B music licensing app','quiet'], ['An invoicing app for Android','quiet']
+]) {
+  const {p} = plan(['--page','software','--trade','saas','--sections','6','--brief',brief], brief);
+  assert.equal(p.temper, expected, brief);
+}
 for (const [kind,brief,expected] of [['software','consumer app for walkers','lively'],['software','sober consumer app for walkers','quiet'],['software','business software for invoices','quiet'],['software','a health app','quiet'],['product','a food brand','lively'],['service','conference event page','lively']]) {
   assert.equal(plan(['--page',kind,'--sections','5','--brief',brief],'default-'+brief.replaceAll(' ','-')).p.temper,expected);
 }
@@ -139,8 +152,7 @@ function page({ temper, stickers = 2, tilt = 6, paragraphFace = false, h1 = 120,
 <section class="section ground-inverse" id="b"><span data-crossing="top" style="--crossing-x:70%" aria-hidden="true">${art(120, 60, '#8a5a35')}</span>
 <div class="wrap"><h2>One night on the island</h2><p>${words}</p>${crossingOverText ? `<span data-crossing="bottom" style="position:relative;display:block;margin-top:-40px;--crossing-w:600px" aria-hidden="true">${art(600, 80, '#8a5a35')}</span><p>${words}</p>` : ''}</div></section>
 <section class="section ground-brand" id="d"><div class="wrap"><h2>The keeper's log</h2><p>${words}</p></div></section>${extra}
-</main>
-<footer class="footer closing" id="c"><div class="wrap"><div class="closing__cta"><h2>The demo opens in May</h2><a class="btn btn--primary" href="#c">Join the demo list</a>${lettering >= 2 ? '<p data-lettering="shadow" aria-hidden="true">Driftlight</p>' : ''}${lettering >= 3 ? '<p data-lettering="outline" aria-hidden="true">Driftlight</p>' : ''}</div></div></footer>
+<section class="section closing" id="c"><div class="wrap"><div class="closing__cta"><h2>The demo opens in May</h2><a class="btn btn--primary" href="#c">Join the demo list</a>${lettering >= 2 ? '<p data-lettering="shadow" aria-hidden="true">Driftlight</p>' : ''}${lettering >= 3 ? '<p data-lettering="outline" aria-hidden="true">Driftlight</p>' : ''}</div></div></section></main>
 </body></html>`;
 }
 const deadline = Date.now() + 9 * 60 * 1000;

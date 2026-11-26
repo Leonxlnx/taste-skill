@@ -1,4 +1,5 @@
 const routes = {
+  physical: 'hero object-in-use annotated-plate specifications box-contents compatibility comparison price-and-delivery closing-action',
   software: 'hero wide-product-view logo-wall feature-grid split comparison single-quote pricing closing-action',
   tech: 'hero wide-product-view evidence code-panel feature-grid integration-grid comparison pricing closing-action',
   product: 'hero wide-product-view figures annotated-plate steps comparison case-studies inventory closing-action',
@@ -11,7 +12,7 @@ function rowFamily(row) {
   return word?.startsWith('split-') ? 'split' : word || null;
 }
 const widths = {
-  'wide-product-view':'wide', 'annotated-plate':'wide', 'photo-gallery':'wide',
+  'wide-product-view':'wide', 'object-in-use':'wide', 'annotated-plate':'wide', 'photo-gallery':'wide',
   'product-shelf':'wide', 'case-studies':'wide', 'editorial-statement':'reading',
   'code-panel':'reading', 'single-quote':'reading', 'closing-action':'reading'
 };

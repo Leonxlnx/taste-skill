@@ -222,7 +222,7 @@ try {
   }
   await send("Emulation.setDeviceMetricsOverride",{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   for (const thin of [false,true]) {
-    const rows = "<span>Job duration</span>".repeat(thin ? 2 : 6);
+    const rows = '<div role="row" style="height:48px">Job duration</div>'.repeat(thin ? 2 : 6);
     const frame = "<div data-ui style=\"width:"+(thin?500:1280)+"px;height:"+(thin?220:480)+"px\">"+rows+"</div>";
     const html = "<main style=\"width:1280px;margin:auto\"><section id=hero><h1>Build history</h1>"+frame+"</section><section id=history><h2>Runs</h2>"+frame+"</section><section><article style=\"width:640px;margin:auto\"><p>Reading the history of a build.</p></article></section></main>";
     await evaluate("document.body.innerHTML="+JSON.stringify(html));
@@ -231,11 +231,20 @@ try {
     assert.equal(findings.filter(f=>f.check==="view-thin" && f.sev==="WARN").length,thin?2:0);
   }
   for (const width of ["880px", "100%"]) {
-    const rows = "<p>Build</p>".repeat(8);
+    const rows = '<div role="row" style="height:48px">Build</div>'.repeat(8);
     const html = '<main><section><h1>Build history</h1><div class="ts-gradient" style="padding:24px"><div data-ui style="height:480px;width:' + width + '">' + rows + '</div></div></section></main>';
     await evaluate("document.body.innerHTML=" + JSON.stringify(html));
     const findings = await evaluate("(" + measurePresence.toString() + ")()");
     assert.equal(findings.some(f => f.check === "view-thin"), width === "880px");
+  }
+  for (const complete of [true, false]) {
+    const evidence = complete ? '<div role="row" style="height:170px">Events</div>' : '<p>Events</p>';
+    const plan = '<article><h3>Team</h3><p>$49</p>' + (complete ? '<p>Includes one million events</p><button>Start</button>' : '') + '</article>';
+    const html = '<main><section id="events"><h2>History</h2><div data-ui style="height:400px">' +
+      '<span>Event</span>'.repeat(6) + evidence + '</div></section><section data-family="pricing" id="pricing">' + plan.repeat(2) + '</section></main>';
+    await evaluate('document.body.innerHTML=' + JSON.stringify(html));
+    const findings = await evaluate('(' + measurePresence.toString() + ')()');
+    for (const sel of ['#events','#pricing']) assert.equal(findings.some(f => f.check === 'view-thin' && f.sel === sel), !complete);
   }
   for (const inExample of [false,true]) {
     const amount="<span"+(inExample?" data-example":"")+">263 ms</span>";

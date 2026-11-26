@@ -236,7 +236,7 @@ window.lyRules = (() => {
     }
   }
   function page(kindOverride='') {
-    const secs = [...document.querySelectorAll('main > section,main > .section,footer.closing')].filter(e => e.getBoundingClientRect().height);
+    const secs = [...document.querySelectorAll('main > section,main > .section')].filter(e => e.getBoundingClientRect().height);
     const out = [], ownSections = secs.filter(s => s.matches(own));
     const add = (rule, where, detail, sev = 'FAIL') => out.push({rule, where, detail, sev});
     if (secs.length && ownSections.length < (secs.length >= 6 ? 2 : 1)) add('own-count','page',secs.length + ' sections include ' + ownSections.length + ' own sections','WARN');
@@ -317,7 +317,17 @@ window.lyRules = (() => {
   const counterCandidates = () => [...document.querySelectorAll(countSelector+','+numberLeaf)].filter(e =>
     e.getClientRects().length && (e.matches(countSelector) || (!e.children.length && /^[-+]?\d[\d,.\s]*\s*(?:[%×x]|sec|ms)?$/i.test(e.textContent.trim()) && !e.closest('time,[role=timer],input,button,select,script,style'))));
   const targetValue = e => ['data-count-to','data-counter-end','data-final','data-target','data-to','data-count','data-m-count','data-counter','data-count-up'].map(a=>e.getAttribute(a)).find(v=>v && /^\s*[-+]?\d[\d.,\s]*%?\s*$/.test(v));
-  const counters = (undeclaredOnly=false) => Object.fromEntries(counterCandidates().filter(e=>!undeclaredOnly || !targetValue(e)).map(e=>[counterKey(e),e.textContent.trim()]));
+  function counters(undeclaredOnly=false, live=true) {
+    const values = {};
+    for (const el of counterCandidates()) {
+      if (undeclaredOnly && targetValue(el)) continue;
+      const text = el.textContent.trim();
+      // A running demo can be between steps. Its authored data-final is checked by still().
+      if (live && (el.closest('[data-part="demo-loop"]') || el.getAttribute('data-start')?.trim() === text)) continue;
+      values[counterKey(el)] = text;
+    }
+    return values;
+  }
   const number = s => String(s).replace(/[,\s]/g,'').match(/[-+]?\d+(?:\.\d+)?/)?.[0];
   function changedCounters(resting, live) {
     const out=[];
@@ -455,7 +465,7 @@ window.lyCheck = function lyCheck(opts = {}) {
       continue;
     }
     if (cen && !(Math.abs(r.left - L) <= tol)) continue;      // centred on the axis: fine both sides
-    if (!onStart(r.left)) add('edge-left', name(el), `starts at x ${R1(r.left)}; the lines are ${R1(L)} and the column starts`);
+    if (!onStart(r.left)) add('edge-left', name(el), `starts at x ${R1(r.left)}; the lines are ${R1(L)} and the column starts` + (el.closest('.faq') ? '. Use .faq--columns with the page gutter.' : ''));
     if (!text && !onEnd(r.right)) add('edge-right', name(el), `The box ends at x ${R1(r.right)}px, so align its right edge within ${tol}px of the nearest column end at x ${R1(ends.reduce((a, b) => Math.abs(r.right-a) <= Math.abs(r.right-b) ? a : b))}px.`);
   }
 
@@ -616,6 +626,17 @@ window.lyCheck = function lyCheck(opts = {}) {
       }
       return tops.length;
     };
+    if (vw === 1440 && document.documentElement.matches('[data-physical],[data-type="product"]') && hs.getBoundingClientRect().height < vh && h1 && box(h1).y - navH > 200) {
+      add('hero-copy-top', name(h1), 'Start the physical product headline within 200px below the navigation.');
+    }
+    if (vw === 1440 && document.documentElement.hasAttribute('data-physical')) {
+      const object = hs.querySelector('.hero__media,.hero__art,figure,picture,img');
+      const r = object?.getBoundingClientRect();
+      const minimum = (R - L + gut) * 5 / 12 - gut;
+      if (!r || r.width + 1 < minimum || r.height + 1 < 420) {
+        add('hero-object', name(hs), 'Give the product drawing or photograph at least five columns and 420px of height.');
+      }
+    }
     const btns = [...hs.querySelectorAll('.btn')].filter(shown);
     hero = {
       height: Math.round(hs.getBoundingClientRect().height),

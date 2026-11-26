@@ -585,6 +585,8 @@ function productChecks(html, dot) {
     for (const n of nouns) {
       const h = heads.find(x => word(esc(n)).test(x));
       if (h && nouns.some(other => word(esc(other)).test(h) && word(esc(other) + (Object.hasOwn(SAME,other) ? '|' + SAME[other] : '')).test(shows))) continue;
+      const namedProduct = notes.match(/^# Copy notes:\s*(.+)$/im)?.[1]?.trim();
+      if (h && namedProduct && word(esc(n)).test(line('Category')) && new RegExp('(?:view|profile|drawing|render|detail) of (?:the )?' + esc(namedProduct) + '(?![\\p{L}])','iu').test(shows)) continue;
       if (!h || word(esc(n) + (Object.hasOwn(SAME, n) ? '|' + SAME[n] : '')).test(shows)) continue;
       W.push({ check: 'photo-product', where: `section${id ? '#' + id : ''} "${h.slice(0, 40)}"`, msg: `the heading names ${n} (a product on the fact sheet); the section's picture identifies "${shows.trim().slice(0, 70)}"`, fix: `show the ${n} in a photograph, drawing or working view and name it in the accessible description` });
     }
@@ -814,7 +816,7 @@ async function dealDrift(html, dot, kind, page, frame, source) {
     const close = lastOf('close');
     if (close && !new RegExp(`\\bclose--${reEsc(close.replace(/^close-/, ''))}\\b`).test(live) && !(close === 'close-form' && COMP_MARK['close-form'][0].test(live))) {
       const builtClose = (live.match(/\bclose--(\w+)/) || [])[1];
-      warns.push({ check: 'deal-drift', where: `close ${builtClose ? 'close-' + builtClose : 'none'}`, msg: `the deal dealt the close ${close}; the page builds ${builtClose ? 'close-' + builtClose : 'no dealt close'}${builtClose === 'form' ? ' (close-form only when the last section is the booking form)' : ''}`, fix: close === 'close-type' ? 'the footer\'s default <div class="closing__cta close--type"> of <skill>/assets/starter.html' : `the <template data-part="${close}"> of <skill>/assets/starter.html in the footer` });
+      warns.push({ check: 'deal-drift', where: `close ${builtClose ? 'close-' + builtClose : 'none'}`, msg: `the deal dealt the close ${close}; the page builds ${builtClose ? 'close-' + builtClose : 'no dealt close'}${builtClose === 'form' ? ' (close-form only when the last section is the booking form)' : ''}`, fix: close === 'close-type' ? 'the closing section\'s default <div class="closing__cta close--type"> of <skill>/assets/starter.html' : `the <template data-part="${close}"> of <skill>/assets/starter.html in the last section of main` });
     }
     for (const key of ['visit', 'offer', 'showcase', 'rooms', 'feature', 'form', 'statement']) {
       const c = lastOf(key);

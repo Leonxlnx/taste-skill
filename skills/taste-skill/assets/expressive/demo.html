@@ -60,7 +60,6 @@
   #ledger .ex-ledger { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6) var(--gutter, 24px); align-items: start; }
   #ledger [data-field-doc] { grid-column: 1 / span 7; }
   #ledger .ex-ledger__note { grid-column: 9 / -1; display: grid; gap: var(--s-4); }
-  .closing .ex-word { margin-top: var(--s-7); color: var(--ink); }
   @media (max-width: 1023px) {
     #stall .ex-stall__words, #stall .ex-stall__side, #ledger [data-field-doc], #ledger .ex-ledger__note { grid-column: 1 / -1; }
   }
@@ -173,8 +172,7 @@
       </div>
     </div>
   </section>
-</main>
-<footer class="footer closing ground-inverse" id="wishlist" aria-labelledby="close-h">
+<section class="section closing ground-inverse" data-family="closing-action" id="wishlist" aria-labelledby="close-h">
   <div class="wrap">
     <div class="closing__cta close--type">
       <div class="section-head">
@@ -182,13 +180,15 @@
         <p>One night at the stall, on PC first, then Switch.</p>
       </div>
       <a class="btn btn--primary btn--xl btn--wide" href="#wishlist">Get the demo<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
-      <p class="ex-word" data-lettering="shadow" aria-hidden="true">Kettlewick</p>
     </div>
+  </div>
+</section>
+</main>
+<footer class="footer ground-inverse" aria-label="Footer"><div class="wrap">
     <div class="closing__links">
       <div class="grid">
         <div class="span-4 stack-4">
-          <a class="nav__logo" href="#top"><span class="mark" data-mark="dots" aria-hidden="true"></span>Kettlewick</a>
-          <p class="footer__lede">A tea stall game in 8px pixels.</p>
+          <a class="nav__logo footer__mark" href="#top"><span class="mark" data-mark="dots" aria-hidden="true"></span>Kettlewick</a>
         </div>
         <div class="span-2 footer__col"><h3>Edges</h3><ul><li><a href="?edge=torn">Torn</a></li><li><a href="?edge=wave">Wave</a></li><li><a href="?edge=saw">Saw</a></li></ul></div>
         <div class="span-2 footer__col"><h3>Buttons</h3><ul><li><a href="?buttons=bevel">Bevel</a></li><li><a href="?buttons=ribbon">Ribbon</a></li><li><a href="?buttons=offset">Offset</a></li></ul></div>

@@ -25,7 +25,7 @@ The kit sets three distances. These are CSS pixels at regular density.
 
 ## 2. Sections as tall as their content
 
-A content-led hero may end before the fold. The rest of the page grows to fit the whole menu, all rooms or every question. The shell is `header.nav`, `main`, `footer.closing` and the phone's `nav.actionbar`. Keep popups and floating controls out of it.
+A content-led hero may end before the fold. The rest of the page grows to fit the whole menu, all rooms or every question. The shell is `header.nav`, `main`, `footer.footer` and the phone's `nav.actionbar`. Keep popups and floating controls out of it.
 
 ```html
 <section class="section" id="features"><div class="wrap"> the h2 first, then the content </div></section>
@@ -37,7 +37,7 @@ On a place page, or a product or service page with four or more photographs, put
 - On desktop a kit split fills the taller column up to a 2:3 portrait crop. Keep the focal point visible when it crops. Tiles keep `--tile-ratio`, panels `--p-h`. At phone width the stacked picture takes its own ratio.
 - Merge short quotes, logo rows and a few words of statement with their subject. For the page's one main claim that can stand alone, use `.section--thin`.
 - Follow the dealt ground map. A new question can start on the same ground. Use `.section--compact` for a short continuation (48px desktop and 32px phone). Separate ordinary list rows with space. A tinted box behind the heading cannot replace the section ground.
-- `footer.closing > .wrap` holds the close above the links and legal row. Its bottom padding is 64px plus the phone bar.
+- Put the closing action and its ground in the last section of main. Follow it with the name, links and legal line in the footer.
 - A composed section can hold one sticky element when the section is at most 2.5 screens tall (`compose.md`). Keep normal scrolling. For pinned-chapters and photo-chapters only a small visual column sticks. The text stays in flow and phones pair each step with its picture. A one-sentence scene gets at most one screen in total (`moments.md`, `scenes.md`).
 
 ## 3. The hero

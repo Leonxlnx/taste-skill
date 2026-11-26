@@ -393,8 +393,8 @@ if (!variant || variant==='headings') {
     .replace('<h2>b</h2>','<h2>Features</h2><h3>Listed buildings: do you take them?</h3>')
     .replace('<h2>d</h2>','<h2>How a project runs</h2><h3>Trace a warm pipe</h3><h2>Built for what’s next</h2><h2>Clarity, delivered</h2>' + items)
     .replace('<h2>e</h2>','<h2>What it costs</h2>' + repeated)
-    .replace('</main>',components + warningExamples + '</main>')
-    .replace('</body>','<footer class="footer closing"><div class="wrap"><div class="closing__cta">'+close+'</div><div class="closing__links">Wednesday, 14:00</div></div></footer><script type="module" src="assets/moments/moments.js"></script></body>');
+    .replace('</main>',components + warningExamples + '<section class="section closing"><div class="wrap"><div class="closing__cta">'+close+'</div></div></section></main>')
+    .replace('</body>','<footer class="footer"><div class="wrap"><div class="closing__links">Wednesday, 14:00</div></div></footer><script type="module" src="assets/moments/moments.js"></script></body>');
   const file=path.join(tmp,'headings.html');
   fs.writeFileSync(file,start);
   function checkHeadings(terms) {

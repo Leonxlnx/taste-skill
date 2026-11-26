@@ -98,7 +98,7 @@ export function finishWarnings(width, m, accentShare) {
 export function measurePresence() {
   const findings = [];
   const frames =
-    '[data-ui],[data-example],.app-frame,.hero__window,.ui-win,.device,.ts-device,.d-win,.dw,[data-part="demo-loop"] .part-frame';
+    '[data-ui],[data-ui-still],[data-example],.app-frame,.hero__window,.ui-win,.device,.ts-device,.d-win,.dw,[data-part="demo-loop"] .part-frame';
   const subjects = frames + ',[data-chart],[data-diagram],[data-visual],img,video,canvas,svg,figure';
   const sections = [...document.querySelectorAll('main section,main > div.section')].filter(
     (section) => !section.parentElement.closest('section')
@@ -133,12 +133,31 @@ export function measurePresence() {
     return scale * parseFloat(getComputedStyle(el).fontSize);
   };
 
+  // Clip evidence to the window and take its union so nested rows and text count once.
+  function coverage(frame, rects) {
+    const clips = rects.map(r => ({
+      l: Math.max(frame.left, r.left), r: Math.min(frame.right, r.right),
+      t: Math.max(frame.top, r.top), b: Math.min(frame.bottom, r.bottom)
+    })).filter(c => c.r > c.l && c.b > c.t);
+    const edges = [...new Set(clips.flatMap(c => [c.l, c.r]))].sort((a,b) => a-b);
+    let area = 0;
+    for (let i = 1; i < edges.length; i++) {
+      const strips = clips.filter(c => c.l < edges[i] && c.r > edges[i-1]).sort((a,b) => a.t-b.t);
+      let bottom = frame.top;
+      for (const c of strips) {
+        area += (edges[i]-edges[i-1]) * Math.max(0, c.b-Math.max(c.t,bottom));
+        bottom = Math.max(bottom,c.b);
+      }
+    }
+    return area / (frame.width * frame.height);
+  }
   for (const section of sections.filter(painted)) {
     const container = containerOf(section);
     const width = contentWidth(container);
     const title = section.querySelector('h1');
     const boxes = [],
       words = [];
+    const textBoxes = [];
     const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
       const node = walker.currentNode,
@@ -155,6 +174,7 @@ export function measurePresence() {
       const rects = [...range.getClientRects()].filter((r) => r.width && r.height);
       if (rects.length) {
         words.push(el);
+        textBoxes.push({el, rects});
         boxes.push(...rects);
       }
     }
@@ -207,6 +227,24 @@ export function measurePresence() {
         msg: message,
         fix
       });
+    if (innerWidth === 1440 && section.matches('[data-family="pricing"],[data-family="plans"],#pricing,#plans,.pricing')) {
+      const selector = 'article,dl > div,.price-card,.pricing-card,.plan-card,[data-plan],:is(.plans,.pricing-grid,.price-options,[data-plans]) > :is(li,div)';
+      const plans = [...section.querySelectorAll(selector)].filter(el => painted(el) && !el.parentElement.closest(selector));
+      for (const plan of plans) {
+        const inclusion = [...plan.querySelectorAll('li,p,dd')].some(el =>
+          !el.children.length && !/[$€£]/.test(el.textContent) && el.textContent.trim().split(/\s+/).length >= 3);
+        const price = /(?:[$€£¥]\s*\d|\d[\d.,]*\s*(?:€|USD|EUR|GBP)|\bfree\b|contact (?:us|sales))/i.test(plan.innerText);
+        const missing = [];
+        if (!price) missing.push('price');
+        if (!inclusion) missing.push('included features');
+        if (!plan.querySelector('a[href],button')) missing.push('action');
+        if (missing.length) {
+          const name = plan.querySelector('dt,h3,h4')?.textContent || plan.id || 'unnamed';
+          emit('view-thin','WARN','Plan “' + name + '” lacks ' + missing.join(' and ') + '.',
+            'Give each plan its supplied inclusions, price and action in a full column or card.');
+        }
+      }
+    }
     const reading =
       !media.length &&
       !section.querySelector('table,form,pre,button') &&
@@ -221,7 +259,13 @@ export function measurePresence() {
           );
         }
       );
-    if (!title && innerWidth === 1440 && boxes.length && !reading) {
+    const closing = section.matches('main > section:last-of-type');
+    const form = closing && section.querySelector('form')?.getBoundingClientRect();
+    const centredForm = form && form.width <= 721 && Math.abs((form.left + form.right - innerWidth) / 2) < 32;
+    const closingZone = closing && section.matches('.ts-gradient[data-text-zone="left"]') &&
+      section.querySelector('h2') && section.querySelector('a.btn,button');
+    const typeClose = closing && section.querySelector('.close--type h2') && section.querySelector('.close--type .btn[href]');
+    if (!typeClose && !title && innerWidth === 1440 && boxes.length && !reading && !centredForm && !closingZone) {
       const occupied =
         Math.max(...boxes.map((r) => Math.min(innerWidth, r.right))) -
         Math.min(...boxes.map((r) => Math.max(0, r.left)));
@@ -257,20 +301,38 @@ export function measurePresence() {
         title.getBoundingClientRect().bottom <= plate.getBoundingClientRect().top &&
         (plate.getBoundingClientRect().width + 2 < width || r.width + 2 < contentWidth(plate));
       const small =
-        innerWidth === 1440 &&
+        screen && innerWidth === 1440 &&
         (across ||
           r.width + 1 < (heroWindow ? Math.max(880, sevenColumns) : sevenColumns) ||
           r.height + 1 < (heroWindow ? 480 : 360));
       const phoneText = innerWidth === 390 && screen && items.some((word) => fontPixels(word) < 12.95);
       const phoneWidth = innerWidth === 390 && screen && r.width < width - 2;
-      if (small || phoneWidth || phoneText || (screen && items.length < 6)) {
+      let share = null;
+      const composedView = el.matches('[data-visual],[data-chart],[data-diagram]') && !el.matches('img,svg,canvas,video');
+      if (innerWidth === 1440 && (screen || composedView)) {
+        const evidence = textBoxes.filter(b => el.contains(b.el)).flatMap(b => b.rects);
+        for (const node of el.querySelectorAll('*')) {
+          if (!painted(node) || node.closest('template,defs,svg *')) continue;
+          const box = node.getBoundingClientRect();
+          const row = node.matches('tr,[role=row],dl > div:has(> dt):has(> dd),[data-row]') ||
+            [...node.classList].some(token => /(?:^|[-_])row$/.test(token));
+          const listRow = node.matches('li') && box.width >= node.parentElement.getBoundingClientRect().width * .8;
+          // A coloured day, time bar or plotted point is visible even with no text.
+          const style = getComputedStyle(node);
+          const mark = !node.children.length && box.width * box.height < r.width * r.height * .2 &&
+            (style.backgroundColor !== 'rgba(0, 0, 0, 0)' || parseFloat(style.borderTopWidth) > 0);
+          if (row || listRow || mark || node.matches('img,svg,canvas,video,button,[data-mark]')) evidence.push(box);
+        }
+        share = coverage(r, evidence);
+      }
+      if ((share !== null && share < .35) || small || phoneWidth || phoneText || (screen && items.length < 6)) {
         const measured =
           Math.round(r.width) +
           ' × ' +
           Math.round(r.height) +
           'px, ' +
           items.length +
-          ' text items' +
+          ' text items' + (share === null ? '' : ', ' + Math.round(share * 100) + '% occupied') +
           (phoneText ? ', text under 13px' : '') +
           '.';
         emit(

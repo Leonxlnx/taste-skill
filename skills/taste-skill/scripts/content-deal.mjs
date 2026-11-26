@@ -54,7 +54,7 @@ export function dealContent({ page, hardware = false, assets, rows, seed, palett
   const hardwareObject = ['product','tech'].includes(page) && count('object') && (hardware || /\b(hardware|keyboard|headphones|device|controller|robot|drone)\b/i.test(brief || ''));
   if (['software','gaming','tech'].includes(page) && !hardwareObject && slot && !(slot === 'hero' ? sceneHero : sceneClose)) {
     const presets = Object.keys(forms), preset = presets[Math.floor(rng(seed + ':preset')() * presets.length)];
-    gradient = {tier:'show', preset, slot, moving, effect: forms[preset], hues:palette.accent ? spectrum(palette.accent,.88) : null,
+    gradient = {tier:'show', preset, slot, zone:'left', moving, effect: forms[preset], hues:palette.accent ? spectrum(palette.accent,.88) : null,
       seed: Math.floor(rng(seed + ':field')() * 1000000), placement: slot === 'close' || dark ? 'ground' : palette.bg ? 'panel' : null,
       place: slot === 'close' ? 'closing band' : !palette.bg ? 'dark art palette: hero ground; light art palette: hero panel beside the headline' : dark ? 'hero ground under headline and window' : 'hero panel behind the window or beside the headline; keep the page white'};
   }

@@ -44,7 +44,7 @@
   /* the deck's switch: a demo control, not part of a page */
   .deck-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
   .deck-bar a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
-  footer.closing > .wrap { row-gap: var(--s-8); }
+  .deck-bar { justify-content: center; }
   .deck-bar a[aria-current] { text-decoration: underline; text-underline-offset: 4px; }
   .m-swatches { gap: var(--s-2); }
   .m-swatches .m-swatch { width: 44px; height: 44px; }
@@ -176,14 +176,16 @@
       </div>
     </div>
   </section>
-</main>
-
-<footer class="footer closing">
+<section class="section closing" data-family="closing-action">
   <div class="wrap">
-    <div class="closing__cta">
+    <div class="closing__cta close--type">
       <h2 id="try-entrance">Try an entrance</h2>
       <nav class="deck-bar" aria-labelledby="try-entrance"></nav>
     </div>
+  </div>
+</section>
+</main>
+<footer class="footer" aria-label="Footer"><div class="wrap">
     <div class="closing__links">
       <div class="footer__legal"><span>Ofenhaus is a demo bakery.</span><span>Photographs: Johann Jaritz (CC BY-SA 3.0 AT), Wald1siedel (CC BY-SA 4.0), Chmee2 (CC BY 3.0), Wikimedia Commons.</span></div>
     </div>
@@ -195,6 +197,7 @@
     const q = new URLSearchParams(location.search), now = q.get('enter') || 'still', bar = document.querySelector('.deck-bar');
     for (const v of ['still', 'fade', 'rise', ...(q.get('temper') === 'loud' ? ['set-type','line-blocks'] : [])]) {
       const a = document.createElement('a'), p = new URLSearchParams(q);
+      a.className = 'btn btn--secondary';
       p.set('enter', v); a.href = '?' + p; a.textContent = v.replace(/-/g, ' ');
       if (v === now) a.setAttribute('aria-current', 'true');
       bar.append(a);

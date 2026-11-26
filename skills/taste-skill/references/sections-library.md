@@ -857,8 +857,7 @@ not billed again."
 
 # Closes
 
-The close is row 1 of `footer.closing` (`layout-v4.md`), on the footer's own ground, never a band of
-its own. It asks for the main action once more, word for word.
+The close is the last section of main. Put its dealt band on the section and align the heading with the band’s text zone. Repeat the main action when it belongs here.
 
 ## close-type
 
@@ -978,17 +977,14 @@ The new photo compositions are shown at both widths in `assets/layout/compositio
 
 # Footers
 
-Row 2 of `footer.closing`: the directory on one ground and the legal row (`system.md`).
+The footer follows main and contains the name, supplied links and legal line.
 
 ## footer-columns
 
 **Job and use.** The quiet footer on the base ground: the company in one plain line, the sitemap,
 the legal row. Software, products, services.
 
-**At 1440.** As `starter.html`: the company block on `span-4` (the logo, then `p.footer__lede`, one
-line of at most eight words in the display face at 28px), groups of supplied product parts, page sections and company routes. Give each heading at least three related links; the newsletter field
-(once, "Subscribe") when the page has one; then `.footer__legal`: the brand, year and supplied legal routes, the empty `.socials`, the credits
-line last.
+**At 1440.** Set the name beside the supplied routes and legal line. Use a column for three or more related links.
 
 **At 390.** Columns two-up, the legal row stacked.
 
@@ -1000,7 +996,7 @@ coloured social icons; effects in the footer.
 **Job and use.** A dark ground for the company name and link columns.
 Software and product (the one dark band at the end).
 
-**At 1440.** `footer.closing.footer--dark.ground-inverse`: `.grid` with the company block on
+**At 1440.** `footer.footer--dark.ground-inverse`: `.grid` with the company block on
 `span-4` (the mark and name at the item-title size), groups of three or more supplied routes, the legal
 row. On a dark page system.css keeps it a step darker than the page with a hairline on top.
 
@@ -1010,34 +1006,11 @@ row. On a dark page system.css keeps it a step darker than the page with a hairl
 
 ## footer-visit
 
-**Job and use.** A place's or a local firm's footer: where it is, set large, with the way there
-and the hours, so a visitor needs nothing else.
-
-**At 1440.** `footer.closing.footer--visit` as `starter.html` (`links-visit`): on `span-7`
-`address.footer__address` (street and district on two lines, the district alone when the brief names no street, 32/40 on a place, 48px elsewhere, in the
-display face), one line on the way there (the stop, minutes on foot) and `a.link` "Get directions"
-(the OpenStreetMap search, `copy.md`; "See the area" with a district only, none with a town only); on
-`span-4 start-9` "Opening hours" over `dl.hours` with
-`data-tz` (system.js marks today). Then the nav row (the logo, the nav's words, Contact), the legal
-row with the credits line last; a wide name is optional only when the PLAN deals it. No button.
-
-**At 390.** The address at 24 to 30px, the hours under it, the nav row wrapping.
-
-**Mistakes.** Hours that differ from the visit section; today from the visitor's clock; a map in
-the footer; a printed email or phone the brief does not give.
+Use the name, a link to the visit section, supplied routes and the legal line. The address, directions and hours belong together in the visit section. Sparse links wrap on phones.
 
 ## footer-statement
 
-**Job and use.** The close and the footer as one designed slab on the page's lit ground (sand, sky,
-sage or painting): one big line, one full-width button, then the columns (Figma's close and footer).
-Tech only.
-
-**At 1440.** `footer.closing.footer--statement`: system.css insets it 8px from the window's sides
-and bottom with `--r-lg` corners. The close as close-type's, 96px to the columns, the legal row.
-
-**At 390.** Full bleed, square corners.
-
-**Mistakes.** A second big button; an effect on it.
+On a tech page apply the statement ground to the closing section. Keep the heading and action together in its text zone. The footer follows on its own ground.
 
 # Page plans
 

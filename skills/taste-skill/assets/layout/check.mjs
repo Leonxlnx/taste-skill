@@ -166,7 +166,7 @@ try {
       await S('Page.navigate', {url});
       await Promise.race([ready,sleep(20000)]);
       still = await ev(src + '\n;window.lyRules.still()');
-      resting = await ev('window.lyRules.counters(true)');
+      resting = await ev('window.lyRules.counters(true,false)');
       await S('Emulation.setScriptExecutionDisabled', {value:false});
     }
     const loaded = new Promise(r => subs.push(m => { if (m.method === 'Page.loadEventFired') r(); }));

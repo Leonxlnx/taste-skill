@@ -6,6 +6,8 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ## 2.5.4 - unreleased
 
+- The close owns its ground in the last section of main. Consumer briefs can draw lively plans under the SaaS trade. Hardware plans name physical views. The finish check measures occupied window area and checks each plan for its offer and action.
+
 - Plans name product-view fragments. The finish check measures occupied section width, window size and phone text. Sample records inside a marked view are separate from the real offer.
 
 - Plans suggest a section sequence by kind and check each supplied layout family before building.

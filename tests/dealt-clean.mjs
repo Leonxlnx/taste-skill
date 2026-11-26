@@ -112,18 +112,19 @@ function recipe(j) {
   }
   page=page.replace('<header class="nav','<header id="'+j.nav+'" class="nav');
   const fc={'footer-statement':'footer--statement','footer-dark':'footer--dark ground-inverse','footer-visit':'footer--visit','footer-columns':''}[j.footer];
-  page=page.replace('class="footer closing"','class="footer closing '+fc+'"');
+  page=page.replace('<footer class="footer"','<footer class="footer '+(j.footer==='footer-statement'?'':fc)+'"')
+    .replace('class="section closing"','class="section closing '+(j.footer==='footer-statement'?fc:'')+'"');
   if (j.footer==='footer-statement') page=page.replace(/data-type="service"/,'data-type="tech"').replace(/(name="(?:page-type|page-kind|site-kind)" content=")[^"]+/g,'$1tech');
   if (j.footer==='footer-visit') page=page.replace(/<div class="closing__links">[\s\S]*?(?=<\/footer>)/,template('links-visit')+'</div>\n');
   if (j.close!=='close-type') {
     let close=template(j.close);
     if (j.close==='close-form') close=close.replace(/<form[\s\S]*?<\/form>/,template('booking-form').replace('class="form"','class="form close__form"'));
-    page=page.replace(/<div class="closing__cta close--type">[\s\S]*?(?=<div class="closing__links">)/,close);
+    page=page.replace(/<div class="closing__cta close--type">[\s\S]*?(?=\s*<\/div>\s*<\/section>)/,close);
   }
   page=page.replace('<div class="closing__cta ','<div id="'+j.close+'" class="closing__cta ').replace('<div class="closing__links">','<div id="'+j.footer+'" class="closing__links">');
   if (j.isolated==='bleed-panel') {
     // The photographed panel requires a content section between it and the hero.
-    page=page.replace('</main>',composition(j.isolated)+'</main>');
+    page=page.replace('<section class="section closing',composition(j.isolated)+'<section class="section closing');
   } else if (j.isolated) {
     page=page.replace(/<section class="section" id="packages"[\s\S]*?<\/section>/,composition(j.isolated))
       .replaceAll('href="#packages"','href="#'+j.isolated+'"');
@@ -132,7 +133,7 @@ function recipe(j) {
       const section=composition(id);
       return i===0 && ['footer-columns','footer-visit'].includes(j.footer) ? section.replace('class="section ','class="section ground-surface ') : section;
     });
-    page=page.replace('</main>',sections.join('\n')+'</main>');
+    page=page.replace('<section class="section closing',sections.join('\n')+'<section class="section closing');
   }
   const file=path.join(site,j.name+'.html');
   fs.writeFileSync(file,page);

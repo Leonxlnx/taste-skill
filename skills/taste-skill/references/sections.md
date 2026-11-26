@@ -96,12 +96,12 @@ Build the palette, type pairing, hero, entrance, nav, footer, close, buttons, ma
   picture card in the panel), `nav-cards` (three or four picture cards), `nav-centre` (the words in
   the middle), `nav-split` (the words left, the name in the middle). `nav--tone` puts the bar on the
   inverse ground (tech only).
-- **Footer** (`footer.closing` row 2): `footer-columns`, `footer-dark`, `footer-statement` (the lit
-  ground, tech only), `footer-visit` (a place or a service with a door).
-- **Close** (`footer.closing` row 1, `system.css` footer.closing): `close-type` (the h2 large, a
+- **Footer** (after main, name, link groups and legal line): `footer-columns`, `footer-dark`, `footer-statement` (the lit
+  ground on the preceding close, tech only), `footer-visit` (a place or a service with a door).
+- **Close** (last section of main, with its dealt ground): `close-type` (the h2 large, a
   line, the big button at its own width at the row's foot), `close-photo` (the head row, then the
   client's photograph down to the links), `close-word` (the h2 and the button, with the name across the wrap only for a dealt large wordmark on a quiet page), `close-split` (a tinted panel with the h2, one line, up to three short facts
-  and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. Repeat hours and directions in `footer-visit` when they help a returning visitor.
+  and the button, beside a photograph), `close-form` (the full form at the close). Use the form once. When a final content section holds the form or booking panel, pass `--last-section form` and put only `.closing__links` in the footer. Put hours and directions in the visit section. Link to it from the footer.
 - **Buttons** on `<html data-buttons>`: `solid`, `pill`, `tonal`, `arrow`, `block`.
 - **Mark** beside the name in the nav and footer (`system.md`); a client's own logo replaces it.
 

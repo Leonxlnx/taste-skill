@@ -114,19 +114,14 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 
 ## Footer
 
-`footer.closing` is the page's last section (`layout-v4.md`): row 1 the dealt close, row 2 the
-directory on one ground (link columns, the legal row). Types: `footer-columns`, `footer--dark` (columns on a darker ground), `footer--statement` (the lit ground; tech),
-For product and software pages, group supplied page sections, product parts and company routes by visitor task. `footer--visit` (directions and opening hours). Use a column heading only over three or more links. For fewer destinations use one row beside the name and contact line. Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
-the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
-brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
-unless the brief gives the accounts.
+The final section of main holds the closing action and any dealt band. Follow it with a footer containing the name, supplied links and the legal line. Use one row for a few destinations. Give a group a heading when it has at least three related links. A place links to its visit section for hours and directions. Keep legal and photograph credits together. Include social links only when the brief supplies the accounts.
 
 Only the dealt large-wordmark option adds `data-wordmark="large"` to the footer. Use the supplied contact at 18–20px in `.footer-contact`. Put supplied sign-in, docs, status or app store routes in both navigation and footer. For software without those URLs, link the setup section as Quickstart in both.
 
 ## Cards, lists and forms
 
 - `.card` as `cards.md` builds it; one height per row; never text in a box in a box. Open tiles
-  (`.tile`) for rooms, models and people; `.rows` for menus, prices and specs (space between ordinary rows, rules for tabular data). `.faq` shows answers in full. Use `.faq.faq--fold` for a long set. For a composed accordion follow `compose.md` and `motion.md`.
+  (`.tile`) for rooms, models and people; `.rows` for menus, prices and specs (space between ordinary rows, rules for tabular data). `.faq` shows answers in full. Use `.faq--columns` for two columns on the page grid and `.faq.faq--fold` for a long set. For a composed accordion follow `compose.md` and `motion.md`.
 - Opening hours: `<dl class="hours">` of `dt`/`dd` pairs with `data-days="tue-sun"` or `data-days="sat,sun"` on each `dt` (the row's label; the `dd` takes none) and
   `data-tz="Europe/Berlin"` on the `dl.hours` itself (the venue's zone; system.js reads it only there): system.js marks today's row (weight 500) and
   fills `[data-open-now]` ("Open now, until 16:00"; "Closed, opens Tuesday at 7:30"); never

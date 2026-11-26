@@ -832,7 +832,7 @@ function visualProbe(o) {
     const rv = c.r;
     const below = blocks.filter((b) => !c.el.contains(b.el) && b.r.top >= rv.bottom - 4 && b.r.top - rv.bottom <= 32 && xo(b.r, rv) >= Math.min(b.r.width, rv.width) * 0.4).sort((a, b) => a.r.top - b.r.top)[0];
     const above = blocks.filter((b) => !c.el.contains(b.el) && b.r.bottom <= rv.top + 4 && rv.top - b.r.bottom <= 32 && xo(b.r, rv) >= Math.min(b.r.width, rv.width) * 0.4).sort((a, b) => b.r.bottom - a.r.bottom)[0];
-    if (below && !exempt(below) && below.tag !== 'figcaption') {
+    if (below && !below.el.closest('.readout, [role=status], output') && !exempt(below) && below.tag !== 'figcaption') {
       const short = below.rows <= 2 && below.text.length <= 180, gap = below.r.top - rv.bottom;
       if (CAPCLS.test(below.cls)) add('caption-class', 'FAIL', below, c, 'its class names it a caption', gap);
       else if (short && (PHRASE.test(below.text) || window.lyRules.explaining.test(below.text))) add('caption-phrase', 'FAIL', below, c, 'a caption phrase', gap);
@@ -2596,7 +2596,7 @@ function measure(opt) {
       const limit = s.bottom - bottomAir;
       const probs = [];
       if (sc > ch + 1) probs.push(`its content is ${sc - ch}px taller than the section (scrollHeight ${sc}, clientHeight ${ch})`);
-      const lowOver = !sceneSec(s) && low != null && low > limit + 0.5;
+      const lowOver = !sceneSec(s) && low != null && low > limit + 1;
       if (lowOver) probs.push(`its lowest content ends ${px(low - s.top)}px below its top, past ${px(limit - s.top)}px (the section less ${px(bottomAir)}px of bottom padding)`);
       // (a dealt moment's parts at their start state, letters waiting to fly into the line, are the moment's own)
       const out = outside(s.i).filter((it) => !it.el.closest('[data-moment][data-moment-mounted]'));
@@ -2681,6 +2681,11 @@ function measure(opt) {
     // T-dom: no non-section in <main>; no band (80% of the section wide or more, 48px tall, a ground of its own,
     // holding the h2 or intro, or at a desktop width only text and controls); pre, .frame and [data-visual] never are
     const dOff = [];
+    for (const footer of document.querySelectorAll('body > footer')) {
+      const closing = footer.matches('.ts-gradient,[data-family="closing-action"]') ? footer :
+        footer.querySelector('.ts-gradient,.closing__cta h2,[data-family="closing-action"],form');
+      if (closing) dOff.push(off(closing, null, 'Move the closing action and its ground to the last section of main. Keep the name, links and legal line in the footer.'));
+    }
     if (main) for (const c of main.children) if (okChild(c) && !liftWrapper(c) && TU(c) !== 'SECTION') dOff.push(off(c, null, `a <${c.tagName.toLowerCase()}> sits directly in <main>: every part of <main> is a <section>`));
     const effBg = (el) => { for (let e = el; e; e = e.parentElement) { const c = cs(e).backgroundColor; if (alpha(c) > 0.01) return c; } return 'rgb(255, 255, 255)'; };
     for (const s of S) {
@@ -2755,7 +2760,7 @@ function measure(opt) {
     for (const c of body.children) {
       if (SKIPTAG.test(TU(c)) || !visible(c)) continue;
       const r = c.getBoundingClientRect(); if (r.width * r.height === 0) continue;
-      if (!c.matches('header.nav, main, footer.closing, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `One <${c.tagName.toLowerCase()}> sits outside the four allowed page containers, so move it into the header, main, footer or action bar.`));
+      if (!c.matches('header.nav, main, footer, nav.actionbar') && !(c.matches('header') && c.querySelector('h1') && !document.querySelector('main .hero'))) sOff.push(off(c, null, `One <${c.tagName.toLowerCase()}> sits outside the four allowed page containers, so move it into the header, main, footer or action bar.`));
     }
     for (const s of S) {
       // (an expressive page's crossing art is no layer of the section: references/expressive.md)
@@ -2779,13 +2784,7 @@ function measure(opt) {
         const ht2 = wk.filter((k) => k.classList.contains('hero-text'));
         if (ht2.length !== 1 || wk.length - ht2.length > 1) sOff.push(off(s.wrap, null, `The hero wrap holds ${ht2.length} .hero-text blocks and ${wk.length - ht2.length} other children, so group its contents into one .hero-text block and at most one strip.`, { at: 0 }));
       }
-      if (s.el.matches('footer.closing') && s.wrap) {
-        const wk = [...s.wrap.children].filter((k) => !SKIPTAG.test(TU(k)) && visible(k));
-        const last = S[s.i - 1]?.el;
-        const singleClose = wk.length === 1 && wk[0].matches('.closing__links') &&
-          (last?.matches('[data-big-scene][data-big-scene-mounted], [data-moment="closing-lift"]') || last?.querySelector('form, [data-big-scene][data-big-scene-mounted]'));
-        if (wk.length !== 2 && !singleClose) sOff.push(off(s.wrap, null, `The footer wrap holds ${wk.length} visible row${wk.length === 1 ? '' : 's'} and needs 2 here, so group its content into a closing call followed by a links row.`));
-      }
+
     }
     T.push(test('T1-structure', sOff.length ? 'FAIL' : 'PASS', sOff));
     // T2-containment: content boxes and boxed elements within the container, 2px (clip-aware); layers, sections, the
@@ -3196,7 +3195,7 @@ const TEST_FIX = {
   'SR-4 T-dom': 'put every block of <main> in a <section>, and give a band its own section instead of a ground inside one',
   'SR-5 T1': 'give each section one h2, first in its .wrap, and the hero only its h1',
   'SR-6 T1-margins': 'use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone',
-  'SR-6 T1-structure': 'build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing',
+  'SR-6 T1-structure': 'build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and a footer of links',
   'SR-6 T2-containment': 'keep it inside the container lines (.wrap): full width is for background layers and grounds only',
   'SR-6 T3-left-lines': "start the text on the container's left, or on the one split line every split shares",
   'SR-6 T4-alignment': 'set the text left (text-align: start)',
@@ -3646,6 +3645,7 @@ function areaProbe() {
     // the statement hero (deal.mjs --hero statement) is type on its ground by design: with no picture in it, its h1,
     // sub-line and button leave most of the screen ground at every width (sections.md section 4), so it is not judged
     if (sec === top[0] && sec.matches('.hero--statement, [class*="hero--statement"]') && !sec.querySelector('img, picture, video, canvas, iframe')) continue;
+    if (sec.matches('main > section:last-of-type') && sec.querySelector('.close--type h2') && sec.querySelector('.close--type .btn[href]') && sr.height < H * 0.8 && sr.height - parseFloat(s0.paddingTop) - parseFloat(s0.paddingBottom) < H / 2) continue;
     const hold = window.lyRules.stickyStage(sec);
     const stageOnly = hold && Math.abs(hold.box.height - sr.height) < 3;
     const S = D(stageOnly ? hold.stage : sr), area = (S.r - S.l) * (S.b - S.t);
@@ -5901,7 +5901,7 @@ function lib(itemContext) {
       const r = e.getBoundingClientRect(), c = CS(e);
       if (buttonLook(e, true) || rgba(c.backgroundColor).a >= 0.2 || bordered(c) || (c.boxShadow && c.boxShadow !== 'none')) return r; // its box shows
       const parts = deepLines(e).map((l) => ({ left: l.left, right: l.right }));
-      for (const m of e.querySelectorAll('svg, img, picture, canvas')) { const q = m.getBoundingClientRect(); if (q.width >= 2 && shown(m, q)) parts.push({ left: q.left, right: q.right }); }
+      for (const m of e.querySelectorAll('svg, img, picture, canvas, .mark[data-mark]')) { const q = m.getBoundingClientRect(); if (q.width >= 2 && shown(m, q)) parts.push({ left: q.left, right: q.right }); }
       if (!parts.length) return r;
       const l = Math.min(...parts.map((p) => p.left)), rr = Math.max(...parts.map((p) => p.right));
       return { left: l, top: r.top, width: rr - l, height: r.height };
@@ -6489,7 +6489,7 @@ function lib(itemContext) {
       const fit = CS(el).objectFit;
       const k = fit === 'contain' || fit === 'scale-down' ? Math.min(r.width / nw, r.height / nh) : Math.max(r.width / nw, r.height / nh);
       const name = decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '').slice(0, 60);
-      if (k * (devicePixelRatio || 1) > 1 / 0.75) add(out, 'photo-upscale', 'FAIL', el, `${name}: ${nw}x${nh} shown at ${Math.round(r.width)}x${Math.round(r.height)}, blown up ${k.toFixed(2)}x`, [r]);
+      if (!['pixelated','crisp-edges'].includes(CS(el).imageRendering) && k * (devicePixelRatio || 1) > 1 / 0.75) add(out, 'photo-upscale', 'FAIL', el, `${name}: ${nw}x${nh} shown at ${Math.round(r.width)}x${Math.round(r.height)}, blown up ${k.toFixed(2)}x`, [r]);
       if (LIBRARY.test(src)) out.credits.push({ id: idOf(el), sel: sel(el), name, host: (src.match(LIBRARY) || [''])[0] });
       const v = clipRect(el, r);
       if (v.width * v.height >= 0.7 * r.width * r.height && v.top >= 0 && v.bottom <= vh && el.tagName === 'IMG') out.photos.push({ id: idOf(el), sel: sel(el), name, rect: R(v) });
@@ -7231,7 +7231,8 @@ function lib(itemContext) {
         const icon = [...s.querySelectorAll(VIS)].some((e) => { if (isSvgPart(e)) return false; const q = e.getBoundingClientRect(); return q.width >= 24 && q.height >= 24 && shown(e, q); });
         // a closing call drawn as one great button (figma.com's full-width black slab) is its own picture
         const slab = s === lastMain && [...s.querySelectorAll('a[href], button')].some((e) => { const q = e.getBoundingClientRect(); if (q.width < 600 || q.height < 64 || !shown(e, q) || e.closest('details, summary, [role="tablist"]')) return false; const c = CS(e); return rgba(c.backgroundColor).a >= 0.3 || (c.backgroundImage && c.backgroundImage !== 'none'); });
-        if (cover < 0.05 && !icon && !slab) out.push({ id: idOf(s), sel: sel(s), text: label(h || s), cover: Math.round(cover * 100), textOnly: true, quote: !!s.querySelector('blockquote, figure.quote, [class*="quote"], [class*="testimonial"]'), close: s === lastMain, doc: D({ left: r.left, top, width: r.width, height: H }) });
+        const typeClose = s === lastMain && s.matches('[data-family="closing-action"]') && s.querySelector('.closing__cta h2') && s.querySelector('.closing__cta .btn[href]') && !s.querySelector('article,ul,ol,table');
+        if (cover < 0.05 && !icon && !slab && !typeClose) out.push({ id: idOf(s), sel: sel(s), text: label(h || s), cover: Math.round(cover * 100), textOnly: true, quote: !!s.querySelector('blockquote, figure.quote, [class*="quote"], [class*="testimonial"]'), close: s === lastMain, doc: D({ left: r.left, top, width: r.width, height: H }) });
         continue;
       }
       if (cover < 0.25) out.push({ id: idOf(s), sel: sel(s), text: label(h || s), cover: Math.round(cover * 100), slot: ph, doc: D({ left: r.left, top, width: r.width, height: H }) });
@@ -7311,7 +7312,7 @@ function lib(itemContext) {
       return false;
     };
     const heads = [];
-    const closingSection = document.querySelector('footer .closing__cta') ? null : [...document.querySelectorAll('main > section')].at(-1);
+    const closingSection = document.querySelector('main > section:last-of-type');
     for (const h of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
       if (inDrawn(h) || inFixed(h) || h.closest('dialog, .nav__menu, [role="menu"], header nav') || !visible(h)) continue;
       let mx = ownText(h) ? parseFloat(CS(h).fontSize) || 16 : 0;
@@ -7320,7 +7321,7 @@ function lib(itemContext) {
       // its lines on screen and its words (a paragraph set as a heading: copy-length)
       const hl = deepLines(h), tops = []; for (const l of hl) if (!tops.some((t) => Math.abs(t - l.top) < Math.max(4, l.height * 0.5))) tops.push(l.top);
       const item = isItem(h);
-      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h), item, step: h.tagName === 'H3' && !!h.closest('[class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]'), alignmentExempt: !!h.closest('footer,.hero,.closing__cta,[class*="close--"]') || h.closest('section') === closingSection, level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('footer.closing'), card: inCard(h) || (item && !!h.closest('article,[role=option]')), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h) });
+      heads.push({ id: idOf(h), sel: sel(h), text: label(h), full: full(h), item, step: h.tagName === 'H3' && !!h.closest('[class*="steps"], [class*="chapters"], [data-moment="pinned-chapters"], [data-moment="photo-chapters"]'), alignmentExempt: !!h.closest('footer,.hero,.closing__cta,[class*="close--"]') || h.closest('section') === closingSection, level: +h.tagName[1], fs: Math.round(mx * 10) / 10, foot: !!h.closest('footer'), closeMoment: h.matches('h2[data-moment]') && !!h.closest('main > section:last-of-type'), card: inCard(h) || (item && !!h.closest('article,[role=option]')), doc: doc(h), centred: /center/.test(CS(h).textAlign), lines: tops.length, words: full(h).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length, moment: (inMoment(h) && !h.matches('h2[data-moment]')) || inKitScene(h) || !!h.closest('main > section:last-of-type .close--type') });
     }
     // text that is not a heading but is set as large as one (a figure or a price excepted)
     const big = [];
@@ -7352,7 +7353,7 @@ function lib(itemContext) {
     }
     // the actions: every link or button with a button look, outside drawn mocks
     const ctas = [];
-    const actionClose = document.querySelector('footer .closing__cta') || last;
+    const actionClose = closingSection || last;
     for (const e of document.querySelectorAll(INTER)) {
       if (inDrawn(e) || (e.parentElement && e.parentElement.closest(INTER)) || !actionVisible(e)) continue;
       if (e.matches('[aria-pressed], [aria-selected], [role="tab"], [role="switch"]') || e.closest('[role="tablist"], [role="radiogroup"], .nav__menu, dialog')) continue;
@@ -7362,7 +7363,7 @@ function lib(itemContext) {
       if (playCtl(e)) continue; // a film's play control (the film hero's disc and label) plays the film, it is no action
       const raw = e.getAttribute('href');
       let href = null; if (raw != null) { try { href = new URL(raw, location.href).href; } catch {} }
-      const where = inFixed(e) || inChrome(e) ? 'nav' : hero && hero.contains(e) ? 'hero' : (last && last.contains(e)) || e.closest('footer.closing') ? 'last' : 'other'; // footer.closing is the page's closing section (system.css): its button is the last section's
+      const where = inFixed(e) || inChrome(e) ? 'nav' : hero && hero.contains(e) ? 'hero' : actionClose?.contains(e) ? 'last' : 'other';
       ctas.push({ id: idOf(e), sel: sel(e), label: full(e).slice(0, 60), href, needs: e.getAttribute('data-needs') || '', where, atClose: !!actionClose?.contains(e), beforeLast: !!last?.previousElementSibling?.contains(e), submitTargets: e.form && e.matches("button[type=submit], input[type=submit], form button:not([type])") ? [e.form.id, e.form.closest("section[id]")?.id].filter(Boolean).map(id => new URL("#"+id,location.href).href) : [], shape: L.shape, fill: L.fill, h: L.h, doc: doc(e) });
     }
     const closeLinks = [...(actionClose?.querySelectorAll('a[href]') || [])]
@@ -10480,7 +10481,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
       const nav = document.querySelector(':is(header,nav,[role=banner],[role=navigation]).nav, :is(header,[role=banner]) .nav');
       const end = document.querySelector('footer,[role=contentinfo]');
       const footer = end?.matches('.footer,[class*="footer--"]') ? end : end?.querySelector('.footer,[class*="footer--"]') || end;
-      const close = footer?.querySelector('[class*="close--"],.close__form') || document.querySelector('main .close__form');
+      const closing = document.querySelector('main > section:last-of-type');
+      const close = closing?.matches('[class*="close--"]') ? closing : closing?.querySelector('[class*="close--"],.close__form');
       const mark = nav?.querySelector('.nav__logo');
       const variant = (el,prefix) => [...(el?.classList || [])].find(c => c.startsWith(prefix))?.slice(prefix.length);
       return {
@@ -10490,8 +10492,8 @@ async function runWidth(cdp, helper, { w: width, h }, first) {
         heroPeek:hero?.classList.contains('hero--peek') || false, heroBook:!!window.lyRules.booking(hero),
         hero:[...(hero?.classList || [])].find(c=>c.startsWith('hero--') && c!=='hero--peek')?.slice(6), entrance:hero?.getAttribute('data-enter') || 'still', buttons:root.dataset.buttons, density:root.dataset.density || 'regular',
         nav:nav && !nav.querySelector('.nav__menu') && nav.querySelector('a[href]:not(.nav__logo)') ? 'direct' : nav ? 'nav-' + (['split','centre'].find(v=>nav.classList.contains('nav--'+v)) || (nav.querySelector('.nav__menu .menu-col,.menu-col,.menu__col,.menu-column') || nav.querySelectorAll('.menu-card').length < 3 ? 'mega' : 'cards')) : null,
-        footer:footer ? 'footer-' + (['visit','dark','statement','columns'].find(v=>footer.classList.contains('footer--'+v)) || (footer.querySelector('.links-visit,.visit-links,.footer__address') ? 'visit' : 'columns')) : null,
-        close:close ? 'close-' + (variant(close,'close--') || 'form') : footer?.querySelector('.closing__cta') ? 'close-type' : null,
+        footer:footer ? 'footer-' + (closing?.classList.contains('footer--statement') ? 'statement' : ['visit','dark','statement','columns'].find(v=>footer.classList.contains('footer--'+v)) || (footer.querySelector('.links-visit,.visit-links,.footer__address') ? 'visit' : 'columns')) : null,
+        close:close ? 'close-' + (variant(close,'close--') || 'form') : closing?.querySelector('.closing__cta') ? 'close-type' : null,
         mark:mark?.querySelector('[data-mark]')?.dataset.mark || (mark?.querySelector('img,svg') ? 'client-logo' : mark ? 'wordmark' : null)
       };
     })()`);
