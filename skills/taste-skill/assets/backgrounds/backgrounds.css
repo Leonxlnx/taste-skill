@@ -29,6 +29,7 @@
 :root {
   /* the hue the tints lean to: the accent, with an oklch hue in 262-338 (violet, lavender, purple) moved
      to azure (262-300) or pink (300-338), so a cobalt or plum accent never tints a ground violet */
+  --g-fine-dither: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlMBARiPzO8AAAGvSURBVHgBAaQBW/4AAQEAAAEAAAEAAQEAAAAAAAABAAAAAQEBAAAAAAAAAQABAAEBAAEAAQEAAAEAAQEAAQABAQEBAQEAAQEBAQEAAAEAAAABAAEBAAABAQEAAAEAAAAAAAEAAQAAAAEAAQAAAAEAAQABAQAAAAEBAQEAAAABAQAAAQABAQEBAQEAAQEAAAEBAQABAAEBAAAAAQEBAAEAAAABAAEBAAABAQAAAQEBAQABAQEAAAEAAQEAAQEAAQABAAEAAAEAAAAAAAEBAQEBAQABAQAAAAAAAQEBAQAAAQABAAABAQAAAAABAQAAAAAAAQEAAAABAQEAAAAAAQAAAAEAAQAAAQEAAAABAAEAAQEAAQEBAAAAAAEBAAEAAAABAAABAQEAAQEBAQABAAABAAAAAQEBAQAAAQAAAAABAQEBAQAAAAEAAAEBAAAAAAABAAAAAAABAAABAQAAAQAAAAEAAAEBAQAAAQEBAQAAAAAAAAABAQAAAQABAAEBAQAAAAEBAAAAAAABAQEBAAABAAABAQAAAQABAAAAAQABAAABAAAAAQEBAAABAAAAAQGmwQDElUnvnQAAAABJRU5ErkJggg==");
   --g-hue-src: var(--p-accent);
   /* the tint's lightness is held between these, so a pale lime on a dark page or a navy on a white one
      tints as deeply as a mid blue would */
@@ -191,7 +192,8 @@ main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--sect
 /* ---------------------------------------------------------------- 1 mist: a soft gradient field */
 .bg-mist::before {
   background:
-    radial-gradient(54% 70% at 4% 6%, color-mix(in oklab, var(--g-hue) calc(42% * var(--g-k)), transparent), transparent),
+    var(--g-fine-dither),
+    radial-gradient(76% 84% at -10% -6%, color-mix(in oklab, var(--g-hue) calc(42% * var(--g-k)), transparent), transparent),
     radial-gradient(46% 62% at 98% 16%, color-mix(in oklab, var(--g-hue-t) calc(48% * var(--g-k)), transparent), transparent),
     radial-gradient(64% 64% at 66% 116%, color-mix(in oklab, var(--g-hue) calc(24% * var(--g-k)), transparent), transparent),
     radial-gradient(34% 46% at 22% 104%, color-mix(in oklab, var(--g-hue-b) calc(18% * var(--g-k)), transparent), transparent);
@@ -201,7 +203,8 @@ main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--sect
 .bg-halo { --halo-x: 50%; --halo-y: 38%; }
 .bg-halo::before {
   background:
-    radial-gradient(34% 40% at var(--halo-x) var(--halo-y), color-mix(in oklab, var(--g-hue) calc(30% * var(--g-k)), transparent), transparent),
+    var(--g-fine-dither),
+    radial-gradient(46% 54% at var(--halo-x) var(--halo-y), color-mix(in oklab, var(--g-hue) calc(30% * var(--g-k)), transparent), transparent),
     radial-gradient(70% 76% at var(--halo-x) var(--halo-y), color-mix(in oklab, var(--g-hue) calc(15% * var(--g-k)), transparent), transparent),
     radial-gradient(30% 34% at calc(var(--halo-x) + 18%) calc(var(--halo-y) + 16%), color-mix(in oklab, var(--g-hue-t) calc(32% * var(--g-k)), transparent), transparent);
 }
@@ -241,12 +244,12 @@ main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--sect
   --bg: var(--g-to);
   --surface: color-mix(in oklab, var(--p-surface) calc(100% - 15% * var(--g-k)), var(--g-hue));
   background-color: transparent;
-  background-repeat: no-repeat;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
   /* the two melting edges and, between them (a pixel of overlap each side), the solid tone */
-  background-size: 100% var(--g-edge), 100% var(--g-edge), 100% calc(100% - 2 * var(--g-edge) + 2px);
-  background-position: top, bottom, center;
+  background-size: 20px 20px, 100% var(--g-edge), 100% var(--g-edge), 100% calc(100% - 2 * var(--g-edge) + 2px);
+  background-position: 0 0, top, bottom, center;
   /* a smoothstep: 0, .04, .16, .32, .5, .68, .84, .96, 1 of the way */
-  background-image:
+  background-image: var(--g-fine-dither),
     linear-gradient(to bottom,
       var(--g-from), color-mix(in oklab, var(--g-to) 4%, var(--g-from)) 12.5%, color-mix(in oklab, var(--g-to) 16%, var(--g-from)) 25%,
       color-mix(in oklab, var(--g-to) 32%, var(--g-from)) 37.5%, color-mix(in oklab, var(--g-to) 50%, var(--g-from)) 50%,
@@ -269,8 +272,9 @@ main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--sect
 .bg-topglow::before {
   content: ""; position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: min(100%, 720px); pointer-events: none;
   background:
+    var(--g-fine-dither),
     linear-gradient(90deg, transparent, color-mix(in oklab, var(--g-hue) calc(60% * var(--g-kp)), transparent) 50%, transparent) 50% var(--nav-h, 64px) / 62% 1px no-repeat,
-    radial-gradient(62% 470px at 50% var(--nav-h, 64px), color-mix(in oklab, var(--g-hue) calc(27% * var(--g-kp)), transparent), transparent),
+    radial-gradient(82% 480px at 78% var(--nav-h, 64px), color-mix(in oklab, var(--g-hue) calc(27% * var(--g-kp)), transparent), transparent),
     radial-gradient(42% 380px at 86% calc(var(--nav-h, 64px) + 60px), color-mix(in oklab, var(--g-hue-b) calc(18% * var(--g-kp)), transparent), transparent),
     radial-gradient(120% 300px at 50% var(--nav-h, 64px), color-mix(in oklab, var(--g-hue) calc(12% * var(--g-kp)), transparent), transparent);
 }
@@ -331,7 +335,7 @@ main > section.section.bg-horizon:last-of-type { padding-bottom: calc(var(--sect
 .bg-band {
   background-image:
     var(--g-noise-soft),
-    radial-gradient(66% 120% at 0% 0%, color-mix(in oklab, var(--bg) 42%, var(--g-hi, white)), transparent 72%),
+    radial-gradient(80% 138% at -10% -15%, color-mix(in oklab, var(--bg) 42%, var(--g-hi, white)), transparent 72%),
     radial-gradient(52% 96% at 100% 0%, color-mix(in oklab, var(--t-b) 62%, transparent), transparent 76%),
     radial-gradient(64% 104% at 100% 100%, color-mix(in oklab, var(--t-c) 70%, transparent), transparent 78%);
   background-blend-mode: soft-light, normal, normal, normal;
@@ -362,7 +366,7 @@ html[data-mode="dark"] .bg-tint {
 .bg-field {
   background-image:
     var(--g-noise-soft),
-    linear-gradient(112deg, transparent 38%, color-mix(in oklab, var(--g-hi, white) 26%, transparent) 50%, transparent 62%),
+    linear-gradient(112deg, transparent 26%, color-mix(in oklab, var(--g-hi, white) 26%, transparent) 50%, transparent 62%),
     radial-gradient(58% 86% at 8% 0%, color-mix(in oklab, var(--g-hi, white) 58%, transparent), transparent),
     radial-gradient(54% 80% at 82% 6%, color-mix(in oklab, var(--t-b) 80%, transparent), transparent),
     radial-gradient(60% 96% at 100% 100%, color-mix(in oklab, var(--t-c) 76%, transparent), transparent),
@@ -388,8 +392,8 @@ html[data-mode="dark"] .bg-tint {
   background-color: var(--st-1);
   background-image:
     var(--g-noise-soft),
-    radial-gradient(58% 78% at 10% 4%, color-mix(in oklab, var(--st-3) 90%, transparent), transparent 72%),
-    radial-gradient(48% 70% at 90% 12%, color-mix(in oklab, var(--st-2) 92%, transparent), transparent 74%),
+    radial-gradient(80% 106% at -4% -8%, color-mix(in oklab, var(--st-3) 77%, transparent), transparent 72%),
+    radial-gradient(48% 70% at 90% 12%, color-mix(in oklab, var(--st-2) 52%, transparent), transparent 74%),
     radial-gradient(70% 90% at 78% 112%, color-mix(in oklab, var(--st-4) 94%, transparent), transparent 74%),
     radial-gradient(46% 62% at 4% 100%, color-mix(in oklab, var(--st-2) 60%, transparent), transparent 72%);
   background-blend-mode: soft-light, normal, normal, normal, normal;
@@ -449,8 +453,9 @@ html[data-lowchroma] .bg-stage { --st-src: oklch(from var(--ground-accent) l c h
 .bg-horizon::before {
   content: ""; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: 640px; pointer-events: none;
   background:
-    radial-gradient(26% 74px at 50% calc(100% - 140px), color-mix(in oklab, var(--lit) calc(70% * var(--g-kd)), transparent), transparent),
-    radial-gradient(54% 76% at 50% 100%, color-mix(in oklab, var(--lit) calc(44% * var(--g-kd)), transparent), transparent 74%),
+    var(--g-fine-dither),
+    radial-gradient(36% 84px at 66% calc(100% - 140px), color-mix(in oklab, var(--lit) calc(70% * var(--g-kd)), transparent), transparent),
+    radial-gradient(70% 80% at 66% 100%, color-mix(in oklab, var(--lit) calc(44% * var(--g-kd)), transparent), transparent 74%),
     radial-gradient(120% 84% at 50% 100%, color-mix(in oklab, var(--g-hue) calc(22% * var(--g-kd)), transparent), transparent 76%);
 }
 .bg-horizon::after {
@@ -458,9 +463,9 @@ html[data-lowchroma] .bg-stage { --st-src: oklch(from var(--ground-accent) l c h
      dome as wide as the phone is a pointed arch) */
   content: ""; position: absolute; z-index: -1; left: 50%; translate: -50% 0; width: max(170%, 1200px); bottom: -560px; height: 700px; pointer-events: none;
   border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  background: radial-gradient(60% 100% at 50% 0, color-mix(in oklab, var(--lit) 34%, var(--bg)), var(--bg) 72%);
+  background: radial-gradient(74% 100% at 60% 0, color-mix(in oklab, var(--lit) 34%, var(--bg)), var(--bg) 72%);
   border-top: 2px solid color-mix(in oklab, var(--lit) 90%, white);
-  box-shadow: 0 -12px 56px -8px color-mix(in oklab, var(--lit) 62%, transparent), 0 -1px 16px color-mix(in oklab, var(--lit) 70%, transparent);
+  box-shadow: 0 -10px 38px -8px color-mix(in oklab, var(--lit) 52%, transparent), 0 -1px 14px color-mix(in oklab, var(--lit) 58%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent 5%, #000 36%, #000 64%, transparent 95%);
           mask-image: linear-gradient(90deg, transparent 5%, #000 36%, #000 64%, transparent 95%);
 }
@@ -468,13 +473,13 @@ html[data-lowchroma] .bg-stage { --st-src: oklch(from var(--ground-accent) l c h
 /* ---------------------------------------------------------------- 15 deep: near-black with a spotlight and grain, x.ai's dark */
 .bg-deep {
   --bg: color-mix(in oklab, var(--g-dark-bg) 70%, black);
-  background-image:
-    radial-gradient(64% 70% at 50% 0%, color-mix(in oklab, var(--g-hue) calc(21% * var(--g-kd)), transparent), transparent 76%),
-    radial-gradient(48% 60% at 100% 100%, color-mix(in oklab, var(--g-hue-t) calc(18% * var(--g-kd)), transparent), transparent 72%),
+  background-image: var(--g-fine-dither),
+    radial-gradient(82% 78% at 82% -10%, color-mix(in oklab, var(--g-hue) calc(21% * var(--g-kd)), transparent), transparent 76%),
+    radial-gradient(61% 72% at 110% 106%, color-mix(in oklab, var(--g-hue-t) calc(18% * var(--g-kd)), transparent), transparent 72%),
     linear-gradient(180deg, color-mix(in oklab, var(--g-dark-surface) calc(40% * var(--g-kd)), var(--bg)), var(--bg) 70%),
     linear-gradient(var(--g-cover-d), var(--g-cover-d)),
     var(--g-noise-scr);
-  background-blend-mode: normal, normal, normal, normal, screen;
+  background-blend-mode: normal, normal, normal, normal, normal, screen;
 }
 /* a hairline of light along the top edge, brightest in the middle (a lit lip, as on x.ai's cards) */
 .bg-deep::before {

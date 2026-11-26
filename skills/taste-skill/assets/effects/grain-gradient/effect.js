@@ -4,16 +4,16 @@ import { shader, color, fallbackCSS } from '../fx.js';
 
 const params = {
   speed:       { default: 0.5,  min: 0, max: 2, step: 0.01 },  // how fast the shapes drift
-  softness:    { default: 0.45, min: 0, max: 1, step: 0.01 },  // size and edge softness of the blobs
-  warp:        { default: 0.6,  min: 0, max: 1, step: 0.01 },  // slow organic bending of the shapes
-  grain:       { default: 0.6,  min: 0, max: 1, step: 0.01 },  // film grain strength
-  scatter:     { default: 0.5,  min: 0, max: 1, step: 0.01 },  // grainy dissolve between colours
+  softness:    { default: 0.74, min: 0, max: 1, step: 0.01 },  // size and edge softness of the blobs
+  warp:        { default: 0.38,  min: 0, max: 1, step: 0.01 },  // slow organic bending of the shapes
+  grain:       { default: 0.32,  min: 0, max: 1, step: 0.01 },  // film grain strength
+  scatter:     { default: 0.28,  min: 0, max: 1, step: 0.01 },  // grainy dissolve between colours
   tint:        { default: 0.5,  min: 0, max: 1, step: 0.01 },  // how much accent enters
   contrast:    { default: 0.55, min: 0, max: 1, step: 0.01 },  // how far the colours move from the background
   calm:        { default: 0.5,  min: 0, max: 1, step: 0.01 },  // flatten the area where text sits
   calmX:       { default: 0.25, min: 0, max: 1, step: 0.01 },  // calm area centre, 0 left .. 1 right
   calmY:       { default: 0.7,  min: 0, max: 1, step: 0.01 },  // calm area centre, 0 top .. 1 bottom
-  grainMotion: { default: 1,    min: 0, max: 1, step: 1 },     // 1 grain moves like film, 0 still grain
+  grainMotion: { default: 0,    min: 0, max: 1, step: 1 },     // 1 grain moves like film, 0 still grain
 };
 
 const frag = /* glsl */ `
@@ -34,7 +34,7 @@ float dissolve(float w, float z) {
 void main() {
   vec2 uv = fx_uv();
   vec2 p = fx_p();
-  float t = u_time * u_speed * 0.12 + u_seed * 0.37;
+  float t = sin(u_time * 6.2831853 / 52.0 * (u_speed / 0.5)) + u_seed * 0.37;
 
   // grains are one CSS pixel (whole device pixels), so the texture looks the same at any DPR
   float gc = max(1.0, floor(u_dpr + 0.5));
@@ -61,7 +61,7 @@ void main() {
   col = mix(col, u_kNear, m);
 
   // film grain on lightness (24 frames a second when it moves)
-  float frame = u_grainMotion > 0.5 ? floor(u_time * 24.0) : 0.0;
+  float frame = u_grainMotion > 0.5 ? floor(mod(u_time, 52.0) * 24.0) : 0.0;
   // softer near pure white and black, where clipped grain reads as dirt
   float amp = u_grainAmp * u_grain * (1.0 - 0.6 * smoothstep(0.86, 1.0, col.x)) * (1.0 - 0.5 * smoothstep(0.22, 0.0, col.x));
   col.x += fx_grain(gp, frame) * amp;
@@ -169,7 +169,8 @@ export default {
       palette,
       seed,
       uniforms,
-      still: 4,
+      still: 0,
+      maxDpr: 1.25,
       fallback: ({ palette: P, params: prm, kind }) => {
         const k = tones(P, prm, kind).k;
         return fallbackCSS({ ...P, accent: k[0] }, { at: `${(1 - prm.calmX) * 100}% ${(1 - prm.calmY) * 100}%`, tint: 1 });
