@@ -1,0 +1,15 @@
+:root {
+  --t-h1: clamp(44px, calc(27.6571px + 4.1905vw), 88px); --lh-h1: 1.02; --ls-h1: -0.045em;
+  --t-h2: clamp(30px, calc(24.0571px + 1.5238vw), 46px); --lh-h2: 1.1; --ls-h2: -0.031em;
+  --t-h3: clamp(21px, calc(19.5143px + 0.381vw), 25px); --lh-h3: 1.22; --ls-h3: -0.015em;
+  --t-lead: clamp(19px, calc(17.8857px + 0.2857vw), 22px); --lh-lead: 1.45; --ls-lead: -0.008em;
+  --t-body: clamp(17px, calc(16.6286px + 0.0952vw), 18px); --lh-body: 1.55; --ls-body: 0em;
+  --t-small: clamp(14px, calc(13.6286px + 0.0952vw), 15px); --lh-small: 1.45; --ls-small: 0.003em;
+  --t-card: var(--t-h3);
+}
+h1, .t-h1 { font-size: var(--t-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+h2, .t-h2 { font-size: var(--t-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+h3, .t-h3 { font-size: var(--t-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+.t-lead { font-size: var(--t-lead); line-height: var(--lh-lead); letter-spacing: var(--ls-lead); }
+body, .t-body { font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+.t-small { font-size: var(--t-small); line-height: var(--lh-small); letter-spacing: var(--ls-small); }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The eastern approach · Fieldbook</title>
+  <link rel="stylesheet" href="../assets/system.css">
+  <link rel="stylesheet" href="demo-palette.css">
+  <link rel="stylesheet" href="route-device.css">
+  <link rel="stylesheet" href="route-grade.css">
+  <link rel="stylesheet" href="route-frame.css">
+  <link rel="stylesheet" href="route-mark.css">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:var(--p-bg);color:var(--p-ink);font:16px/1.55 system-ui,sans-serif}
+    main.wrap,header.wrap{width:min(1060px,calc(100% - 48px));margin:auto}header{padding:20px 0;border-bottom:1px solid var(--line)}
+    header a{color:var(--p-ink);font-weight:650;text-decoration:none}.approach{display:grid;grid-template-columns:1fr minmax(180px,300px);align-items:center;gap:clamp(32px,8vw,112px);padding:64px 0}
+    h1{font-size:clamp(44px,6vw,86px);font-weight:550;line-height:.99;letter-spacing:-.065em;margin:0 0 24px}
+    p{max-width:41ch;color:var(--p-muted)}.approach>.ts-device{justify-self:end}.map-screen{display:flex;flex-direction:column}.map-screen>div{padding:12px;font-size:13px;font-weight:600}.map-screen small{display:block;font-size:11px;font-weight:400}.map-screen.device-screen>img{flex:1;height:0;min-height:0}
+    .distance{padding:12px;margin:24px 0 0;max-width:340px}.distance img{width:100%;display:block}
+    @media(max-width:640px){.approach{grid-template-columns:1fr;padding:36px 0}.approach>.ts-device{justify-self:center}}
+    header.nav{position:static;height:64px;background:transparent}
+    .approach{grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter);min-height:calc(100svh - 64px)}
+    .approach>div{grid-column:1 / span 7}.approach>.ts-device{grid-column:10 / span 3;width:100%}
+    .distance{max-width:none;width:calc((100% + var(--gutter)) * 4 / 7 - var(--gutter))}
+    @media(max-width:640px){main>.approach{grid-template-columns:1fr;gap:14px;padding:24px 0}.approach>div,.approach>.ts-device{grid-column:auto}.approach>.ts-device{width:min(40vw,150px)}.distance{width:100%;margin-top:14px}}
+  </style>
+</head>
+<body><header class="nav wrap"><a href="demo.html">Fieldbook</a></header><main class="wrap">
+  <section class="approach"><div><h1>The eastern <span class="ts-scribble">approach</span></h1><p>Follow the yellow poles over the ridge. The gravel road climbs to 482 metres before turning towards the coast.</p><figure class="distance ts-frame"><img src="route-distance.svg" alt="The ridge is 16 kilometres into the 31 kilometre route."></figure></div>
+    <figure class="ts-device"><div class="device-screen map-screen"><div>Westfjords traverse<small>Route 06 · 31 km</small></div><img class="ts-grade" src="../assets/photos/img/m108358720-1200.webp" alt="Gravel road along a moss-covered slope in the Westfjords"><div>Eastern approach<small>Photograph by Barry Marsh</small></div></div></figure>
+  </section></main></body></html>

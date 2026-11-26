@@ -88,7 +88,24 @@ function spectrum(accent,rich){
   });
 }
 
-return {blend,neighbour,spectrum};})();
+function oklch(colour) {
+  const [lightness,a,b]=lab(colour);
+  return [lightness,Math.hypot(a,b),Math.atan2(b,a)];
+}
+
+// Compress chroma at a fixed hue and lightness until the colour fits sRGB.
+function fromLch(lightness,chroma,hue) {
+  const at=c=>channels([lightness,c*Math.cos(hue),c*Math.sin(hue)]);
+  let lo=0,hi=chroma;
+  if(at(hi).every(v=>v>=0&&v<=255))return hex(at(hi));
+  for(let i=0;i<16;i++){
+    const mid=(lo+hi)/2;
+    if(at(mid).every(v=>v>=0&&v<=255))lo=mid;else hi=mid;
+  }
+  return hex(at(lo));
+}
+
+return {blend,neighbour,spectrum,oklch,fromLch};})();
 toolbox["tile"]=(()=>{
 // Indexed PNG with a stored DEFLATE block. A small palette keeps tiles compact.
 function chunk(type,data){
@@ -583,6 +600,10 @@ const presets = ['height-1','height-2','height-3','height-4','height-5','contact
 const uses = ['floating product window','dialog','menu'];
 const knobs = {amount:[0,1,.5]};
 
+function contactLayers() {
+  return [[8,9,-8,136], [20,26,-22,96]];
+}
+
 function generate(options) {
   const {bg, accent, amount} = config(options);
   const preset = options.preset ?? 'height-2';
@@ -603,7 +624,7 @@ function generate(options) {
   } else {
     // Offset, blur radius, spread and alpha byte drive both representations.
     const layers = preset === 'contact'
-      ? [[8,9,-8,136], [20,26,-22,96]]
+      ? contactLayers()
       : [[1,2,0,24], [height,height*3,-height,opacity], [lift,lift*2,-Math.round(lift*.55),opacity]];
     shadow = layers.map(([y,blur,spread,a]) =>
       `0 ${y}px ${blur}px ${spread}px ${tint}${a.toString(16).padStart(2,'0')}`).join(', ');
@@ -616,7 +637,7 @@ function generate(options) {
   };
 }
 
-return {presets,uses,knobs,generate};})();
+return {presets,uses,knobs,contactLayers,generate};})();
 toolbox["surface"]=(()=>{
 const {config, mix, contrast, svg}=toolbox["common"];
 const {generate:grain}=toolbox["grain"];
@@ -680,4 +701,734 @@ function generate(o){
 }
 
 return {presets,uses,generate,knobs};})();
+toolbox["palette"]=(()=>{
+const {contrast, svg}=toolbox["common"];
+const {blend, oklch, fromLch}=toolbox["colour"];
+
+const presets = ['light', 'dark'];
+const uses = ['client page', 'product interface', 'campaign'];
+const knobs = {strength: [0, 1, 0.65]};
+const choices = {temperature: ['true','warm','cool','brand'], paper: ['near-white','white','soft']};
+
+function pigment(input) {
+  if (!/^#(?:[a-f\d]{3}|[a-f\d]{6})$/i.test(input)) throw Error('Use a hex brand colour.');
+  return input.length === 4 ? '#' + [...input.slice(1)].map(c => c+c).join('') : input.toLowerCase();
+}
+
+function scheme(brand, second, dark, temperature, paper, strength) {
+  const [L,C,h] = oklch(brand);
+  const neutralHue = {true:0, warm:75*Math.PI/180, cool:245*Math.PI/180, brand:h}[temperature];
+  const chroma = {true:0, warm:.012, cool:.011, brand:Math.min(.019,C*.16)}[temperature];
+  const neutral = l => fromLch(l, chroma, neutralHue);
+  const paperLevel = {white:1,'near-white':.985,soft:.961}[paper];
+  const bg = neutral(dark ? .17+(1-paperLevel)*.45 : paperLevel);
+  const surface = neutral(dark ? .237 : paperLevel-.032);
+  const ink = neutral(dark ? .956 : .235);
+  let muted = ink;
+  for (let i=0;i<=1000;i++) {
+    const candidate = neutral(dark ? i/1000 : 1-i/1000);
+    if (Math.min(contrast(candidate,bg),contrast(candidate,surface)) >= 7.05) { muted=candidate; break; }
+  }
+  const accentAt = l => fromLch(l,C*(.61+.6*strength),h);
+  let accent = accentAt(L);
+  for (let i=1;contrast(accent,bg)<3.05 && i<=500;i++) {
+    accent=accentAt(L+((dark?1:0)-L)*i/500);
+  }
+  const accentInk = contrast('#ffffff',accent)>contrast('#000000',accent)?'#ffffff':'#000000';
+  return {bg,surface,ink,muted,accent,accentInk,
+    line:blend(bg,ink,dark?.24:.17),tint:blend(bg,second??accent,dark?.24:.13)};
+}
+
+function declarations(p,prefix) {
+  return Object.entries({bg:p.bg,surface:p.surface,ink:p.ink,muted:p.muted,accent:p.accent,
+    'accent-ink':p.accentInk,action:p.accent,'action-ink':p.accentInk})
+    .map(([key,value])=>'  --p-'+prefix+key+': '+value+';').join('\n');
+}
+
+function sheet(p) {
+  const roles = [['Ground',p.bg],['Surface',p.surface],['Ink',p.ink],['Muted',p.muted],
+    ['Line',p.line],['Accent',p.accent],['Label',p.accentInk],['Tint',p.tint]];
+  const swatches=roles.map(([name,color],i)=>{
+    const x=20+72*i;
+    return `<rect x="${x}" y="111" width="68" height="28" fill="${color}" stroke="${p.line}"/><text x="${x}" y="158">${name}</text><text x="${x}" y="176" font-size="14" fill="${p.muted}">${color}</text>`;
+  }).join('');
+  return svg(`<rect width="616" height="192" fill="${p.bg}"/><g font-family="system-ui,sans-serif" fill="${p.ink}"><text x="20" y="47" font-size="32" font-weight="600">Field notes</text><text x="20" y="76" font-size="16" fill="${p.muted}">Westfjords traverse</text><rect x="443" y="29" width="145" height="39" rx="5" fill="${p.accent}"/><text x="515" y="54" text-anchor="middle" font-size="15" fill="${p.accentInk}">Read the route</text><g font-size="15">${swatches}</g></g>`,'0 0 616 192').replace('preserveAspectRatio="none"','role="img" aria-label="Page palette and eight colour roles"');
+}
+
+function generate(options={}) {
+  const brand=pigment(options.brand??options.palette?.accent??'#265db5');
+  const second=options.second?pigment(options.second):null;
+  const {temperature='brand', paper='near-white', strength=.65, preset='light'}=options;
+  if (!choices.temperature.includes(temperature)||!choices.paper.includes(paper)||!presets.includes(preset)) throw Error('Unknown palette setting.');
+  const p=scheme(brand,second,preset==='dark',temperature,paper,strength);
+  const inverse=scheme(brand,second,preset!=='dark',temperature,paper,strength);
+  const {bg,surface,ink,muted,accent,accentInk}=p;
+  const json={id:'brand-'+brand.slice(1)+'-'+preset,name:'Brand '+brand+' · '+preset,
+    tags:[preset+'-neutral','mono-accent'],trades:[],bg,surface,ink,muted,accent,accentInk,
+    fields:[{bg:inverse.bg,ink:inverse.ink}],note:'Use the accent for actions and focus.',seenIn:[]};
+  const css=':root {\n'+declarations(p,'')+'\n'+declarations(inverse,'inv-')+
+    '\n  --line: '+p.line+';\n  --p-tint: '+p.tint+';\n}';
+  const ratios={ink:contrast(ink,bg),secondary:contrast(muted,bg),label:contrast(accentInk,accent),accent:contrast(accent,bg)};
+  return {json,css,svg:sheet(p),roles:p,ratios};
+}
+
+return {presets,uses,knobs,choices,generate};})();
+toolbox["device"]=(()=>{
+const {svg,uri,mix}=toolbox["common"];
+const {generate:shadow, contactLayers}=toolbox["shadow"];
+
+const presets=['browser','phone','tablet','laptop','terminal'];
+const uses=['product screenshot','app walkthrough','command transcript'];
+const knobs={};
+const choices={theme:['light','dark'],address:['shown','hidden']};
+
+// Body dimensions, corner radius, inset and title bar, in one coordinate system.
+const frames={
+  browser:[640,416,12,2,40], phone:[216,450,34,9,0],
+  tablet:[440,320,19,9,0], laptop:[544,344,12,8,0], terminal:[600,354,10,2,33],
+};
+
+function generate(options={}) {
+  const {preset='browser',theme='light',address='shown'}=options;
+  if(!Object.hasOwn(frames,preset)||!choices.theme.includes(theme)||!choices.address.includes(address))throw Error('Unknown device setting.');
+  const [w,h,r,inset,bar]=frames[preset];
+  const dark=theme==='dark', hardware=['phone','tablet','laptop'].includes(preset);
+  const edge=hardware?(dark?'#62666a':'#404549'):dark?'#45474c':'#bbbfc3';
+  const shell=hardware?'#17191b':dark?'#23262a':preset==='terminal'?'#d9ddde':'#f4f5f5';
+  const detail=dark?'#979da3':'#767d81';
+  const screen=preset==='terminal'?'#171a1c':dark?'#1c2023':'#ffffff';
+  const base=preset==='laptop'?28:0, W=w+base*2,H=h+(base?14:0);
+  const x=base+inset,y=inset+bar,sw=w-2*inset,sh=h-y-inset,sr=r-inset;
+  const rect=(x,y,w,h,r,fill)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}"/>`;
+  let art=rect(base,0,w,h,r,edge)+rect(base+1,1,w-2,h-2,r-1,shell);
+  if(preset==='phone')art+=rect(w/2-14,3,28,2.3,1.15,'#767b7d');
+  if(preset==='tablet')art+='<circle cx="'+(w/2)+'" cy="4.5" r="1.65" fill="#73797c"/>';
+  if(bar){
+    const cy=(bar+inset)/2;
+    art+=[0,1,2].map(i=>`<circle cx="${17+i*11}" cy="${cy}" r="3" fill="${detail}"/>`).join('');
+    if(preset==='browser' && address==='shown'){
+      art+=rect(132,8,w-264,25,5,dark?'#34373b':'#e3e6e7');
+      art+=`<path d="M146 19h7v6h-7z M147.5 19v-2a2 2 0 014 0v2" fill="none" stroke="${detail}" stroke-width="1.2"/>`;
+    }
+    if(preset==='terminal')art+=`<text x="300" y="22" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" fill="${dark?'#d4d8da':'#41484c'}">Terminal</text>`;
+  }
+  if(base)art+=`<path d="M1 ${h}h${W-2}q-1 13-25 13H26Q4 ${h+13} 1 ${h}Z" fill="#8c9194"/><path d="M${W/2-35} ${h}h70q-2 4-7 4h-56q-5 0-7-4Z" fill="#555b5f"/>`;
+  const upper=bar?0:sr;
+  const aperture=`M${x+upper} ${y}H${x+sw-upper}q${upper} 0 ${upper} ${upper}v${sh-upper-sr}q0 ${sr} -${sr} ${sr}H${x+sr}q-${sr} 0 -${sr} -${sr}V${y+upper}q0 -${upper} ${upper} -${upper}Z`;
+  const opening=`<path d="${aperture}" fill="${screen}"/>`;
+  const shellSvg=svg(art+opening,'0 0 '+W+' '+H).replace('preserveAspectRatio="none"','aria-hidden="true"');
+  const slot=`<defs><clipPath id="screen"><path d="${aperture}"/></clipPath></defs><g clip-path="url(#screen)"><svg data-device-screen="" x="${x}" y="${y}" width="${sw}" height="${sh}" viewBox="0 0 ${sw} ${sh}"><!-- Insert screen artwork here. --></svg></g>`;
+  const tint=mix(options.palette?.bg??'#f5f3ee','#050809',.86);
+  const shadows=contactLayers().map(([dy,blur,spread,alpha],i)=>{
+    const filter='<filter id="contact'+i+'" x="-50%" y="-50%" width="200%" height="210%"><feGaussianBlur stdDeviation="'+blur/2+'"/></filter>';
+    return '<defs>'+filter+'</defs><g opacity="'+(alpha/255).toFixed(3)+'" filter="url(#contact'+i+')">'+rect(base-spread,dy-spread,w+2*spread,h+2*spread,r,tint)+'</g>';
+  }).reverse().join('');
+  const still=svg(shadows+art+opening+slot,'-14 -6 '+(W+28)+' '+(H+29)).replace('preserveAspectRatio="none"','role="img" aria-label="'+preset+' frame"');
+  const pc=(v,total)=>(100*v/total).toFixed(4)+'%';
+  const depth=shadow({...options,preset:'contact'}).css.match(/--object-shadow: ([^;]+)/)[1];
+  const css=`.ts-device { position: relative; display: block; width: min(100%, ${W}px); aspect-ratio: ${W} / ${H}; margin: 0; isolation: isolate; }
+.ts-device::before { content: ""; position: absolute; inset: 0 ${pc(base,W)} ${pc(H-h,H)}; border-radius: ${pc(r,w)} / ${pc(r,h)}; box-shadow: ${depth}; z-index: -2; }
+.ts-device::after { content: ""; position: absolute; inset: 0; z-index: -1; background: url("${uri(shellSvg)}") center / contain no-repeat; }
+.ts-device > .device-screen { position: absolute; box-sizing: border-box; overflow: hidden; left: ${pc(x,W)}; top: ${pc(y,H)}; width: ${pc(sw,W)}; height: ${pc(sh,H)}; border-radius: ${pc(upper,sw)} ${pc(upper,sw)} ${pc(sr,sw)} ${pc(sr,sw)} / ${pc(upper,sh)} ${pc(upper,sh)} ${pc(sr,sh)} ${pc(sr,sh)}; background: ${screen}; color: ${preset==='terminal'||dark?'#fafafa':'#22262a'}; }
+.ts-device > .device-screen > :is(img,video) { display: block; width: 100%; height: 100%; object-fit: cover; }`;
+  return {css,svg:still,html:'<figure class="ts-device"><div class="device-screen"><!-- Insert page content here. --></div></figure>',slot:{x,y,width:sw,height:sh,radius:sr,topRadius:upper},screen};
+}
+
+return {presets,uses,knobs,choices,generate};})();
+toolbox["grade"]=(()=>{
+const {blend}=toolbox["colour"];
+const {rgb,config}=toolbox["common"];
+
+const presets=['neutral-match','warm-film','cool','monochrome','duotone','soft-matte'];
+const uses=['photo essay','property gallery','product series'];
+const knobs={strength:[0,1,1],exposure:[-.5,.5,0]};
+const rounded=n=>Number(n.toFixed(4));
+const weights=[.2126,.7152,.0722];
+
+// Each channel follows the same luminance ramp between two palette endpoints.
+function duoMatrix(shadow,light,strength){
+  const a=rgb(shadow),b=rgb(light);
+  return [0,1,2].flatMap(i=>[
+    ...weights.map((w,j)=>rounded((i===j?1-strength:0)+strength*(b[i]-a[i])*w/255)),
+    0,rounded(strength*a[i]/255)
+  ]).concat([0,0,0,1,0]).join(' ');
+}
+
+function generate(options={}){
+  const {preset='neutral-match',strength=1,exposure=0}=options;
+  if(!presets.includes(preset))throw Error('Unknown photo grade.');
+  const {ink,accent}=config(options);
+  const s=Number(strength),ev=Number(exposure);
+  const brightness=rounded(2**ev);
+  const knob=(target)=>rounded(1+(target-1)*s);
+  const treatments={
+    'neutral-match':`saturate(${knob(.32)}) contrast(${knob(.85)})`,
+    'warm-film':`saturate(${knob(.70)}) sepia(${rounded(.29*s)}) contrast(${knob(.94)})`,
+    cool:`saturate(${knob(.86)}) contrast(${knob(.98)})`,
+    monochrome:`grayscale(${s}) contrast(${knob(1.06)})`,
+    'soft-matte':`saturate(${knob(.67)}) contrast(${knob(.73)}) brightness(${knob(1.045)})`,
+  };
+  // The endpoint ordering follows the picture luminance even on inverse pages.
+  const l=c=>rgb(c).reduce((sum,v,i)=>sum+v*weights[i],0);
+  const ends=[ink,accent].sort((a,b)=>l(a)-l(b));
+  function endpoint(colour,target,limit,test){
+    let result=colour;
+    for(let step=1;test(l(result),limit)&&step<=50;step++)result=blend(colour,target,step/50);
+    return result;
+  }
+  const low=endpoint(ends[0],'#121315',55,(a,b)=>a>b);
+  const high=endpoint(ends[1],'#faf8f3',178,(a,b)=>a<b);
+  const id='grade-'+preset+'-'+low.slice(1)+'-'+high.slice(1)+'-'+Math.round(s*100000);
+  const matrix=preset==='cool'?
+    [knob(.956),0,0,0,0,0,knob(.99),0,0,.005*s,0,0,knob(1.012),0,.02*s,0,0,0,1,0].map(rounded).join(' '):duoMatrix(low,high,s);
+  const hasMatrix=preset==='duotone'||preset==='cool';
+  const filter=`<filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter>`;
+  const defs=hasMatrix?`<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" style="position:absolute"><defs>${filter}</defs></svg>`:'';
+  const treatment=hasMatrix?'url(#'+id+') '+(treatments[preset]??''):treatments[preset];
+  const css=`.ts-grade { --grade-exposure: ${brightness}; filter: brightness(var(--grade-exposure)) ${treatment}; }`;
+  const stops=Array.from({length:9},(_,i)=>`<rect x="${i*40}" width="40" height="140" fill="${blend('#151719','#f4eedf',i/8)}"/>`).join('');
+  // A portable tonal proof; browser previews apply the actual class to a photograph.
+  const art=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 140" role="img" aria-label="Tonal proof for ${preset}"><defs>${hasMatrix?filter:''}</defs><g style="filter:brightness(${brightness}) ${treatment}">${stops}</g></svg>`;
+  return {css,svg:art,defs};
+}
+
+return {presets,uses,knobs,generate};})();
+toolbox["chart"]=(()=>{
+const {blend}=toolbox["colour"];
+const {config}=toolbox["common"];
+
+const presets=['sparkline','bars','stacked-bar','area','donut','progress-ring','range-bar','heat-strip','dot-plot'];
+const uses=['route profile','usage readout','measured comparison'];
+const knobs={};
+
+const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]));
+const coord=n=>Number(n.toFixed(2));
+const fmt=n=>new Intl.NumberFormat('en-US',{maximumSignificantDigits:6}).format(n);
+const line=(x,y,X,Y,stroke,width=1)=>`<path d="M${coord(x)} ${coord(y)}L${coord(X)} ${coord(Y)}" fill="none" stroke="${stroke}" stroke-width="${width}"/>`;
+const dot=(x,y,r,color)=>`<circle cx="${coord(x)}" cy="${coord(y)}" r="${r}" fill="${color}"/>`;
+const rect=(x,y,w,h,color)=>`<rect x="${coord(x)}" y="${coord(y)}" width="${coord(w)}" height="${coord(h)}" fill="${color}"/>`;
+const txt=(x,y,s,anchor='start',size=13)=>`<text x="${coord(x)}" y="${coord(y)}" text-anchor="${anchor}" font-size="${size}">${esc(s)}</text>`;
+const inputList=v=>Array.isArray(v)?v:typeof v==='string'?v.split(',').map(w=>w.trim()):[];
+
+function read(options,preset){
+  const raw=inputList(options.values);
+  if(!raw.length||raw.some(v=>!['number','string'].includes(typeof v)||String(v).trim()===''||!Number.isFinite(Number(v))||Math.abs(Number(v))>1e12))
+    throw Error('Supply finite numbers with --values or --data.');
+  const values=raw.map(Number),labels=inputList(options.labels),unit=String(options.unit??'');
+  if(labels.length && labels.length!==values.length)throw Error('Give one label per value.');
+  if(labels.some(s=>typeof s!=='string'||s.length>24)||unit.length>8)throw Error('Use labels up to 24 characters and units up to 8.');
+  const rows=['bars','dot-plot','donut','stacked-bar'].includes(preset);
+  if(values.length>(rows?8:80))throw Error('Use at most '+(rows?8:80)+' values in this chart.');
+  if(['range-bar','progress-ring'].includes(preset)&&values.length!==2)throw Error('Provide the two endpoints or used and capacity.');
+  if(['sparkline','area'].includes(preset)&&values.length<2)throw Error('A trace needs at least two values.');
+  if(['donut','stacked-bar','progress-ring'].includes(preset)&&(values.some(n=>n<0)||values.every(n=>n===0)))throw Error('Shares need nonnegative values and a positive total.');
+  if(preset==='progress-ring'&&(values[1]<=0||values[0]>values[1]))throw Error('Usage must fit a positive capacity.');
+  if(preset==='range-bar'&&values[0]>values[1])throw Error('Range endpoints must be in ascending order.');
+  return {values,labels,unit};
+}
+
+function generate(options={}){
+  const preset=options.preset??presets[0];
+  if(!presets.includes(preset))throw Error('Unknown chart type.');
+  const {values:v,labels,unit}=read(options,preset),{bg,ink,accent}=config(options);
+  const muted=options.palette?.muted??blend(ink,bg,.23),rule=blend(bg,ink,.18),wash=blend(bg,accent,.20);
+  const n=v.length,total=v.reduce((a,b)=>a+b,0),min=Math.min(...v),max=Math.max(...v);
+  const value=d=>fmt(d)+(unit?(unit==='%'?'':' ')+unit:'');
+  const label=i=>labels[i]??String(i+1);
+  const title=String(options.title??preset.replaceAll('-',' '));
+  if(title.length>100)throw Error('Use a chart title under 101 characters.');
+  const labelWidth=labels.length?Math.max(...labels.map(s=>s.length))*7.8:16;
+  let width=Math.max(352,Math.ceil(labelWidth)+255);
+  let height=138,marks='';
+  const scale=(v,a,b,start,end)=>a===b?(start+end)/2:start+(v-a)/(b-a)*(end-start);
+  if(preset==='sparkline'||preset==='area'){
+    const lo=preset==='area'?Math.min(0,min):min,hi=preset==='area'?Math.max(0,max):max;
+    const x=i=>scale(i,0,n-1,12,width-12),y=d=>scale(d,lo,hi,100,29);
+    const path=v.map((d,i)=>(i?'L':'M')+coord(x(i))+' '+coord(y(d))).join('');
+    if(preset==='area')marks+=`<path d="${path}V${coord(y(0))}H12Z" fill="${wash}"/>`;
+    marks+=`<path d="${path}" fill="none" stroke="${accent}" stroke-width="2.8" stroke-linejoin="round"/>`;
+    const peak=v.indexOf(max);
+    marks+=dot(x(peak),y(max),3.8,accent)+txt(x(peak),y(max)-9,value(max),peak<n*.25?'start':peak>n*.75?'end':'middle');
+    marks+=txt(12,128,labels[0]??value(v[0]))+txt(width-12,128,labels[n-1]??value(v[n-1]),'end');
+  }else if(preset==='bars'||preset==='dot-plot'){
+    height=12+n*28;
+    const left=Math.max(26,Math.ceil(labelWidth)+16),numberWidth=Math.max(78,...v.map(d=>value(d).length*8+12));
+    width=Math.max(width,left+140+numberWidth);
+    const right=width-numberWidth;
+    const x=d=>scale(d,Math.min(0,min),Math.max(0,max)||1,left,right),zero=x(0);
+    marks+=line(zero,4,zero,height-6,rule);
+    v.forEach((d,i)=>{
+      const y=19+i*28,color=d===max?accent:blend(muted,bg,.24);
+      marks+=txt(5,y+4,label(i))+txt(width-5,y+4,value(d),'end');
+      if(preset==='bars')marks+=rect(Math.min(zero,x(d)),y-5,Math.abs(x(d)-zero),10,color);
+      else marks+=line(left,y,right,y,rule)+dot(x(d),y,4.5,color);
+    });
+  }else if(preset==='donut'||preset==='stacked-bar'){
+    const ring=preset==='donut',r=40;
+    const textWidth=Math.max(64,...v.map((d,i)=>(label(i)+' · '+value(d)).length*7.4));
+    width=ring?Math.ceil(2*textWidth+154):Math.ceil(textWidth+248);
+    height=ring?Math.max(138,n*22+12):n*21+49;
+    const cx=width/2,cy=height/2;
+    const colours=v.map((_,i)=>i===0?accent:blend(muted,bg,.12+.58*i/n));
+    let fraction=0;
+    const anchors=[];
+    v.forEach((d,i)=>{
+      const from=fraction,part=d/total;fraction+=part;
+      if(ring){
+        const len=2*Math.PI*r;
+        if(d>0)marks+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+colours[i]+'" stroke-width="13" stroke-dasharray="'+coord(part*len)+' '+coord(len)+'" stroke-dashoffset="'+coord(-from*len)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+        const angle=(from+part/2)*Math.PI*2-Math.PI/2;
+        anchors.push({i,side:Math.cos(angle)<0?-1:1,x:cx+Math.cos(angle)*(r+7),y:cy+Math.sin(angle)*(r+7)});
+      }else{
+        const span=width-textWidth-38,x=8+from*span,mid=x+part*span/2,row=42+(n-i-1)*21;
+        marks+=rect(x,8,part*span,15,colours[i])+line(mid,24,mid,row-4,rule)+line(mid,row-4,span+17,row-4,rule);
+        marks+=txt(span+23,row,label(i)+' · '+value(d));
+      }
+    });
+    if(ring)for(const side of [-1,1]){
+      const points=anchors.filter(p=>p.side===side).sort((a,b)=>a.y-b.y);
+      let previous=-20;
+      points.forEach((p,index)=>{
+        const row=Math.min(Math.max(p.y,previous+19,10),height-8-(points.length-index-1)*19);
+        previous=row;
+        const elbow=cx+side*(r+16),end=elbow+side*8;
+        marks+=line(p.x,p.y,elbow,row,rule)+line(elbow,row,end,row,rule)+txt(end+side*4,row+4,label(p.i)+' · '+value(v[p.i]),side<0?'end':'start');
+      });
+    }
+  }else if(preset==='progress-ring'){
+    const fraction=v[0]/v[1],len=2*Math.PI*47;
+    marks+=`<g fill="none" stroke-width="8"><circle cx="65" cy="67" r="47" stroke="${rule}"/><circle cx="65" cy="67" r="47" stroke="${accent}" stroke-dasharray="${coord(len*fraction)} ${coord(len)}" transform="rotate(-90 65 67)"/></g>`;
+    marks+=txt(65,73,Number((fraction*100).toFixed(1))+'%','middle',18)+txt(138,62,(labels[0]??'Used')+' · '+value(v[0]))+txt(138,85,(labels[1]??'Capacity')+' · '+value(v[1]));
+  }else if(preset==='range-bar'){
+    const left=14,right=width-14;
+    const domain=inputList(options.domain).map(Number);
+    if(domain.length&&(domain.length!==2||!domain.every(Number.isFinite)||domain[0]>=domain[1]||domain[0]>min||domain[1]<max))throw Error('Range domain must contain both endpoints.');
+    const [lo,hi]=domain.length?domain:[Math.min(min,0),Math.max(max,0)];
+    const x=d=>scale(d,lo,hi,left,right),first=x(min),last=x(max);
+    const anchor=x=>x<width*.32?'start':x>width*.68?'end':'middle';
+    marks+=line(left,69,right,69,rule,2)+line(first,69,last,69,accent,4)+dot(first,69,5,accent);
+    marks+=txt(first,48,(labels[0]?label(0)+' · ':'')+value(min),anchor(first));
+    if(min!==max)marks+=dot(last,69,5,accent)+txt(last,97,(labels[1]?label(1)+' · ':'')+value(max),anchor(last));
+  }else{
+    const w=(width-20)/n;
+    v.forEach((d,i)=>{marks+=rect(10+i*w,44,w-Math.min(2,w*.12),40,blend(wash,accent,scale(d,min,max,0,1)))});
+    const at=i=>10+(i+.5)*w;
+    const anchor=x=>x<width*.32?'start':x>width*.68?'end':'middle';
+    for(const [d,top] of [[max,true],[min,false]]){
+      const i=v.indexOf(d),x=at(i),text=(labels.length?label(i):top?'High':'Low')+' · '+value(d);
+      marks+=line(x,top?35:86,x,top?43:94,muted)+txt(x,top?29:112,text,anchor(x));
+    }
+  }
+  const desc=v.map((d,i)=>label(i)+': '+value(d)).join(', ');
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(title)}"><title>${esc(title)}</title><desc>${esc(desc)}</desc><g fill="${ink}" font-family="var(--font-text,system-ui),sans-serif" style="font-variant-numeric:tabular-nums">${marks}</g></svg>`;
+  return {svg,css:'.ts-chart { display: block; width: 100%; height: auto; font-variant-numeric: tabular-nums; }'};
+}
+
+return {presets,uses,knobs,generate};})();
+toolbox["frame"]=(()=>{
+const {config,uri,mix,svg}=toolbox["common"];
+
+const presets=['corner-plus','crop','ruler','dotted','dashed','measure','registration'];
+const uses=['media crop','panel inset','measured drawing'];
+const knobs={weight:[.5,2,1],inset:[6,30,14]};
+const choices={edge:['top','bottom','left','right']};
+const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+function generate(options={}){
+  const {preset='corner-plus',edge='top'}=options;
+  if(!presets.includes(preset)||!choices.edge.includes(edge))throw Error('Unknown frame setting.');
+  const {bg,ink}=config(options);
+  const muted=options.palette?.muted??mix(ink,bg,.30);
+  const W=480,H=240,m=Number(options.inset??14),weight=Number(options.weight??1);
+  const corners=[[m,m,1,1],[W-m,m,-1,1],[m,H-m,1,-1],[W-m,H-m,-1,-1]];
+  const path=d=>`<path d="${d}" vector-effect="non-scaling-stroke"/>`;
+  let marks='';
+  if(['corner-plus','crop','registration'].includes(preset)){
+    for(const [x,y,sx,sy] of corners){
+      let shape;
+      if(preset==='crop'){const arm=Math.min(11,m-1);shape=path(`M-${arm} 0H-2M0 -${arm}V-2`)}
+      else if(preset==='corner-plus')shape=path('M-5 0H5M0 -5V5');
+      else shape='<circle r="4.5" vector-effect="non-scaling-stroke"/>'+path('M-9 0H9M0 -9V9');
+      marks+=`<g transform="translate(${x} ${y}) scale(${sx} ${sy})">${shape}</g>`;
+    }
+  }else if(preset==='dotted'||preset==='dashed'){
+    const dot=preset==='dotted',dash=dot?'0.35 4':'5 5';
+    marks=`<rect x="${m}" y="${m}" width="${W-2*m}" height="${H-2*m}" fill="none" stroke-width="${dot?Math.max(1,weight):weight}" stroke-dasharray="${dash}" stroke-linecap="${dot?'round':'butt'}" vector-effect="non-scaling-stroke"/>`;
+  }else{
+    const horizontal=edge==='top'||edge==='bottom';
+    const length=(horizontal?W:H)-2*m;
+    const transform={top:`translate(${m} ${m})`,bottom:`translate(${m} ${H-m}) scale(1 -1)`,left:`translate(${m} ${m}) rotate(90) scale(1 -1)`,right:`translate(${W-m} ${m}) rotate(90)`}[edge];
+    if(preset==='ruler'){
+      const divisions=Math.max(5,Math.round(length/50)*5);
+      let ticks="";
+      for(let i=0;i<=divisions;i++)ticks+=`M${(i*length/divisions).toFixed(2)} 0v${i%5===0?9:4}`;
+      marks=path(ticks);
+    }else marks=path(`M0 -4V4M0 0H${length}M${length} -4V4`);
+    marks=`<g transform="${transform}">${marks}</g>`;
+    if(preset==='measure'){
+      const text=String(options.label??'Span');
+      if(text.length>28)throw Error('Use a measurement label under 29 characters.');
+      const x=horizontal?W/2:edge==='left'?m:W-m,y=horizontal?(edge==='top'?m:H-m):H/2;
+      const angle=horizontal?0:-90;
+      const font=Math.min(15,(length-12)/Math.max(1,text.length));
+      const half=4+text.length*font*.37;
+      marks+=`<g transform="translate(${x} ${y}) rotate(${angle})"><rect x="${-half}" y="-9" width="${2*half}" height="18" stroke="none" fill="${bg}"/><text fill="${muted}" stroke="none" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-size="${font}">${escape(text)}</text></g>`;
+    }
+  }
+  const art=svg(`<g stroke="${muted}" fill="none" stroke-width="${weight}">${marks}</g>`,'0 0 '+W+' '+H);
+  return {svg:art,css:`.ts-frame { position: relative; }\n.ts-frame::after { content: ""; pointer-events: none; position: absolute; inset: 0; background: url("${uri(art)}") center / 100% 100% no-repeat; }`};
+}
+
+return {presets,uses,knobs,choices,generate};})();
+toolbox["scribble"]=(()=>{
+const {config,uri,svg}=toolbox["common"];
+
+const presets=['underline','circle','arrow','bracket','tick','star','highlight'];
+const uses=['word emphasis','margin annotation','directional cue'];
+const knobs={wobble:[0,1,.52],weight:[1,5,2.5]};
+const choices={draw:['still','on']};
+// Each contour is a continuous pen movement. The last points preserve the lift-off.
+const strokes={
+  underline:{box:[200,23],paths:[[[5,15],[40,11],[86,9],[137,7],[172,9],[195,6]]]},
+  circle:{box:[208,69],paths:[[[168,10],[113,5],[53,9],[15,21],[7,39],[35,54],[91,62],[152,59],[190,47],[202,31],[186,17],[149,10]]]},
+  arrow:{box:[134,68],paths:[[[6,55],[34,50],[63,37],[91,21],[121,14]],[[103,9],[124,13],[112,30]]]},
+  bracket:{box:[33,87],paths:[[[27,6],[12,11],[10,34],[9,60],[11,75],[29,80]]]},
+  tick:{box:[64,55],paths:[[[6,29],[17,38],[24,46],[37,26],[57,7]]]},
+  star:{box:[67,67],paths:[[[31,6],[40,49],[8,25],[60,20],[17,58],[31,6]]]},
+  highlight:{box:[207,32],paths:[[[10,19],[44,16],[91,17],[139,14],[194,15]]]},
+};
+const round=n=>Number(n.toFixed(2));
+function pen(points,rng,wobble,tension){
+  const pts=points.map(([x,y])=>[x+(rng()-.5)*wobble*4,y+(rng()-.5)*wobble*4]);
+  let d='M'+pts[0].map(round).join(' ');
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i],prev=pts[Math.max(0,i-2)],next=pts[Math.min(pts.length-1,i+1)];
+    d+='C'+[a.map((v,j)=>v+(b[j]-prev[j])*tension),b.map((v,j)=>v-(next[j]-a[j])*tension),b].flat().map(round).join(' ');
+  }
+  return d;
+}
+function generate(options={}){
+  const {preset='underline',draw='still',weight=2.5,wobble=.52}=options;
+  if(!presets.includes(preset)||!choices.draw.includes(draw))throw Error('Unknown mark setting.');
+  const {accent,rng}=config(options),spec=strokes[preset],marker=preset==='highlight';
+  const soft=['circle','underline','highlight'].includes(preset);
+  const paths=spec.paths.map(points=>{
+    const path=pen(points,rng,Number(wobble),soft?.14:.035);
+    return `<path d="${path}"${draw==='on'?' data-m-draw="" pathLength="1"':''}/>`;
+  }).join('');
+  const body=`<g fill="none" stroke="${accent}" stroke-width="${marker?13+Number(weight):Number(weight)*(preset==='underline'?1.65:preset==='star'?1.18:1)}" stroke-linecap="${marker?'square':'round'}" stroke-linejoin="round"${marker?' opacity=".32"':''}>${paths}</g>`;
+  const art=svg(body,'0 0 '+spec.box.join(' ')).replace('<svg ','<svg aria-hidden="true" ');
+  const placement={
+    underline:'left: -2%; bottom: -.19em; width: 104%; height: .25em',
+    circle:'inset: -.16em -15%; width: 130%; height: 136%',
+    arrow:'left: 104%; bottom: .5em; width: 2em; height: 1em',
+    bracket:'right: 102%; top: -.08em; width: .48em; height: 118%',
+    tick:'left: 103%; top: .07em; width: .92em; height: .82em',
+    star:'left: 103%; top: -.32em; width: .85em; height: .85em',
+    highlight:'left: -4%; bottom: .01em; width: 108%; height: .95em; z-index: -1',
+  }[preset];
+  const css=`.ts-scribble { position: relative; isolation: isolate; display: inline-block; }\n.ts-scribble::after { content: ""; pointer-events: none; position: absolute; ${placement}; background: url("${uri(art)}") center / 100% 100% no-repeat; }`;
+  return {css,svg:art};
+}
+
+return {presets,uses,knobs,choices,generate};})();
+toolbox["object"]=(()=>{
+const {config,mix}=toolbox["common"];
+
+const presets=['orbits','planes','wire-sphere','ribbon','floor-grid','nodes','arcs'];
+const uses=['abstract hero','chapter opener','publication cover'];
+const knobs={density:[0,1,.55]};
+const choices={motion:['still','drift']};
+const tau=2*Math.PI;
+const point=([x,y])=>Number(x.toFixed(1))+','+Number(y.toFixed(1));
+const line=(points,color,weight=1)=>`<polyline points="${points.map(point).join(' ')}" stroke="${color}" stroke-width="${weight}" fill="none" stroke-linejoin="round"/>`;
+const face=(points,color)=>`<polygon points="${points.map(point).join(' ')}" fill="${color}"/>`;
+const sample=(n,fn)=>Array.from({length:n+1},(_,i)=>fn(i/n));
+function generate(options={}){
+  const {preset='orbits',density=.55,motion='still'}=options;
+  if(!presets.includes(preset)||!choices.motion.includes(motion))throw Error('Unknown object setting.');
+  const {bg,ink,accent,rng}=config(options);
+  const quiet=mix(ink,bg,.43),pale=mix(ink,bg,.72);
+  const pitch=.28+.27*rng(),yaw=.45+.46*rng(),phase=tau*rng();
+  const project=([x,y,z])=>{
+    const u=x*Math.cos(yaw)-z*Math.sin(yaw),v=x*Math.sin(yaw)+z*Math.cos(yaw);
+    return [184+u,113+y*Math.cos(pitch)-v*Math.sin(pitch),v*Math.cos(pitch)+y*Math.sin(pitch)];
+  };
+  const count=Math.round(4+Number(density)*5);
+  let marks='';
+  if(preset==='orbits'){
+    for(let i=0;i<count;i++){
+      const angle=phase+i*Math.PI/count,radius=67+i*2;
+      const ring=sample(52,t=>{const a=t*tau;return project([radius*Math.cos(a),radius*Math.sin(a)*Math.cos(angle),radius*Math.sin(a)*Math.sin(angle)])});
+      marks+=line(ring,i===count-1?accent:quiet,i===count-1?1.8:1);
+    }
+  }else if(preset==='planes'){
+    for(let i=count-1;i>=0;i--){
+      const h=(i-(count-1)/2)*10;
+      const turn=(i-(count-1)/2)*.045;
+      const corners=[[-66,-38],[63,-38],[63,39],[-66,39]].map(([x,z])=>
+        project([x*Math.cos(turn)-z*Math.sin(turn),h,x*Math.sin(turn)+z*Math.cos(turn)]));
+      marks+=face(corners,i===0?mix(accent,bg,.26):mix(ink,bg,.56+.28*i/count))+line([...corners,corners[0]],quiet,.8);
+    }
+  }else if(preset==='wire-sphere'){
+    const sphere=(lon,lat)=>project([77*Math.cos(lat)*Math.cos(lon),77*Math.sin(lat),77*Math.cos(lat)*Math.sin(lon)]);
+    const visible=(points,color)=>{
+      let run=[];
+      for(let i=0;i<points.length;i++){
+        const p=points[i],prev=points[i-1];
+        if(prev&&(prev[2]>=0)!==(p[2]>=0)){
+          const t=prev[2]/(prev[2]-p[2]);
+          run.push(prev.map((v,j)=>v+t*(p[j]-v)));
+          if(p[2]<0){if(run.length>1)marks+=line(run,color);run=[]}
+        }
+        if(p[2]>=0)run.push(p);
+      }
+      if(run.length>1)marks+=line(run,color);
+    };
+    marks+='<circle cx="184" cy="113" r="77" fill="none" stroke="'+quiet+'"/>';
+    for(let i=1;i<count;i++)visible(sample(68,t=>sphere(t*tau,-Math.PI/2+i*Math.PI/count)),i===Math.floor(count/2)?accent:quiet);
+    for(let i=0;i<count*2;i++)visible(sample(30,t=>sphere(phase+i*Math.PI/count,(t-.5)*Math.PI)),quiet);
+  }else if(preset==='ribbon'){
+    const edge=(t,side)=>{const a=t*tau*1.12+phase;return [53+254*t,112+47*Math.sin(a)+side*20*Math.cos(a*.85),Math.sin(a)]};
+    const strips=sample(44,t=>({front:edge(t,1),back:edge(t,-1)}));
+    let group=[strips[0]];
+    const side=s=>s.front[1]>=s.back[1];
+    const paint=()=>{marks+=face([...group.map(s=>s.front),...group.map(s=>s.back).reverse()],side(group[Math.floor(group.length/2)])?accent:quiet)};
+    for(let i=1;i<strips.length;i++){
+      const a=strips[i-1],b=strips[i];
+      if(side(a)!==side(b)){
+        const da=a.front[1]-a.back[1],db=b.front[1]-b.back[1],t=da/(da-db);
+        const tip=a.front.map((v,j)=>v+t*(b.front[j]-v)),cross={front:tip,back:tip};
+        group.push(cross);paint();group=[cross];
+      }
+      group.push(b);
+    }
+    paint();
+    marks+=line(strips.map(s=>s.front),ink,.85)+line(strips.map(s=>s.back),quiet,.8);
+  }else if(preset==='floor-grid'){
+    const horizon=65+14*rng(),vx=140+68*rng();
+    const grid=(t,x)=>{const depth=1/(1+4*t);return [vx+(x-vx)*depth,horizon+126*depth]};
+    for(let i=0;i<=count*2;i++){const x=24+i*(320/(count*2));marks+=line([grid(0,x),grid(1,x)],i===count?accent:pale)}
+    for(let i=0;i<=count;i++)marks+=line([grid(i/count,24),grid(i/count,344)],quiet);
+  }else if(preset==='nodes'){
+    const nodes=[[184,113]];
+    for(let i=0;i<count+4;i++){
+      const a=phase+i*tau/(count+4),radius=42+rng()*48;
+      nodes.push([184+1.42*radius*Math.cos(a),113+radius*Math.sin(a)]);
+    }
+    for(let i=1;i<nodes.length;i++){
+      marks+=line([nodes[i],nodes[i===nodes.length-1?1:i+1]],quiet);
+      if(i%2===1)marks+=line([nodes[i],nodes[0]],pale);
+    }
+    nodes.forEach(([x,y],i)=>{marks+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===0?5:3}" fill="${i===0?accent:bg}" stroke="${i===0?accent:quiet}"/>`});
+  }else{
+    const start=-2.8+.4*rng(),sweep=4.1+.55*rng();
+    for(let i=0;i<count;i++){
+      const radius=23+i*69/(count-1);
+      marks+=line(sample(48,t=>[184+radius*Math.cos(start+t*sweep),114+radius*Math.sin(start+t*sweep)]),i===count-2?accent:quiet,i===count-2?2:1.15);
+    }
+  }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 368 226" aria-hidden="true"><g class="object-form">${marks}</g></svg>`;
+  const base='.ts-object { position: relative; overflow: hidden; margin: 0; }\n.ts-object > svg { display: block; width: 100%; height: auto; }';
+  const css=base+(motion==='drift'?`
+@keyframes ts-object-drift { 0%, 100% { transform: translate(-2px, 1px) rotate(-2deg); } 50% { transform: translate(2px, -2px) rotate(2deg); } }
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .ts-object[data-m-loop]:has(> .loop-pause) .object-form { transform-origin: 50% 50%; animation: ts-object-drift 56s ease-in-out infinite; }
+  .ts-object:is(.is-m-off,.is-m-paused) .object-form { animation-play-state: paused !important; }
+}`:'');
+  return {svg,css,html:`<figure class="ts-object"${motion==='drift'?' data-m-loop=""':''}>${svg}</figure>`};
+}
+
+return {presets,uses,knobs,choices,generate};})();
+toolbox["typescale"]=(()=>{
+const {config}=toolbox["common"];
+
+const presets=['product','editorial','compact','display'];
+const uses=['product page','long read','dense interface'];
+const knobs={ratio:[1.12,1.42,1.25]};
+const profiles={
+  product:[[36,28,18,16,16,14],[64,40,20,18,16,14]],
+  editorial:[[44,30,21,19,17,14],[88,46,25,22,18,15]],
+  compact:[[32,24,17,16,15,13],[48,32,18,17,15,13]],
+  display:[[48,34,21,18,16,14],[112,64,26,21,17,14]],
+};
+const roles=['h1','h2','h3','lead','body','small'];
+const lineHeights=[1.02,1.1,1.22,1.45,1.55,1.45],tracking=[-.045,-.031,-.015,-.008,0,.003];
+const round=n=>Number(n.toFixed(4));
+function fluid(a,b){
+  if(a===b)return a+'px';
+  const slope=(b-a)/1050;
+  return `clamp(${Math.min(a,b)}px, calc(${round(a-390*slope)}px ${slope<0?'-':'+'} ${Math.abs(round(100*slope))}vw), ${Math.max(a,b)}px)`;
+}
+function specimen(rows,p){
+  const words=['Orbits','Projected circles','Construction','Seven rings share one centre.','Each ring turns on its own plane.','Edition notes'];
+  const names=['Headline','Section','Small heading','Lead','Body','Small'];
+  let y=10;
+  const lines=rows.map(({role,phone,desktop,leading,spacing},i)=>{
+    y+=desktop;
+    const row=`<text x="16" y="${round(y)}" font-size="${desktop}" letter-spacing="${spacing}em" fill="${i===5?p.muted:p.ink}">${words[i]}</text><text x="604" y="${round(y)}" text-anchor="end" font-size="17" fill="${p.muted}">${names[i]} · ${phone===desktop?desktop:phone+'–'+desktop}</text>`;
+    y+=desktop*(leading-1)+(i===2?22:11);
+    return row;
+  });
+  const h=Math.ceil(y+5);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 ${h}" role="img" aria-label="Six type roles at desktop size"><rect width="620" height="${h}" fill="${p.bg}"/><g font-family="system-ui,sans-serif">${lines.join('')}</g></svg>`;
+}
+
+function generate(options={}){
+  const preset=options.preset??'product',ratio=Number(options.ratio??1.25);
+  if(!presets.includes(preset)||!Number.isFinite(ratio)||ratio<1.12||ratio>1.42)throw Error('Choose a type preset and ratio from 1.12 to 1.42.');
+  const p=config(options);p.muted=options.palette?.muted??p.ink;
+  const [phone,wide]=profiles[preset];
+  const rows=roles.map((role,i)=>{
+    const factor=(ratio/1.25)**[2.1,1.45,.65,.32,0,0][i];
+    return {role,phone:Math.round(phone[i]*factor),desktop:Math.round(wide[i]*factor),leading:lineHeights[i],spacing:tracking[i]};
+  });
+  const variables=rows.map(r=>`  --t-${r.role}: ${fluid(r.phone,r.desktop)}; --lh-${r.role}: ${r.leading}; --ls-${r.role}: ${r.spacing}em;`).join('\n');
+  const rules=rows.map(({role})=>{
+    const selectors=role==='body'?'body, .t-body':role.startsWith('h')?role+', .t-'+role:'.t-'+role;
+    return `${selectors} { font-size: var(--t-${role}); line-height: var(--lh-${role}); letter-spacing: var(--ls-${role}); }`;
+  }).join('\n');
+  const css=':root {\n'+variables+'\n  --t-card: var(--t-h3);\n}\n'+rules;
+  // Width is the kit's max container minus the unused tracks and their 24px gaps.
+  const columns={phone:342,third:(1280-2*24)/3,half:(1280-24)/2,full:1280};
+  const metrics=rows.map(r=>{
+    const cpl={};
+    for(const [name,width] of Object.entries(columns)){
+      const size=name==='phone'?r.phone:r.desktop;
+      cpl[name]=Math.floor(width/(size*(.52+r.spacing)));
+    }
+    return {...r,cpl};
+  });
+  const body=metrics.find(r=>r.role==='body');
+  const warnings=Object.entries(body.cpl).filter(([,n])=>n<45||n>75).map(([k,n])=>`${k} body measure: approximately ${n} characters (target 45–75).`);
+  return {css,svg:specimen(rows,p),metrics,warnings};
+}
+
+return {presets,uses,knobs,generate};})();
+toolbox["share-marks"]=(()=>{
+// Generated from assets/system.css by build-lab.mjs.
+const marks = {
+  "dots": "<circle cx='6.5' cy='6.5' r='4.5'/><circle cx='17.5' cy='6.5' r='4.5'/><circle cx='6.5' cy='17.5' r='4.5'/><rect x='13' y='13' width='9' height='9' rx='1.5'/>",
+  "arc": "<path d='M2.5 21.5V12a9.5 9.5 0 0 1 19 0v9.5h-6V12a3.5 3.5 0 0 0-7 0v9.5z'/>",
+  "ring": "<path fill-rule='evenodd' d='M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 5.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z'/>",
+  "petal": "<circle cx='12' cy='6.6' r='5'/><circle cx='17.4' cy='12' r='5'/><circle cx='12' cy='17.4' r='5'/><circle cx='6.6' cy='12' r='5'/><circle cx='12' cy='12' r='4'/>",
+  "leaf": "<path d='M3 21C3 10 10 3 21 3c0 11-7 18-18 18z'/>",
+  "stack": "<rect x='2' y='2.5' width='20' height='5.5' rx='2.75'/><rect x='2' y='9.25' width='14' height='5.5' rx='2.75'/><rect x='2' y='16' width='8' height='5.5' rx='2.75'/>"
+};
+
+return {marks};})();
+toolbox["share"]=(()=>{
+const {marks}=toolbox["share-marks"];
+const {config,rgb}=toolbox["common"];
+const {blend}=toolbox["colour"];
+const {generate:pattern}=toolbox["pattern"];
+
+const presets=['headline','panel','mark'];
+const uses=['link preview','site icon','publication card'];
+const knobs={};
+const choices={panel:['isometric','cross','waves']};
+const xml=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+const dotCentres=[[6.5,6.5],[17.5,6.5],[6.5,17.5]];
+function markArt(mark,name){
+  if(Object.hasOwn(marks,mark))return marks[mark];
+  if(mark==='initial')return '<text x="12" y="18" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="650" font-size="18">'+xml(Array.from(name||'')[0]??'')+'</text>';
+  if(typeof mark!=='string'||mark.length>3200||!/^\s*[Mm][\d\s.,+\-EeMmZzLlHhVvCcSsQqTtAa]+$/.test(mark))throw Error('Use a dealt mark name or the SVG path data of a 24 × 24 mark.');
+  return '<path fill-rule="evenodd" d="'+mark+'"/>';
+}
+function stamp(mark,color,x,y,size,name){
+  return `<g transform="translate(${x} ${y}) scale(${size/24})" fill="${color}">${markArt(mark,name)}</g>`;
+}
+function em(c){
+  if(/\s/u.test(c))return .30;
+  if(/[ilI.,'’!:;|]/u.test(c))return .31;
+  if(/[mwMW@%&]/u.test(c))return .92;
+  if(/[A-Z]/u.test(c))return .72;
+  return c.codePointAt(0)>0x2ff?1.02:.58;
+}
+const measure=s=>Array.from(s).reduce((sum,c)=>sum+em(c),0);
+function wrap(text,limit){
+  const lines=[];let row='';
+  for(const word of text.trim().split(/\s+/u)){
+    const joined=row?row+' '+word:word;
+    if(measure(joined)<=limit){row=joined;continue}
+    if(row){lines.push(row);row=''}
+    if(measure(word)<=limit){row=word;continue}
+    for(const c of word){
+      if(row&&measure(row+c)>limit){lines.push(row);row=''}
+      row+=c;
+    }
+  }
+  if(row)lines.push(row);
+  // Share the last words between adjacent rows while keeping the original order.
+  if(!text.split(/\s+/u).some(word=>measure(word)>limit)){
+    for(let pass=0;pass<lines.length;pass++)for(let i=lines.length-1;i>0;i--){
+      const words=lines[i-1].split(' ');if(words.length<2)continue;
+      const last=words.pop(),first=words.join(' '),second=last+' '+lines[i];
+      if(measure(second)<=limit && Math.abs(measure(first)-measure(second))<Math.abs(measure(lines[i-1])-measure(lines[i]))){
+        lines[i-1]=first;lines[i]=second;
+      }
+    }
+  }
+  return lines;
+}
+function icon(options={},size=32){
+  const {bg,ink}=config(options);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24"><rect width="24" height="24" fill="${bg}"/><g fill="${ink}">${markArt(options.mark??'ring',options.name)}</g></svg>`;
+}
+function rasterize(options={},size=0){
+  const mark=options.mark??'ring';
+  if(!['ring','dots'].includes(mark)||(!size&&options.preset!=='mark'))throw Error('Text and custom paths use the SVG. Export --format html and shoot the page at 1200 by 630.');
+  const {bg,ink}=config(options),ground=rgb(bg),colour=rgb(ink);
+  const width=size||1200,height=size||630,extent=size||320;
+  const x0=(width-extent)/2,y0=(height-extent)/2,pixels=new Uint8Array(width*height*3);
+  const contains=mark==='ring'?(x,y)=>{const d=(x-12)**2+(y-12)**2;return d<=100&&d>=20.25}:(x,y)=>{
+    const dx=Math.max(14.5-x,0,x-20.5),dy=Math.max(14.5-y,0,y-20.5);
+    return dx*dx+dy*dy<=2.25||dotCentres.some(([a,b])=>(a-x)**2+(b-y)**2<=20.25);
+  };
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+    let hits=0;
+    if(x>=x0&&x<x0+extent&&y>=y0&&y<y0+extent){
+      for(const dy of [.25,.75])for(const dx of [.25,.75])if(contains((x+dx-x0)*24/extent,(y+dy-y0)*24/extent))hits++;
+    }
+    const at=3*(y*width+x);
+    for(let c=0;c<3;c++)pixels[at+c]=Math.round(ground[c]+(colour[c]-ground[c])*hits/4);
+  }
+  return {pixels,width,height};
+}
+function generate(options={}){
+  const {preset='headline',panel='isometric',mark='ring'}=options;
+  const name=String(options.name??'').trim(),headline=String(options.headline??'').trim();
+  if(!presets.includes(preset)||!choices.panel.includes(panel))throw Error('Unknown share layout.');
+  if(!name||name.length>70||(!headline&&preset!=='mark')||headline.length>180)throw Error('Supply a page name (up to 70 characters) and a headline (up to 180).');
+  const {bg,ink,accent}=config(options);
+  let body=`<rect width="1200" height="630" fill="${bg}"/>`;
+  if(preset==='mark')body+=stamp(mark,ink,440,155,320,name);
+  else{
+    const available=preset==='panel'?646:1032;
+    if(preset==='panel'){
+      const field=pattern({...options,preset:panel,fade:'none',amount:.65,palette:{bg:blend(bg,accent,.25),ink,accent,muted:accent}}).svg;
+      body+='<svg x="766" y="28" width="406" height="574" viewBox="0 0 240 340" overflow="hidden">'+field+'</svg>';
+    }
+    body+=stamp(mark,ink,56,52,60,name);
+    const nameSize=Math.min(38,Math.floor((available-48)/Math.max(1,measure(name))));
+    body+=`<text x="132" y="97" font-size="${nameSize}" fill="${ink}">${xml(name)}</text>`;
+    let size=preset==='panel'?82:92,lines=wrap(headline,available/size);
+    while(size>32&&(lines.length>4||lines.length*size*1.06>381)){
+      size-=2;lines=wrap(headline,available/size);
+    }
+    // Shorten the measure slightly when it can pull a stranded last word up.
+    if(lines.length>2 && !lines.at(-1).includes(' ')){
+      for(let candidate=size-2;candidate>=size*.84;candidate-=2){
+        const next=wrap(headline,available/candidate);
+        if(next.length<lines.length){size=candidate;lines=next;break}
+      }
+    }
+    const top=551-(lines.length-1)*size*1.06;
+    body+=lines.map((s,i)=>`<text x="54" y="${(top+i*size*1.06).toFixed(1)}" fill="${ink}" font-size="${size}" font-weight="550" letter-spacing="-.04em">${xml(s)}</text>`).join('');
+  }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="${xml(name)}"><title>${xml(headline||name)}</title><g font-family="system-ui,sans-serif">${body}</g></svg>`;
+  const html='<!doctype html><html lang="en"><meta charset="utf-8"><title>'+xml(name)+'</title><style>*{margin:0}body>svg{display:block}</style>'+svg+'</html>';
+  return {svg,html,icon:icon(options),css:'.ts-share { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 630; }'};
+}
+
+return {presets,uses,knobs,choices,icon,rasterize,generate};})();
 const palettes=[{"id":"white-link-blue","name":"Sheet and biro","bg":"#ffffff","ink":"#111111","accent":"#0a3bd1","muted":"#4c4c4c","surface":"#ebebeb"},{"id":"cool-white-slate","name":"Frost and slate","bg":"#fcfcfc","ink":"#262f33","accent":"#067987","muted":"#4a4a4a","surface":"#e3e5e6"},{"id":"rose-grey-green","name":"Rose grey, green","bg":"#fdfdfd","ink":"#2b2622","accent":"#068645","muted":"#4b4b4b","surface":"#d7d1cf"},{"id":"paper-grey-brass","name":"Newsprint and brass","bg":"#ffffff","ink":"#181715","accent":"#cfc00a","muted":"#4c4c4c","surface":"#d4d4cf"},{"id":"stone-blueprint","name":"Stone and blueprint","bg":"#fcfcfc","ink":"#26251e","accent":"#0a42d1","muted":"#4a4a4a","surface":"#cbcbc8"},{"id":"white-navy-tab","name":"Navy on white","bg":"#fdfdfd","ink":"#2a2d34","accent":"#d47707","muted":"#4b4b4b","surface":"#ebebeb"},{"id":"three-stones","name":"Three stones","bg":"#ffffff","ink":"#333231","accent":"#45b609","muted":"#4c4c4c","surface":"#dad8d6"},{"id":"putty-black-teal","name":"Putty and black","bg":"#fcfcfc","ink":"#0a0a0a","accent":"#08809f","muted":"#4a4a4a","surface":"#cbc7c0"},{"id":"moss-sand","name":"Sand and moss","bg":"#f5f2ee","ink":"#2a2a26","accent":"#4f6238","muted":"#454545","surface":"#cac3b3"},{"id":"green-mat-chocolate","name":"Bone, green, chocolate","bg":"#f4f2ee","ink":"#261e1b","accent":"#456f3a","muted":"#454545","surface":"#d1cdc5"},{"id":"lunar-grey-bronze","name":"Lunar and bronze","bg":"#111111","ink":"#f2f2f2","accent":"#f7954b","muted":"#afafaf","surface":"#1c1c1c"},{"id":"blue-black-cornflower","name":"Night and sky blue","bg":"#0a0d14","ink":"#e9edf3","accent":"#5ab9fc","muted":"#acacac","surface":"#131824"},{"id":"green-black-bone","name":"Green-black and bone","bg":"#161c1a","ink":"#e3e2da","accent":"#6ef8c4","muted":"#b7b7b7","surface":"#1f2725"},{"id":"black-crimson","name":"Black and crimson","bg":"#0a0a0a","ink":"#efefef","accent":"#f74b60","muted":"#ababab","surface":"#151515"},{"id":"forest-pale-lime","name":"Forest and lime","bg":"#0f1f10","ink":"#ffffff","accent":"#c6fa94","muted":"#b7b7b7","surface":"#162a17"},{"id":"charcoal-room-sage","name":"Charcoal and sage","bg":"#1c1c1c","ink":"#f1f1ef","accent":"#52f74b","muted":"#b8b8b8","surface":"#262626"},{"id":"warm-black-gold","name":"Warm black, gold","bg":"#0c0a08","ink":"#ffffff","accent":"#f7bd4b","muted":"#ababab","surface":"#181512"},{"id":"graphite-safety-orange","name":"Graphite and orange","bg":"#18191b","ink":"#eff0f1","accent":"#ff6742","muted":"#b5b5b5","surface":"#222427"},{"id":"soot-pale-lime","name":"Soot and lime","bg":"#0f0f0f","ink":"#ffffff","accent":"#dafa9c","muted":"#aeaeae","surface":"#1a1a1a"},{"id":"plum-black-pink","name":"Plum-black and pink","bg":"#0d060b","ink":"#ffffff","accent":"#ff488b","muted":"#aaaaaa","surface":"#1b0e17"},{"id":"white-signal-red","name":"Signal red, white","bg":"#fdfdfd","ink":"#0a0a0a","accent":"#d1150a","muted":"#4b4b4b","surface":"#ebebeb"},{"id":"white-mint-tiles","name":"Greys and mint","bg":"#ffffff","ink":"#232323","accent":"#00db62","muted":"#4c4c4c","surface":"#ebebeb"},{"id":"cool-grey-cobalt","name":"Cool grey, cobalt","bg":"#fcfcfc","ink":"#0b0c0e","accent":"#0a18d1","muted":"#4a4a4a","surface":"#dadcdf"},{"id":"offwhite-bottle-yellow","name":"Bottle ink, yellow","bg":"#fdfdfd","ink":"#1e2621","accent":"#d3bf08","muted":"#4b4b4b","surface":"#e3e3e3"},{"id":"teal-on-paper","name":"Teal on paper","bg":"#ffffff","ink":"#404b4c","accent":"#04535e","muted":"#4c4c4c","surface":"#e3e5e4"},{"id":"navy-pink","name":"Navy and pink","bg":"#1a2039","ink":"#c9bdc0","accent":"#f9a3c0","muted":"#bebebe","surface":"#282f49"},{"id":"blush-aubergine","name":"Blush and aubergine","bg":"#fdfdfd","ink":"#2a2226","accent":"#4b0431","muted":"#4b4b4b","surface":"#d9b9ab"},{"id":"cobalt-on-sand","name":"Cobalt on sand","bg":"#ffffff","ink":"#343840","accent":"#062b8a","muted":"#4c4c4c","surface":"#d2c8b4"},{"id":"oxblood-grey","name":"Oxblood and grey","bg":"#fcfcfc","ink":"#433938","accent":"#83060f","muted":"#4a4a4a","surface":"#cecece"},{"id":"olive-on-bone","name":"Olive on bone","bg":"#fdfdfd","ink":"#3d4038","accent":"#3e5004","muted":"#4b4b4b","surface":"#d8d7d3"},{"id":"burgundy-bubblegum","name":"Burgundy and bubblegum","bg":"#3d0012","ink":"#c6bcc1","accent":"#ff99d3","muted":"#b6b6b6","surface":"#4d0519"},{"id":"bottle-green-gold","name":"Bottle green, gold","bg":"#133621","ink":"#dcdacf","accent":"#f8db68","muted":"#d0d0d0","surface":"#1a4429"},{"id":"cobalt-field","name":"Cobalt field","bg":"#0034eb","ink":"#ffffff","accent":"#e9e34a","muted":"#ffffff","surface":"#002ac3"},{"id":"mustard-field","name":"Mustard and black","bg":"#e1ac10","ink":"#0b0b0b","accent":"#24338f","muted":"#171717","surface":"#cd9d0f"},{"id":"carmine-field","name":"Carmine field","bg":"#9c1220","ink":"#ffffff","accent":"#ffd9dc","muted":"#ffffff","surface":"#830115"},{"id":"pink-field-lime","name":"Bubblegum and lime","bg":"#ff87ab","ink":"#0a0a0a","accent":"#def915","muted":"#0d0d0d","surface":"#ea7498"},{"id":"sky-field-navy","name":"Sky and navy","bg":"#6bb4ee","ink":"#12181d","accent":"#ff5a1f","muted":"#0e0e0e","surface":"#82c7ff"},{"id":"orange-field-black","name":"Orange and black","bg":"#ff7a1f","ink":"#080f13","accent":"#050f16","muted":"#000000","surface":"#ff9c67"},{"id":"tobacco-olive","name":"Tobacco and olive","bg":"#472913","ink":"#e2e0d6","accent":"#d8f74b","muted":"#d1d1d1","surface":"#55321a"},{"id":"poster-chapters","name":"Poster chapters","bg":"#e6e0d2","ink":"#1a1a1a","accent":"#18bc42","muted":"#3a3a3a","surface":"#d2ccbf"},{"id":"blue-red-black","name":"Blue, red, black","bg":"#ffffff","ink":"#0a0a0a","accent":"#1f30e0","muted":"#4c4c4c","surface":"#ebebeb"},{"id":"charcoal-primaries","name":"Charcoal and primaries","bg":"#191919","ink":"#ffffff","accent":"#0c7866","muted":"#b5b5b5","surface":"#242424"},{"id":"ultramarine-yellow","name":"Ultramarine and yellow","bg":"#1423b8","ink":"#ffffff","accent":"#1fc27a","muted":"#e6e6e6","surface":"#0e00a1"},{"id":"candy-chapters","name":"Candy chapters","bg":"#ffd249","ink":"#0a0a0a","accent":"#f53fd6","muted":"#343434","surface":"#ebbe2e"},{"id":"orange-sky-lime","name":"Orange, sky, lime","bg":"#ff8126","ink":"#111111","accent":"#de194b","muted":"#000000","surface":"#ffa26b"},{"id":"post-red-mustard","name":"Post red, mustard","bg":"#e2dccf","ink":"#201716","accent":"#4a6f84","muted":"#383838","surface":"#cec9bc"},{"id":"mint-orange-grey","name":"Grey, mint, orange","bg":"#ffffff","ink":"#000000","accent":"#a7ff9c","muted":"#4c4c4c","surface":"#ebebeb"},{"id":"report-blocks","name":"Report blocks","bg":"#ffffff","ink":"#000000","accent":"#fe7141","muted":"#4c4c4c","surface":"#ebebeb"},{"id":"card-pastels","name":"Card pastels","bg":"#ffffff","ink":"#000000","accent":"#d10a6d","muted":"#4c4c4c","surface":"#e3e3e1"},{"id":"mint-pink-accounts","name":"Mint and pink","bg":"#fcfcfc","ink":"#0a0a0a","accent":"#068433","muted":"#4a4a4a","surface":"#e4e4e4"},{"id":"swap-pastels","name":"Swapping pastels","bg":"#fdfdfd","ink":"#141414","accent":"#055b61","muted":"#4b4b4b","surface":"#d6ebf9"},{"id":"blush-sage-slate","name":"Blush, sage, slate","bg":"#ffffff","ink":"#1c1c1c","accent":"#2f5204","muted":"#4c4c4c","surface":"#b9c6cf"},{"id":"candy-on-black","name":"Candy on black","bg":"#000000","ink":"#ffffff","accent":"#90f3fa","muted":"#a6a6a6","surface":"#010101"},{"id":"sky-sand","name":"Sky and sand","bg":"#fdfdfd","ink":"#0a0a0a","accent":"#cf0a9f","muted":"#4b4b4b","surface":"#b8d0de"},{"id":"studio-grey","name":"Studio grey","bg":"#ffffff","ink":"#0e0e0e","accent":"#067553","muted":"#4c4c4c","surface":"#bbbbbd"},{"id":"walnut-tan","name":"Walnut and tan","bg":"#2b2216","ink":"#e4e2da","accent":"#f7a151","muted":"#c0c0c0","surface":"#382d1e"},{"id":"warm-paper-walnut","name":"Warm paper and walnut","bg":"#f7f3ec","ink":"#2a2622","accent":"#7a4a2c","muted":"#464646","surface":"#e3dfd8"},{"id":"flour-terracotta","name":"Flour and terracotta","bg":"#f7f2e9","ink":"#2b241e","accent":"#a3472b","muted":"#454545","surface":"#ebe3d4"},{"id":"linen-harbour","name":"Linen and harbour blue","bg":"#fcfcfc","ink":"#20252b","accent":"#075e9c","muted":"#4a4a4a","surface":"#e6e2d9"},{"id":"limewash-ochre","name":"Limewash and ochre","bg":"#f6f2ea","ink":"#29251e","accent":"#8c6418","muted":"#454545","surface":"#e7dfcf"},{"id":"clay-pine","name":"Clay and pine","bg":"#f6f2ed","ink":"#22261f","accent":"#2e5b44","muted":"#454545","surface":"#e2d9cb"},{"id":"chalk-tomato","name":"Chalk and tomato","bg":"#fcfcfc","ink":"#1f1b18","accent":"#cd2a0a","muted":"#4a4a4a","surface":"#ede7dc"},{"id":"plaster-rose","name":"Plaster and rose","bg":"#fdfdfd","ink":"#2c2325","accent":"#cc0a2b","muted":"#4b4b4b","surface":"#ebe0d9"},{"id":"steel-orange","name":"Steel and orange","bg":"#ffffff","ink":"#1c1d1f","accent":"#d1490a","muted":"#4c4c4c","surface":"#dadad7"}];
