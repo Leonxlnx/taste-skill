@@ -1,4 +1,5 @@
 for (const root of document.querySelectorAll('[data-part="nav-highlight"]')) {
+  if (root.matches('.nav__links')) continue; // system.js mounts the starter variant.
   const nav = root.querySelector('nav'),
     trigger = nav.querySelector('button'),
     pill = nav.querySelector('i'),

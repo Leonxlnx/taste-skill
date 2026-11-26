@@ -53,7 +53,7 @@ const DEMOS = argv.includes('--demos');
 const pages = [];
 const layout = join(SKILL, 'assets', 'layout');
 for (const f of readdirSync(layout).sort()) if (/^hero-.+\.html$/.test(f)) pages.push(join(layout, f));
-pages.push(join(layout, 'wide-view.html'), join(layout, 'compositions.html'),
+pages.push(join(SKILL, 'tools', 'demo.html'), join(SKILL, 'assets', 'motion', 'parts', 'index.html'), join(layout, 'wide-view.html'), join(layout, 'compositions.html'),
   join(SKILL, 'assets', 'motion', 'demo.html'), join(SKILL, 'assets', 'motion', 'deck.html'), join(SKILL, 'assets', 'starter.html'), join(SKILL, 'assets', 'own', 'index.html'),
   // the worked examples' two other galleries (assets/own/README.md); the story examples states, letter and
   // margin-track are fragments, checked where index.html above mounts them

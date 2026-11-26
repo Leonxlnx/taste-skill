@@ -143,13 +143,13 @@ function seat(root) {
 const LOOPS = '[data-ui-loop], [data-ui-cycles]';
 export function plan(root = document) {
   const doc = root.ownerDocument || root;
-  if (!doc.querySelector || !doc.querySelector('[data-ui-loop]')) return;
+  if (!doc.querySelector || !doc.querySelector('[data-ui-loop], [data-part="demo-loop"]')) return;
   const kind = doc.querySelector('meta[name="site-kind"]');
   const other = (doc.documentElement && doc.documentElement.dataset.type === 'place') || (!!kind && kind.content.trim().toLowerCase() === 'other');
   const phone = other || (typeof matchMedia === 'function' && matchMedia('(max-width: 639px)').matches);
   for (const el of root.querySelectorAll('[data-ui-load], [data-ui]')) {
     if (el.parentElement && el.parentElement.closest('[data-ui-load]')) continue;   // inside a loaded one
-    if (phone || !el.closest(LOOPS)) el.setAttribute('data-ui-still', '');
+    if (phone || el.closest('[data-part="demo-loop"]') || !el.closest(LOOPS)) el.setAttribute('data-ui-still', '');
   }
 }
 
@@ -644,6 +644,25 @@ function queueBake(el, fx, st) {
   bakeQueue.push([el, fx, st]);
   pump();
 }
+function fitShowFrame(el) {
+  const box = el.closest('[data-media-frame]');
+  if (!box) return;
+  if (el.dataset.showFrame) {
+    const geometry = parseJSON(el.dataset.showFrame);
+    if (geometry?.radius?.length === 2 && geometry.centre?.length === 2 && geometry.sourceSize > 0) {
+      const size = geometry.sourceSize;
+      const fit = () => {
+        const w = box.clientWidth, h = box.clientHeight;
+        Object.assign(el.style, {inset:'auto',left:(geometry.centre[0]*100)+'%',top:(geometry.centre[1]*100)+'%',
+          width:size+'px',height:size+'px',borderRadius:'50%', transform:'translate(-50%,-50%) scale('+
+            (2*w*geometry.radius[0]/size)+','+(2*h*geometry.radius[1]/size)+')'});
+      };
+      fit();
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(box);
+    }
+  }
+}
+
 async function liveOn(el, fx, st) {
   if (el.__fx && !el.__fx.baked) return;
   const gen = ++st.gen;
@@ -651,6 +670,19 @@ async function liveOn(el, fx, st) {
   const api = await mountAt(fx, el, groundSpec(el, fx, st.extra), 1).catch(e => { console.warn('ui: ground', e); return null; });
   if (!api) return;
   if (gen !== st.gen || !st.near) { api.destroy(); return; }
+  if (el.hasAttribute('data-show-field')) {
+    if (!st.control) {
+      const box = el.closest('[data-media-frame]');
+      st.control = {
+        pause() { st.paused = true; el.__fx?.pause(); },
+        resume() { st.paused = false; if (!reduced()) el.__fx?.resume(); }
+      };
+      st.removePause = pausable(box,st.control);
+    }
+    if (!st.paused && !reduced()) api.resume();
+    else api.pause();
+    return;
+  }
   api.pause();                    // no frame loop: it draws when shown, resized or set() by its fragment
   const set = api.set;
   api.set = next => { st.extra = { ...st.extra, ...next }; return set(next); };
@@ -697,6 +729,22 @@ export async function grounds(root, fx, { skip } = {}) {
       continue;
     }
     st = { fx, live: isLive(el), near: false, dirty: true, queued: false, gen: 0, size: null, extra: null, tries: 0 };
+    if (el.hasAttribute('data-show-field')) {
+      fitShowFrame(el);
+      reducedQuery?.addEventListener('change', () => {
+        st.gen++;
+        unground(el);
+        st.live = isLive(el);
+        if (!st.live && st.control) {
+          st.removePause();
+          st.control = null;
+          st.paused = false;
+        }
+        st.dirty = true;
+        if (st.near && st.live) liveOn(el, fx, st);
+        else if (st.near) queueBake(el, fx, st);
+      });
+    }
     grounded.set(el, st);
     groundIO.observe(el);
     if (groundRO) groundRO.observe(el);

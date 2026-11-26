@@ -29,7 +29,7 @@ for (const root of document.querySelectorAll('[data-part="logo-row"]')) {
   const pause = frame.querySelector('.pause');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let visible = false,
-    paused = false,
+    paused = root.dataset.playback === 'manual',
     last = 0,
     elapsed = 0,
     raf = 0;
@@ -48,6 +48,7 @@ for (const root of document.querySelectorAll('[data-part="logo-row"]')) {
     frame.dataset.running = String(running);
     if (running) raf = requestAnimationFrame(tick);
   }
+  if (paused) { pause.textContent = '▷'; pause.setAttribute('aria-label','Start playback'); }
   pause.hidden = false;
   pause.onclick = () => {
     paused = !paused;

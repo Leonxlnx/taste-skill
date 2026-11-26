@@ -50,3 +50,5 @@ A loop belongs inside the product window or media frame it explains. A loop last
 ## Never
 
 Avoid rotating words, photo masks, automatic card staggers, hover lifts, zooms and moving arrows. Keep loops off backgrounds, headings and whole cards. Preserve native scrolling, keyboard controls and the finished reduced-motion state.
+
+Choose each motion part by its content in `interactions.md`. Keep its motion in the frame and retain the keyboard, pause and still states.

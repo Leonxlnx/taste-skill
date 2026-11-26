@@ -71,61 +71,15 @@ const kindOther = () => {
   return document.documentElement.dataset.type === 'place' || (!!m && m.content.trim().toLowerCase() === 'other');
 };
 
+import { desktopLinks } from './motion/parts/nav-highlight/header.js';
+import { mobileSheet } from './motion/parts/menu-sheet/header.js';
+import { forms } from './motion/parts/form-states/forms.js';
+
 function nav() {
-  const nav = document.querySelector('.nav');
-  if (!nav) return;
-  const toggle = nav.querySelector('.nav__toggle');
-  const bars = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  const cross = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  const setOpen = open => {
-    nav.classList.toggle('is-open', open);
-    document.body.classList.toggle('nav-locked', open);
-    if (toggle) { toggle.setAttribute('aria-expanded', String(open)); toggle.innerHTML = open ? cross : bars; }
-  };
-  toggle?.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
-  nav.querySelectorAll('.nav__item').forEach(item => {
-    if (!item.querySelector('.nav__menu')) return;
-    let btn = item.querySelector('.nav__expand');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.className = 'nav__expand';
-      btn.type = 'button';
-      btn.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      item.querySelector('.nav__link').after(btn);
-    }
-    const label = item.querySelector('.nav__link')?.textContent.trim() || 'section';
-    btn.setAttribute('aria-label', `Show ${label} links`);
-    btn.setAttribute('aria-expanded', 'false');
-    const link = item.querySelector('.nav__link');
-    const desktop = matchMedia('(min-width: 1024px)');
-    // CSS opens this menu on pointer intent or focus. Mirror its actual visibility.
-    const menu = item.querySelector('.nav__menu');
-    const sync = () => {
-      if (desktop.matches) link.setAttribute('aria-expanded', String(getComputedStyle(menu).visibility === 'visible'));
-      else link.removeAttribute('aria-expanded');
-    };
-    menu.addEventListener('transitionstart', sync);
-    menu.addEventListener('transitionend', sync);
-    for (const event of ['pointerenter','pointerleave','focusin','focusout']) item.addEventListener(event, () => requestAnimationFrame(sync));
-    desktop.addEventListener('change', sync);
-    sync();
-    btn.addEventListener('click', () => {
-      const open = !item.classList.contains('is-expanded');
-      item.classList.toggle('is-expanded', open);
-      btn.setAttribute('aria-expanded', String(open));
-    });
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    if (nav.classList.contains('is-open')) { setOpen(false); toggle?.focus(); return; }
-    if (nav.contains(document.activeElement)) document.activeElement.blur();
-  });
-  // a tap on any link in the open sheet closes it (a top-level word, a menu link, an action, an
-  // in-page #anchor alike), so the page it leads to is never left under the sheet
-  nav.addEventListener('click', e => {
-    if (nav.classList.contains('is-open') && e.target.closest?.('a[href]')) setOpen(false);
-  });
-  window.matchMedia('(min-width: 1024px)').addEventListener('change', e => { if (e.matches) setOpen(false); });
+  const header = document.querySelector('.nav');
+  if (!header) return;
+  desktopLinks(header);
+  mobileSheet(header);
 }
 
 // The same choice may be made in a picker, a tab row or the final form.
@@ -320,66 +274,6 @@ function openNow() {
    300ms, then data-sent once the address answers 2xx, else data-failed; the button is held only while it sends.
    Without data-endpoint the browser sends it its own way (a mailto: stand-in opens the mail app) and no success line
    is ever shown. Paste is never blocked. */
-function forms() {
-  document.querySelectorAll('form.form').forEach(form => {
-    form.noValidate = true;
-    const status = form.querySelector('[data-form-status]');
-    if (status && !status.hasAttribute('role') && !status.hasAttribute('aria-live')) status.setAttribute('role', 'status');
-    const say = text => { if (status) status.textContent = text || ''; };
-    const fields = [...form.elements].filter(el => el.matches('input, select, textarea') && !/^(hidden|submit|button|reset|image)$/.test(el.type));
-    const errOf = el => {
-      const ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
-      let err = ids.map(id => document.getElementById(id)).find(e => e && e.classList.contains('field__error'));
-      if (!err) {
-        err = document.createElement('p');
-        err.className = 'field__error'; err.hidden = true;
-        err.id = `${el.id || el.name || 'field'}-err-${Math.random().toString(36).slice(2, 7)}`;
-        (el.closest('.field') || el.parentElement).append(err);
-        el.setAttribute('aria-describedby', [...ids, err.id].join(' '));
-      }
-      // the written reason is kept once, the first time; an empty one stays empty, so a later failure shows the
-      // browser's message of that moment, never the one an earlier failure left in the line
-      if (!('text' in err.dataset)) err.dataset.text = err.textContent.trim();
-      return err;
-    };
-    const check = el => {
-      const ok = el.checkValidity();
-      const err = errOf(el);
-      if (ok) { el.removeAttribute('aria-invalid'); err.hidden = true; return true; }
-      el.setAttribute('aria-invalid', 'true');
-      err.textContent = err.dataset.text || el.dataset.error || el.validationMessage;
-      err.hidden = false;
-      return false;
-    };
-    fields.forEach(el => el.addEventListener(el.matches('select') ? 'change' : 'input', () => { if (el.getAttribute('aria-invalid') === 'true') check(el); }));
-    form.addEventListener('submit', async e => {
-      const bad = fields.filter(el => !check(el));
-      if (bad.length) {
-        e.preventDefault();
-        say(form.dataset.fix ? form.dataset.fix.replace('{n}', bad.length) : bad.length === 1 ? '1 field to fix.' : `${bad.length} fields to fix.`);
-        bad[0].focus();
-        return;
-      }
-      say('');
-      const endpoint = (form.dataset.endpoint || '').trim();
-      if (!/^https?:\/\//.test(endpoint) && !endpoint.startsWith('/')) return;
-      e.preventDefault();
-      const button = form.querySelector('[type="submit"]');
-      const wait = setTimeout(() => say(form.dataset.sending || 'Sending'), 300);
-      if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
-      try {
-        const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error(String(res.status));
-        clearTimeout(wait); form.reset(); say(form.dataset.sent || 'Sent.');
-      } catch {
-        clearTimeout(wait); say(form.dataset.failed || 'Not sent: the connection failed. Your words are still here; try again.');
-      } finally {
-        if (button) { button.disabled = false; button.removeAttribute('aria-busy'); }
-      }
-    });
-  });
-}
-
 /* ------------------------------------------------------------------ peek
    a list beside one photograph that changes to the row under the pointer, the focus or a tap */
 function peek() {
@@ -564,7 +458,7 @@ function glowOnHover(fx, els) {
 
 async function visuals() {
   // a lit border written as data-fx="edge-glow" is the hover light (data-glow), never a ground
-  document.querySelectorAll('[data-fx="edge-glow"]').forEach(el => {
+  document.querySelectorAll('[data-fx="edge-glow"]:not([data-show-field])').forEach(el => {
     el.dataset.glow = 'edge-glow';
     if (el.dataset.fxParams && !el.dataset.glowParams) el.dataset.glowParams = el.dataset.fxParams;
     el.removeAttribute('data-fx');

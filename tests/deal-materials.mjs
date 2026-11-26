@@ -11,6 +11,8 @@ import { suppliedStreet } from '../skills/taste-skill/scripts/place-address.mjs'
 import { color } from '../skills/taste-skill/assets/effects/fx.js';
 import { dealScene, readScenes } from '../skills/taste-skill/scripts/moments.mjs';
 
+import { dealContent } from '../skills/taste-skill/scripts/content-deal.mjs';
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../skills/taste-skill');
 const temp = process.env.TASTE_SKILL_TMP || (process.platform === 'win32' ? 'D:/tmp/night-1124/dealers' : os.tmpdir());
 fs.mkdirSync(temp, { recursive: true });
@@ -84,6 +86,32 @@ const planned = (kind,...args) => {
 };
 assert.equal(planned('software','--has','ui','--view','wide').effect,null);
 assert.equal(planned('gaming','--has','setting').effect,null);
+const richPlan = planned('software','--has','ui,views:2,steps,logos:6,questions,periods:2,pictures:2,compare,code,film','--seed','5');
+const sparsePlan = planned('place','--has','views:1,logos:5,periods:1,pictures:1');
+for (const id of ['feature-tabs','step-rail','logo-row','accordion','price-toggle','snap-gallery','compare','copy-button','video-inview']) {
+  assert(richPlan.parts.some(part => part.id === id && fs.existsSync(path.join(root,part.path))),id);
+  assert(!sparsePlan.parts.some(part => part.id === id),id);
+}
+assert.equal(planned('software','--seed','5').demo,null,'an implied stock UI is not a supplied workflow');
+assert.equal(sparsePlan.demo,null);
+assert.equal(sparsePlan.gradient,null);
+for (const id of ['nav-highlight','menu-sheet','form-states']) assert(sparsePlan.parts.some(p=>p.id===id));
+const input = {page:'software',assets:new Set(['ui']),rows:[],palette:{bg:'#fff',accent:'#4567ab'},heroWindow:true,brief:'Start a timer, tag the client, and send the invoice.'};
+const deals = Array.from({length:1000}, (_,i) => dealContent({...input,seed:String(i)}));
+for (const [filter,low,high] of [[x=>x.demo,.59,.73],[x=>x.gradient?.slot==='hero',.27,.39],[x=>x.gradient?.slot==='close',.15,.25]]) {
+  const share = deals.filter(filter).length / deals.length;
+  assert(share > low && share < high);
+}
+const heroSeed = String(deals.findIndex(x=>x.gradient?.slot==='hero' && x.demo));
+const fixture = extra=>dealContent({...input,seed:heroSeed,...extra});
+assert.equal(fixture({}).gradient.placement,'panel');
+assert.equal(fixture({dark:true}).gradient.placement,'ground');
+assert.equal(fixture({sceneHero:true}).gradient,null);
+assert.equal(fixture({moving:true}).demo.place,'core-view section');
+assert.equal(fixture({}).demo.source,'Start a timer → tag the client → send the invoice');
+assert.equal(fixture({assets:new Set()}).demo,null);
+for (const page of ['place','service','product']) assert.equal(fixture({page}).gradient,null);
+assert.equal(fixture({page:'tech',hardware:true,assets:new Set(['object'])}).gradient.tier,'quiet');
 const hardwareEffect = planned('tech','--has','ground').effect;
 const catalogue = JSON.parse(fs.readFileSync(path.join(root,'assets/effects/index.json'),'utf8')).effects;
 assert(catalogue.find(e => e.id === hardwareEffect)?.kinds.includes('tech'));

@@ -1,4 +1,5 @@
 for (const root of document.querySelectorAll('[data-part="menu-sheet"]')) {
+  if (root.matches('header.nav')) continue; // system.js mounts the starter variant.
   const button = root.querySelector('button'),
     nav = root.querySelector('nav'),
     dialog = document.createElement('dialog'),

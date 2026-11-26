@@ -1,3 +1,4 @@
+import {forms, show} from './show.js';
 import {config, mix, contrast, number, svg} from './common.js';
 import {blend, neighbour} from './colour.js';
 import {png} from './tile.js';
@@ -9,8 +10,9 @@ const fields = {
   mist:[90,96,110,90], cove:[39,116,118,78], sill:[75,105,150,28],
   vault:[55,-20,75,110],
 };
+export const showPresets = Object.keys(forms);
 export const presets = Object.keys(fields);
-export const uses = ['hero ground','device screen','share image'];
+export const uses = ['section ground','product panel','share image'];
 export const knobs = {
   energy:[0,1,.68], spread:[.25,2,1], grain:[0,1,.35], vignette:[0,1,.18],
   focusX:[-25,125,75], focusY:[-25,125,70],
@@ -38,6 +40,7 @@ function svgStops(colours) {
 }
 
 export function generate(options) {
+  if (Object.hasOwn(forms,options.preset)) return show(options);
   const {bg,accent,ink,rng} = config(options);
   const [cx,cy,rx,ry] = fields[options.preset ?? 'shore'];
   const zone = options.zone ?? 'left';

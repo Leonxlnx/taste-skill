@@ -1,3 +1,76 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fieldbook · Route notes</title><link rel="stylesheet" href="../assets/system.css"><link rel="stylesheet" href="demo-materials.css"><style>
-*{box-sizing:border-box}body{margin:0;color:#20271e;background:#f5f2ee;font:17px/1.5 system-ui,sans-serif}a{color:inherit;text-underline-offset:4px}nav,.wrap{width:min(1120px,90%);margin:auto}nav{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-radius:10px}header{padding-top:18px}.hero{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:var(--gutter,24px);min-height:70svh;padding:64px 0 85px}h1,h2{font-weight:540;letter-spacing:-.055em;line-height:1.04;margin:0}h1{font-size:clamp(3.25rem,6vw,6rem)}h2{font-size:clamp(2rem,4vw,3.6rem)}p{max-width:44ch}.hero p,.split p{margin:18px 0 22px}.route-footer .wrap{display:block}figure{margin:0}.window{background:#fcfcf8;color:#283323;border-radius:12px;overflow:hidden;border:1px solid #28332325}.bar,.legend{padding:14px 20px;display:flex;justify-content:space-between;gap:12px}.bar{border-bottom:1px solid #d6dacf}.window svg{display:block;width:100%;height:auto;background:#edf0e6}.legend{font-size:14px}.split{padding:76px 0;display:grid;grid-template-columns:1fr 1fr;gap:var(--gutter,24px);align-items:center}.split>*{grid-column:auto}.split img{order:1}.split img{width:100%;display:block}#route{position:relative}.ts-divider{position:absolute;inset:auto 0 0;height:28px}.route-footer{padding:60px 0}.route-footer h2{margin-bottom:18px}@media(max-width:720px){.hero,.split{grid-template-columns:1fr;min-height:0;gap:30px;padding:42px 0}.hero h1{max-width:10ch}.bar,.legend{padding:10px 12px}nav{padding:12px 16px}}
-</style></head><body><main><header class="ts-gradient"><nav class="ts-surface"><strong>Fieldbook</strong><a href="#route">Route notes</a></nav><section class="hero wrap"><div><h1>Read the ridge before you ride.</h1><p>Keep the elevation profile, surface changes and field notes together for each route.</p><a href="#route">Explore the Westfjords route</a></div><figure class="window ts-shadow"><div class="bar"><strong>Westfjords traverse</strong><span>Route 06</span></div><svg viewBox="0 0 520 220" role="img" aria-label="Elevation rises to a ridge at 16 kilometres and descends to the coast"><g fill="none" stroke="#cbd1c1"><path d="M0 60H520M0 110H520M0 160H520"/></g><path fill="#82956e" d="M0 190L35 178 61 180 88 158 110 145 140 150 169 103 191 94 220 58 244 70 270 43 294 62 322 84 350 93 380 141 410 149 444 176 470 170 520 197V220H0Z"/><path stroke="#3d5135" stroke-dasharray="3 4" d="M270 28V220"/><circle cx="270" cy="43" r="5" fill="#30462b"/></svg><figcaption class="legend"><span>0 km</span><strong>Ridge · 482 m</strong><span>31 km</span></figcaption></figure></section></header><section id="route" class="ts-pattern"><div class="wrap grid split"><img class="ts-shape" src="../assets/photos/img/m108358720-1200.webp" alt="Gravel road along a moss-covered slope in the Westfjords, Iceland"><div><h2>The gravel traverse</h2><p>Yellow poles mark the edge of the road. The eastern approach climbs above the cloud line before the long descent to the coast.</p><small>Photograph by Barry Marsh</small></div></div><div class="ts-divider"></div></section><footer class="route-footer ts-grain"><div class="wrap"><h2>Keep the route close.</h2><a href="#route">Return to the field note</a></div></footer></main></body></html>
+<!doctype html>
+<html lang="en" data-type="software" data-action="ink">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
+  <meta name="description" content="Fieldbook keeps elevation, surface changes and field notes together for each route.">
+  <title>Fieldbook · Route notes</title>
+  <link rel="stylesheet" href="../assets/system.css">
+  <link rel="stylesheet" href="../assets/layout/layout.css">
+  <link rel="stylesheet" href="demo-materials.css">
+  <style>
+.route-head {
+  color: #ffffff;
+  background-color: #0d0e11;
+  background-position: left center;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlMCAqqrzpYAAAJjSURBVHgBAVgCp/0AAAAAAQAAAQAAAAAAAAEAAAEBAAAAAQEAAAEAAQEBAQABAAEBAQEAAAAAAAEAAAAAAQAAAAEBAQABAAABAQABAQAAAAEAAQAAAQAAAAEBAQEBAAEBAAAAAAEBAAAAAQABAQAAAAEBAAEAAQEAAAEBAAEAAQEBAAEBAQEAAQABAQEBAAEBAAABAQAAAQAAAQEBAAABAAAAAAABAQAAAQEBAAABAAAAAAABAAEBAQABAAEAAQABAQEAAAEAAQABAAEAAAEAAQAAAQAAAAABAAEAAQABAQAAAQABAAEAAQEBAAEAAQEBAQABAAEAAQEAAQAAAQEAAAEBAAABAAEBAAABAQAAAAAAAAABAQAAAAEBAAABAQAAAQEAAAEAAQEBAQAAAQEAAQAAAQABAQEAAAEBAAEAAQEAAAABAQAAAQEBAQEBAQABAAEBAQEBAQAAAQEBAQAAAQAAAQABAQABAAAAAAABAAEAAQABAQABAQEAAAEBAQABAAAAAQEAAQAAAQAAAQEBAAEAAQEAAAEBAQAAAAEAAAEAAAEAAAEAAQABAQAAAAEAAAABAAABAAABAQEBAAABAAEAAQEAAAEBAAEBAQEAAAEBAQEAAAEBAAEBAAEAAQABAQEAAAEAAAEAAQAAAQEAAAAAAQEBAQEAAAAAAAABAAAAAAEAAQABAQAAAAAAAQAAAAEAAQEBAAEAAAABAAAAAQABAAEAAAABAAEBAQEAAAEBAAEBAAEBAQEBAQABAQEAAAABAAABAAAAAAABAAAAAAEAAQEBAAEBAAABAAABAAEAAABXUgEksKMJtQAAAABJRU5ErkJggg=="), url("organza.png");
+  background-size: 24px 24px, cover;
+}
+    .route-nav { background:var(--p-bg); }
+    .route-nav .wrap { display:flex; align-items:center; justify-content:space-between; height:100%; }
+    .route-head .btn--primary { background:#fff; color:#182118; }
+    #profile .hero__lead { color:#fff; background:#131510; width:fit-content; }
+    .route-head .window { background:#fcfcf8; color:#283323; border-radius:12px; overflow:hidden; }
+    .bar,.legend { padding:14px 20px; display:flex; justify-content:space-between; gap:12px; }
+    .bar { border-bottom:1px solid #d6dacf; }
+    .window svg { display:block; width:100%; height:auto; background:#edf0e6; }
+    .legend { font-size:14px; }
+    #route { position:relative; background-image:none; }
+    #route .wrap { position:relative; z-index:1; }
+    #route img { width:100%; display:block; }
+    #route p { margin-block:20px; max-width:42ch; }
+    #route::after { content:""; position:absolute; inset:auto 0 0; height:22px; background:var(--divider-art) center / 100% 100%; }
+    .route-footer { background:#e1e6d8; color:#20271e; padding:40px 0; }
+    footer.route-footer > .wrap { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:8px; }
+    @media(max-width:720px) { .bar,.legend { padding:10px 12px; } }
+  </style>
+</head>
+<body>
+<header class="nav route-nav"><nav class="wrap" aria-label="Fieldbook">
+  <a class="skip-link" href="#profile">Skip to content</a>
+  <a href="#profile">Fieldbook</a><a href="#route">Route notes</a>
+</nav></header>
+<main>
+  <section class="hero hero--split route-head" id="profile" data-enter="still">
+    <div class="wrap"><div class="hero-text hero__grid grid">
+      <div class="hero__text span-6">
+        <h1>Read the ridge before you ride.</h1>
+        <p class="hero__lead">Keep the elevation profile, surface changes and field notes together for the 31 km Westfjords traverse.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="#route">Explore the Westfjords route</a></div>
+      </div>
+      <div class="hero__media span-6 start-7"><figure class="window ts-shadow">
+        <div class="bar"><strong>Westfjords traverse</strong><span>Route 06</span></div>
+<svg viewBox="0 0 520 220" role="img" aria-label="Elevation rises to a ridge at 16 kilometres and descends to the coast"><g fill="none" stroke="#cbd1c1"><path d="M0 60H520M0 110H520M0 160H520"/></g><path fill="#82956e" d="M0 190L35 178 61 180 88 158 110 145 140 150 169 103 191 94 220 58 244 70 270 43 294 62 322 84 350 93 380 141 410 149 444 176 470 170 520 197V220H0Z"/><path stroke="#3d5135" stroke-dasharray="3 4" d="M270 28V220"/><circle cx="270" cy="43" r="5" fill="#30462b"/></svg>
+        <div class="legend"><span>0 km</span><strong>Ridge · 482 m</strong><span>31 km</span></div>
+      </figure></div>
+    </div></div>
+  </section>
+  <section id="route" class="section section--compact own ts-divider" data-own="route-note">
+    <div class="wrap"><div class="grid">
+      <div class="span-6"><h2>The gravel traverse</h2>
+        <p>Yellow poles mark the edge of the road. The eastern approach climbs above the cloud line before the long descent to the coast.</p>
+        <a class="btn btn--secondary" href="#profile">Read the elevation profile</a>
+      </div>
+      <div class="span-6 start-7">
+<img class="ts-shape" src="../assets/photos/img/m108358720-1200.webp" alt="Gravel road along a moss-covered slope in the Westfjords, Iceland">
+      </div>
+    </div></div>
+  </section>
+</main>
+<footer class="footer closing route-footer"><div class="wrap">
+  <a href="#profile">Fieldbook</a><small>Photograph by Barry Marsh</small>
+</div></footer>
+</body>
+</html>

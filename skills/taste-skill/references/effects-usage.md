@@ -1,6 +1,6 @@
 # Effects usage
 
-On a quiet page the usual plan has no background effect. An explicit request or about one in six eligible draws can use an effect fitted to the kind. A product window, wide view or photograph occupies the hero on its own. Pass `--effect ask` for a requested background treatment. Lively and loud plans keep their own textures.
+A software, tech or game plan may name one show field in the hero or closing band. Follow the printed command. A requested moving field uses the matching preset and hues. Fit the emitted media frame to that slot, with the headline in the left reading zone. The starter supplies playback and pause. Hardware with a supplied object can instead receive a still quiet field confined to its object panel.
 
 Who gets effects, how many, how they are dealt and where they sit. An effect is anything a shader,
 canvas, WebGL, a print pass or a scroll drive makes: effect grounds (`data-fx`, `assets/effects`),
@@ -38,7 +38,7 @@ Kept off place and service, and why: the light shows (`orb-sphere`, `spotlight-c
 `prism-dispersion`, `aurora-curtains`, `caustics`) are stage lighting with a subject of their own;
 the patterns (`grid-pulse`, `dotted-globe`, `dot-terrain`, `ruled-grounds`, `contour-lines`,
 `ridgeline`) and the dithers (`ascii-shade`, `bayer-dither`, `halftone-screen`) read as data or code;
-`gradient-mesh`, `silk-folds` and `fluted-glass` can fill an inset panel. A painted landscape belongs to a game world. Keep the hero flat beneath a product window. `edge-glow` lights a prompt box. Use a flat interface on place, service and product. Choose the lead picture with the ladder in `photos.md`. A built drawing, chart or working control can show the subject. Keep shaders, tech gradients, glass and prints off these pages. A requested 3D product view can use its own rendered still.
+`gradient-mesh`, `silk-folds` and `fluted-glass` can fill an inset panel. A painted landscape belongs to a game world. On a light palette keep the page flat and put the field inside the product panel. `edge-glow` lights a prompt box. Use a flat interface on place, service and product. Choose the lead picture with the ladder in `photos.md`. A built drawing, chart or working control can show the subject. Keep shaders, tech gradients, glass and prints off these pages. A requested 3D product view can use its own rendered still.
 
 ## What each kind gets
 
@@ -161,3 +161,5 @@ Use the printed host and the matching recipe in `moments.md` or `scenes.md`. A s
   violet or lavender.
 - A site's code, assets or signature device copied: take only the generic idea, built from the
   skill's own scenes and moments with the client's content.
+
+Use the dealt still or the moving field once. Give the emitted `.show-field` the dimensions of the named panel or band. Keep the pause button outside the decorative shader element.

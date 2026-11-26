@@ -582,7 +582,18 @@ async function perf(a) {
 
 const args = parseArgs(process.argv.slice(2));
 const cmd = args._[0];
-const commands = { index: () => buildIndex(), list, pick, gallery, publish, serve, shot, perf };
+function mountSettings(a) {
+  if (!a.settings) die('mount needs --settings <gradient JSON>');
+  const {effect, seed, palette, params, frame} = JSON.parse(fs.readFileSync(a.settings,'utf8'));
+  if (!/^[a-z][a-z0-9-]+$/.test(effect) || !palette || !params) die('expected show gradient settings');
+  const attr = value => String(value).replaceAll('&','&amp;').replaceAll("'","&#39;").replaceAll('<','&lt;').replaceAll('>','&gt;');
+  const attrs = "data-fx='" + attr(effect) + "' data-fx-seed='" + attr(seed) + "' data-fx-palette='" +
+    attr(JSON.stringify(palette)) + "' data-fx-params='" + attr(JSON.stringify(params)) + "'";
+  const geometry = frame ? " data-show-frame='" + attr(JSON.stringify(frame)) + "'" : '';
+  console.log('<div data-media-frame class="show-field"><div data-show-field data-fx-live aria-hidden="true" ' +
+    attrs + geometry + '></div></div>');
+}
+const commands = { mount: mountSettings, index: () => buildIndex(), list, pick, gallery, publish, serve, shot, perf };
 if (!commands[cmd]) {
   console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].split('/*')[1].trim());
   process.exit(cmd ? 1 : 0);

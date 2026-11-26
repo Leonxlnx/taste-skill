@@ -93,6 +93,16 @@
     return animation;
   };
   window.readMotionAudit = () => {
+    if (!['lively','loud'].includes(document.documentElement.dataset.temper)) {
+      const selector = '[data-part="demo-loop"],[data-part="feature-tabs"],[data-part="logo-row"],[data-part="video-inview"],video[autoplay],[data-m-loop],[data-ui-loop],[data-show-field][data-fx-live]';
+      const players = [...document.querySelectorAll(selector)].filter(el => !el.parentElement?.closest(selector) && !el.matches('[data-playback="manual"]') && el.getClientRects().length);
+      const ranges = players.map(el => {
+        const frame = el.hasAttribute('data-show-field') ? el.closest('[data-media-frame]') : el.querySelector('.part-frame,video');
+        return (frame || el).getBoundingClientRect();
+      }).sort((a,b) => a.top-b.top);
+      if (players.length > 2 || ranges.some((r,i) => i && r.top-ranges[i-1].bottom < innerHeight))
+        warn('autoplay-many', document.body, players.length+' autoplay elements. Allow at most two and separate their frames by a viewport.');
+    }
     // Union of clipped rectangles. Nested and overlapping entrance boxes count only once.
     const boxes = [...entrance.values()];
     const xs = [...new Set(boxes.flatMap(b => b.slice(0,2)))].sort((a,b) => a-b);

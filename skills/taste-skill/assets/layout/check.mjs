@@ -30,6 +30,7 @@ import os from 'node:os';
 import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import {partFixture,inspectParts} from '../../scripts/part-fixtures.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -171,16 +172,17 @@ try {
     const loaded = new Promise(r => subs.push(m => { if (m.method === 'Page.loadEventFired') r(); }));
     await S('Page.navigate', { url });
     await Promise.race([loaded, sleep(20000)]);
-    await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.ready || performance.now() - t > 5000) r(); else setTimeout(w, 50); })(); })`);
+    const specimen = partFixture(target);
+    if (!specimen) await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.ready || performance.now() - t > 5000) r(); else setTimeout(w, 50); })(); })`);
     await ev('document.fonts ? document.fonts.ready.then(() => 1) : 1');
     await sleep(900);
-    const res = await ev(src + '\n;window.lyCheck()');
+    const res = specimen ? {sections:[],findings:await ev('('+inspectParts.toString()+')()')} : await ev(src + '\n;window.lyCheck()');
     res.findings.push(...still);
     res.size = `${W}x${H}`;
     res.overflowX = await ev('document.documentElement.scrollWidth > document.documentElement.clientWidth');
     if (res.overflowX) res.findings.push({ rule: 'overflow-x', where: 'page', detail: 'the page scrolls sideways' });
     // the finish checks (layout-check.js lyFinish): they scroll, so they run before the shots and the stress
-    if (!opt('no-finish')) {
+    if (!specimen && !opt('no-finish')) {
       await ev(`new Promise(r => { const t = performance.now(); (function w() { if (document.documentElement.dataset.momentsReady || !document.querySelector('[data-moment]') || performance.now() - t > 4000) r(); else setTimeout(w, 50); })(); })`);
       // Visit the beginning of each section before the layout checks. Even a well-filled page
       // must exercise its scroll-triggered code; lyFinish only scrolls to suspected blank areas.

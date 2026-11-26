@@ -3,6 +3,7 @@
 import { shader, color, fallbackCSS } from '../fx.js';
 
 const params = {
+  show:{default:0,min:0,max:1,step:1}, phase:{default:0,min:0,max:1,step:.01},
   speed:       { default: 0.5,  min: 0, max: 2, step: 0.01 },  // how fast the shapes drift
   softness:    { default: 0.74, min: 0, max: 1, step: 0.01 },  // size and edge softness of the blobs
   warp:        { default: 0.38,  min: 0, max: 1, step: 0.01 },  // slow organic bending of the shapes
@@ -162,6 +163,27 @@ export default {
   family: 'grain',
   params,
   mount(el, { palette, params: given, seed }) {
+    if(given?.show){
+      const frag=`void main(){
+        vec2 uv=fx_uv();
+        float drift=.10*sin(u_time*6.2831853/48.);
+        vec2 dir=vec2(.190809,.981627);
+float t=.5+dot((uv-.5)*u_res,dir)/dot(u_res,dir)+drift*.22;
+vec3 tint=mix(u_base,u_first,smoothstep(.04,.34,t));
+tint=mix(tint,u_second,smoothstep(.34,.46,t));
+tint=mix(tint,u_third,smoothstep(.46,.57,t));
+tint=mix(tint,u_last,smoothstep(.57,.64,t));
+tint=mix(tint,u_second,smoothstep(.64,.67,t));
+tint=mix(tint,u_base,smoothstep(.67,.97,t));
+        tint=mix(u_base,tint,.065+.935*smoothstep(.38,.67,uv.x));
+        fxColor=vec4(fx_dither(fx_rgb(tint)),1.);
+      }`;
+      return shader(el,{frag,palette,seed,maxDpr:1.25,still:0,
+        uniforms:({palette})=>({u_phase:given.phase??0,u_base:color.labVec(palette.bg),u_first:color.labVec(palette.accent),
+          u_second:color.labVec(palette.surface),u_third:color.labVec(palette.muted),u_last:color.labVec(palette.accentInk)}),
+        fallback:({palette})=>`linear-gradient(110deg,${palette.bg} 38%,${palette.accent},${palette.surface},${palette.muted},${palette.accentInk})`
+      });
+    }
     return shader(el, {
       frag,
       schema: params,
