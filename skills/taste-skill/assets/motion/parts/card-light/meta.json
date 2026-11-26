@@ -1,0 +1,21 @@
+{
+  "id": "card-light",
+  "what": "card light",
+  "where": "A material or product card",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "A readable card with a destination",
+  "avoid": "A moving ground or touch-only interaction",
+  "numbers": {
+    "diameterPx": 140,
+    "opacity": 0.35,
+    "outMs": 150
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

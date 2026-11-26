@@ -1,0 +1,20 @@
+{
+  "id": "feature-tabs",
+  "what": "feature tabs",
+  "where": "Beside a shared media frame",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "Two or more features with matching images and labels",
+  "avoid": "Automatic advancement after a manual choice",
+  "numbers": {
+    "panelMs": 4800,
+    "fadeMs": 180
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "Slack records an accordion carousel. Automatic tab advancement and progress were not resolved."
+  }
+}

@@ -1,0 +1,46 @@
+.rates {
+  font:
+    2.8rem Georgia,
+    serif;
+  margin: 16px 0;
+}
+.rates small {
+  font:
+    1rem 'Segoe UI',
+    sans-serif;
+}
+.billing[data-ready] .rates {
+  display: grid;
+}
+.billing[data-ready] .rates p {
+  grid-area: 1/1;
+  transition: opacity 180ms var(--m-ease);
+}
+.rates p[inert] {
+  opacity: 0;
+}
+.billing input {
+  accent-color: var(--accent);
+}
+.billing label {
+  cursor: pointer;
+}
+.billing input {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+.billing label{align-items:center;gap:9px}
+.billing label:not([hidden]){display:inline-flex}
+.billing input{appearance:none;position:relative;width:36px;height:22px;margin:0;border:1px solid var(--line);border-radius:20px;background:#d3d9cf;cursor:pointer;transition:background-color var(--m-state) var(--m-ease)}
+.billing input::before{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--surface);border-radius:50%;transition:transform var(--m-state) var(--m-ease)}
+.billing input:checked{background:var(--accent)}
+.billing input:checked::before{transform:translateX(14px)}
+@media(forced-colors:active){.billing input{appearance:auto}.billing input::before{display:none}}
+
+[data-part="price-toggle"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="price-toggle"] *, [data-part="price-toggle"] *::before, [data-part="price-toggle"] *::after {
+    transition-duration: 0s !important;
+  }
+}

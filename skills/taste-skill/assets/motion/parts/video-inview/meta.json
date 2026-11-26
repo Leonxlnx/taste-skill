@@ -1,0 +1,19 @@
+{
+  "id": "video-inview",
+  "what": "video inview",
+  "where": "A framed process demonstration",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "A film, representative poster and controls",
+  "avoid": "Autoplay with sound",
+  "numbers": {
+    "threshold": 0.6
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "Autoplay video on 10 baseline pages and 2 additional pages. Intersection threshold not measured."
+  }
+}

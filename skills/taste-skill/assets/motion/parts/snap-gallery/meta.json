@@ -1,0 +1,22 @@
+{
+  "id": "snap-gallery",
+  "what": "snap gallery",
+  "where": "A sequence of related plates",
+  "pageKinds": [
+    "software",
+    "studio",
+    "publication"
+  ],
+  "contentNeeded": "Images, captions and meaningful order",
+  "avoid": "A single image",
+  "numbers": {
+    "snap": "native",
+    "gapPx": 16
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

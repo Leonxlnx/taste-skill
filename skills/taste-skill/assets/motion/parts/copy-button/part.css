@@ -1,0 +1,13 @@
+[data-part='copy-button'] code {
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+}
+[data-part="copy-button"] button{min-inline-size:9em}
+
+
+[data-part="copy-button"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="copy-button"] *, [data-part="copy-button"] *::before, [data-part="copy-button"] *::after {
+    transition-duration: 0s !important;
+  }
+}

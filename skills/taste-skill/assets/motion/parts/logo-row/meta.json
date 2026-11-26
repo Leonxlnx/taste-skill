@@ -1,0 +1,26 @@
+{
+  "id": "logo-row",
+  "what": "logo row",
+  "where": "A stockist or customer strip",
+  "pageKinds": [
+    "software",
+    "studio",
+    "publication"
+  ],
+  "contentNeeded": "Six or more approved, similarly sized marks",
+  "avoid": "Implied endorsements",
+  "numbers": {
+    "cycleMs": 28000,
+    "minMarks": 6
+  },
+  "observedSites": 3,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [
+      "GitHub",
+      "Shopify",
+      "Stripe"
+    ],
+    "note": "Logo-specific marquee names in inventory or animation samples. Two Stripe pages share a domain."
+  }
+}

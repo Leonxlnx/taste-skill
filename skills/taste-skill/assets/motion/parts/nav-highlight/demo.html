@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Edition workspace · Folio</title>
+    <link rel="stylesheet" href="../../../system.css" />
+    <link rel="stylesheet" href="../../motion.css" />
+    <link rel="stylesheet" href="../page.css" />
+    <link rel="stylesheet" href="part.css" />
+    <script defer src="part.js"></script>
+  </head>
+  <body>
+    <main class="wrap">
+      <section data-part="nav-highlight">
+        <h1>Edition workspace</h1>
+        <p class="intro">Jump between the production desk and the reference library.</p>
+        <nav class="part-frame desk-nav" aria-label="Workspace">
+          <i aria-hidden="true"></i><a href="#production">Production</a
+          ><button hidden aria-expanded="false">Library</button>
+          <div class="desk-panel"><a href="#plates">Reference plates</a></div>
+        </nav>
+        <p id="production" class="row">Production · Autumn catalogue</p>
+        <p id="plates" class="row">Reference plates · Workshop collection</p>
+      </section>
+    </main>
+  </body>
+</html>

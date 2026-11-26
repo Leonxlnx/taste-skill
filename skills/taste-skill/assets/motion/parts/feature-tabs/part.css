@@ -1,0 +1,35 @@
+.plates {
+  padding-top: 60px;
+}
+.plates-media {
+  margin-top: 16px;
+}
+.plates[data-ready] .plates-media {
+  display: grid;
+}
+.plates[data-ready] figure {
+  grid-area: 1/1;
+  transition: opacity 180ms var(--m-ease);
+}
+.plates button {
+  position: relative;
+}
+.plates .pause {
+  position: absolute;
+}
+.plates [data-choices] i {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+
+[data-part="feature-tabs"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="feature-tabs"] *, [data-part="feature-tabs"] *::before, [data-part="feature-tabs"] *::after {
+    transition-duration: 0s !important;
+  }
+}
+.plates [aria-selected="true"]{background:#e5ebe2;border-color:#879d89}

@@ -1,0 +1,28 @@
+.paper-card {
+  background: #dae3d8;
+}
+.paper-card > * {
+  position: relative;
+}
+.paper-card i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  border-radius: 100%;
+  background: radial-gradient(circle, #fff5, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms var(--m-ease);
+}
+.paper-card p {
+  margin: 10px 0 20px;
+}
+
+[data-part="card-light"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="card-light"] *, [data-part="card-light"] *::before, [data-part="card-light"] *::after {
+    transition-duration: 0s !important;
+  }
+}

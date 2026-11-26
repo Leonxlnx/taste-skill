@@ -1,0 +1,56 @@
+.stockists {
+  padding: 54px 0 24px;
+}
+.stock-mask {
+  overflow: hidden;
+}
+.stock-track ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stock-track li {
+  font:
+    600 1.6rem Georgia,
+    serif;
+  white-space: nowrap;
+}
+.stockists[data-drift] .stock-mask {
+  mask-image: linear-gradient(to right, transparent, #000 8% 92%, transparent);
+}
+.stockists[data-drift] .stock-track {
+  display: flex;
+  width: max-content;
+}
+.stockists[data-drift] ul {
+  flex-wrap: nowrap;
+  padding-right: 32px;
+}
+
+.stock-mask {
+  container-type: inline-size;
+}
+.stockists[data-drift] ul {
+  min-width: 100cqw;
+  justify-content: space-around;
+}
+
+[data-part="logo-row"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="logo-row"] *, [data-part="logo-row"] *::before, [data-part="logo-row"] *::after {
+    transition-duration: 0s !important;
+  }
+}
+.stock-track li:nth-child(3n+1){font-family:Georgia,serif;font-style:italic}.stock-track li:nth-child(3n+2){font-family:"Segoe UI",sans-serif;letter-spacing:-.05em}.stock-track li:nth-child(3n){font-weight:400;letter-spacing:.035em}
+.stockists:not([data-drift]) .stock-track ul {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(145px,100%),1fr));
+  align-items:center;
+  justify-items:center;
+  gap:18px;
+  padding-inline:18px;
+}

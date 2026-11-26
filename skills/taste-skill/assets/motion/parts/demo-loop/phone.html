@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>At the bindery · Folio</title>
+    <link rel="stylesheet" href="../../../system.css" />
+    <link rel="stylesheet" href="../../motion.css" />
+    <link rel="stylesheet" href="../page.css" />
+    <link rel="stylesheet" href="part.css" />
+    <script defer src="part.js"></script>
+  </head>
+  <body>
+    <main class="wrap">
+      <section data-part="demo-loop">
+        <h1>At the bindery</h1>
+        <p class="intro">Check in a delivery on the bindery floor and record where the cartons are stored.</p>
+        <div class="part-frame proof phone">
+          <header>Folio Mobile / Receiving</header>
+          <figure class="cover-sheet" aria-label="Autumn workshop catalogue cover">
+            <span>Folio Editions</span
+            ><svg aria-hidden="true" viewBox="0 0 240 118" fill="none">
+              <g stroke="currentColor" stroke-width="1.4">
+                <path d="M4 106 Q57 -26 112 51 T235 22" />
+                <path d="M6 104.3 Q58.8 -23.1 113.8 51.5 T233.9 24" />
+                <path d="M8 102.6 Q60.6 -20.2 115.6 52 T232.8 26" />
+                <path d="M10 100.9 Q62.4 -17.3 117.4 52.5 T231.7 28" />
+                <path d="M12 99.2 Q64.2 -14.4 119.2 53 T230.6 30" />
+                <path d="M14 97.5 Q66 -11.5 121 53.5 T229.5 32" />
+                <path d="M16 95.8 Q67.8 -8.6 122.8 54 T228.4 34" />
+                <path d="M18 94.1 Q69.6 -5.7 124.6 54.5 T227.3 36" />
+                <path d="M20 92.4 Q71.4 -2.8 126.4 55 T226.2 38" />
+                <path d="M22 90.7 Q73.2 0.1 128.2 55.5 T225.1 40" />
+                <path d="M24 89 Q75 3 130 56 T224 42" />
+                <path d="M26 87.3 Q76.8 5.9 131.8 56.5 T222.9 44" />
+                <path d="M28 85.6 Q78.6 8.8 133.6 57 T221.8 46" />
+                <path d="M30 83.9 Q80.4 11.7 135.4 57.5 T220.7 48" />
+                <path d="M32 82.2 Q82.2 14.6 137.2 58 T219.6 50" />
+                <path d="M34 80.5 Q84 17.5 139 58.5 T218.5 52" />
+                <path d="M36 78.8 Q85.8 20.4 140.8 59 T217.4 54" />
+                <path d="M38 77.1 Q87.6 23.3 142.6 59.5 T216.3 56" />
+              </g></svg
+            ><strong>Field<br />Studies</strong><small>Autumn edition</small>
+          </figure>
+          <div class="proof-details">
+            <h3>Autumn catalogue</h3>
+            <div class="row">Delivery ticket <strong data-status data-start="Expected">Received</strong></div>
+            <div class="row" data-row>Storage location <span data-text>Shelf B, bay 4</span></div>
+            <div data-toast>✓ Delivery recorded</div>
+          </div>
+          <i data-pointer aria-hidden="true">↖</i
+          ><button class="pause loop-pause" hidden aria-label="Pause playback">Ⅱ</button>
+          <template data-cycle="10400"><i data-at="0" data-action="wait"></i
+            ><i data-at="1200" data-action="move" data-target="[data-status]"></i
+            ><i data-at="2400" data-action="press" data-target="[data-status]"></i><i data-at="2700" data-action="status">Received</i
+            ><i data-at="3800" data-action="row"></i
+            ><i data-at="4500" data-action="type">Shelf B, bay 4</i
+            ><i data-at="7200" data-action="toast"></i><i data-at="8800" data-action="wait"></i
+          ></template>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

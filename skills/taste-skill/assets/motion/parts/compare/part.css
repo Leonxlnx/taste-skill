@@ -1,0 +1,85 @@
+.tonal-stack {
+  position: relative;
+}
+.tonal-stack > div {
+  position: relative;
+}
+.tonal-stack img {
+  border-radius: 0;
+}
+.tonal-stack > div + div img {
+  filter: grayscale(1);
+}
+.tonal-stack span {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: var(--paper);
+  padding: 2px 8px;
+}
+.tonal[data-ready] .tonal-stack > div + div {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform: translateX(calc(var(--cut) - 100%));
+}
+.tonal[data-ready] .tonal-stack > div + div img {
+  transform: translateX(calc(100% - var(--cut)));
+}
+.tonal-stack > div + div span {
+  left: 8px;
+  right: auto;
+}
+.tonal[data-ready] .tonal-stack:after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  border-left: 2px solid white;
+  transform: translateX(var(--cut));
+  pointer-events: none;
+}
+.tonal label {
+  display: grid;
+  margin-top: 12px;
+}
+.tonal input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.tonal[data-ready] .tonal-stack {
+  overflow: hidden;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+.tonal[data-ready] .tonal-stack > div + div span {
+  left: auto;
+  right: 8px;
+}
+.tonal[data-ready] .tonal-stack::before {
+  content: '‹  ›';
+  position: absolute;
+  z-index: 2;
+  left: var(--cut);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  pointer-events: none;
+}
+.tonal:has(input:focus-visible) .tonal-stack::before {
+  outline: 3px solid #3872a1;
+}
+
+[data-part="compare"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="compare"] *, [data-part="compare"] *::before, [data-part="compare"] *::after {
+    transition-duration: 0s !important;
+  }
+}

@@ -1,0 +1,31 @@
+.mobile-desk nav,
+.edition-sheet nav {
+  display: grid;
+  gap: 12px;
+}
+.mobile-desk h3 {
+  margin-top: 24px;
+}
+.edition-sheet {
+  margin: auto 0 0 auto;
+  width: min(100%, 390px);
+  max-width: 100%;
+  border: 0;
+  border-radius: 16px 16px 0 0;
+  padding: 24px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.edition-sheet nav {
+  margin: 24px 0;
+}
+.edition-sheet::backdrop {
+  background: #16201973;
+}
+
+[data-part="menu-sheet"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="menu-sheet"] *, [data-part="menu-sheet"] *::before, [data-part="menu-sheet"] *::after {
+    transition-duration: 0s !important;
+  }
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Save a delivery contact · Folio</title>
+    <link rel="stylesheet" href="../../../system.css" />
+    <link rel="stylesheet" href="../../motion.css" />
+    <link rel="stylesheet" href="../page.css" />
+    <link rel="stylesheet" href="part.css" />
+    <script defer src="part.js"></script>
+  </head>
+  <body>
+    <main class="wrap">
+      <section data-part="form-states">
+        <h1>Save a delivery contact</h1>
+        <p class="intro">Keep a contact address with this edition on this device.</p>
+        <form class="part-frame contact">
+          <label
+            >Delivery email <input type="email" disabled required autocomplete="email" name="email"
+          /></label>
+          <p class="message" aria-live="polite"></p>
+          <button hidden>Save contact</button><output role="status"></output
+          ><noscript>Local saving requires scripting.</noscript>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+.plate-detail {
+  max-width: 460px;
+}
+.plate-detail a {
+  display: block;
+  cursor: zoom-in;
+}
+.plate-dialog {
+  max-width: 92vw;
+  width: 900px;
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--paper);
+}
+.plate-dialog img {
+  width: 100%;
+  max-height: 76svh;
+  object-fit: contain;
+}
+.plate-dialog::backdrop {
+  background: #14221ee0;
+}
+.plate-dialog button {
+  display: block;
+  margin: 8px 0 0 auto;
+}
+
+[data-part="lightbox"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="lightbox"] *, [data-part="lightbox"] *::before, [data-part="lightbox"] *::after {
+    transition-duration: 0s !important;
+  }
+}
+.plate-detail .visual{width:100%;height:auto;aspect-ratio:auto}
+.plate-dialog img{width:auto;height:auto;max-width:100%;max-height:76svh;margin-inline:auto}

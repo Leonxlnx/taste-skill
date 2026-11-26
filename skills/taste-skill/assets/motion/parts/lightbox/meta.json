@@ -1,0 +1,21 @@
+{
+  "id": "lightbox",
+  "what": "lightbox",
+  "where": "A photograph with inspectable detail",
+  "pageKinds": [
+    "software",
+    "studio",
+    "publication"
+  ],
+  "contentNeeded": "A thumbnail, full image and description",
+  "avoid": "Enlarging a low-resolution thumbnail",
+  "numbers": {
+    "ms": 280
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

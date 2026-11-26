@@ -1,0 +1,19 @@
+{
+  "id": "count-once",
+  "what": "count once",
+  "where": "An inventory or results figure",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "A final value supplied by the brief",
+  "avoid": "Invented counts or extrapolations",
+  "numbers": {
+    "ms": 500
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}
