@@ -1,10 +1,12 @@
+import path from 'node:path';
+import {encode} from './png.mjs';
 import fs from 'node:fs';
 import {parseArgs} from 'node:util';
 
 const palettes = JSON.parse(fs.readFileSync(new URL('../library/palettes.json', import.meta.url), 'utf8'));
 const roles = ['bg', 'ink', 'accent', 'muted'];
-const switches = {gradient: ['zone'], pattern: ['fade'], divider: ['next']};
-const extraFormats = {gradient: ['settings'], grain: ['uri'], shape: ['path']};
+const switches = {gradient: ['zone','rich','hues','tier','placement'], pattern: ['fade'], divider: ['next']};
+const extraFormats = {gradient: ['settings','png'], grain: ['uri'], shape: ['path']};
 
 function colour(value) {
   const token = value.trim();
@@ -67,16 +69,19 @@ export function run(name, tool) {
       const ranges = Object.entries(tool.knobs).map(([key,[min,max,value]]) => '  --'+key+' '+(key==='exponent'?'positive finite number':min+'..'+max)+' (default '+value+')');
       console.log([
         name+' — '+tool.uses.join(', '),
-        'Presets: '+tool.presets.join(', '),
+        ...(tool.showPresets?['Quiet presets: '+tool.presets.join(', '),'Show presets: '+tool.showPresets.join(', ')]:['Presets: '+tool.presets.join(', ')]),
         'Options: '+keys.map(k => '--'+k).join(' '),
         ...ranges,
+        ...(name==='gradient'?['Show: --tier show --rich 0..1 --hues "#rrggbb,#rrggbb,#rrggbb,#rrggbb" --placement panel|ground','Raster CSS and SVG require the adjacent PNG. Use --out hero.css to write both.']:[]),
         'Formats: '+formats.join(', '),
         'Colours: ground,ink,accent[,muted] in hex.',
       ].join('\n'));
       return;
     }
-    options.preset ??= tool.presets[0];
-    if (!tool.presets.includes(options.preset)) throw Error('Unknown preset '+options.preset);
+    if(options.tier && !['quiet','show'].includes(options.tier))throw Error('Choose quiet or show.');
+    options.preset ??= options.tier==='show'?tool.showPresets[0]:tool.presets[0];
+    if(options.tier && (options.tier==='show')!==tool.showPresets.includes(options.preset))throw Error('Preset belongs to the other tier.');
+    if (![...tool.presets,...(tool.showPresets??[])].includes(options.preset)) throw Error('Unknown preset '+options.preset);
     for (const [key,[min,max]] of Object.entries(tool.knobs)) {
       if (options[key] === undefined) continue;
       const n = Number(options[key]);
@@ -86,13 +91,16 @@ export function run(name, tool) {
     if (options.zone && !['left','centre','top','none'].includes(options.zone)) throw Error('Unknown text zone');
     if (options.fade && !['radial','linear','none'].includes(options.fade)) throw Error('Unknown fade');
     if (options.next) options.next = colour(options.next);
-    const format = options.format ?? (options.out?.toLowerCase().endsWith('.svg') ? 'svg' : 'css');
+    const format = options.format ?? (options.out?.endsWith('.png') ? 'png' : options.out?.toLowerCase().endsWith('.svg') ? 'svg' : 'css');
     if (!formats.includes(format)) throw Error('Unavailable format '+format);
-    const result = tool.generate({...options, palette:readPalette(options)});
-    const output = typeof result[format] === 'string' ? result[format] : JSON.stringify(result[format], null, 2);
+    const picture=options.out?path.parse(options.out).name+'.png':options.preset+'.png';
+    const result = tool.generate({...options, picture:encodeURIComponent(picture),palette:readPalette(options)});
+    if(result.pixels && options.out && ['css','svg'].includes(format)) fs.writeFileSync(path.join(path.dirname(options.out),picture),encode(result));
+    if(format==='png'&&!result.pixels)throw Error('PNG export requires a raster preset.');
+    const output = format==='png'?encode(result):typeof result[format] === 'string' ? result[format] : JSON.stringify(result[format], null, 2);
     if (options.out) fs.writeFileSync(options.out, output);
     else process.stdout.write(output);
-    if (result.ratio) console.error('Contrast '+result.ratio.toFixed(2)+':1');
+    if (result.ratio) console.error((result.zone?'Text zone '+result.zone+' · ':'')+'Contrast '+result.ratio.toFixed(2)+':1');
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

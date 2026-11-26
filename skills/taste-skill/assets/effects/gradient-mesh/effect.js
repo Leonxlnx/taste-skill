@@ -7,6 +7,7 @@ import { shader, color } from '../fx.js';
 
 const packedColour = {default:0,min:0,max:16777215,step:1};
 const params = {
+  show:{default:0,min:0,max:1,step:1}, phase:{default:0,min:0,max:1,step:.01},
   field: {default:0,min:0,max:1,step:1},
   zone: {default:1,min:0,max:3,step:1},
   sweep:{default:0,min:0,max:1,step:1},
@@ -193,6 +194,37 @@ export default {
   family: 'mesh',
   params,
   mount(el, { palette, params: given, seed }) {
+    if(given?.show){
+      const frag=`void main(){
+        vec2 uv=fx_uv();
+        float aspect=u_res.x/u_res.y;
+        uv.x*=min(1.,aspect/(320./168.));
+        uv.y=(uv.y-.5)*min(1.,(320./168.)/aspect)+.5;
+        float drift=.10*sin(u_time*6.2831853/48.);
+        float u=uv.x+.16*sin(uv.y*5.+uv.x*3.+u_phase+drift);
+float v=uv.y+.18*sin(uv.x*5.-uv.y*2.+drift);
+vec2 p=vec2(u,v);
+float w0=exp(-17.*dot(p-vec2(.48,-.12),p-vec2(.48,-.12)));
+float w1=exp(-17.*dot(p-vec2(.91,.05),p-vec2(.91,.05)));
+float w2=exp(-17.*dot(p-vec2(.71,.43),p-vec2(.71,.43)));
+float w3=exp(-17.*dot(p-vec2(1.16,.55),p-vec2(1.16,.55)));
+float w4=exp(-17.*dot(p-vec2(.81,.96),p-vec2(.81,.96)));
+float mesh=(w0*.32+w1+w2*.03+w3*.6+w4*.9)/(w0+w1+w2+w3+w4);
+float relief=.32*sin(8.*u-5.*v+2.8*sin(3.*v))+.21*sin(8.*v+3.*u);
+float value=clamp(.52*mesh+.22+.68*relief,0.,1.)*4.;
+vec3 tint=mix(u_base,u_first,clamp(value,0.,1.));
+tint=mix(tint,u_second,clamp(value-1.,0.,1.));
+tint=mix(tint,u_third,clamp(value-2.,0.,1.));
+tint=mix(tint,u_last,clamp(value-3.,0.,1.));
+        vec3 rgb=mix(fx_rgb(u_base),fx_rgb(tint),.065+.935*smoothstep(.38,.67,uv.x));
+        fxColor=vec4(fx_dither(rgb),1.);
+      }`;
+      return shader(el,{frag,palette,seed,maxDpr:1.25,still:0,
+        uniforms:({palette})=>({u_phase:given.phase??0,u_base:color.labVec(palette.bg),u_first:color.labVec(palette.accent),
+          u_second:color.labVec(palette.surface),u_third:color.labVec(palette.muted),u_last:color.labVec(palette.accentInk)}),
+        fallback:({palette})=>`linear-gradient(110deg,${palette.bg} 38%,${palette.accent},${palette.surface},${palette.muted},${palette.accentInk})`
+      });
+    }
     if (given?.field) {
       const {x,y,w,h,zone,sweep}=given;
       const [base,bright,edge,middle]=[given.base,given.bright,given.edge,given.middle].map(n=>'#'+n.toString(16).padStart(6,'0'));

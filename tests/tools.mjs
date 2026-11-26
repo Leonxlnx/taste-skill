@@ -1,3 +1,4 @@
+import {encode} from '../skills/taste-skill/tools/png.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,8 +23,22 @@ for(const name of names){
  if(name==='gradient')for(const zone of ['left','centre','top'])assert(tool.generate({...o,zone}).ratio>=7);
  count++;
  }}
-console.log(count+' deterministic preset/seed cases passed');
+const gradient=await import(pathToFileURL(path.join(dir,'lib/gradient.js')));
+for(const preset of gradient.showPresets)for(const seed of [1,11,73]){
+ const opts={preset,seed,palette:palettes[seed===11?11:8]},a=gradient.generate(opts);
+ assert.deepEqual(a,gradient.generate(opts));assert(a.ratio>=7);
+ assert(Buffer.byteLength(a.css)<=6144 && Buffer.byteLength(a.svg)<=20480,preset+' export size');
+ if(a.pixels){const file=encode(a);assert(file.length<=48000);assert.deepEqual(file,encode(gradient.generate(opts)))}
+}
+console.log(count+' legacy cases and '+(gradient.showPresets.length*3)+' show preset/seed cases passed');
 const tmp=process.env.TASTE_SKILL_TMP||os.tmpdir(),profile=process.argv.includes('--profile')?process.argv[process.argv.indexOf('--profile')+1]:fs.mkdtempSync(path.join(tmp,'toolbox-chrome-'));
+const exportsDir=fs.mkdtempSync(path.join(tmp,'show-export-'));
+const basename='fold proof',hues='#19557a,#43718d,#319b9e,#6ac9a8';
+const cli=spawnSync(process.execPath,[path.join(dir,'gradient.mjs'),'--tier','show','--preset','selvedge','--seed','7','--hues',hues,'--out',path.join(exportsDir,basename+'.css')],{encoding:'utf8',windowsHide:true});
+assert.equal(cli.status,0,cli.stderr);
+const expected=gradient.generate({preset:'selvedge',seed:'7',hues,picture:'fold%20proof.png',palette:palettes.find(p=>p.id==='white-link-blue')});
+assert.equal(fs.readFileSync(path.join(exportsDir,basename+'.css'),'utf8'),expected.css);
+assert.deepEqual(fs.readFileSync(path.join(exportsDir,basename+'.png')),encode(expected));
 const chrome=[process.env.CHROME_PATH,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(p=>p&&fs.existsSync(p));assert(chrome,'Chrome is required');
 const child=spawn(chrome,['--headless=new','--user-data-dir='+profile,'--remote-debugging-pipe','--no-first-run','--no-default-browser-check','--disable-extensions','--disable-gpu','--use-angle=swiftshader','--enable-unsafe-swiftshader','about:blank'],{windowsHide:true,stdio:['ignore','ignore','ignore','pipe','pipe']});
 const pending=new Map(),errors=[];let sequence=0,remaining='',sessionId;
@@ -53,8 +68,17 @@ try{
  for(let i=0;i<100&&!await evaluate('document.querySelectorAll("nav button").length===7');i++)await new Promise(r=>setTimeout(r,100));
  for(const n of names){
  await evaluate(`document.querySelector('[data-name="${n}"]').click()`);
- assert(await evaluate(`(()=>{for(const preset of toolbox[name].presets)for(const seed of [1,11,73]){const a=toolbox[name].generate({preset,seed,palette:palettes[8]});const sheet=new CSSStyleSheet();sheet.replaceSync(a.css);if(!sheet.cssRules.length||new DOMParser().parseFromString(a.svg,'image/svg+xml').querySelector('parsererror'))return false}return true})()`),n+' syntax');
+ assert(await evaluate(`(()=>{for(const preset of [...toolbox[name].presets,...(toolbox[name].showPresets??[])])for(const seed of [1,11,73]){const a=toolbox[name].generate({preset,seed,palette:palettes[8]});const sheet=new CSSStyleSheet();sheet.replaceSync(a.css);if(!sheet.cssRules.length||new DOMParser().parseFromString(a.svg,'image/svg+xml').querySelector('parsererror'))return false}return true})()`),n+' syntax');
  if(n==='gradient'){
+   for(const preset of gradient.showPresets){
+     const clip=await evaluate(`(()=>{options.preset=${JSON.stringify(preset)};render();const el=document.querySelector('#sample0'),rect=el.getBoundingClientRect();if(!result||getComputedStyle(el).backgroundImage==='none')throw Error('Invalid CSS');return {x:rect.x+scrollX,y:rect.y+scrollY,width:rect.width,height:rect.height,scale:1}})()`);
+     // Exclude product and headline when measuring the material itself.
+     await evaluate("document.querySelectorAll('.composed>strong,.mini-window').forEach(el=>el.style.visibility='hidden')");
+     const image=(await send('Page.captureScreenshot',{clip,captureBeyondViewport:true})).data;
+     const stats=await evaluate(`(async()=>{const img=new Image();img.src='data:image/png;base64,${image}';await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,c.width,c.height).data;let minimum=21;const zones=[];for(let y=3;y<c.height-3;y+=4)for(let x=3;x<c.width-3;x+=4){const at=4*(y*c.width+x),rgb=Array.from(data.slice(at,at+3));if(x<c.width*.37)minimum=Math.min(minimum,toolbox.common.contrast('#ffffff',toolbox.common.hex(rgb)));if(zones.length<3&&zones.every(z=>Math.hypot(...z.map((v,i)=>v-rgb[i]))>38))zones.push(rgb)}return [minimum,zones.length]})()`);
+     assert(stats[0]>=7&&stats[1]>=3,preset+' rendered contrast/zones '+stats);
+     console.log(preset+' preview: '+stats[0].toFixed(2)+':1, '+stats[1]+' separated colour zones');
+   }
    const failure=await evaluate(`(async()=>{
      const canvas=document.createElement('canvas');canvas.width=160;canvas.height=90;
      const ctx=canvas.getContext('2d',{willReadFrequently:true});
