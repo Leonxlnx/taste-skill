@@ -104,7 +104,7 @@
      a one-page site leaves it off every word.
      The logo: the client's own SVG; without one, the dealt mark and the name in the display face:
      arc, ring, stack, dots: <span class="mark" data-mark="arc" aria-hidden="true"></span>
-     initial: <span class="mark mark--initial" aria-hidden="true">K</span> (the name's first letter)
+     initial: <span class="mark mark--initial" data-mark="initial" aria-hidden="true">K</span> (the name's first letter)
      wordmark: no mark, the name alone. The footer repeats it.
      The skip link is the bar's first child and the page's first stop for the Tab key: hidden until focused, then
      shown over the logo (system.css .skip-link); its words in the page's language ("Zum Inhalt" on a German page). -->
@@ -408,8 +408,8 @@
   <!-- row 1 as close--form: a page whose last section would be the booking or order form ends on it, so the page
        never asks twice in a row; paste the booking-form's fields into the form (class form close__form) -->
   <div class="closing__cta close--form">
-    <div class="section-head"><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p>[One line: the reply time.]</p></div>
-    <form class="form close__form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Your request is in. We reply within a day.]" novalidate>
+    <div class="section-head"><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p>[A supplied booking fact.]</p></div>
+    <form class="form close__form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Confirmation after the request is received.]" novalidate>
       <!-- the booking-form fields below -->
     </form>
   </div>

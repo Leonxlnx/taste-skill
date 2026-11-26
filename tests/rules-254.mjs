@@ -177,6 +177,21 @@ if (!variant || variant==='outcomes') {
   assert.ok(!deferred.findings.some(f=>f.id==='brief-ask' && f.sev==='FAIL'));
   assert.equal(deferred.asks[0].state,'preview');
   console.log('ok - a deferred ask may name a future target');
+  const planFile = path.join(tmp,'.taste-skill/plan.json');
+  fs.writeFileSync(planFile,JSON.stringify({brief:'A studio with a mascot and canal houses. Design from €4,500. We reply within two days.'}));
+  fs.writeFileSync(notes,'## Fact sheet\nProjects: Willow House\nAssumed: Elm Court\n\n## Draft\nElm Court');
+  for (const bad of [false,true]) {
+    const poses = '<svg data-mascot aria-hidden="true"><use href="poses.svg#pose-wave"/></svg><svg><use href="#pose-rest"/></svg>';
+    fs.writeFileSync(file,'<main>'+poses+(bad?'':'<img data-mascot src="react.svg">')+
+      '<section id="work"><article><h3>'+(bad?'Elm Court':'Willow House')+'</h3></article></section>'+
+      '<p data-assumed>From EUR 4,500. We reply within two days.'+(bad?' Ships within five days for €450.':'')+'</p></main>');
+    const {findings} = (await run(path.join(skill,'scripts/copy-lint.mjs'),[file,'--json'])).files[0];
+    for (const [id,sev] of [['invented-work','FAIL'],['mascot-once','WARN'],['assumed-terms','WARN']])
+      assert.equal(findings.some(f=>f.id===id && f.sev===sev),bad,id);
+  }
+  fs.rmSync(planFile);
+  console.log('ok - supplied and invented work, mixed mascot markup and commercial terms');
+
 }
 if (!variant || variant==='regressions') {
   const file=path.join(tmp,'regressions.html');

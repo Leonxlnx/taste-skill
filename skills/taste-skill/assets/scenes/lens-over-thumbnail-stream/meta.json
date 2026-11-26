@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "lens-over-thumbnail-stream",
   "name": "Lens over a thumbnail stream",
   "family": "media-sequence",

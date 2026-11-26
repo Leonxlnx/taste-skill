@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software"],
   "id": "instrument-dial-stage",
   "name": "Instrument dial stage",
   "family": "media-sequence",

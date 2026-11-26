@@ -121,7 +121,7 @@ Write each request at its target, for example `- Book a double room -> #booking 
 Lint the draft with `node <skill>/scripts/copy-lint.mjs .taste-skill/copy.md`. Label each line under `## Draft` with its part (`H1:`, `Lead:`, `Button:`).
 
 Cover the paragraph. The first heading or its clearly pictured subject identifies what is sold. Later headings name what the reader can learn, choose or do. Read each at 390. Cut explanations of the column, list or length of the answer.
-Use a link button for sign-up, starting free, opening an app, downloads, store purchases and booking through a named service. Use the supplied address or a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List that address first under “Client must supply” in the notes and handoff. The link keeps the action’s name.
+Use a link button for sign-up, starting free, opening an app, downloads, store purchases and booking through a named service. Use the supplied address or a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List that address first under “Client must supply” in the notes and handoff. Use the main action label, or name the destination store or booking service on its button.
 
 Use a short form for an enquiry, slot booking, pre-order, demo request or newsletter. Its submit repeats the main action word for word. With no receiving address, open an email draft and put one plain sentence under the button, such as “Opens your email with the order filled in.” Keep build notes and missing services in the handoff. Source every public total, project credit and time limit.
 
@@ -212,7 +212,7 @@ line is a line with no fact; a hero form is a choice with its fact beside it.)
 
 Label a working object once on the object itself, for example “Example incident” or “Sample week”. Calculate public totals from confirmed prices and limits. Write invented dated entries as plain notes and identify them as examples in the report.
 
-- Mark assumed opening hours, menu items or a district with `data-assumed` and list them in the notes and report. Quote the supplied rate with its unit and any “from”. Use only supplied rates in totals. Leave other prices, delivery and response times, rollout durations and discounts for the enquiry.
+- Mark assumed opening hours, menu items or a district with `data-assumed` and list them in the notes and report. Quote the supplied rate with its unit and any “from”. Use only supplied rates in totals. Print durations only when the brief gives them. Leave other prices, delivery and response times, rollout durations and discounts for the enquiry.
 - **Never held back instead:** no "Price on request" or "Pricing on request", no "we reply with the
   price" on a page that shows none, no "the street address comes with your confirmation email" or
   "street and district are on the way", no note about the client, the brief or the build ("hours are
@@ -239,7 +239,7 @@ Label a working object once on the object itself, for example “Example inciden
 - **No placeholders:** no square brackets, "lorem ipsum", "your name here", "to be added", TODO,
   kit sample text, and no link to `#` or an empty href. Write the real words, an assumed fact
   (above), or leave the element out. "Coming soon" only for what the brief says is coming.
-- **House rule 1.** No caption that explains, apologises for or labels a picture. A work, project, room or product may carry one `.fact-line` under or beside the picture. Use name, place, size, year or price, up to 60 characters. Mark assumed facts `data-assumed`.
+- **House rule 1.** No caption that explains, apologises for or labels a picture. A work, project, room or product may carry one `.fact-line` under or beside the picture. Use name, place, size, year or price, up to 60 characters. Project names, clients and addresses must come from the brief or sourced fact sheet.
 - **Credits:** one short line at the end of the footer naming only the sources used, never the
   photographers: "Photographs via Unsplash and Wikimedia Commons" (as `photos.mjs credits` prints
   it; 110 characters at most, one line from 1024) that links or opens the credits list. Paste the

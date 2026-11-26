@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "place", "tech", "software", "gaming"],
   "id": "hinged-sheets",
   "name": "Hinged sheets",
   "family": "layer-stack",

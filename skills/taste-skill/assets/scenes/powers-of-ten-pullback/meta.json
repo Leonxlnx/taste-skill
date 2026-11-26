@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "software", "tech"],
   "id": "powers-of-ten-pullback",
   "name": "Powers-of-ten pull-back",
   "family": "camera-through-space",

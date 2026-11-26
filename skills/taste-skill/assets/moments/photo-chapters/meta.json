@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "photo-chapters",
   "name": "Photo chapters",
   "kind": "scroll",

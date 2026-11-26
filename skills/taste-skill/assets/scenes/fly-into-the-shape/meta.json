@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "service", "software", "tech", "gaming"],
   "id": "fly-into-the-shape",
   "name": "Fly into the shape",
   "family": "mask-and-reveal",

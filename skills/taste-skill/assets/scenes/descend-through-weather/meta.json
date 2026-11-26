@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["service", "tech", "gaming"],
   "id": "descend-through-weather",
   "name": "Descend through the weather",
   "family": "camera-through-space",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["software", "tech", "gaming"],
   "id": "letter-physics",
   "name": "Letter physics",
   "family": "type-choreography",

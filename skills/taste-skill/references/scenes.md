@@ -1,6 +1,6 @@
 # Big scenes
 
-Quiet pages deal no scene. When the brief requests motion, pass `--motion ask`. A requested, lively or loud page can draw one scene on roughly a third of eligible deals. Keep the first action reachable.
+Quiet pages deal no scene. When the brief requests motion, pass `--motion ask`. A requested, lively or loud page can draw one scene on roughly a third of eligible deals. Deal only scenes that fit the kind, temper and available material. Pass actual counts with `--has names:16,pictures:3,series:4`. A bare `photo` supplies one picture. Keep the first action reachable.
 
 ```sh
 node <skill>/scripts/moments.mjs pick --page product --motion ask --sections 7 --carry photos,list --has photo,product,pictures:6 --scene deal

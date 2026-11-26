@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "place", "tech", "software"],
   "id": "room-walk-track",
   "name": "Sideways walk through rooms",
   "family": "horizontal-travel",

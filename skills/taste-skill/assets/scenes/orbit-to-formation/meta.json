@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "orbit-to-formation",
   "name": "Orbit to formation",
   "family": "grid-reassembly",

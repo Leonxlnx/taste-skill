@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software"],
   "id": "closing-object-turns",
   "name": "Closing object turns over",
   "family": "object-scrub",

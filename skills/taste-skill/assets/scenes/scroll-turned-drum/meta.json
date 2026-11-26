@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "scroll-turned-drum",
   "name": "Scroll-turned drum",
   "family": "type-choreography",

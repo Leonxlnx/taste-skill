@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["software"],
   "id": "product-assembles-into-its-action",
   "name": "Product assembles into its action",
   "family": "object-scrub",

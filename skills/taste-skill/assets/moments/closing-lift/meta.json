@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "closing-lift",
   "name": "Closing lift",
   "kind": "transition",

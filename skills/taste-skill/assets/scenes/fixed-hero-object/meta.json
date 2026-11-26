@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "tech", "gaming"],
   "id": "fixed-hero-object",
   "name": "Fixed hero object",
   "family": "object-scrub",

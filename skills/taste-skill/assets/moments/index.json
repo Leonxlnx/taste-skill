@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generated": "2026-11-25T14:49:32.729Z",
+ "generated": "2026-11-25T22:47:25.225Z",
  "count": 18,
  "dealt": 6,
  "kinds": {
@@ -100,6 +100,18 @@
  "budget": 4,
  "moments": [
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "closing-lift",
    "name": "Closing lift",
    "kind": "transition",
@@ -160,6 +172,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "counter-rolls",
    "name": "Counter rolls",
    "kind": "text",
@@ -215,6 +240,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "cursor-spotlight",
    "name": "Cursor spotlight",
    "kind": "hover",
@@ -284,6 +322,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "giant-type-pass",
    "name": "Giant type, picture passing",
    "kind": "scroll",
@@ -340,6 +391,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "headline-arrives",
    "name": "Headline arrives",
    "kind": "text",
@@ -386,6 +450,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "iris-opens",
    "name": "Iris opens",
    "kind": "transition",
@@ -436,6 +513,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "letters-assemble",
    "name": "Letters assemble",
    "kind": "scroll",
@@ -493,6 +583,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "line-carries-colour",
    "name": "Line carries the colour",
    "kind": "transition",
@@ -542,6 +645,18 @@
    "pages": []
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "lines-rise",
    "name": "Lines rise",
    "kind": "text",
@@ -603,6 +718,18 @@
    ]
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "liquid-hover",
    "name": "Liquid hover",
    "kind": "liquid",
@@ -679,6 +806,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "liquid-type",
    "name": "Liquid type",
    "kind": "liquid",
@@ -745,6 +885,19 @@
    "pages": []
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "marquee-row",
    "name": "Marquee row",
    "kind": "scroll",
@@ -769,6 +922,9 @@
    "maxPerPage": 1,
    "weight": 0.8,
    "needs": {
+    "list": [
+     "names:6"
+    ],
     "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients",
     "carry": [
      "list"
@@ -807,6 +963,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "photo-chapters",
    "name": "Photo chapters",
    "kind": "scroll",
@@ -866,6 +1035,18 @@
    ]
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "picture-develops",
    "name": "Picture develops",
    "kind": "transition",
@@ -919,6 +1100,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "pinned-chapters",
    "name": "Pinned chapters",
    "kind": "scroll",
@@ -977,6 +1171,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "window-parallax",
    "name": "Window parallax",
    "kind": "scroll",
@@ -1028,6 +1235,18 @@
    ]
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "word-highlight",
    "name": "Statement lights up",
    "kind": "scroll",
@@ -1091,6 +1310,19 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "word-rotate",
    "name": "Word rotates",
    "kind": "text",

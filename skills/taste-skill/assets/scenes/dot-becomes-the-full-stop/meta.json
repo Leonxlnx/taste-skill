@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "software", "tech", "gaming"],
   "id": "dot-becomes-the-full-stop",
   "name": "The dot becomes the full stop",
   "family": "type-choreography",

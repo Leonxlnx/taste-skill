@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "tech", "software", "gaming"],
   "id": "peel-tear-and-drag",
   "name": "Peel, tear and drag",
   "family": "section-transition",

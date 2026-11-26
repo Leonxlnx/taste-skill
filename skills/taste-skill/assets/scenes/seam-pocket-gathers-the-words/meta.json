@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software"],
   "id": "seam-pocket-gathers-the-words",
   "name": "Section seam bends into a cup that gathers the scattered words",
   "family": "section-transition",

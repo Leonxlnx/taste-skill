@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "depth-card-flythrough",
   "name": "Fly-through of photo cards",
   "family": "camera-through-space",

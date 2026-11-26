@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["software"],
   "id": "parts-lock-into-the-whole",
   "name": "Parts lock into the whole",
   "family": "grid-reassembly",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "place", "tech", "software"],
   "id": "panels-reproportion-on-arrival",
   "name": "Panels re-proportion as they arrive",
   "family": "horizontal-travel",

@@ -289,7 +289,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
-import { STOP, norm, words, stem, holds, holdsAny, headingSubjects, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { STOP, norm, words, stem, holds, holdsAny, headingSubjects, copyTerms, headingFindings, itemContext, closingActionMatches } from './heading-copy.mjs';
 import { areaInSource, suppliedStreet } from './place-address.mjs';
 import { storyProbe, storyFindings, findBeside } from './story-check.mjs';
 
@@ -2851,6 +2851,7 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number') continue;
       const el = it.el, tag = TU(el), z = it.z, c = C(z), cw = c.r - c.l;
+      if (el.closest('[data-big-scene="closing-line-in-a-field-of-words"] .clf-field')) continue;
       if (!(TEXTTAG.test(tag) || (cs(el).display === 'block' && hasDirectText(el)))) continue;
       if (!contentAnc.has(el) || el.closest('.app-frame,.hero__window,[data-ui]')) continue;
       let ex = null;
@@ -2953,6 +2954,7 @@ function measure(opt) {
       if (typeof it.z !== 'number' || it.layer || bleedPic(it.el, it.r)) continue;
       const el = it.el, z = it.z, c = C(z), cw = c.r - c.l;
       if (el.closest('h1') && (el.closest('h1').getAttribute('aria-label') || el.closest('h1').querySelector('svg[aria-label],svg title,img[alt]'))) continue;
+      if (el.matches('[data-big-scene="closing-line-in-a-field-of-words"] .clf-close')) continue;
       if (el === S[z].wrap || el.closest('section[data-own]') || inPlacePicture(el) || window.lyRules.edgePicture(el) || el.closest('.item-row')) continue;
       // The text panel over a hero photograph has its own placement check above.
       // Its width follows the headline; the full-bleed visual is the photograph.
@@ -7334,8 +7336,11 @@ function lib(itemContext) {
       const raw = e.getAttribute('href');
       let href = null; if (raw != null) { try { href = new URL(raw, location.href).href; } catch {} }
       const where = inFixed(e) || inChrome(e) ? 'nav' : hero && hero.contains(e) ? 'hero' : (last && last.contains(e)) || e.closest('footer.closing') ? 'last' : 'other'; // footer.closing is the page's closing section (system.css): its button is the last section's
-      ctas.push({ id: idOf(e), sel: sel(e), label: full(e).slice(0, 60), href, where, atClose: !!actionClose?.contains(e), beforeLast: !!last?.previousElementSibling?.contains(e), submitTargets: e.form && e.matches("button[type=submit], input[type=submit], form button:not([type])") ? [e.form.id, e.form.closest("section[id]")?.id].filter(Boolean).map(id => new URL("#"+id,location.href).href) : [], shape: L.shape, fill: L.fill, h: L.h, doc: doc(e) });
+      ctas.push({ id: idOf(e), sel: sel(e), label: full(e).slice(0, 60), href, needs: e.getAttribute('data-needs') || '', where, atClose: !!actionClose?.contains(e), beforeLast: !!last?.previousElementSibling?.contains(e), submitTargets: e.form && e.matches("button[type=submit], input[type=submit], form button:not([type])") ? [e.form.id, e.form.closest("section[id]")?.id].filter(Boolean).map(id => new URL("#"+id,location.href).href) : [], shape: L.shape, fill: L.fill, h: L.h, doc: doc(e) });
     }
+    const closeLinks = [...(actionClose?.querySelectorAll('a[href]') || [])]
+      .filter(e => actionVisible(e) && !inDrawn(e))
+      .map(e => ({label:full(e), href:e.href, needs:e.getAttribute('data-needs') || ''}));
     // price cards with no action in them or right under them
     const priced = [];
     for (const e of gallery ? [] : document.body.querySelectorAll('*')) {
@@ -7343,6 +7348,8 @@ function lib(itemContext) {
       let card = null;
       for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const k = quickKind(a); const q = a.getBoundingClientRect(); if (k && k !== 'media' && q.width >= 160 && q.height >= 120 && q.width <= vw * 0.7) { card = a; break; } }
       if (!card || priced.some((p) => p.el === card)) continue;
+      // A fee in an example call record describes the enquiry, not a separate offer.
+      if (card.closest('[data-own="call-note"]') && /\bexample\b/i.test(full(card))) continue;
       // A seasonal menu item can use the brand ground while its price stays a caption.
       if (card.matches('.item-row > li.ground-brand') && e.closest('.item-caption') &&
           card.querySelector(':scope > img,:scope > picture') && card.querySelector('.fact-line')) continue;
@@ -7635,7 +7642,7 @@ function lib(itemContext) {
       vw, vh, heads, big, title: document.title || '', description: meta ? meta.getAttribute('content') || '' : '', brand: brandEl ? full(brandEl).slice(0, 40) : '',
       h1: h1 ? { id: idOf(h1), sel: sel(h1), text: full(h1), doc: doc(h1) } : null, after, heroText: heroText.replace(/\s+/g, ' ').trim().slice(0, 3000),
       hero: hero ? { sel: sel(hero), doc: doc(hero) } : null, last: last && last !== hero ? { sel: sel(last), doc: doc(last), text: label(last.querySelector('h1, h2, h3') || last) } : null,
-      previewEvidence, offerFindings, ctas, priced: priced.filter((p) => !p.act).map(({ el, act, ...p }) => p), longBare, links, pages, navLinks, credits,
+      previewEvidence, offerFindings, ctas, closeLinks, priced: priced.filter((p) => !p.act).map(({ el, act, ...p }) => p), longBare, links, pages, navLinks, credits,
       cardFam, outranked, twoLooks, linkLooks: [...linkLooks].map(([look, items]) => ({ look, n: items.length, first: items[0] })),
     };
   }
@@ -8991,7 +8998,7 @@ function lib(itemContext) {
       for (const s of S) {
         if (s.tagName === 'FOOTER') continue;
         for (const g of s.querySelectorAll('*')) {
-          if (inDrawn(g) || inFixed(g) || g.closest('nav, header, dialog, [role="tablist"]')) continue;
+          if (g.closest('[data-moment="pinned-chapters"] .mo-pc__grid') || inDrawn(g) || inFixed(g) || g.closest('nav, header, dialog, [role="tablist"]')) continue;
           const kids = [...g.children].filter((k) => visible(k) && !SKIP.has(k.tagName)); if (kids.length !== 2) continue;
           const gr = g.getBoundingClientRect(); if (gr.width < vw * 0.5) continue;
           kids.sort((p, q) => p.getBoundingClientRect().left - q.getBoundingClientRect().left); // a flipped split sits right to left
@@ -9641,7 +9648,7 @@ function copyChecks(P) {
   const primary = T.primary || (P.ctas.find((c) => c.where === 'nav' && c.fill) || P.ctas.find((c) => c.where === 'hero' && c.fill) || {}).label || '';
   if (primary && P.last) {
     const inTop = P.ctas.some((c) => (c.where === 'nav' || c.where === 'hero') && norm(c.label) === norm(primary));
-    const inLast = P.ctas.some((c) => c.atClose && norm(c.label) === norm(primary));
+    const inLast = closingActionMatches(primary, [...P.ctas.filter(c => c.atClose), ...P.closeLinks]);
     if (!inTop || !inLast) f('copy-actions', 'WARN', null, `the main action "${primary}" does not read word for word the same in ${!inTop ? 'the nav or hero' : ''}${!inTop && !inLast ? ' and ' : ''}${!inLast ? 'the closing section' : ''}`);
   }
   return { F, T };

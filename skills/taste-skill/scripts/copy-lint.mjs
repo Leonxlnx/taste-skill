@@ -53,7 +53,7 @@
 */
 import fs from 'node:fs';
 import {assessAsk, inferOutcome, outcomes, remedy} from './ask-outcome.mjs';
-import { headingSubjects, copyTerms, headingFindings, itemContext } from './heading-copy.mjs';
+import { headingSubjects, copyTerms, headingFindings, itemContext, mascotRequest } from './heading-copy.mjs';
 import { readStory } from './story-check.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -559,7 +559,7 @@ function sentenceAt(b, i) {
 // Read nested targets from the same HTML that is linted. Void elements never
 // capture a control from the next section. Script and template markup is inert.
 function pageTargets(raw, file, root) {
-  const nodes = [], modules = [];
+  const nodes = [], modules = [], mascotHosts = new Set();
   function closeFrom(index) {
     for (const n of stack.splice(index)) n.end = nodes.length;
   }
@@ -597,6 +597,16 @@ function pageTargets(raw, file, root) {
       hidden:parent?.hidden || hasAttr(attrs,'hidden') || get('aria-hidden')==='true' || /(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*hidden)\b/i.test(get('style') || ''),
       disabled:parent?.disabled || hasAttr(attrs,'disabled'), inLabel:parent?.inLabel || ['a','button'].includes(name),
       inHeading:parent?.inHeading || /^h[1-6]$/.test(name)};
+    // Decorative artwork is visible even when hidden from screen readers.
+    n.unpainted = parent?.unpainted || ['defs','symbol'].includes(name) || hasAttr(attrs,'hidden') ||
+      /(?:display\s*:\s*none|visibility\s*:\s*hidden)/i.test(get('style') || '');
+    n.mascotHost = parent?.mascotHost || (get('data-mascot') !== null ? n : null);
+    if (!n.unpainted) {
+      if (n.mascotHost) mascotHosts.add(n.mascotHost);
+      else if (name === 'use' && /#pose-[\w-]+$/.test(get('href') || get('xlink:href') || ''))
+        mascotHosts.add(stack.findLast(el => el.name === 'svg') || n);
+    }
+    n.work = parent?.work || /^(?:work|projects|portfolio|clients|cases)$/.test(n.id || '') || /^(?:case-rows|portfolio|projects)$/.test(get('data-own') || '');
     n.form = name==='form' ? n : parent?.form;
     if (name==='a' || name==='button' || get('role')==='button') n.labelText='';
     if (name==='dialog') n.dialogText='';
@@ -624,7 +634,7 @@ function pageTargets(raw, file, root) {
   }
   for (const c of captions) { c.frame ||= c.scope?.firstPicture; if (c.fact && c.frame) frames.set(c.frame,(frames.get(c.frame)||0)+1); }
   closeFrom(0);
-  return {parseLocal: file => pageTargets(fs.readFileSync(file,'utf8'),file,root),ids,captions,frames,nodes,modules,file:assetPage || file,root:assetRoot || root || path.dirname(path.resolve(file))};
+  return {parseLocal: file => pageTargets(fs.readFileSync(file,'utf8'),file,root),ids,captions,frames,nodes,modules,mascotHosts,file:assetPage || file,root:assetRoot || root || path.dirname(path.resolve(file))};
 }
 
 function staticPageForNotes(file) {
@@ -944,13 +954,36 @@ function lintRead(R, isHtml) {
     else { let t = ''; try { t = fs.readFileSync(nf, 'utf8'); } catch { /* unreadable reads as empty */ } const rel = path.relative(process.cwd(), nf); notes = notesFindings(t, rel && !rel.startsWith('..') && !path.isAbsolute(rel) ? rel : nf, page, brief, dealtShape); }
   }
   if ((isHtml && !insideSkill) || (!isHtml && /^copy\.md$/i.test(path.basename(R.file || '')))) {
+    if (isHtml && page && mascotRequest(brief)) {
+      const count = page.mascotHosts.size;
+      if (count < 3) add('WARN','mascot-once',[String(count)],'The requested mascot appears in '+count+' places.','Give it distinct poses in the hero, a content section and the close or footer.');
+    }
+    if (isHtml && page && (brief || sourceNotes)) {
+      const facts = sourceNotes.match(/^##\s+Fact sheet\s*$([\s\S]*?)(?=^##\s|(?![\s\S]))/im)?.[1] || '';
+      const nameText = text => text.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+      const evidence = ' ' + nameText(brief + '\n' + facts.replace(/^Assumed:.*$/gim,'')) + ' ';
+      for (const node of page.nodes) {
+        const caseCard = (node.work || /\b(case|project|client)(?:-card)?\b/.test(node.get('class') || '')) && ['article','li','figure'].includes(node.name);
+        const label = node.get('data-project-name') || node.get('data-client-name') || node.get('data-case-name') ||
+          (caseCard && page.nodes.slice(node.start,node.end).find(n=>/^h[2-5]$/.test(n.name))?.text);
+        if (!label || evidence.includes(' ' + nameText(label) + ' ')) continue;
+        const words = nameText(label).split(' ').filter(w => !/^(a|an|the|of|in|for|and|at|to)$/.test(w));
+        const explicit = ['data-project-name','data-client-name','data-case-name'].some(attr => node.get(attr));
+        if (explicit || words.some(w => !evidence.includes(' ' + nameText(w) + ' ') && !evidence.includes(' ' + nameText(w) + 's '))) add('FAIL','invented-work',[label],'This work name has no source in the brief or fact sheet.','Use the kind of work supplied by the brief.');
+      }
+    }
     asks = briefAsks(sourceNotes,page,add,brief);
     if (isHtml && page) for (const node of page.nodes.filter(n => n.get('data-assumed') !== null)) {
       const value = page.nodes.slice(node.start,node.end).map(n => n.text).join(' ').trim();
-      const price = /[€£$]\s*\d|\d[\d.,]*\s*(?:[€£$]|USD|EUR|GBP)/i.test(value);
-      const duration = /\b(?:\d+|a|an|one|two|three|four|five|six|seven|eight)[ -]+(?:(?:working|business)[ -]+)?(?:hours?|days?|weeks?|months?)\b/i;
+      const money = /(?:[€£$]|USD|EUR|GBP)\s*\d+(?:[.,]\d+)*|\d+(?:[.,]\d+)*\s*(?:[€£$]|USD|EUR|GBP)/gi;
+      const duration = /\b(?:\d+|a|an|one|two|three|four|five|six|seven|eight)[ -]+(?:(?:working|business)[ -]+)?(?:hours?|days?|weeks?|months?)\b/gi;
       const timing = /\b(?:within|ship(?:s|ping)?|deliver\w*|repl\w*|respond\w*|response|rollout|weeks?)\b/i;
-      if (price || value.split(/[.!?\n]/).some(line => duration.test(line) && timing.test(line)))
+      const normalizeTerm = term => term.toLowerCase().replace(/eur/g,'€').replace(/usd/g,'$').replace(/gbp/g,'£').replace(/[\s-]/g,'').replace(/,(?=\d{3}\b)/g,'').replace(/^([\d.,]+)([€£$])$/, '$2$1');
+      const missing = (pattern, text) => {
+        const supplied = new Set((brief.match(pattern) || []).map(normalizeTerm));
+        return (text.match(pattern) || []).some(term => !supplied.has(normalizeTerm(term)));
+      };
+      if (missing(money,value) || value.split(/[.!?\n]/).some(line => timing.test(line) && missing(duration,line)))
         add('WARN','assumed-terms',[value],'An assumed element gives a price or commercial duration.','Use the rate and timing supplied by the brief.');
     }
     if (page) for (const c of page.captions) {

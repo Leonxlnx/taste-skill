@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "tech", "gaming"],
   "id": "shaped-window-over-fixed-world",
   "name": "Shaped window over a fixed world",
   "family": "mask-and-reveal",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["service", "tech", "software", "gaming"],
   "id": "dither-field-opener",
   "name": "Dither field opener",
   "family": "colour-and-ground",

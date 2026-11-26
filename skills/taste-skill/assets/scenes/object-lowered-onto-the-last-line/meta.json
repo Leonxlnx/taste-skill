@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "tech", "software"],
   "id": "object-lowered-onto-the-last-line",
   "name": "Object lowered onto the last line",
   "family": "object-scrub",

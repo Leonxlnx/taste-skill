@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "speed-bent-row",
   "name": "A row the scroll speed bends",
   "family": "horizontal-travel",

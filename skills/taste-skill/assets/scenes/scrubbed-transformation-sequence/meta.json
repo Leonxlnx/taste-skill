@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software"],
   "id": "scrubbed-transformation-sequence",
   "name": "Scrubbed transformation sequence",
   "family": "object-scrub",

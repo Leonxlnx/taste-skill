@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["tech", "software", "gaming"],
   "id": "window-names-its-parts",
   "name": "Window names its parts",
   "family": "layer-stack",

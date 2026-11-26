@@ -24,7 +24,7 @@ Before planning, name what the visitor needs to know before acting and which sup
 | Makers, merchants or founders who grow with it | `reader-rise` |
 | Real figures, standards or named customers | `claim-proofs` |
 
-Write the kind, then the frame from the PLAN. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
+Keep the kind and frame in the working plan. Only the section rows go into `sections.txt`. Give each section a row with its id, idea, content, form and picture. Include every item the brief names. Mark the hosts for dealt motion and effects. A long menu or list of rooms grows to fit.
 
 **Match each ask to an element.** Write `- <ask> -> #<id> : <outcome>` under `Asks:` in the copy notes, using `play` for media, `go` for an external destination, `send` for a form, `file` for a download or `show` for content, including a local area map. The gate checks what the visitor gets at that id.
 
@@ -123,7 +123,7 @@ Start with the material the brief gives. Use these routes to place it.
 - **Selling on the page:** place the order pad or configurator within the first three sections. A colour choice changes the photograph or recolours the drawing and updates the chosen variant and price. Keep the delivery and return facts at the close.
 - Give a spec, price or unit once where it helps the decision. Use actual figures for results. A supporting photograph shows the part named or the claimed use. Never fill a price list with prop photographs.
 
-**Service.** Name each service and its fee where applicable. When the brief asks to show work, give each project a case with its type, district, size and year. Mark invented facts with `data-assumed`. Show the client’s photograph or an identified reference interior of the right kind. A drawn plan can sit beside the photograph. Put a process with durations and deliverables on a rail. Follow with the people the brief names, supplied proof and the enquiry or booking. A service enquiry has one action leading to its form.
+**Service.** Name each service and its fee where applicable. Use supplied project names and facts. Mark a named case heading with `data-project-name="supplied name"`. Without named projects, show the kinds of work in the brief with plain captions and matching stand-in photographs. Never invent a client, case name or address. List each stand-in and its section first under “Client must supply” in the handoff. A drawn plan can sit beside the photograph. Put a process with deliverables and only durations supplied by the brief on a rail. Follow with the people the brief names, supplied proof and the enquiry or booking. A service enquiry has one action leading to its form.
 
 ## 4. Place
 

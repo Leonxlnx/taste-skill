@@ -149,14 +149,14 @@ world within the limits of `expressive.md`, each naming its source.
 
    Sign-up, free plan, app, download, store purchase or booking through a named service uses a link button. Without its address, use a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List the missing address first under “Client must supply” in the notes and handoff. Enquiries, slot bookings, pre-orders, demo requests and newsletters use short forms. Repeat the action label on submit. Without a receiving address, open an email draft and put one sentence below the button, such as “Opens your email with the order filled in.”
 
-3. **Plan the page from its content** (`compose.md`, `sections.md` section 1). Line 1: the kind.
+3. **Plan the page from its content** (`compose.md`, `sections.md` section 1). Start the working plan with the kind.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
    Merge a heading, one sentence and a picture with a neighbour.
-   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its ground and `shows  <subject> | <source>`. Save these lines to .taste-skill/sections.txt.
+   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its ground and `shows  <subject> | <source>`. Save only the section rows to .taste-skill/sections.txt. Keep the kind and introductory notes in the working plan.
    Mark the sections that are your own design. Count the sections, and note what the page really
    carries: a sentence worth a statement, a list the brief names, photographs that show a claim,
-   steps, figures. The deal needs both.
+   steps, figures. Pass actual counts with `--has ui,names:5,pictures:3,series:4`.
 
 4. **Deal the frame.**
 
@@ -234,10 +234,7 @@ world within the limits of `expressive.md`, each naming its source.
    the checker. A FAIL you judge false is waived in `.taste-skill/waivers.json` with its reason
    (`gate.md`), never fixed by gaming the check.
 
-7. **Report:** the `GATE:` line first, then every waiver with its reason and every open FAIL;
-   the kind and the deal; which sections are your own and what form each took; where each ask of
-   the brief landed and its gate state; missing addresses first under “Client must supply”; every assumed fact; the pictures the client must supply, every stand-in
-   among them; the form's `.example` stand-in; what you could not check.
+7. **Report** the `GATE:` line, waivers with reasons, open FAILs, kind, deal, own sections and each ask’s location and gate state. Start “Client must supply” with missing addresses and each stand-in picture and its section. Include assumed facts, the form’s `.example` address and unverified items.
 
 ## 3. What to read
 

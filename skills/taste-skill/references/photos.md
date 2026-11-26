@@ -165,7 +165,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 
 ## Credits and words (PH-38, CO-22)
 
-A work, project, room or product may have one `.fact-line` beside or below its picture: name, place, size, year or price, up to 60 characters. Mark assumed facts `data-assumed`. Leave out captions that explain, apologise or label the picture (“illustration”). See house rule 1 in `copy.md`.
+A work, project, room or product may have one `.fact-line` beside or below its picture: name, place, size, year or price, up to 60 characters. Use supplied project facts. With unnamed work, caption the kind of work and list every stand-in and section first under “Client must supply”. Leave out captions that explain, apologise or label the picture (“illustration”). See house rule 1 in `copy.md`.
 
 **Credits** go in one footer line linking to the credits list. `photos.mjs credits --out .`
 prints the line, "Photographs via Unsplash and Wikimedia Commons" (the sources used, never the photographers; at

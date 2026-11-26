@@ -52,7 +52,7 @@
 
   --has names supplied assets (default by kind: place and service photo, product and tech ground,
   software ui, gaming setting). A moment or scene whose meta.needs.list
-  asks for more is never dealt: pictures:N over 8 needs an explicit --has pictures:N count,
+  asks for more is never dealt: more than one picture needs an explicit --has pictures:N count,
   product-photo needs product, product-ui needs ui, video needs film, figures needs two proof figures in
   the fact sheet (counter-rolls; opening hours are not proof), route a real route, site the client's own
   site or world seen from high up and from below (a launch site, a plant, a test range, a game's world:
@@ -116,10 +116,10 @@ const TYPE_TONES = { tech: ['tech', 'product'], software: ['tech'], gaming: ['pl
 export const tonesOf = x => (Array.isArray(x.tones) && x.tones.length ? x.tones : [...new Set((x.types || []).flatMap(t => TYPE_TONES[t] || []))]);
 // does a moment, scene or effect fit this kind (and, with tone, carry that tone)? webglOk lets a
 // WebGL item through on a kind without WebGL (an effect marked as a photo treatment)
-export function fitsKind(x, kind, { tone, webglOk = false } = {}) {
+export function fitsKind(x, kind, { tone, temper, webglOk = false } = {}) {
   const f = FIT[kind];
   if (x.retired || x.weight === 0 || (x.kinds && !x.kinds.includes(kind))) return false;
-  if (!f) return false;
+  if (!f || (temper && x.tempers && !x.tempers.includes(temper))) return false;
   const tones = tonesOf(x);
   if (!tones.some(t => f.tones.includes(t))) return false;
   if (tone && !tones.includes(tone)) return false;
@@ -132,7 +132,7 @@ export function fitsKind(x, kind, { tone, webglOk = false } = {}) {
 const kindsFor = x => (x.retired ? [] : PAGES.filter(k => fitsKind(x, k) || FIT[k].tones.some(t => fitsKind(x, k, { tone: t }))));
 // what a page can fill: meta.needs.list on a moment or scene names the material its content demands, and
 // --has names what the brief really has (default: what the kind normally has). photo: photographs (the
-// client's or stand-ins, up to eight); archive: the client's own body of pictures (more than eight: a project
+// client's or stand-ins, one unless counted); archive: the client's own body of pictures (more than eight: a project
 // archive, a room-by-room shoot); product: a photograph or cut-out of the client's own product; ui: its
 // screens; film: footage or a frame sequence; figures: two or more proof figures the brief gives (counts,
 // times, prices; opening hours are not proof); route: a real route to draw. pictures:0, names:N and series:N
@@ -141,7 +141,7 @@ export const HAS_BY_KIND = { place: ['photo'], service: ['photo'], product: ['gr
 export function hasFor(page, given) {
   const s = new Set(typeof given === 'string' ? String(given).split(',').map(x => x.trim()).filter(Boolean) : HAS_BY_KIND[page] || []);
   if (s.has('setting')) { s.add('photo'); s.add('site'); }   // a game's stand-in photographs of its setting, its world from above
-  if ([...s].some(n => /^pictures:\d+$/.test(n))) s.add('photo');
+  if ([...s].some(n => /^pictures:[1-9]\d*$/.test(n))) s.add('photo');
   if (s.has('archive')) s.add('photo');
   if (s.has('object')) s.add('product');
   return s;
@@ -177,17 +177,18 @@ export function needsMet(x, has, carry) {
   if (nd.mark) needs.add('logo');
   if (nd.photo && !/^optional/i.test(String(nd.photo))) needs.add('pictures:1');
   if (x.id === 'word-rotate') needs.add('words');
-  if (x.id === 'pinned-chapters' && !has.has('ui')) needs.add('pictures:1');
+  if (x.id === 'pinned-chapters' && !has.has('ui')) needs.add('pictures:2');
   const suppliedPictures = [...has].find(n => /^pictures:\d+$/.test(n));
-  const minimum = suppliedPictures ? Number(suppliedPictures.split(':')[1]) : null;
+  const pictures = suppliedPictures ? Number(suppliedPictures.split(':')[1]) : Number(has.has('photo') || has.has('film'));
   const missing = [];
   for (const need of needs) {
     const [key, count] = need.split(':');
     if (key === 'pictures' && Number(count) === 0) continue;
-    if (key === 'pictures' && (minimum !== null ? minimum < Number(count) : Number(count) > 8)) { missing.push(need); continue; }
+    if (key === 'pictures' && pictures < Number(count)) { missing.push(need); continue; }
+    if (['names', 'series'].includes(key) && count && ![...has].some(v => v.startsWith(key + ':') && Number(v.split(':')[1]) >= Number(count))) { missing.push(need); continue; }
     const material = { pictures: 'photos', 'product-photo': 'photos', names: 'list', series: 'list' }[key] || key;
     if (carry && carryNames.includes(material) && !carry.has(material)) missing.push(need);
-    else if (key === 'pictures' && (!carry && !has.has('photo') && !has.has('film'))) missing.push(need);
+    else if (key === 'pictures' && !has.has('photo') && !has.has('film')) missing.push(need);
     else if (key === 'product-photo' && !has.has('product')) missing.push(need);
     else if (key === 'product-ui' && !has.has('ui')) missing.push(need);
     else if (key === 'video' && !has.has('film')) missing.push(need);
@@ -361,7 +362,7 @@ export function readScenes() {
   return out;
 }
 // Choose among eligible scenes, cycling the eligible pool before repeating.
-export function dealScene(scenes, { page, tone, seed, history = [], chance = 1 / 3, exclude = [], has, carry, keepClose = false, keepHero = false, room = BUDGET, accepts = () => true } = {}) {
+export function dealScene(scenes, { page, tone, temper, seed, history = [], chance = 1 / 3, exclude = [], has, carry, keepClose = false, keepHero = false, room = BUDGET, accepts = () => true } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed + ':scene');
   const notes = [];
@@ -371,7 +372,7 @@ export function dealScene(scenes, { page, tone, seed, history = [], chance = 1 /
   const madeFor = s => !TECH.includes(page) || !Array.isArray(s.types) || !s.types.length || s.types.includes(page);
   // a game's hero is its key art (sections.md, Gaming): never a scene that takes the hero's place there
   const heroOnly = s => Array.isArray(s.fits) && s.fits.length > 0 && s.fits.every(f => f === 'hero');
-  const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone }) && madeFor(s) && !(page === 'gaming' && heroOnly(s)));
+  const fit = scenes.filter(s => !s.retired && (s.weight ?? 1) > 0 && !exclude.includes(s.id) && fitsKind(s, page, { tone, temper }) && madeFor(s) && !(page === 'gaming' && heroOnly(s)));
   // only what the page can fill (meta.needs.list against --has): never a picture archive on a page without one
   carry = carryFor(page, carry);
   const pool = fit.filter(s => !needsMet(s, has, carry).length && (s.webgl || 0) <= room
@@ -394,7 +395,7 @@ export function dealScene(scenes, { page, tone, seed, history = [], chance = 1 /
   for (const s of cands) { r -= (s.weight ?? 1); if (r <= 0) { chosen = s; break; } }
   return { seed, scene: chosen, notes };
 }
-export function deal(moments, { count = 1, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, used: spent = 0, has, carry } = {}) {
+export function deal(moments, { count = 1, seed, history = [], exclude = [], kinds, fits, photo = false, page, tone, temper, used: spent = 0, has, carry } = {}) {
   seed = seed != null ? String(seed) : crypto.randomBytes(4).toString('hex');
   const rand = rng(seed);
   const notes = [];
@@ -402,7 +403,7 @@ export function deal(moments, { count = 1, seed, history = [], exclude = [], kin
   carry = carryFor(page, carry);
   has = has instanceof Set ? has : hasFor(page, has);
   let pool = moments.filter(m => m.counts !== false && !m.pointerOnly && !exclude.includes(m.id) && (m.weight ?? 1) > 0 && !m.retired);
-  if (page) pool = pool.filter(m => fitsKind(m, page, { tone }));
+  if (page) pool = pool.filter(m => fitsKind(m, page, { tone, temper }));
   // the WebGL budget: what the page already holds plus the moment's own contexts stays within BUDGET
   const room = BUDGET - spent;
   const over = pool.filter(m => (m.webgl || 0) > room);
@@ -498,7 +499,7 @@ function pageArg(a, cmd) {
 const wantsMotion = a => a.motion === 'ask' || ['lively','loud'].includes(a.temper);
 function sceneFor(a, page, tone, hist, accepts) {
   if (!wantsMotion(a)) return { seed: seedArg(a), scene: null, notes: [] };
-  const out = dealScene(readScenes(), { page, tone, accepts, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has),
+  const out = dealScene(readScenes(), { page, tone, temper:a.temper || 'quiet', accepts, seed: seedArg(a), history: (hist.scenes || []).map(s => s.id), exclude: list(a.exclude) || [], has: hasFor(page, a.has),
     carry: carryFor(page, a.carry), keepClose: !!a['keep-close'] || a.action === 'booking' || a.action === 'order', keepHero: !!a['keep-hero'] || a.action === 'booking',
     room: BUDGET - (list(a.effects) || []).length - (+a.contexts || 0) });
   out.notes.forEach(n => console.error(n));
@@ -526,12 +527,11 @@ function cmdPick(a) {
   const has = hasFor(page, a.has);
   const base = pageContexts({ effects: list(a.effects) || [], contexts: a.contexts });
   const excluded = list(a.exclude) || [];
-  if (!['lively', 'loud'].includes(a.temper)) excluded.push('word-highlight', 'picture-develops', 'closing-lift', 'lines-rise');
   const closingMoments = idx.moments.filter(m => m.fits.length === 1 && m.fits[0] === 'closing').map(m => m.id);
   const options = {
     count, seed: seedArg(a), history: (hist.moments || []).map(m => m.id),
     kinds: list(a.kind), fits: list(a.fits) || ['section', 'statement', 'closing', 'between'],
-    photo: !a['no-photo'] && (!!a.photo || carry.has('photos')), page, tone, has, carry,
+    photo: !a['no-photo'] && (!!a.photo || carry.has('photos')), page, tone, temper:a.temper || 'quiet', has, carry,
   };
   const beside = sc => {
     const keepClose = !!a['keep-close'] || a.action === 'booking' || a.action === 'order' || sc?.fits?.includes('close');

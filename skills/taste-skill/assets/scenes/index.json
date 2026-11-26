@@ -1,6 +1,6 @@
 {
  "version": 2,
- "generated": "2026-11-25T14:44:44.386Z",
+ "generated": "2026-11-25T22:44:37.733Z",
  "count": 46,
  "dealt": 31,
  "retired": [
@@ -43,6 +43,19 @@
  "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"> and <link rel=\"stylesheet\" href=\"assets/scenes/<id>/scene.css\"> in <head>; <section class=\"sc\" data-big-scene=\"<id>\" data-big-scene-opts='{…}'><div class=\"sc__stage\">…</div></section> (a classic scene: class=\"sc scene\" and <div class=\"scene-stage\">, as its demo.html writes it); <script type=\"module\" src=\"assets/scenes/scenes.js\"></script> once at the end of <body>.",
  "scenes": [
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "arrive-and-settle-track",
    "name": "Arrive and settle on a sideways track",
    "family": "horizontal-travel",
@@ -116,6 +129,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/arrive-and-settle-track/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"arrive-and-settle-track\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "closing-cut-under-the-rise",
    "name": "Closing cut under the rise",
    "family": "camera-through-space",
@@ -196,6 +221,16 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "place",
+    "service",
+    "product"
+   ],
    "id": "closing-line-in-a-field-of-words",
    "name": "A still closing line in a field of words",
    "family": "section-transition",
@@ -281,6 +316,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-line-in-a-field-of-words/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-line-in-a-field-of-words\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software"
+   ],
    "id": "closing-object-turns",
    "name": "Closing object turns over",
    "family": "object-scrub",
@@ -357,6 +403,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/closing-object-turns/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"closing-object-turns\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "depth-card-flythrough",
    "name": "Fly-through of photo cards",
    "family": "camera-through-space",
@@ -449,6 +507,15 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/depth-card-flythrough/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"depth-card-flythrough\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "tech",
+    "gaming"
+   ],
    "id": "descend-through-weather",
    "name": "Descend through the weather",
    "family": "camera-through-space",
@@ -514,6 +581,16 @@
    ]
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "dither-field-opener",
    "name": "Dither field opener",
    "family": "colour-and-ground",
@@ -583,6 +660,19 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/dither-field-opener/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"dither-field-opener\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "software",
+    "tech",
+    "gaming"
+   ],
    "id": "dot-becomes-the-full-stop",
    "name": "The dot becomes the full stop",
    "family": "type-choreography",
@@ -645,6 +735,15 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "tech",
+    "gaming"
+   ],
    "id": "fixed-hero-object",
    "name": "Fixed hero object",
    "family": "object-scrub",
@@ -710,6 +809,17 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "software",
+    "tech",
+    "gaming"
+   ],
    "id": "fly-into-the-shape",
    "name": "Fly into the shape",
    "family": "mask-and-reveal",
@@ -776,6 +886,18 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "hinged-sheets",
    "name": "Hinged sheets",
    "family": "layer-stack",
@@ -859,6 +981,18 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "instrument-dial-stage",
    "name": "Instrument dial stage",
    "family": "media-sequence",
@@ -952,6 +1086,18 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "lens-over-thumbnail-stream",
    "name": "Lens over a thumbnail stream",
    "family": "media-sequence",
@@ -1033,6 +1179,18 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "software",
+    "tech",
+    "gaming"
+   ],
    "id": "letter-bar-floods-the-ground",
    "name": "Letter bar floods the ground",
    "family": "colour-and-ground",
@@ -1098,6 +1256,15 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "software",
+    "tech",
+    "gaming"
+   ],
    "id": "letter-physics",
    "name": "Letter physics",
    "family": "type-choreography",
@@ -1159,6 +1326,19 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "light-flood",
    "name": "Light flood",
    "family": "colour-and-ground",
@@ -1235,6 +1415,16 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "tech",
+    "software"
+   ],
    "id": "object-lowered-onto-the-last-line",
    "name": "Object lowered onto the last line",
    "family": "object-scrub",
@@ -1308,6 +1498,16 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "tech",
+    "gaming",
+    "software"
+   ],
    "id": "object-through-giant-type",
    "name": "Object through giant type",
    "family": "type-choreography",
@@ -1372,6 +1572,17 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "one-figure-reforms",
    "name": "Re-forming window",
    "family": "object-scrub",
@@ -1452,6 +1663,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/one-figure-reforms/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"one-figure-reforms\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "orbit-to-formation",
    "name": "Orbit to formation",
    "family": "grid-reassembly",
@@ -1542,6 +1764,19 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "page-lifts-off-closing-picture",
    "name": "Page lifts off a closing picture",
    "family": "section-transition",
@@ -1614,6 +1849,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/page-lifts-off-closing-picture/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"page-lifts-off-closing-picture\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "panels-reproportion-on-arrival",
    "name": "Panels re-proportion as they arrive",
    "family": "horizontal-travel",
@@ -1697,6 +1943,14 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/panels-reproportion-on-arrival/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"panels-reproportion-on-arrival\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "software"
+   ],
    "id": "parts-lock-into-the-whole",
    "name": "Parts lock into the whole",
    "family": "grid-reassembly",
@@ -1755,6 +2009,16 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "peel-tear-and-drag",
    "name": "Peel, tear and drag",
    "family": "section-transition",
@@ -1827,6 +2091,15 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "software",
+    "tech"
+   ],
    "id": "powers-of-ten-pullback",
    "name": "Powers-of-ten pull-back",
    "family": "camera-through-space",
@@ -1885,6 +2158,14 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "software"
+   ],
    "id": "product-assembles-into-its-action",
    "name": "Product assembles into its action",
    "family": "object-scrub",
@@ -1944,6 +2225,18 @@
    "retired": "By name only. The scene obscures the words or leaves too much of its hold empty."
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "raster-cut",
    "name": "Raster cut between chapters",
    "family": "section-transition",
@@ -2022,6 +2315,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/raster-cut/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"raster-cut\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "room-walk-track",
    "name": "Sideways walk through rooms",
    "family": "horizontal-travel",
@@ -2100,6 +2404,19 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "route-journey",
    "name": "Route journey",
    "family": "camera-through-space",
@@ -2185,6 +2502,18 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "scatter-and-lock",
    "name": "Scatter and lock",
    "family": "grid-reassembly",
@@ -2275,6 +2604,19 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scatter-and-lock/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scatter-and-lock\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "scroll-turned-drum",
    "name": "Scroll-turned drum",
    "family": "type-choreography",
@@ -2352,6 +2694,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/scroll-turned-drum/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"scroll-turned-drum\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "scrubbed-transformation-sequence",
    "name": "Scrubbed transformation sequence",
    "family": "object-scrub",
@@ -2435,6 +2789,18 @@
    "demoted": true
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "seam-pocket-gathers-the-words",
    "name": "Section seam bends into a cup that gathers the scattered words",
    "family": "section-transition",
@@ -2526,6 +2892,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/seam-pocket-gathers-the-words/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"seam-pocket-gathers-the-words\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "shaped-edge-ground-change",
    "name": "Shaped edge carries the new ground",
    "family": "colour-and-ground",
@@ -2606,6 +2983,15 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/shaped-edge-ground-change/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"shaped-edge-ground-change\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "tech",
+    "gaming"
+   ],
    "id": "shaped-window-over-fixed-world",
    "name": "Shaped window over a fixed world",
    "family": "mask-and-reveal",
@@ -2670,6 +3056,18 @@
    ]
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "sheets-tip-in-and-away",
    "name": "Sheets tip in and away",
    "family": "layer-stack",
@@ -2750,6 +3148,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/sheets-tip-in-and-away/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"sheets-tip-in-and-away\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "speed-bent-row",
    "name": "A row the scroll speed bends",
    "family": "horizontal-travel",
@@ -2826,6 +3236,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/speed-bent-row/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"speed-bent-row\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "stepped-columns-raise-a-stage",
    "name": "Stepped columns raise a stage",
    "family": "colour-and-ground",
@@ -2899,6 +3321,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/stepped-columns-raise-a-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"stepped-columns-raise-a-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "through-the-openings",
    "name": "Through the openings",
    "family": "camera-through-space",
@@ -2976,6 +3409,19 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/through-the-openings/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"through-the-openings\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "thumbnail-becomes-the-stage",
    "name": "Thumbnail becomes the stage",
    "family": "picture-transform",
@@ -3052,6 +3498,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/thumbnail-becomes-the-stage/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"thumbnail-becomes-the-stage\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "twin-image-scanner",
    "name": "Twin-image scanner",
    "family": "mask-and-reveal",
@@ -3133,6 +3591,17 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/twin-image-scanner/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"twin-image-scanner\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "type-flip-relayout",
    "name": "Type re-layout",
    "family": "type-choreography",
@@ -3208,6 +3677,15 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/type-flip-relayout/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"type-flip-relayout\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "warp-jump",
    "name": "Warp jump",
    "family": "camera-through-space",
@@ -3288,6 +3766,16 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/warp-jump/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"warp-jump\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "window-names-its-parts",
    "name": "Window names its parts",
    "family": "layer-stack",
@@ -3358,6 +3846,18 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/window-names-its-parts/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"window-names-its-parts\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "quiet",
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "product",
+    "service",
+    "place",
+    "tech",
+    "software"
+   ],
    "id": "window-relay-with-stamps",
    "name": "Window relay with a trail of stamps",
    "family": "media-sequence",
@@ -3437,6 +3937,16 @@
    "load": "<link rel=\"stylesheet\" href=\"assets/scenes/scenes.css\"><link rel=\"stylesheet\" href=\"assets/scenes/window-relay-with-stamps/scene.css\"> in <head>; <section class=\"sc scene\" data-big-scene=\"window-relay-with-stamps\" data-big-scene-opts='{…}'><div class=\"scene-stage\">…</div></section> as in demo.html; the loader runs it on the classic stage (GSAP 3.15.0 from cdn.jsdelivr.net, loaded once)"
   },
   {
+   "tempers": [
+    "lively",
+    "loud"
+   ],
+   "kinds": [
+    "service",
+    "tech",
+    "software",
+    "gaming"
+   ],
    "id": "wordmark-under-strain",
    "name": "Wordmark under strain",
    "family": "type-choreography",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "line-carries-colour",
   "name": "Line carries the colour",
   "kind": "transition",

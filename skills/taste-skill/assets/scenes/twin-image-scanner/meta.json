@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "twin-image-scanner",
   "name": "Twin-image scanner",
   "family": "mask-and-reveal",

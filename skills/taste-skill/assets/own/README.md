@@ -8,7 +8,7 @@ Rebuild the three galleries and the section library links from the repository ro
 
 | Example | Content it suits | What to change |
 | --- | --- | --- |
-| [Rail](rail.html) | A process with a deliverable at every stop. | Rewrite the step titles, durations and handoffs in order. |
+| [Rail](rail.html) | A process with a deliverable at every stop. | Rewrite the steps and handoffs. Keep durations only when supplied in the brief. |
 | [States](states.html) | One object held through three to five states (a return, an order, an incident). | Keep one record’s id and fields in every card; change the steps, times and the field that moves. |
 | [Chapter stage](chapter-stage.html) | Stages of a physical change. | Replace the three accounts and drawings, keeping the subject at the same scale and angle. |
 | [Chapter links](chapter-links.html) | A guide with a retained reference sheet. | Change chapter anchors, sketches and instructions together with the printable chart. |
@@ -22,7 +22,7 @@ Rebuild the three galleries and the section library links from the repository ro
 | [Meter](meter.html) | Flat-rate tiers driven by one quantity. | Set the range, caps and prices, match the initial answer, and keep the last cap at or above the maximum. |
 | [Billing matrix](billing-matrix.html) | A catalogue with two billing periods and shared entitlements. | Change both prices, feature rows and matching period-specific receipts. |
 | [Fee comparison](fee-comparison.html) | Two offers with comparable fixed and unit costs. | Change the integer-cent tariffs, permitted quantities and static reference totals. |
-| [Receipt](receipt.html) | A fixed offer with itemised costs and included equipment. | Replace the items, add their prices, and state the inclusions and return terms. |
+| [Receipt](receipt.html) | A fixed offer with itemised costs and included equipment. | Use supplied items, prices and terms. A priced offer links to its enquiry or purchase action. |
 | [Booking bar](booking-bar.html) | A small stay with a calculable price before enquiry. | Set the dates, rates, capacity, supplement and client’s form address. The demo opens an email draft. |
 | [Configurator](configurator.html) | A product with a small set of visible options. | Change the drawing, radio values, finish tokens and price table, including the resting state. |
 | [Edition outlets](edition-outlets.html) | Editions on several platforms, with gaps in availability. | Update the pack drawings, edition prices, contents and one summary link per valid combination. |
@@ -54,7 +54,7 @@ Rebuild the three galleries and the section library links from the repository ro
 
 | Example | Content it suits | What to change |
 | --- | --- | --- |
-| [Case rows](case-rows.html) | A short portfolio with one concrete fact line per project. | Replace the jacket studies with the projects’ own covers, titles and edition details. |
+| [Case rows](case-rows.html) | A short portfolio with one concrete fact line per project. | Use supplied titles and covers. Without named work, caption each picture with the kind of work. |
 | [Index](index.fragment.html) | An archive of work with a visual repeat or specimen for each entry. | Change the rows, matching patterns and first specimen together. |
 | [Case foldout](case-foldout.html) | Cases that each have a measured result. | Replace the summary, workshop drawing, three facts and the corresponding job sheet. |
 | [Field roster](field-roster.html) | People or crews with unequal numbers of actions. | Replace the portraits, named actions, paired drawings and captions within each dossier. |

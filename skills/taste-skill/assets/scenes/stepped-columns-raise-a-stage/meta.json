@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "stepped-columns-raise-a-stage",
   "name": "Stepped columns raise a stage",
   "family": "colour-and-ground",

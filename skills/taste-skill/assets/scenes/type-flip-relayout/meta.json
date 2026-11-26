@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "tech", "software", "gaming"],
   "id": "type-flip-relayout",
   "name": "Type re-layout",
   "family": "type-choreography",

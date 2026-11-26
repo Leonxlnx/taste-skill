@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "tech", "software", "gaming"],
   "id": "scatter-and-lock",
   "name": "Scatter and lock",
   "family": "grid-reassembly",

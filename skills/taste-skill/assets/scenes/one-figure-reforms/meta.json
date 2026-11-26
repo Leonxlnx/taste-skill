@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "tech", "software", "gaming"],
   "id": "one-figure-reforms",
   "name": "Re-forming window",
   "family": "object-scrub",

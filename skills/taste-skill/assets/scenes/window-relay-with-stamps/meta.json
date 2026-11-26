@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software"],
   "id": "window-relay-with-stamps",
   "name": "Window relay with a trail of stamps",
   "family": "media-sequence",

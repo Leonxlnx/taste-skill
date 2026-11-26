@@ -6,6 +6,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { closingActionMatches, mascotRequest } from '../skills/taste-skill/scripts/heading-copy.mjs';
 import { suppliedStreet } from '../skills/taste-skill/scripts/place-address.mjs';
 import { color } from '../skills/taste-skill/assets/effects/fx.js';
 import { dealScene, readScenes } from '../skills/taste-skill/scripts/moments.mjs';
@@ -102,6 +103,22 @@ for (const assets of ['photo', 'logo', 'ground', 'art', 'setting', '']) {
 console.log('Standalone pick counts, the four-context limit, game and hardware hero material, and the legacy --tech-subject flag passed.');
 
 const scenes = readScenes();
+const field = scenes.filter(s => s.id === 'closing-line-in-a-field-of-words');
+for (const temper of ['lively','loud']) {
+  for (const [page,n,eligible] of [['place',5,false],['place',16,true],['software',16,false]]) {
+    const options = {page,temper,has:'names:'+n,carry:'list,words',chance:1,seed:'field'};
+    assert.equal(Boolean(dealScene(field,options).scene),eligible);
+  }
+}
+assert.equal(mascotRequest('An app with a small mascot'),true);
+assert.equal(mascotRequest('Use no mascot on this site'),false);
+assert.equal(mascotRequest('A collection of interiors'),null);
+const apple = {label:'Download for iPhone',href:'https://apps.apple.com/app/sample'};
+const google = {label:'Google Play',href:'https://play.google.com/store/apps/sample'};
+assert.ok(closingActionMatches('Download Pebble',[apple,google]));
+assert.ok(!closingActionMatches('Download Pebble',[apple]));
+assert.ok(closingActionMatches('Book a table',[{label:'OpenTable',href:'https://www.opentable.com/r/sample'}]));
+assert.ok(!closingActionMatches('Book a table',[{label:'Read our story',href:'https://sample.example/about'}]));
 const conflictingScene = 'fly-into-the-shape';
 const alternatives = scenes.filter(s => s.id !== conflictingScene).map(s => s.id);
 const material = {page:'product',tone:'product',seed:'product-32',has:'photo,logo,pictures:3',carry:'words,photos',exclude:alternatives};

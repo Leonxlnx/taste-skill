@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software"],
   "id": "sheets-tip-in-and-away",
   "name": "Sheets tip in and away",
   "family": "layer-stack",

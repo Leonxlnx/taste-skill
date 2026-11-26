@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "giant-type-pass",
   "name": "Giant type, picture passing",
   "kind": "scroll",

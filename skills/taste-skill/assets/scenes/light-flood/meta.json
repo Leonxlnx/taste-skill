@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "light-flood",
   "name": "Light flood",
   "family": "colour-and-ground",

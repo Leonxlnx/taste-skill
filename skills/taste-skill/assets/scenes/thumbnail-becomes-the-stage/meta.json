@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "thumbnail-becomes-the-stage",
   "name": "Thumbnail becomes the stage",
   "family": "picture-transform",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "place", "tech", "software"],
   "id": "shaped-edge-ground-change",
   "name": "Shaped edge carries the new ground",
   "family": "colour-and-ground",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "software", "tech", "gaming"],
   "id": "letter-bar-floods-the-ground",
   "name": "Letter bar floods the ground",
   "family": "colour-and-ground",

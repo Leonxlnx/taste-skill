@@ -111,3 +111,24 @@ export function headingFindings(headings, T) {
   return findings;
 }
 export { STOP, norm, words, stem, holds, holdsAny, copyTerms };
+
+export function closingActionMatches(primary, close) {
+  const destination = c => norm(c.label) + ' ' + (c.needs || '') + ' ' + (c.href || '');
+  const stores = close.some(apple => /app store|iphone|apps\.apple\.com/i.test(destination(apple)) &&
+    close.some(google => google.href && google.href !== apple.href && /google play|android|play\.google\.com/i.test(destination(google))));
+  const booking = close.some(c => {
+    let url;
+    try { url = new URL(c.href); } catch { return false; }
+    const provider = url.hostname.split('.').filter(v => !['www','app','book','booking'].includes(v))[0] || '';
+    return /(^|\.)(calendly\.com|cal\.com|opentable\.[a-z.]+|resy\.com)$/.test(url.hostname) ||
+      (provider.length > 2 && norm(c.label).includes(provider) && /\b(book|reserve|schedule)\b/i.test(c.label + ' ' + c.needs + ' ' + url.pathname));
+  });
+  return close.some(c => norm(c.label) === norm(primary)) ||
+    (stores && /\b(download|get|install)\b/i.test(primary)) || (booking && /\b(book|reserve|schedule)\b/i.test(primary));
+}
+
+// A negative instruction also rules out the optional character deal.
+export function mascotRequest(brief) {
+  if (/\b(?:no|without|avoid|omit|exclude|skip|do not use|don't use)\s+(?:an? |any |the )?(?:\w+[ -]){0,2}mascots?\b/i.test(brief)) return false;
+  return /\bmascots?\b/i.test(brief) ? true : null;
+}

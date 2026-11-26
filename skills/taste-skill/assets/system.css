@@ -971,6 +971,8 @@ html:not([data-tone="dark"]) :is(.frame--cta, .frame--lit, .footer--statement) {
   .nav__logo { font-size: clamp(16px, 4.6vw, 20px); gap: 6px; white-space: nowrap; }
   .nav__logo .mark:not(.mark--initial) { width: 20px; height: 20px; }
   .nav:not(.is-open) .nav__actions .btn { height: 44px; padding-inline: var(--s-3); font-size: var(--t-small); }
+  .nav:not(.is-open) .nav__actions { min-width: 0; flex-shrink: 1; }
+  .nav:not(.is-open) .nav__actions .btn { min-width: 0; white-space: normal; text-align: center; }
   /* with the phone action bar the bar's button is the action's copy at the foot: the nav's goes into the sheet, so
      the first screen shows it once, the hero's (the bar waits until that has scrolled away; without script, twice
      at most, the hero's and the bar's; copy.md rule 5, action-repeat) */
@@ -1232,7 +1234,7 @@ html[data-tone="dark"] .footer--dark {
      .close--word   the name set across the .wrap in the display face under the h2 and the button
      .close--split  a panel on the tinted ground (h2, one line, the button, at most three short facts:
                     the hours today, the price from, the reply time) beside a photograph, one height
-     .close--form   the booking or order form is the close: the head left, the form right on the
+     .close--form   the booking or order form is the close: the heading above the form on the
                     tinted ground (then no other close and no second form on the page)
    A close never repeats the section right above it: a page whose last section is the form ends on
    .close--form instead. A phone stacks the close, then the links. */
@@ -1267,10 +1269,9 @@ footer.closing > .wrap { display: grid; grid-auto-rows: auto; row-gap: var(--s-1
 .closing__cta.close--form { display: grid; gap: var(--s-6); align-content: stretch; }
 .close__form { background: var(--g-alt, var(--surface)); padding: var(--s-7); border-radius: var(--r-lg); align-self: stretch; }
 @media (min-width: 1024px) {
-  .closing__cta.close--form { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
-  .closing__cta.close--form > .section-head { grid-column: 1 / span 5; align-self: start; }
-  .closing__cta.close--form > .close__form { grid-column: 7 / -1; }
-  .closing__cta.close--form > .section-head h2 { font-size: clamp(var(--t-h2), min(4.4vw, 6.4svh), 88px); line-height: 1.04; }
+  .closing__cta.close--form { grid-template-columns: minmax(0, 1fr); }
+  .closing__cta.close--form > .section-head { align-self: start; }
+  .closing__cta.close--form > .section-head h2 { font-size: var(--t-h2); line-height: 1.04; }
 }
 @media (max-width: 639px) { .close__form { padding: var(--s-5); } }
 .closing__cta.close--type > .btn--xl { width: fit-content; max-width: 100%; height: var(--btn-h); font: 500 15px/1 var(--font-text); padding-inline: 20px; }

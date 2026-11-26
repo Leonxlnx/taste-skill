@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "place", "tech", "software", "gaming"],
   "id": "closing-cut-under-the-rise",
   "name": "Closing cut under the rise",
   "family": "camera-through-space",

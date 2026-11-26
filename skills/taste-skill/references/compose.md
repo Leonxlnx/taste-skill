@@ -6,7 +6,7 @@ Print the answer first. Add a control when changing an input gives a materially 
 
 ## The method
 
-1. **Say what the content is, as a thing.** Not "features" but "five steps, each with a duration
+1. **Say what the content is, as a thing.** Not "features" but "five steps, each with a supplied duration
    and something the customer gets"; not "pricing" but "two plans that differ by one number". If
    one line cannot say it, the section holds two ideas: split it or cut one.
 2. **Take the form that shape asks for** (the table below). The test: cover the heading. Can a
@@ -119,7 +119,7 @@ Use seeds from `library/ideas.json` as prompts, never as parts to paste.
 **Work**
 
 - `intro-rail` Put a heading, two lines and one button in a narrow column beside three or four item cards. Repeat with the column on the same side for the next category.
-- `case-rows` Each project a wide row: picture one side, name and fact line the other, sides alternating.
+- `case-rows` Each project a wide row: picture one side, supplied title and fact line the other, sides alternating.
 - `index` A typographic index of every item (name, place, year); one picture changes with the row under the pointer or focus.
 - `contact-sheet` Many small frames in a grid like a photographer's sheet, three of them enlarged.
 - `key-tags` Rooms or goods as cards shaped like door signs or tags: number, size, price.

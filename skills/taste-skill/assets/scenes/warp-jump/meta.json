@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["tech", "software", "gaming"],
   "id": "warp-jump",
   "name": "Warp jump",
   "family": "camera-through-space",

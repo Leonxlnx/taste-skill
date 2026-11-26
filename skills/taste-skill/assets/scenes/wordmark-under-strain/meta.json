@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["service", "tech", "software", "gaming"],
   "id": "wordmark-under-strain",
   "name": "Wordmark under strain",
   "family": "type-choreography",

@@ -1,0 +1,91 @@
+[
+  {
+    "id": "close-photo",
+    "kinds": [
+      "tech",
+      "product",
+      "service",
+      "place"
+    ],
+    "tempers": [
+      "quiet",
+      "lively",
+      "loud"
+    ],
+    "needs": [
+      "pictures:2"
+    ]
+  },
+  {
+    "id": "close-split",
+    "kinds": [
+      "software",
+      "gaming",
+      "tech",
+      "product",
+      "service",
+      "place"
+    ],
+    "tempers": [
+      "quiet",
+      "lively",
+      "loud"
+    ],
+    "needs": [
+      "pictures:2"
+    ]
+  },
+  {
+    "id": "close-type",
+    "kinds": [
+      "software",
+      "gaming",
+      "tech",
+      "product",
+      "service",
+      "place"
+    ],
+    "tempers": [
+      "quiet",
+      "lively",
+      "loud"
+    ],
+    "needs": []
+  },
+  {
+    "id": "close-word",
+    "kinds": [
+      "software",
+      "gaming",
+      "tech",
+      "product",
+      "service",
+      "place"
+    ],
+    "tempers": [
+      "quiet",
+      "lively",
+      "loud"
+    ],
+    "needs": []
+  },
+  {
+    "id": "close-form",
+    "kinds": [
+      "software",
+      "gaming",
+      "tech",
+      "product",
+      "service",
+      "place"
+    ],
+    "tempers": [
+      "quiet",
+      "lively",
+      "loud"
+    ],
+    "needs": [
+      "form"
+    ]
+  }
+]

@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["product", "tech", "gaming", "software"],
   "id": "object-through-giant-type",
   "name": "Object through giant type",
   "family": "type-choreography",

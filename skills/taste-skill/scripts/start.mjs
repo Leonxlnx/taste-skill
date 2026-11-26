@@ -59,6 +59,7 @@
   linked after the :root block.
 */
 import fs from 'node:fs';
+import { mascotRequest } from './heading-copy.mjs';
 import { suppliedStreet } from './place-address.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -618,7 +619,18 @@ function dealLayout(h) {
     return v;
   };
   const k = page;
-  const get = key => LISTS[key][k] || LISTS[key]['*'];
+  const closeDeck = lib('closes.json');
+  const materials = String(opt('has', ['place','service'].includes(k) ? 'photo' : '')).split(',');
+  const amount = materials.find(v => /^pictures:\d+$/.test(v));
+  const pictures = amount ? Number(amount.split(':')[1]) : materials.some(v => ['photo','setting','archive'].includes(v)) ? 1 : 0;
+  const carry = opt('carry');
+  const acceptsClose = entry => entry.kinds.includes(k) && entry.tempers.includes(temper) &&
+    entry.needs.every(need => need === 'form' ? ['order','booking','contact'].includes(action) || !action :
+      pictures >= Number(need.split(':')[1]) && (carry === undefined || String(carry).split(',').includes('photos')));
+  const get = key => {
+    const options = LISTS[key][k] || LISTS[key]['*'];
+    return key === 'close' ? options.split('|').filter(id => closeDeck.some(entry => entry.id === id && acceptsClose(entry))).join('|') : options;
+  };
   const out = {};
   for (const key of ['nav', 'footer', 'close', 'buttons', 'mark']) out[key] = pick(`${k}:${key}`, key === 'buttons' && expressive ? EXPRESSIVE_BUTTONS : get(key), key === 'close' ? 2 : 1);
   if (expressive) out.grounds = groundsFor(pick(k + ':grounds', get('grounds'), 2), sections);
@@ -657,7 +669,8 @@ function dealLayout(h) {
       lines.push(`${COMP_WHAT.feature}: ${a}, then ${b} (no composition twice in a row)`);
     } else {
       const booking = action === 'booking' && k === 'place' && !!bookingSubject;
-      const options = sec === 'form' && booking ? 'close-form' : pool;
+      const options = sec === 'form' && booking ? 'close-form' : pool.split('|').filter(id =>
+        id !== 'close-form' || acceptsClose(closeDeck.find(entry => entry.id === id))).join('|');
       const v = dealt(pick(`${k}:${sec}`, options, 2, used));
       out.compositions[sec] = v;
       // a form dealt as close-form is the page's close: no other close row beside it (2.5.3: close-photo and
@@ -778,12 +791,14 @@ if (cmd === 'deal') {
   }
   const defaultSections = path.join(dir,'sections.txt');
   const sectionPlan = opt('section-plan', fs.existsSync(defaultSections) ? defaultSections : undefined);
-  let shows;
+  let shows, reactionSection;
   if (sectionPlan !== undefined) {
     if (typeof sectionPlan !== 'string') throw new Error('--section-plan needs a text file with one line per section');
     const rows = fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
     shows = rows.map(row => row.match(/\bshows\s+([^|]+?)(?:\s*\||$)/i)?.[1].trim());
     if (rows.length !== sections || shows.some(subject => !subject)) throw new Error('Each of the '+sections+' section lines needs shows followed by its subject.');
+    const reaction = rows.findIndex((row,i) => i > 0 && i < rows.length-1 && !/^nothing\.?$/i.test(shows[i]));
+    if (reaction >= 0) reactionSection = rows[reaction].split('|')[0].trim() + ' showing ' + shows[reaction];
     if (!expressive && shows.filter(subject => /^nothing[.]?$/i.test(subject)).length * 4 > sections) throw new Error('More than a quarter of the section plan shows nothing. Show the subject or merge a section.');
   }
   const artPalette = expressive && (assets.has('art') || page === 'gaming');
@@ -853,10 +868,21 @@ if (cmd === 'deal') {
   if (['software', 'tech', 'service'].includes(page)) sub['data-picture'] = 'show a figure, range or comparison when the copy supplies one';
   if (['place', 'product', 'service'].includes(page) && assets.has('photo')) sub['image-direction'] = 'direct the crops and scale when the page carries six or more photographs';
   if (!assets.has('logo')) sub['brand-mark'] = 'draw a mark if the brief needs one, or use the dealt mark';
-  if (['software', 'gaming', 'product'].includes(page) && !['clinic', 'law', 'hotel'].includes(trade)) {
-    const mascot = rng(seed + ':mascot')() < 1 / 3;
+  const requestedMascot = mascotRequest(briefWords);
+  if (requestedMascot === true || (requestedMascot === null && ['software', 'gaming', 'product'].includes(page) && !['clinic', 'law', 'hotel'].includes(trade))) {
+    const mascot = requestedMascot === true || rng(seed + ':mascot')() < 1 / 3;
     h.mascot = [...(h.mascot || []), { seed, dealt: mascot }].slice(-40);
     if (mascot) sub.mascot = 'give a recurring guide or character one consistent form';
+  }
+  let placements;
+  if (requestedMascot) {
+    const beat = story.beats[1];
+    placements = [
+      {place:'hero', pose:'greeting'},
+      {place:reactionSection || beat.id + ' showing ' + beat.show, pose:'reacting to the result'},
+      {place:'footer', pose:'resting'}
+    ];
+    sub.mascot = placements.map(p => p.place + ': ' + p.pose).join('. ') + '. Use three distinct poses from subskills/mascot, each marked data-mascot and at least 96px tall at 1440px';
   }
   const actionColour = !expressive && rng(seed + ':action-colour')() < 1/3 ? 'ink' : 'accent';
   const footerWordmark = !expressive && rng(seed + ':footer-wordmark')() < 1/8;
@@ -869,7 +895,7 @@ if (cmd === 'deal') {
   if (hero.id === 'place' && (form === 'split' || form === 'bleed' && acrossRoll < .5)) headline = 'split';
   if (split && opt('view') !== 'wide' && (expressive || acrossRoll >= stackChance)) headline = 'split';
   const plan = {
-    actionColour, footerWordmark, headline, ...(shows ? {shows} : {}),
+    actionColour, footerWordmark, headline, ...(requestedMascot ? {mascot: placements} : {}), ...(shows ? {shows} : {}),
     version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
     hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, reveals, nav: layout.nav, footer: layout.footer,
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
@@ -903,6 +929,7 @@ if (cmd === 'deal') {
   else line('hero', hero.id + (form ? ' data-form="' + form + '"' : '') + ': copy the hero section of ' + ref + '/assets/layout/' + hero.demo + (form === 'foot' ? ' · Use a photograph with a calm lower left at both crops. Fall back to bleed when it has none.' : '') + (['split','collage'].includes(hero.id) && page === 'software' && headline === 'across' ? ' · For a work-led window add data-work-window.' : '') + (peek ? ' · ' + peekLine : '') + (sceneHero ? '. Use the dealt scene for the hero visual and entrance.' : ''));
   if (book) console.log('  ' + bookLine);
   if (action === 'trial') line('destination','Use a link button to the app. With no address use https://app.brand.example/signup and data-needs="sign-up address". List it first under Client must supply.');
+  if (page === 'service') line('work', 'Use supplied project titles or caption the kinds of work. List every stand-in with its section first under Client must supply. Give process steps their deliverables and only durations from the brief.');
   if (order) line('order', 'put the configurator or order pad within the first three sections; give supplied delivery and return terms at the close');
   const entranceDetail = entrance.markup.replace(/^data-enter(?:="[\w-]+")?\s*/, '').replace(/^\((.*)\)$/, '$1');
   line('entrance', 'data-enter="' + entrance.id + '" on the hero' + (entranceDetail && entrance.id !== 'rise' ? ' ' + entranceDetail : '') + '. ' + entrance.sees + ' (references/motion.md, Build the plan)');
@@ -933,7 +960,7 @@ if (cmd === 'deal') {
     const place = motion.rides[m.id] ? rideLine(motion.rides[m.id]) : m.fits.includes('closing') ? 'at the close' : 'in a content section';
     line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
-  line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none this page');
+  line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none');
   if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');
   else line('effect', effect ? effect + ' held still on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
   line('hover layer', 'Colour or underline on hover; press .98 (references/motion.md)');

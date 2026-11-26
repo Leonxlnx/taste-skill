@@ -1,4 +1,6 @@
 {
+  "tempers": ["lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "liquid-hover",
   "name": "Liquid hover",
   "kind": "liquid",

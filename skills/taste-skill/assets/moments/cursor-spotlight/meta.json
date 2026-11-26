@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "cursor-spotlight",
   "name": "Cursor spotlight",
   "kind": "hover",

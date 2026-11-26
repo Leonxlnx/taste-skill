@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["service", "place", "tech", "software"],
   "id": "through-the-openings",
   "name": "Through the openings",
   "family": "camera-through-space",

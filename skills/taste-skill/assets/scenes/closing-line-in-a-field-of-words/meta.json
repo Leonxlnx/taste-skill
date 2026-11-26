@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product"],
   "id": "closing-line-in-a-field-of-words",
   "name": "A still closing line in a field of words",
   "family": "section-transition",

@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["place", "service", "product", "tech", "software", "gaming"],
   "id": "marquee-row",
   "name": "Marquee row",
   "kind": "scroll",
@@ -23,6 +25,7 @@
   "maxPerPage": 1,
   "weight": 0.8,
   "needs": {
+    "list": ["names:6"],
     "words": "6 to 14 real words (trades, cities, formats), never logos and never invented clients",
     "carry": [
       "list"

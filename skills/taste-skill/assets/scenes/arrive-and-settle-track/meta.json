@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "arrive-and-settle-track",
   "name": "Arrive and settle on a sideways track",
   "family": "horizontal-travel",

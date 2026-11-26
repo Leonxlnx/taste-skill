@@ -1,4 +1,6 @@
 {
+  "tempers": ["quiet", "lively", "loud"],
+  "kinds": ["product", "service", "place", "tech", "software", "gaming"],
   "id": "page-lifts-off-closing-picture",
   "name": "Page lifts off a closing picture",
   "family": "section-transition",
