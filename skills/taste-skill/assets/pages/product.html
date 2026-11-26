@@ -724,6 +724,121 @@
         }
       }
     </style>
+    <style id="view-composition">
+      #main #proof .reading-column {
+        width: 100%;
+        max-width: none;
+      }
+      #main #proof .stage {
+        width: 100%;
+        max-width: none;
+        min-height: 360px;
+      }
+      #main #proof .stage > svg {
+        width: 100%;
+        height: 360px;
+      }
+      #main #close > .wrap {
+        display: block;
+      }
+      #main #close .reading-column {
+        width: 100%;
+        max-width: none;
+        display: grid;
+        gap: 12px var(--gutter);
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+      #main #close .reading-column :is(h2, p) {
+        grid-column: 1;
+        margin: 0;
+      }
+      #main #close .reading-column .btn {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin: 0;
+      }
+      @media (min-width: 701px) {
+        #main #proof .reading-column {
+          display: grid;
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: 16px var(--gutter);
+          align-content: start;
+        }
+        #main #proof .reading-column :is(h2, .intro) {
+          grid-column: 1 / span 4;
+        }
+        #main #proof .stage {
+          grid-column: 5/-1;
+          grid-row: 1 / span 3;
+        }
+      }
+      @media (max-width: 700px) {
+        #main #close .reading-column {
+          display: block;
+        }
+        #main #close .reading-column p {
+          margin: 12px 0 20px;
+        }
+        #main #proof .stage > svg {
+          height: auto;
+        }
+        #main #proof .stage {
+          min-height: 0;
+        }
+      }
+
+      @media (min-width: 701px) {
+        #main #opening .hero__text {
+          grid-column: 1 / span 4;
+        }
+        #main #opening .hero-art {
+          grid-column: 5/-1;
+        }
+        #main :is(#exposure-pairs, #meter-contents) .reading-column {
+          width: 100%;
+          max-width: none;
+          display: grid;
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: 12px var(--gutter);
+        }
+        #main :is(#exposure-pairs, #meter-contents) .reading-column > :is(h2, p) {
+          grid-column: 1 / span 4;
+        }
+        #main :is(#exposure-pairs, #meter-contents) .reading-column > :last-child {
+          grid-column: 6/-1;
+          grid-row: 1 / span 3;
+          width: 100%;
+          max-width: none;
+        }
+        #main #story .thermometer {
+          min-height: 360px;
+          display: grid;
+          align-content: center;
+        }
+      }
+
+      #main #opening .hero-art svg {
+        overflow: hidden;
+      }
+      #main #proof .stage {
+        background: #dbe2d9;
+      }
+      @media (min-width: 701px) {
+        #main #proof .stage > svg {
+          height: 360px;
+        }
+        #main #story .thermometer {
+          padding: clamp(24px, 4vw, 56px);
+        }
+      }
+
+      .exposure-strip {
+        height: clamp(30px, 5vw, 72px);
+        background: linear-gradient(90deg, #28302e, #626c62 25%, #99a197 50%, #c4c9bc 75%, #eff0e1);
+      }
+    </style>
+  <style>#main #close .btn {display:inline-flex;align-items:center;justify-content:center;gap:.65em}</style>
   </head>
   <body class="ref-page product-reference">
     <header class="nav ref-nav">
@@ -748,7 +863,7 @@
         <div class="wrap">
           <div class="hero-text hero__grid">
             <div class="hero__text">
-              <h1 id="hero-title">Read the light before the shutter.</h1>
+              <h1 id="hero-title">Read the light.</h1>
               <p>
                 Stillmeter S1 measures the light falling on your subject. One
                 dial gives you the aperture and shutter speed.
@@ -780,7 +895,11 @@
                     rx="18"
                     fill="#35443e"
                   />
-                  <path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
+                  <g transform="translate(169 98)"><circle r="2.8" fill="#19241f"/><path d="M-1.5 1.5l3-3" stroke="#afb5a7" stroke-width=".65"/></g>
+<g transform="translate(469 98)"><circle r="2.8" fill="#19241f"/><path d="M-1.5 1.5l3-3" stroke="#afb5a7" stroke-width=".65"/></g>
+<g transform="translate(169 255)"><circle r="2.8" fill="#19241f"/><path d="M-1.5 1.5l3-3" stroke="#afb5a7" stroke-width=".65"/></g>
+<g transform="translate(469 255)"><circle r="2.8" fill="#19241f"/><path d="M-1.5 1.5l3-3" stroke="#afb5a7" stroke-width=".65"/></g>
+<path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
                   <path
                     d="M189 73q0-22 24-24"
                     fill="none"
@@ -1583,6 +1702,7 @@
             <header class="plate-label">
               Example conditions at ISO 100; readings vary with the light.
             </header>
+            <div class="exposure-strip" aria-hidden="true"></div>
             <div class="ruler">
               <svg
                 viewBox="0 0 100 15"
@@ -1677,10 +1797,11 @@
             <div class="stage">
               <svg
                 viewBox="0 0 360 92"
-                aria-label="Side profile of the meter, 19 millimetres deep"
+                aria-label="Side profile of the meter showing the diffuser, case seam and 19 millimetre depth"
                 role="img"
               >
                 <path d="M19 43h223q6 0 6 6v19H14V48q0-5 5-5Z" fill="#354943" />
+                <path d="M18 58h225" stroke="#79887a" fill="none"/><g stroke="#1c2921" stroke-width="1.4"><path d="M206 45v9m3-9v9m3-9v9m3-9v9m3-9v9m3-9v9m3-9v9"/></g>
                 <path d="M39 43v-3q0-5 10-5t10 5v3" fill="#a5b1a6" />
                 <path
                   d="M262 43h13m-6 0v25m-7 0h13"
@@ -1713,21 +1834,10 @@
             <a
               class="btn"
               href="mailto:orders@stillmeter.example?subject=S1%20batch%20enquiry"
-              >Email an order enquiry</a
+              ><svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 5h22v16H2z M2 6l11 9L24 6"/></svg>Email an order enquiry</a
             >
           </div>
-          <svg
-            class="closing-mark"
-            viewBox="0 0 120 120"
-            role="img"
-            aria-label="Meter package"
-          >
-            <g fill="none" stroke="currentColor" stroke-width="2">
-              <path
-                d="M16 49l44-22 45 20-43 25z M16 49v38l46 21 43-22V47 M62 72v36 M39 38l45 21"
-              />
-            </g>
-          </svg>
+
         </div>
       </section>
     </main>

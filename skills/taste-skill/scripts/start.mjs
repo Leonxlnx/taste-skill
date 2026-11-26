@@ -210,7 +210,7 @@ function tokens(p, adjustSurface = true) {
 // ---------------------------------------------------------------- type
 const PAGES = ['tech', 'software', 'gaming', 'product', 'service', 'place'];
 const ALIAS = { other: 'service', 'technical-product': 'tech', technical: 'tech', hardware: 'tech', device: 'tech',
-  app: 'software', tool: 'software', devtool: 'software', food: 'place', ai: 'software', dev: 'software', developer: 'software', fintech: 'software', saas: 'software',
+  event:'service', 'consumer-app':'software', leisure:'product', 'food-brand':'product', 'drink-brand':'product', app: 'software', tool: 'software', devtool: 'software', food: 'place', ai: 'software', dev: 'software', developer: 'software', fintech: 'software', saas: 'software',
   game: 'gaming', games: 'gaming', brand: 'product', shop: 'product', studio: 'service', firm: 'service' };
 const TECH = new Set(['tech', 'software', 'gaming']);
 const pageArg = opt('page', opt('kind', undefined));
@@ -243,6 +243,8 @@ function decideTemper({ kind, words = '', has = '', forced } = {}) {
   const hit = k => (words.match(TEMPER_WORDS[k]) || [])[0];
   if (hit('quiet')) return { temper: 'quiet', why: `"${hit('quiet').toLowerCase()}" in the brief: the client's words win` };
   // a place or a service is quiet whatever its words: only --temper makes one expressive
+  if (kind==='software' && (['fintech','devtool','saas'].includes(trade) || /\b(?:health|medical|finance|banking|business software|developer tool)\b/i.test(words))) return {temper:'quiet',why:'business, developer, finance or health software'};
+  if (pageArg==='event' || kind !== 'place' && /\b(?:ticketed event|conference|festival|concert|event page|event website)\b/i.test(words)) return { temper:'lively', why:'an event' };
   if (['place', 'service'].includes(kind)) return { temper: 'quiet', why: `a ${kind} page` };
   let t = 'quiet', why = `a ${kind} page`;
   if (hit('loud')) { t = 'loud'; why = `"${hit('loud').toLowerCase()}" in the brief`; }
@@ -250,7 +252,9 @@ function decideTemper({ kind, words = '', has = '', forced } = {}) {
   else if (kind === 'gaming') {
     if (/\b(strategy|simulation|management|4x|wargame)\b/i.test(words)) why = 'a strategy or simulation game with a sober brief';
     else { t = 'lively'; why = 'a game'; }
-  } else if (kind === 'software' && /\b(streaks?|points|badges|habits?|levels?|xp|game)\b/i.test(words)) { t = 'lively'; why = 'an app with a game mechanic'; }
+  } else if (kind === 'software' && (['app','consumer-app'].includes(pageArg) || /\b(?:consumer|mobile|personal|walking|travel|notebook|fitness|consumer mobile) app\b/i.test(words)) && !/\b(?:finance|health|medical|business|developer|banking)\b/i.test(words)) { t = 'lively'; why = 'a consumer app'; }
+  else if (kind === 'product' && (['leisure','food-brand','drink-brand'].includes(pageArg) || /\b(?:food|leisure|children|children’s|children's|juice|coffee|tea|beverage|bread|spice|ice cream)\b/i.test(words))) { t='lively'; why='a food, children’s or leisure product'; }
+  else if (kind === 'software' && /\b(streaks?|points|badges|habits?|levels?|xp|game)\b/i.test(words)) { t = 'lively'; why = 'an app with a game mechanic'; }
   else if (kind === 'product' && /\b(drinks?|soda|snacks?|toys?|apparel|sneakers?|music gear|synth|candy|chocolate|beer|cider)\b/i.test(words)) { t = 'lively'; why = 'a drink, snack, toy, apparel or music brand'; }
   const art = String(has).split(',').map(s => s.trim()).includes('art') && ART_STYLE.test(words);
   if (art && t !== 'loud' && (t === 'lively' || kind === 'gaming')) { t = t === 'quiet' ? 'lively' : 'loud'; why += `, supplied ${(words.match(ART_STYLE) || [])[0].toLowerCase()} art`; }
@@ -905,6 +909,13 @@ if (cmd === 'deal') {
   let headline = 'across';
   if (hero.id === 'place' && (form === 'split' || form === 'bleed' && acrossRoll < .5)) headline = 'split';
   if (split && opt('view') !== 'wide' && (expressive || acrossRoll >= stackChance)) headline = 'split';
+  const fragmentSets = {
+    software:['window','doc','stat'], tech:['terminal-run','stat'], gaming:['slider','stat'],
+    product:['slider','stat'], service:['calendar','doc'], place:['calendar','checklist']
+  };
+  let views = fragmentSets[page];
+  if (trade==='devtool' || page==='software' && /\b(build|repository|developer tool|commit)\b/i.test(briefWords)) views=['diff-review','terminal-run','stat'];
+  else if (page==='software' && /\b(schedule|scheduling|calendar|booking)\b/i.test(briefWords)) views=['calendar','checklist','notify'];
   const plan = {
     rhythm,
     actionColour, footerWordmark, headline, ...(requestedMascot ? {mascot: placements} : {}), ...(shows ? {shows} : {}),
@@ -925,6 +936,8 @@ if (cmd === 'deal') {
   line('rhythm', rhythm.usualSections + ' ± 2 sections when supported: ' + rhythm.sequence.map((family,i) => family + ' (' + rhythm.widths[i] + ')').join(' → '));
   line('widths', rhythm.rules);
   if (rows.length) line('mapped', rhythm.mapped.map(({subject,family,width}) => subject + ' (' + family + ', ' + width + ')').join(' → '));
+
+  line('views',views.map(f=>'assets/ui/'+f).join(', ')+'; tools/device.mjs for the frame, tools/chart.mjs for a chart.');
   line('temper', temper + ': ' + temperWhy + (expressive
     ? '. Set data-temper="' + temper + '" on <html> and enable the expressive.css line in starter.html. Every expressive move names its source in the game or brand on the plan comment ("torn edge: the game\'s menus are paper"); no source, no move. Permissions, limits and the never list: ' + ref + '/references/expressive.md'
     : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
@@ -1017,7 +1030,12 @@ if (cmd === 'deal') {
   }
   let p;
   if (cmd === 'css') {
-    p = lib('palettes.json').find(x => x.id === opt('palette'));
+    if (opt('brand') !== undefined) {
+      try {
+        const {generate} = await import('../tools/lib/palette.js');
+        p = generate({brand:opt('brand')}).json;
+      } catch (error) { console.error('start: --brand '+error.message); process.exit(2); }
+    } else p = lib('palettes.json').find(x => x.id === opt('palette'));
     if (!p) { console.error('start: --palette <id> from library/palettes.json is required'); process.exit(1); }
   } else {
     p = { bg: opt('bg'), ink: opt('ink'), accent: opt('accent'), surface: opt('surface', undefined), muted: opt('muted', undefined), fields: [] };
@@ -1030,8 +1048,8 @@ if (cmd === 'deal') {
   const materials = [];
   if (fs.existsSync(planFile)) {
     const dealt = JSON.parse(fs.readFileSync(planFile,'utf8'));
-    if (dealt.kind === page && dealt.type === t.id && (dealt.palette === p.id || dealt.palette === 'art')) {
-      if (cmd === 'brand' && dealt.gradient?.tier === 'show' && !dealt.gradient.hues) {
+    if (dealt.kind === page && dealt.type === t.id && (dealt.palette === p.id || dealt.palette === 'art' || cmd==='css' && opt('brand')!==undefined)) {
+      if ((cmd === 'brand' && !dealt.gradient?.hues || cmd === 'css' && opt('brand')!==undefined) && dealt.gradient?.tier === 'show') {
         const {spectrum} = await import('../tools/lib/colour.js');
         const field = dealt.gradient;
         field.hues = spectrum(tk.accent,.88);
@@ -1055,5 +1073,5 @@ if (cmd === 'deal') {
     writeHistory(histFile, h);
   }
 } else {
-  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form] | deal --page <kind> | css --page <kind> --palette <id> --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
+  console.log('usage: node scripts/start.mjs plan --page <kind> [--sections N] [--carry words,list,photos,steps,figures] [--action booking|order|trial|visit|contact] [--booking stay|table|class] [--last-section form] | deal --page <kind> | css --page <kind> (--palette <id> | --brand <hex>) --type <id> [--radius soft] | brand --page <kind> --bg .. --ink .. --accent .. --type <id> | types --page <kind>\n  kind: ' + PAGES.join(' | '));
 }

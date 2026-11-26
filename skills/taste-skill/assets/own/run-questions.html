@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Recurring practical questions with short self-contained answers. Desktop and phone section heights in the second comparison: 543px at 1440; 477px at 390. The content stays inside the kit gutters. -->
+<!-- Recurring practical questions with short self-contained answers. The content stays inside the kit gutters. -->
 <html lang="en" data-type="software" data-radius="sharp">
   <head>
     <meta charset="utf-8" />
@@ -110,6 +110,7 @@
         cursor: pointer;
       }
     </style>
+  <link rel="stylesheet" href="worked-presence.css" />
   </head>
 
   <body>
@@ -123,44 +124,19 @@
         aria-labelledby="run-questions-title"
       >
         <div class="wrap">
-          <h2 id="run-questions-title">Before your first run</h2>
-          <p class="intro">
-            How Trestle reads a repository, stores logs and handles a stopped
-            build.
-          </p>
-          <div class="answers" data-part="accordion">
-            <div class="fold">
-              <h3>Which repositories can I connect?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Connect one repository with read access to its source and
-                    write access to its build status.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="fold">
-              <h3>What happens when I cancel?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Queued jobs leave the queue immediately. Running jobs stop
-                    at the next process check.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="fold">
-              <h3>Can I take my logs with me?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Download the plain-text log from the run while it is within
-                    the 30-day retention period.
-                  </p>
-                </div>
-              </div>
+          <div class="reading-column">
+            <h2 id="run-questions-title">Before your first run</h2>
+            <p class="intro">
+              How Trestle reads a repository, stores logs and handles a stopped
+              build.
+            </p>
+            <div class="written-answers">
+              <details open><summary>Which repositories can I connect?</summary><p>Connect one repository with read access to its source and
+                  write access to its build status.</p></details>
+              <details><summary>What happens when I cancel?</summary><p>Queued jobs leave the queue immediately. Running jobs stop at
+                  the next process check.</p></details>
+              <details><summary>Can I take my logs with me?</summary><p>Download the plain-text log from the run while it is within
+                  the 30-day retention period.</p></details>
             </div>
           </div>
         </div>

@@ -66,6 +66,8 @@ These nine win over everything else in this skill.
    postcode or coordinates; no register or VAT numbers; no phone in a real format; contacts on
    `.example`.
 
+For a supplied brand colour, use `start.mjs css --brand <hex>`. Build the product screen a user would see. Include navigation, a toolbar, six to twelve typical records, a selection and its detail. Put one small “Example” inside the window. Sample names and figures belong to that picture. Keep real prices and offer terms outside it. At 1440 give the hero window at least 880 × 480px and a section view seven columns by 360px. Reflow the phone view at 13px or larger. See references/compose.md.
+
 ## 1. The kind of business
 
 Write the kind on the plan's first line and declare it on the page: the page type on
@@ -200,7 +202,7 @@ world within the limits of `expressive.md`, each naming its source.
      their reference says, with every name, number and logo rewritten to the client's; run
      `node <skill>/scripts/icons.mjs scan index.html --out assets/icons --colour` last. A form is the starter's
      `booking-form` (`system.md`, Forms).
-   - Credits: the one footer line from `photos.mjs credits`. After shooting, copy `shots/tiles/desktop-sec-01-a.jpg` beside the page as `share.jpg`.
+   - Credits: the one footer line from `photos.mjs credits`. Use `tools/share.mjs` for the link card and favicon. A hero still can use `shots/tiles/desktop-sec-01-a.jpg`.
 
 6. **Check and look.** Only the skill's scripts, each running one headless Chrome with WebGL on
    the CPU, one at a time in the foreground with a 10-minute timeout; never in the background, a

@@ -6,6 +6,8 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ## 2.5.4 - unreleased
 
+- Plans name product-view fragments. The finish check measures occupied section width, window size and phone text. Sample records inside a marked view are separate from the real offer.
+
 - Plans suggest a section sequence by kind and check each supplied layout family before building.
 
 - Plans match motion parts to supplied content and place a palette-matched show gradient in one hero or closing band.

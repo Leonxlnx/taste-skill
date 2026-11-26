@@ -31,7 +31,7 @@ accentFixture.fill(0,0,144*16*3);
 for (let i=0; i<144*16*3; i+=3) accentFixture[i]=180;
 for (const hasButton of [false,true]) {
   const m = {...base, height:390, accent:[180,0,0], actionRects:hasButton ? [{left:0,right:390,top:0,bottom:44}] : []};
-  const tab = {eval:async()=>m, send:async()=>({data:''})};
+  const tab = {eval:async expr=>expr.includes('function measurePresence') ? [] : m, send:async()=>({data:''})};
   const rows = await checkFinish(tab,390,()=>({data:accentFixture,w:144,h:144,ch:3}));
   assert.equal(rows.some(f=>f.check==='accent-wide'),!hasButton,'accent on a control versus an equally large decorative band');
 }
@@ -188,6 +188,14 @@ if (!variant || variant==='outcomes') {
     const {findings} = (await run(path.join(skill,'scripts/copy-lint.mjs'),[file,'--json'])).files[0];
     for (const [id,sev] of [['invented-work','FAIL'],['mascot-once','WARN'],['assumed-terms','WARN']])
       assert.equal(findings.some(f=>f.id===id && f.sev===sev),bad,id);
+  }
+  const fictitious = '<article data-project-name="Birch Court"><h3>Birch Court</h3><p>Seamless sales.</p><p data-assumed>Ships within five days for €450.</p></article>';
+  for (const attr of ['data-ui','data-example','class="hero__window"','class="device"','class="ts-device"','class="app-frame"']) {
+    for (const outside of [false,true]) {
+      fs.writeFileSync(file,'<section><div '+attr+'>'+fictitious+'</div>'+(outside?fictitious:'')+'</section>');
+      const result=(await run(path.join(skill,'scripts/copy-lint.mjs'),[file,'--json'])).files[0];
+      for (const id of ['invented-work','assumed-terms','copy-slop-word']) assert.equal(result.findings.some(f=>f.id===id),outside,attr+' '+id);
+    }
   }
   fs.rmSync(planFile);
   console.log('ok - supplied and invented work, mixed mascot markup and commercial terms');

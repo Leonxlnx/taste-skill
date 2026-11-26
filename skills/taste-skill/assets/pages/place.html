@@ -858,6 +858,113 @@
         }
       }
     @media(max-width:700px){.place-reference #opening .hero-text > .btn {display:flex;width:calc(100% + 2 * var(--s-5));max-width:none;margin-inline:calc(-1 * var(--s-5));margin-bottom:calc(-1 * var(--s-5));border-radius:0;}} </style>
+    <style id="view-composition">
+      #main #proof .reading-column {
+        width: 100%;
+        max-width: none;
+      }
+      #main #proof .stage {
+        width: 100%;
+        max-width: none;
+        min-height: 360px;
+      }
+      #main #proof .stage > svg {
+        width: 100%;
+        height: 360px;
+      }
+      #main #close > .wrap {
+        display: block;
+      }
+      #main #close .reading-column {
+        width: 100%;
+        max-width: none;
+        display: grid;
+        gap: 12px var(--gutter);
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+      #main #close .reading-column :is(h2, p) {
+        grid-column: 1;
+        margin: 0;
+      }
+      #main #close .reading-column .btn {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin: 0;
+      }
+      @media (min-width: 701px) {
+        #main #proof .reading-column {
+          display: grid;
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: 16px var(--gutter);
+          align-content: start;
+        }
+        #main #proof .reading-column :is(h2, .intro) {
+          grid-column: 1 / span 4;
+        }
+        #main #proof .stage {
+          grid-column: 5/-1;
+          grid-row: 1 / span 3;
+        }
+      }
+      @media (max-width: 700px) {
+        #main #close .reading-column {
+          display: block;
+        }
+        #main #close .reading-column p {
+          margin: 12px 0 20px;
+        }
+        #main #proof .stage > svg {
+          height: auto;
+        }
+        #main #proof .stage {
+          min-height: 0;
+        }
+      }
+
+      #main #roast-notes .reading-column {
+        width: 100%;
+        max-width: none;
+      }
+      @media (min-width: 701px) {
+        #main #roast-notes .reading-column {
+          display: grid;
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: 12px var(--gutter);
+          align-content: start;
+        }
+        #main #roast-notes .roast-sample {
+          grid-column: 1 / span 7;
+          grid-row: 1 / span 4;
+          width: 100%;
+          max-width: none;
+          height: 420px;
+          object-fit: cover;
+        }
+        #main #roast-notes .reading-column > :not(img) {
+          grid-column: 8/-1;
+        }
+        #main #counter-calendar .event-board {
+          grid-template-columns: 7.2fr 4.8fr;
+        }
+      }
+
+      #main #proof .stage {
+        background: #efe7da;
+      }
+      #main #counter-calendar .event-board {
+        align-items: center;
+      }
+      #main #roast-notes .roast-sample {
+        object-position: 72% 55%;
+      }
+      @media (min-width: 701px) {
+        #main #proof .stage > svg {
+          height: 360px;
+        }
+      }
+    </style>
+  <style>#main #close .btn {display:inline-flex;align-items:center;justify-content:center;gap:.65em}</style>
   </head>
   <body class="ref-page place-reference">
     <header class="nav ref-nav">
@@ -1188,6 +1295,7 @@
                 role="img"
                 aria-label="Paper cone seated above a brewing cup, with the wetted grounds and the water line marked"
               >
+                <path d="M41 16h111l-43 62H85z" fill="#f8f4e8"/><path d="M64 42q19 3 35 0t33 0l-23 33H86z" fill="#bb926c"/><path d="M75 58q14-3 23 0t24 0l-14 18H87z" fill="#775239"/><path d="M58 88h81v33q0 8-9 8H69q-11 0-11-9z" fill="#c9d9ce"/><path d="M62 91v27q0 6 7 7" fill="none" stroke="#f8f3e6" stroke-width="3"/>
                 <g fill="none" stroke="currentColor" stroke-width="2">
                   <path
                     d="M40 16h114l-44 63H85z M48 22l40 50h18l37-50M34 81h128M57 87h83v34q0 9-9 9H68q-11 0-11-9zM142 91h12q16 0 9 14-4 8-19 8M65 60h62"
@@ -1226,21 +1334,10 @@
               class="btn"
               download="birchroom-tasting.ics"
               href="data:text/calendar;charset=utf-8,BEGIN%3AVCALENDAR%0D%0AVERSION%3A2.0%0D%0APRODID%3A-%2F%2FBirchroom%2F%2FCounter%20tastings%2F%2FEN%0D%0ABEGIN%3AVEVENT%0D%0AUID%3Afilter-20261205%40birchroom.example%0D%0ADTSTAMP%3A20261126T000000Z%0D%0ADTSTART%3A20261205T100000%0D%0ADTEND%3A20261205T103000%0D%0ASUMMARY%3AFilter%20side%20by%20side%0D%0ALOCATION%3ABirchroom%5C%2C%20Mill%20Lane%5C%2C%20East%20Quarter%0D%0ADESCRIPTION%3AWalk-in%20tasting.%20Seats%20are%20first%20come%20first%20served.%0D%0AEND%3AVEVENT%0D%0AEND%3AVCALENDAR%0D%0A"
-              >Save the tasting</a
+              ><svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 5h20v18H3z M3 10h20M8 2v6m10-6v6m-11 7h5m3 0h4"/></svg>Save the tasting</a
             >
           </div>
-          <svg
-            class="closing-mark"
-            viewBox="0 0 120 120"
-            role="img"
-            aria-label="Tasting calendar"
-          >
-            <g fill="none" stroke="currentColor" stroke-width="2">
-              <path
-                d="M20 26h82v80H20z M20 45h82 M39 19v16 M82 19v16 M35 62h12 M58 62h12 M80 62h9 M35 82h12"
-              />
-            </g>
-          </svg>
+
         </div>
       </section>
     </main>

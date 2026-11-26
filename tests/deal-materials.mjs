@@ -28,6 +28,9 @@ assert.throws(() => cli('scripts/start.mjs','css','--page','software','--type','
   assert.match(output,/geist/);
   return error.status === 2;
 });
+const brandCss = brand => cli('scripts/start.mjs','css','--page','software','--brand',brand,'--type','geist');
+assert.notEqual(brandCss('#379572').match(/--p-accent: (#[a-f0-9]{6})/)[1],brandCss('#314bb4').match(/--p-accent: (#[a-f0-9]{6})/)[1]);
+assert.throws(()=>brandCss('bad-colour'));
 let derived = 0, low = Infinity, high = 0;
 for (const p of palettes) {
   const css = cli('scripts/start.mjs', 'css', '--page', 'software', '--palette', p.id, '--type', 'geist', '--force');

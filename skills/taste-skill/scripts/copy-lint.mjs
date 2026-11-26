@@ -97,12 +97,56 @@ const SHUTS = { p: /^(address|article|aside|blockquote|details|dialog|div|dl|fie
   option: /^(option|optgroup)$/, optgroup: /^optgroup$/, tr: /^tr$/, td: /^(td|th|tr)$/, th: /^(td|th|tr)$/, thead: /^(tbody|tfoot)$/, tbody: /^(tbody|tfoot)$/ };
 const attrOf = (a, k) => { const m = a.match(new RegExp(`(?:^|\\s)${k}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i')); return m ? (m[1] ?? m[2] ?? m[3]) : null; };
 const hasAttr = (a, k) => new RegExp(`(?:^|\\s)${k}(?=[\\s=/>]|$)`, 'i').test(a);
+const exampleClasses = new Set(['app-frame', 'device', 'hero__window', 'ui-win', 'ts-device', 'd-win', 'dw']);
+const productExample = (attrs, inDemo = false) =>
+  hasAttr(attrs, 'data-example') ||
+  hasAttr(attrs, 'data-ui') ||
+  (attrOf(attrs, 'class') || '')
+    .split(/\s+/)
+    .some((c) => exampleClasses.has(c) || (inDemo && c === 'part-frame'));
+
+// Keep the frame for visual checks. Read its contents only in checks that inspect the actual UI.
+function outsideExamples(raw) {
+  const stack = [];
+  let sampleDepth = -1,
+    start = 0,
+    copy = '';
+  const tokens =
+    /<!--[\s\S]*?-->|<(script|style|template)\b[^>]*>[\s\S]*?<\/\1>|<(\/?)([\w:-]+)\b((?:"[^"]*"|\x27[^\x27]*\x27|[^\x27">])*)>/gi;
+  const closeAt = (depth, offset) => {
+    stack.length = depth;
+    if (sampleDepth >= depth) {
+      sampleDepth = -1;
+      start = offset;
+    }
+  };
+  for (const match of raw.matchAll(tokens)) {
+    if (!match[3]) continue;
+    const tag = match[3].toLowerCase(),
+      attrs = match[4];
+    if (match[2]) {
+      const depth = stack.findLastIndex((node) => node.tag === tag);
+      if (depth >= 0) closeAt(depth, match.index);
+      continue;
+    }
+    if (SHUTS[stack.at(-1)?.tag]?.test(tag)) closeAt(stack.length - 1, match.index);
+    if (VOID.has(tag) || attrs.endsWith('/')) continue;
+    const demo = stack.at(-1)?.demo || attrOf(attrs, 'data-part') === 'demo-loop';
+    if (sampleDepth < 0 && productExample(attrs, demo)) {
+      copy += raw.slice(start, match.index + match[0].length);
+      sampleDepth = stack.length;
+    }
+    stack.push({ tag, demo });
+  }
+  return copy + (sampleDepth < 0 ? raw.slice(start) : '');
+}
+
 // a UI mock, a drawn diagram or a part nobody sees: its words are not the page's copy
 function hiddenOrMock(tag, a) {
   if (hasAttr(a, 'hidden') || /^true$/i.test(attrOf(a, 'aria-hidden') || '') || /^(img|presentation)$/i.test(attrOf(a, 'role') || '')) return true;
-  if (hasAttr(a, 'data-ui') || hasAttr(a, 'data-fx') || hasAttr(a, 'data-fx-mounted') || hasAttr(a, 'data-diagram')) return true;
+  if (hasAttr(a, 'data-example') || hasAttr(a, 'data-ui') || hasAttr(a, 'data-fx') || hasAttr(a, 'data-fx-mounted') || hasAttr(a, 'data-diagram')) return true;
   const cls = (attrOf(a, 'class') || '').split(/\s+/);
-  return cls.some((c) => /^ui(-|$)/.test(c) || c === 'app-frame' || c === 'device');
+  return cls.some((c) => /^ui(-|$)/.test(c) || c === 'app-frame' || ['device','hero__window','ui-win','ts-device'].includes(c));
 }
 const EYEBROW = /^(eyebrow|kicker|overline|pretitle|section-label|section-kicker|tagline|tag-line)(__|--|$)/;
 
@@ -606,6 +650,8 @@ function pageTargets(raw, file, root) {
       else if (name === 'use' && /#pose-[\w-]+$/.test(get('href') || get('xlink:href') || ''))
         mascotHosts.add(stack.findLast(el => el.name === 'svg') || n);
     }
+    n.demo = parent?.demo || get('data-part')==='demo-loop';
+    n.example = parent?.example || productExample(attrs,n.demo);
     n.work = parent?.work || /^(?:work|projects|portfolio|clients|cases)$/.test(n.id || '') || /^(?:case-rows|portfolio|projects)$/.test(get('data-own') || '');
     n.form = name==='form' ? n : parent?.form;
     if (name==='a' || name==='button' || get('role')==='button') n.labelText='';
@@ -731,7 +777,9 @@ function briefAsks(notes, page, add, brief) {
 function lint(file) {
   const raw = fs.readFileSync(file, 'utf8');
   const isHtml = /\.html?$/i.test(file);
-  const R = isHtml ? readHtml(raw) : readText(raw);
+  const publicHtml = isHtml ? outsideExamples(raw) : raw;
+  const R = isHtml ? readHtml(publicHtml) : readText(raw);
+  R.publicHtml = publicHtml;
   R.raw = raw; R.file = file;
   // --kind wins; else the kind the page declares (as the gate reads it), so a game linted by hand keeps its nouns
   const kindNow = KIND || R.kind || '';
@@ -963,6 +1011,7 @@ function lintRead(R, isHtml) {
       const nameText = text => text.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
       const evidence = ' ' + nameText(brief + '\n' + facts.replace(/^Assumed:.*$/gim,'')) + ' ';
       for (const node of page.nodes) {
+        if (node.example) continue;
         const caseCard = (node.work || /\b(case|project|client)(?:-card)?\b/.test(node.get('class') || '')) && ['article','li','figure'].includes(node.name);
         const label = node.get('data-project-name') || node.get('data-client-name') || node.get('data-case-name') ||
           (caseCard && page.nodes.slice(node.start,node.end).find(n=>/^h[2-5]$/.test(n.name))?.text);
@@ -973,8 +1022,8 @@ function lintRead(R, isHtml) {
       }
     }
     asks = briefAsks(sourceNotes,page,add,brief);
-    if (isHtml && page) for (const node of page.nodes.filter(n => n.get('data-assumed') !== null)) {
-      const value = page.nodes.slice(node.start,node.end).map(n => n.text).join(' ').trim();
+    if (isHtml && page) for (const node of page.nodes.filter(n => !n.example && n.get('data-assumed') !== null)) {
+      const value = page.nodes.slice(node.start,node.end).filter(n => !n.example).map(n => n.text).join(' ').trim();
       const money = /(?:[€£$]|USD|EUR|GBP)\s*\d+(?:[.,]\d+)*|\d+(?:[.,]\d+)*\s*(?:[€£$]|USD|EUR|GBP)/gi;
       const duration = /\b(?:\d+|a|an|one|two|three|four|five|six|seven|eight)[ -]+(?:(?:working|business)[ -]+)?(?:hours?|days?|weeks?|months?)\b/gi;
       const timing = /\b(?:within|ship(?:s|ping)?|deliver\w*|repl\w*|respond\w*|response|rollout|weeks?)\b/i;
@@ -998,7 +1047,7 @@ function lintRead(R, isHtml) {
 
   // ---- the page's structure: the hero's h1, the close, headings that say the same thing
   if (isHtml) {
-    const S = structureOf(R.raw);
+    const S = structureOf(R.publicHtml);
     const cat = CATEGORY || (notes ? notes.val(/^category$/) : '');
     if (S.h1 && categoryLabel(S.h1.text, cat)) {
       const form = notes ? notes.val(/^hero form$/) : '';

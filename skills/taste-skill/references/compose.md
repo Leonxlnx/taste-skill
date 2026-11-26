@@ -4,6 +4,12 @@ Write `shows  <subject> | <source>` on each section line, or `shows  nothing` fo
 
 Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. If a selector changes only a word, print the options in one line, with their marks when available. Show an install command only when the brief supplies it. One price or one threshold reads as text. Name the billing unit in the heading and print the rate once beside it. Carry a real selection into its form with `data-choice`.
 
+## Product views
+
+Start with two or three matching fragments from assets/ui and the demo-loop motion part for a sequence. Frame the screen with tools/device.mjs. Use tools/chart.mjs for a chart. Build the navigation, toolbar, six to twelve typical records, selected row and its detail. Choose plausible names, dates and figures using the brief’s nouns. Put one small Example inside the window and mark the screen with data-ui. Its contents are sample data. Put the real offer and its terms outside, using the fact sheet.
+
+At 1440 a headline-across window spans the content width. In a split give it at least seven of twelve columns. Allow at least 880 × 480px for either hero window. A section’s main picture gets seven columns or more and at least 360px height. Let the section use the width, or centre a reading column up to 720px wide, optionally with a side heading. On phones recompose the screen at column width with text at least 13px. A quiet white software page can show status colours, a chart and a selected row in the accent inside its views.
+
 ## The method
 
 1. **Say what the content is, as a thing.** Not "features" but "five steps, each with a supplied duration

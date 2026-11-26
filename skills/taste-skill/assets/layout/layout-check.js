@@ -815,7 +815,7 @@ window.lyFinish = async function lyFinish(opts = {}) {
       const reader = document.createTreeWalker(s,NodeFilter.SHOW_TEXT);
       while (reader.nextNode()) {
         const el = reader.currentNode.parentElement, text = reader.currentNode.textContent;
-        if (!text.trim() || el.closest('script,style,[hidden]') || !el.getClientRects().length) continue;
+        if (!text.trim() || el.closest('script,style,[hidden],[data-ui],[data-example],.app-frame,.device,.hero__window,.ui-win,[data-part="demo-loop"] .part-frame,.ts-device,.d-win,.dw') || !el.getClientRects().length) continue;
         const r = el.getBoundingClientRect();
         const beside = actions.some(a => a.width && Math.max(a.left-r.right,r.left-a.right,0) <= 48 && Math.max(a.top-r.bottom,r.top-a.bottom,0) <= 72);
         for (const value of text.match(NUM) || []) {

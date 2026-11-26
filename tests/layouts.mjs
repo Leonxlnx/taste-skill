@@ -1,4 +1,5 @@
 // Run with Node 22 or newer. CHROME_PATH may point to a Chromium installation.
+import {measurePresence} from "../skills/taste-skill/scripts/still-finish.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { spawn, execFileSync } from "node:child_process";
@@ -218,6 +219,29 @@ try {
       assert.deepEqual(findings.map(f => f.rule),expected,forms.join(', ')+' labelled='+labelled);
       assert(findings.every(f => f.sev === 'WARN'));
     }
+  }
+  await send("Emulation.setDeviceMetricsOverride",{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+  for (const thin of [false,true]) {
+    const rows = "<span>Job duration</span>".repeat(thin ? 2 : 6);
+    const frame = "<div data-ui style=\"width:"+(thin?500:1280)+"px;height:"+(thin?220:480)+"px\">"+rows+"</div>";
+    const html = "<main style=\"width:1280px;margin:auto\"><section id=hero><h1>Build history</h1>"+frame+"</section><section id=history><h2>Runs</h2>"+frame+"</section><section><article style=\"width:640px;margin:auto\"><p>Reading the history of a build.</p></article></section></main>";
+    await evaluate("document.body.innerHTML="+JSON.stringify(html));
+    const findings=await evaluate("("+measurePresence.toString()+")()");
+    assert.equal(findings.filter(f=>f.check==="half-empty" && f.sev==="FAIL").length,thin?1:0);
+    assert.equal(findings.filter(f=>f.check==="view-thin" && f.sev==="WARN").length,thin?2:0);
+  }
+  for (const width of ["880px", "100%"]) {
+    const rows = "<p>Build</p>".repeat(8);
+    const html = '<main><section><h1>Build history</h1><div class="ts-gradient" style="padding:24px"><div data-ui style="height:480px;width:' + width + '">' + rows + '</div></div></section></main>';
+    await evaluate("document.body.innerHTML=" + JSON.stringify(html));
+    const findings = await evaluate("(" + measurePresence.toString() + ")()");
+    assert.equal(findings.some(f => f.check === "view-thin"), width === "880px");
+  }
+  for (const inExample of [false,true]) {
+    const amount="<span"+(inExample?" data-example":"")+">263 ms</span>";
+    await evaluate("document.body.innerHTML="+JSON.stringify("<main>"+("<section style=\"height:480px\"><h2>Build time</h2>"+amount+"</section>").repeat(3)+"</main>"));
+    const findings = await evaluate("window.lyFinish({}).then(rows=>rows.filter(f=>f.rule===\"number-repeat\"))");
+    assert.equal(findings.length,inExample?0:1);
   }
   assert.equal(errors.length, 0, JSON.stringify(errors));
   assert.equal(failures.length, 0, failures.join("\n"));

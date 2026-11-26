@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- Study this reference page for the order, widths and relationships between sections. Build a fresh composition for the client's material. -->
-<html lang="en" data-type="software" data-radius="sharp">
+<html data-temper="lively" lang="en" data-type="software" data-radius="sharp">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -813,6 +813,340 @@
         }
       }
     </style>
+    <style id="view-composition">
+      .ts-device {
+        position: relative;
+        display: block;
+        width: min(100%, 440px);
+        aspect-ratio: 440 / 320;
+        margin: 0;
+        isolation: isolate;
+      }
+      .ts-device::before {
+        content: '';
+        position: absolute;
+        inset: 0 0% 0%;
+        border-radius: 4.3182% / 5.9375%;
+        box-shadow:
+          0 8px 9px -8px #27292988,
+          0 20px 26px -22px #27292960;
+        z-index: -2;
+      }
+      .ts-device::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20440%20320%22%20aria-hidden%3D%22true%22%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22440%22%20height%3D%22320%22%20rx%3D%2219%22%20fill%3D%22%23404549%22%2F%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22438%22%20height%3D%22318%22%20rx%3D%2218%22%20fill%3D%22%2317191b%22%2F%3E%3Ccircle%20cx%3D%22220%22%20cy%3D%224.5%22%20r%3D%221.65%22%20fill%3D%22%2373797c%22%2F%3E%3Cpath%20d%3D%22M19%209H421q10%200%2010%2010v282q0%2010%20-10%2010H19q-10%200%20-10%20-10V19q0%20-10%2010%20-10Z%22%20fill%3D%22%23ffffff%22%2F%3E%3C%2Fsvg%3E')
+          center / contain no-repeat;
+      }
+      .ts-device > .device-screen {
+        position: absolute;
+        box-sizing: border-box;
+        overflow: hidden;
+        left: 2.0455%;
+        top: 2.8125%;
+        width: 95.9091%;
+        height: 94.375%;
+        border-radius: 2.3697% 2.3697% 2.3697% 2.3697% / 3.3113% 3.3113% 3.3113% 3.3113%;
+        background: #ffffff;
+        color: #22262a;
+      }
+      .ts-device > .device-screen > :is(img, video) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      :root {
+        --p-bg: #fffaf0;
+        --p-surface: #e2ecd4;
+        --p-ink: #20382c;
+        --p-accent: #1c6543;
+        --p-action: #214531;
+        --p-muted: #475a4d;
+      }
+      .app-reference #main > #opening {
+        background: #ffad65;
+        color: #202f23;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+      }
+      .app-reference #opening .hero__grid {
+        display: block;
+      }
+      .app-reference #opening .hero__text {
+        max-width: 950px;
+      }
+      .app-reference #opening h1 {
+        max-width: 15ch;
+        font-size: clamp(48px, 6.8vw, 102px);
+        letter-spacing: -0.055em;
+      }
+      .app-reference #opening .hero-art {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        background: transparent;
+        padding: 0;
+        margin-top: 32px;
+      }
+      .walking-device .ts-device {
+        width: 100%;
+        aspect-ratio: auto;
+        background: #26392f;
+        padding: 12px;
+        border-radius: 32px;
+      }
+      .walking-device .device-screen {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        min-height: 480px;
+        border-radius: 22px;
+        background: #fffdf6;
+        color: #233629;
+        font: 16px/1.4 system-ui;
+        text-align: left;
+      }
+      .walking-device header,
+      .walk-tools {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+      }
+      .walking-device header {
+        background: #234a35;
+        color: #fff;
+      }
+      .walk-workspace {
+        display: grid;
+        grid-template-columns: 32% 1fr;
+      }
+      .route-list {
+        padding: 24px;
+      }
+      .route-list > strong,
+      .walk-detail strong {
+        display: block;
+        font-size: clamp(22px, 2.6vw, 40px);
+        letter-spacing: -0.045em;
+      }
+      .route-list ol {
+        padding: 0;
+        list-style-position: inside;
+      }
+      .route-list li {
+        padding: 7px 12px;
+        margin: 3px 0;
+        border-radius: 8px;
+      }
+      .route-list .selected {
+        background: #d4e8bd;
+      }
+      .route-sheet {
+        background: #e5f0d6;
+      }
+      .route-sheet > svg {
+        display: block;
+        width: 100%;
+        max-height: 340px;
+        background: #d6edb8;
+      }
+      .walk-detail {
+        padding: 16px 24px;
+        display: grid;
+        grid-template-columns: 1fr 36%;
+        align-items: center;
+        gap: 16px;
+      }
+      .walk-detail svg {
+        width: 100%;
+      }
+      .app-reference #main #trail-editions {
+        background: #c7df92;
+        border-radius: clamp(28px, 5vw, 78px);
+      }
+      .app-reference #main .reading-column {
+        margin-inline: auto;
+        width: 100%;
+        max-width: 720px;
+      }
+      .app-reference #main #proof .reading-column {
+        max-width: none;
+      }
+      @media (max-width: 700px) {
+        .walking-device .ts-device {
+          padding: 6px;
+          border-radius: 18px;
+        }
+        .walking-device .device-screen {
+          border-radius: 12px;
+        }
+        .walk-workspace {
+          display: flex;
+          flex-direction: column-reverse;
+        }
+        .walk-detail {
+          padding: 12px;
+        }
+        .route-list {
+          padding: 12px;
+        }
+        .route-list ol {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .route-list li {
+          padding: 6px;
+          font-size: 14px;
+        }
+      }
+
+      @media (min-width: 701px) {
+        #walk-extract .reading-column {
+          display: grid;
+          grid-template-columns: 7fr 4.6fr;
+          grid-template-rows: auto auto 1fr;
+          column-gap: var(--gutter);
+          width: 100%;
+          max-width: none;
+        }
+        #walk-extract .gate-sketch {
+          grid-column: 1;
+          grid-row: 1/4;
+          width: 100%;
+          height: 100%;
+          min-height: 360px;
+          max-width: none;
+          background: #d7ecbe;
+          border-radius: 24px;
+        }
+        #walk-extract .reading-column > :not(svg) {
+          grid-column: 2;
+        }
+      }
+      @media (max-width: 700px) {
+        #walk-extract .gate-sketch {
+          width: 100%;
+          height: auto;
+          max-width: none;
+        }
+      }
+      @media (min-width: 1100px) {
+        #main #opening .wrap > .hero__grid {
+          display: grid;
+          grid-template-columns: minmax(0, 0.4fr) minmax(880px, 1fr);
+          gap: 32px;
+        }
+        #main #opening .hero__text {
+          grid-column: 1;
+        }
+        #main #opening .walking-device {
+          grid-column: 2;
+        }
+        #main #opening h1 {
+          font-size: clamp(54px, 4.8vw, 78px);
+        }
+      }
+      @media (min-width: 701px) and (max-width: 1099px) {
+        #main #opening .wrap > .hero__grid {
+          display: block;
+        }
+      }
+      #main #walk-extract .reading-column {
+        max-width: none;
+      }
+      #main #opening {
+        background: #ffaa57;
+      }
+      #main #trail-editions {
+        background: #bdde85;
+      }
+      #main #field-observations .reading-column {
+        max-width: 680px;
+      }
+      #main #story .thermometer {
+        min-height: 360px;
+        display: grid;
+        align-content: center;
+      }
+      #main #story .ruler svg {
+        height: 90px;
+      }
+
+      #main #close > .wrap {
+        display: block;
+      }
+      #main #close .reading-column {
+        display: grid;
+        width: 100%;
+        max-width: none;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px 40px;
+        align-items: center;
+      }
+      #main #close .reading-column h2 {
+        grid-column: 1;
+        margin: 0;
+      }
+      #main #close .reading-column p {
+        grid-column: 1;
+        margin: 0;
+      }
+      #main #close .reading-column .btn {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        margin: 0;
+        width: auto;
+      }
+      @media (max-width: 700px) {
+        #main #close .reading-column {
+          display: block;
+        }
+        #main #close .reading-column p {
+          margin-block: 12px 20px;
+        }
+      }
+
+      #main #opening .walk-detail svg text {
+        display: none;
+      }
+      #main #opening .walking-device {
+        margin-block: 20px -32px;
+      }
+      #main #trail-editions {
+        overflow: hidden;
+      }
+      #main #trail-editions img {
+        border-radius: 24px;
+      }
+      #main #close {
+        background: #dcecbd;
+      }
+      @media (max-width: 700px) {
+        #main #opening .walking-device {
+          margin-block: 24px 0;
+        }
+      }
+
+      @media (min-width: 1100px) {
+        #main #opening .wrap > .hero__grid {
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: var(--gutter);
+        }
+        #main #opening .hero__text {
+          grid-column: 1 / span 3;
+        }
+        #main #opening .walking-device {
+          grid-column: 4/-1;
+        }
+      }
+    </style>
+  <style>#main #close .btn {display:inline-flex;align-items:center;justify-content:center;gap:.65em}</style>
   </head>
   <body class="ref-page app-reference">
     <header class="nav ref-nav">
@@ -827,7 +1161,7 @@
     </header>
     <main id="main">
       <section
-        class="hero hero--split ref-hero layout-work"
+        class="hero hero--peek ref-hero layout-work"
         data-enter="still"
         aria-labelledby="hero-title"
         id="opening"
@@ -838,23 +1172,135 @@
           <div class="hero-text hero__grid">
             <div class="hero__text">
               <h1 id="hero-title">A notebook for the way back.</h1>
-              <p>
-                Trace a walk, mark a turning and keep the notes with the map.
-                Saved walks open offline.
-              </p>
+              <p>Follow the 6.4 km sample walk, mark a turning and keep the notes with the map. Saved walks open offline.</p>
               <a class="btn" href="#ridge-notebook">Open a sample walk</a>
             </div>
-            <div class="hero-art notebook-cover">
-              <div class="field-print">
-                <strong>My walks</strong><span>Example notebook</span>
-              </div>
-              <img
-                src="../layout/img/photo-d540.jpg"
-                alt="Orange gravel road curving through an autumn forest"
-              />
-              <div class="field-print">
-                <strong>Quarry Ridge</strong><span>6.4 km · Saved offline</span>
-              </div>
+            <div class="hero-art walking-device">
+              <figure class="ts-device app-frame" data-ui>
+                <div class="device-screen">
+                  <header><strong>Footnote</strong><span>Example</span></header>
+                  <div class="walk-workspace">
+                    <div class="route-list">
+                      <strong>Quarry Ridge</strong><span>Saved offline</span>
+                      <ol>
+                        <li>Quarry gate</li>
+                        <li>Coppice</li>
+                        <li>Beech hollow</li>
+                        <li>Stone steps</li>
+                        <li class="selected">Upper stile</li>
+                        <li>Grass fork</li>
+                        <li>Ridge path</li>
+                      </ol>
+                    </div>
+                    <div class="route-sheet">
+                      <div class="walk-tools"><strong>Route map</strong><span>6.4 km</span></div>
+                      <svg
+                        viewBox="0 0 470 260"
+                        role="img"
+                        aria-label="Quarry Ridge route from the gate to the ridge path"
+                      >
+                        <rect width="470" height="260" fill="#d6edb8" />
+                        <g fill="none" stroke="#8eb991" stroke-width="1.5">
+                          <path d="M-60 -78 C100 -178 145 63 260 -16 S390 -94 520 -70" />
+                          <path d="M-60 -65 C100 -165 145 75 260 -2 S390 -85 520 -55" />
+                          <path d="M-60 -52 C100 -152 145 87 260 12 S390 -76 520 -40" />
+                          <path d="M-60 -39 C100 -139 145 99 260 26 S390 -67 520 -25" />
+                          <path d="M-60 -26 C100 -126 145 111 260 40 S390 -58 520 -10" />
+                          <path d="M-60 -13 C100 -113 145 123 260 54 S390 -49 520 5" />
+                          <path d="M-60 0 C100 -100 145 135 260 68 S390 -40 520 20" />
+                          <path d="M-60 13 C100 -87 145 147 260 82 S390 -31 520 35" />
+                          <path d="M-60 26 C100 -74 145 159 260 96 S390 -22 520 50" />
+                          <path d="M-60 39 C100 -61 145 171 260 110 S390 -13 520 65" />
+                          <path d="M-60 52 C100 -48 145 183 260 124 S390 -4 520 80" />
+                          <path d="M-60 65 C100 -35 145 195 260 138 S390 5 520 95" />
+                          <path d="M-60 78 C100 -22 145 207 260 152 S390 14 520 110" />
+                          <path d="M-60 91 C100 -9 145 219 260 166 S390 23 520 125" />
+                          <path d="M-60 104 C100 4 145 231 260 180 S390 32 520 140" />
+                          <path d="M-60 117 C100 17 145 243 260 194 S390 41 520 155" />
+                          <path d="M-60 130 C100 30 145 255 260 208 S390 50 520 170" />
+                          <path d="M-60 143 C100 43 145 267 260 222 S390 59 520 185" />
+                          <path d="M-60 156 C100 56 145 279 260 236 S390 68 520 200" />
+                          <path d="M-60 169 C100 69 145 291 260 250 S390 77 520 215" />
+                          <path d="M-60 182 C100 82 145 303 260 264 S390 86 520 230" />
+                          <path d="M-60 195 C100 95 145 315 260 278 S390 95 520 245" />
+                          <path d="M-60 208 C100 108 145 327 260 292 S390 104 520 260" />
+                          <path d="M-60 221 C100 121 145 339 260 306 S390 113 520 275" />
+                          <path d="M-60 234 C100 134 145 351 260 320 S390 122 520 290" />
+                          <path d="M-60 247 C100 147 145 363 260 334 S390 131 520 305" />
+                          <path d="M-60 260 C100 160 145 375 260 348 S390 140 520 320" />
+                          <path d="M-60 273 C100 173 145 387 260 362 S390 149 520 335" />
+                        </g>
+                        <path
+                          d="M410 -20 Q320 50 385 132 T310 285"
+                          fill="none"
+                          stroke="#78bfc4"
+                          stroke-width="18"
+                        />
+                        <path
+                          d="M56 214 L100 170 164 181 214 122 234 134 280 84 348 57"
+                          fill="none"
+                          stroke="#fff"
+                          stroke-width="12"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M56 214 L100 170 164 181 214 122 234 134 280 84 348 57"
+                          fill="none"
+                          stroke="#264b34"
+                          stroke-width="6"
+                          stroke-linejoin="round"
+                        />
+                        <g fill="#254b34" font-family="system-ui" font-size="19" font-weight="600">
+                          <text x="28" y="244">Quarry gate</text>
+                          <text x="223" y="148">Upper stile</text>
+                          <text x="260" y="35">Ridge path</text>
+                        </g>
+                        <g fill="#ffad59" stroke="#254b34" stroke-width="3">
+                          <circle cx="56" cy="214" r="8" />
+                          <circle cx="214" cy="122" r="7" />
+                          <circle cx="348" cy="57" r="8" />
+                        </g>
+                      </svg>
+                      <div class="walk-detail">
+                        <div>
+                          <strong>Upper stile</strong>
+                          <p>Cross the stile. Follow the grass path.</p>
+                        </div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 352 138"
+                          role="img"
+                          aria-label="Quarry Ridge elevation profile"
+                        >
+                          <title>Quarry Ridge elevation profile</title>
+                          <desc>1: 24 m, 2: 50 m, 3: 82 m, 4: 130 m, 5: 176 m, 6: 210 m, 7: 182 m, 8: 159 m</desc>
+                          <g
+                            fill="#242622"
+                            font-family="var(--font-text,system-ui),sans-serif"
+                            style="font-variant-numeric: tabular-nums"
+                          >
+                            <path
+                              d="M12 91.89L58.86 83.1L105.71 72.28L152.57 56.05L199.43 40.5L246.29 29L293.14 38.47L340 46.24V100H12Z"
+                              fill="#d4dad0"
+                            />
+                            <path
+                              d="M12 91.89L58.86 83.1L105.71 72.28L152.57 56.05L199.43 40.5L246.29 29L293.14 38.47L340 46.24"
+                              fill="none"
+                              stroke="#55795e"
+                              stroke-width="2.8"
+                              stroke-linejoin="round"
+                            />
+                            <circle cx="246.29" cy="29" r="3.8" fill="#55795e" />
+                            <text x="246.29" y="20" text-anchor="middle" font-size="13">210 m</text>
+                            <text x="12" y="128" text-anchor="start" font-size="13">24 m</text>
+                            <text x="340" y="128" text-anchor="end" font-size="13">159 m</text>
+                          </g>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </figure>
             </div>
           </div>
         </div>
@@ -935,19 +1381,7 @@
       >
         <div class="wrap">
           <div class="reading-column">
-            <svg
-              class="gate-sketch"
-              viewBox="0 0 220 75"
-              role="img"
-              aria-label="Field sketch of the closed quarry gate"
-            >
-              <g fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M9 62h198M28 63V14h5v49m143 0V12h5v51M35 25l138-5v29L35 54zm4 3 126 18m-61-22v26M36 43l56-17"
-                />
-                <path d="M158 35h10v10h-10z M160 35v-4a3 3 0 0 1 6 0v4" />
-              </g>
-            </svg>
+            <svg class="gate-sketch" viewBox="0 0 640 320" role="img" aria-label="Grass trail beside the locked quarry gate"><rect width="640" height="320" fill="#d7ecbe"/><path d="M0 150Q95 109 202 122T407 76T640 66V320H0" fill="#b5d49c"/><path d="M0 207Q96 156 220 188T439 133T640 133V320H0" fill="#8fb885"/><path d="M250 320Q441 221 414 177L391 144Q431 182 467 193T410 264L359 320" fill="#e9e2bc"/><g fill="none" stroke="#365f47" stroke-width="6"><path d="M125 258V149m218 83V133M130 166l207-18v60l-207 28zm9 7 189 28m-107-37v59m-86-5 72-49"/></g><path fill="#416c50" d="m20 176 30-79 29 73zm42-3 24-61 25 60zm430-36 21-51 22 52zm20 5 38-89 37 91z"/></svg>
             <h2 id="walk-extract-title">A note worth finding again</h2>
             <p class="intro">From the example notebook for Quarry Ridge.</p>
             <blockquote class="walk-quote">
@@ -1267,20 +1701,10 @@
               class="btn"
               download="quarry-walk.txt"
               href="data:text/plain;charset=utf-8,Quarry%20Ridge%20%E2%80%94%206.4%20km%2C%20210%20m%20climb.%20Start%20at%20the%20old%20quarry%20gate.%20Take%20the%20grass%20path%20at%20the%20fork.%20Return%20on%20the%20upper%20path."
-              >Save the field notes</a
+              ><svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 7l7-3 7 3 6-3v16l-6 3-7-3-7 3zm7-3v16m7-13v16"/></svg>Save the field notes</a
             >
           </div>
-          <svg
-            class="closing-mark"
-            viewBox="0 0 120 120"
-            role="img"
-            aria-label="Walk route"
-          >
-            <g fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M13 94l25-37 24 12 22-46 23 7 M13 100h94" />
-              <circle cx="38" cy="57" r="3" />
-            </g>
-          </svg>
+
         </div>
       </section>
     </main>

@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- A reproducible error with a source location and the smallest useful code excerpt. Desktop and phone section heights in the second comparison: 698px at 1440; 591px at 390. The content stays inside the kit gutters. -->
+<!-- A reproducible error with a source location and the smallest useful code excerpt. The content stays inside the kit gutters. -->
 <html lang="en" data-type="software" data-radius="sharp">
   <head>
     <meta charset="utf-8" />
@@ -92,6 +92,7 @@
         margin: 0;
       }
     </style>
+  <link rel="stylesheet" href="worked-presence.css" />
   </head>
 
   <body>
@@ -110,17 +111,12 @@
             Open the test that stopped the run. The expected value stays beside
             the value the browser returned.
           </p>
-          <div class="excerpt">
-            <p>Example · checkout / delivery.spec.ts</p>
-            <pre><code>const day = delivery.day
-expect(day).toBe(
-  "Friday"
-)
-
-<span>Expected   Friday
-Received   Monday</span>
-
-at delivery.spec.ts:48</code></pre>
+          <div class="excerpt" data-ui><p>Example · checkout / delivery.spec.ts</p><div class="terminal-body"><pre class="source-lines"><code>44  const order = await checkout(cart)
+45  const delivery = order.delivery
+46  const day = delivery.day
+47  await order.confirm()
+48  expect(day).toBe("Friday")
+49  await order.close()</code></pre><div class="failure-detail"><strong>Assertion failed</strong><span>Line 48 · delivery.spec.ts</span><span>Expected</span><b>Friday</b><span>Received</span><b>Monday</b></div></div>
           </div>
         </div>
       </section>

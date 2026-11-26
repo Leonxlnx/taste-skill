@@ -78,6 +78,9 @@ for (let i = 0; i < 8; i++) {
   assert.match(out, /no source, no move/);
 }
 ok('a game with "pixel" in its brief is loud and dealt two expressive faces and a plain exit');
+for (const [kind,brief,expected] of [['software','consumer app for walkers','lively'],['software','sober consumer app for walkers','quiet'],['software','business software for invoices','quiet'],['software','a health app','quiet'],['product','a food brand','lively'],['service','conference event page','lively']]) {
+  assert.equal(plan(['--page',kind,'--sections','5','--brief',brief],'default-'+brief.replaceAll(' ','-')).p.temper,expected);
+}
 assert.equal(plan(['--page', 'gaming', '--sections', '5'], 'g0').p.temper, 'lively');
 assert.equal(plan(['--page', 'gaming', '--sections', '5', '--brief', 'a calm, premium pixel puzzle game'], 'g1').p.temper, 'quiet');
 assert.equal(plan(['--page', 'gaming', '--sections', '5', '--brief', 'a sober grand strategy game'], 'g2').p.temper, 'quiet');

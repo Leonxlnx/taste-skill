@@ -219,7 +219,7 @@ Every page's `<head>` holds, as `starter.html` has it:
 - `<title>` "Name: what it is for whom or where" and a `meta description` of one sentence; never
   the same words [page-meta].
 - `og:title`, `og:description`, `og:type` and `og:image`, with `twitter:card`
-  `summary_large_image`. The picture is a still of the page's own hero: copy the hero's tile from
+  `summary_large_image`. For a card and favicon from the page identity, run tools/share.mjs with its name, headline and mark. For a still of the page's own hero, copy the hero's tile from
   `shoot.mjs` (`tiles/desktop-sec-01-a.jpg`) beside the page as `share.jpg`.
 - `link rel="icon"`: the client's logo, else the dealt mark as `favicon.svg` (the mark's 24x24 path
   from `system.css` `.mark[data-mark]`, filled with `--p-ink`; for `initial` the letter on a

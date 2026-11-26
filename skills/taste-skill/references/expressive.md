@@ -2,13 +2,16 @@
 
 The dealer decides when a page may have character; the kit holds the parts; the gate counts the limits.
 
+## A lively product page
+
+Consumer apps, games, food and drink brands, children’s and leisure products and events usually start lively. A sober voice keeps them quiet. Give one or two sections a brand-colour field (.ground-brand) or a neighbouring palette tint. Set a 48–80px title on the field. Cut a picture or panel with a large radius from the shape tool. A device can cross the edge by 24–64px while its screen stays clear. Recompose the overlap on phones.
+
 ## The temper
 
 `start.mjs plan --brief "<the brief's words>"` deals `temper: quiet | lively | loud`, prints it with its reason and
 writes it to `plan.json`; `--temper` overrides. In order: the client's words for a quiet look (calm, premium, minimal,
 serious) win; then loud words (punk, metal, retro, arcade, pixel, 8-bit, horror) or lively ones (fun, cute, cosy,
-mascot, kids, toy, snack, drink, music, merch); then the kind (a game is lively unless it is a sober strategy game; an
-app with a mascot or streaks and a drink, snack, toy or apparel brand are lively; a place or service stays quiet);
+mascot, kids, toy, snack, drink, music, merch); then the kind (a game is lively unless it is a sober strategy game; consumer apps, food and leisure brands and event pages start lively; places and other services start quiet);
 then supplied pixel, drawn or painted art moves a game one step toward loud. Quiet keeps every rule as written.
 
 Set `<html data-temper="lively|loud">` and enable the `expressive.css` line in `starter.html`.

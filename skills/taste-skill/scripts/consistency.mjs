@@ -2451,6 +2451,12 @@ function measure(opt) {
   const splitCard = (el, z) => { for (let e = el; e && e !== stopAt(z) && e !== body; e = e.parentElement) { const v = tSplit.get(e); if (v && v.card) return true; } return false; };
   const inRowOrSplit = (el, z) => { for (let e = el; e && e !== stopAt(z) && e !== body; e = e.parentElement) if (rowStat.has(e) || splitStat.has(e) || tRow.has(e) || tSplit.has(e)) return true; return false; };
   const inFooterLinks = (el, z) => { const f = el.closest('footer'); if (!f) return false; if (el.closest('.closing__links, footer nav, footer ul, footer ol, footer dl')) return true; for (let e = el; e && e !== f; e = e.parentElement) if (tRow.has(e) || rowStat.has(e)) return true; return false; };
+  const readingStart = el => {
+    const column=el.closest('.reading-column');
+    if (!column || column.querySelector('table,form,[data-ui],figure,img,svg,video')) return false;
+    const r=column.getBoundingClientRect();
+    return r.width<=721 && Math.abs((r.left+r.right)/2-innerWidth/2)<=2 && Math.abs(firstLeft(el)-innerBox(column).l)<=2;
+  };
   const scopeOf = (el, z) => { for (let e = el.parentElement; e && e !== S[z].el && e !== body; e = e.parentElement) if (splitStat.has(e)) return e; return S[z].el; };
   const kLines = (c) => { const w = c.r - c.l; return [5, 6, 7].map((k) => ({ k, x: c.l + (k * (w + 24)) / 12 })); };
 
@@ -2859,6 +2865,7 @@ function measure(opt) {
       if (!contentAnc.has(el) || el.closest('.app-frame,.hero__window,[data-ui]')) continue;
       let ex = null;
       if (centredHeading(el, it.r)) ex = 'centred section heading';
+      if (readingStart(el)) ex = 'centred reading column';
       if (z === 0 && heroCentred && centredOn(el, it.r)) ex = 'the centred hero';
       if (!ex && z === 0 && !el.closest('button, a, select, textarea, input')) {
         const hb = heroBox(el);
@@ -2927,7 +2934,7 @@ function measure(opt) {
     for (const it of rendered) {
       if (typeof it.z !== 'number' || !/^H[12]$/.test(TU(it.el)) || it.el.closest('.app-frame,[data-ui],section[data-own] .wrap > :not(h1,h2)')) continue;
       // the centred hero's h1 stands on the page axis; a box hero's on its box's padding (told above)
-      if (centredHeading(it.el, it.r)) continue;
+      if (centredHeading(it.el, it.r) || readingStart(it.el)) continue;
       if (it.z === 0 && ((heroCentred && centredOn(it.el, it.r)) || heroBox(it.el))) continue;
       if (window.lyRules.edgePicture(it.el)) continue;
       const mirrorWords = window.lyRules.mirrored(it.el) || window.lyRules.edgeWords(it.el);
@@ -2967,6 +2974,15 @@ function measure(opt) {
       if (prod && prod !== el) continue;
       if (!(/^(IMG|VIDEO|CANVAS|SVG)$/.test(TU(el)) || boxed(el) || prod === el)) continue;
       if (wd(it.r) <= 0.5 * cw || inRowOrSplit(el, z) || el.closest(KIT_UNEVEN)) continue;
+      // A working product can take more than three quarters of a two-column hero.
+      // Both tracks still need to occupy the wrap, with text beside the visual.
+      if (el.matches('.hero__grid > .hero-art') && Math.abs(it.r.r - c.r) <= 2) {
+        const sibling = el.previousElementSibling;
+        if (sibling?.querySelector('h1') && getComputedStyle(el.parentElement).display === 'grid') {
+          const text = rectOf(sibling);
+          if (Math.abs(text.l - c.l) <= 2 && text.r <= it.r.l + 2 && text.b > it.r.t && text.t < it.r.b) continue;
+        }
+      }
       if (t6seen.some((p) => p.contains(el))) continue;
       t6seen.push(el);
       if (Math.abs(it.r.l - c.l) > 2 || Math.abs(it.r.r - c.r) > 2) eOff.push(off(el, it.r, `The wide ${el.localName} runs from x ${px(it.r.l - SX)} to ${px(it.r.r - SX)}px, so size it to reach the wrap edges at ${px(c.l - SX)} and ${px(c.r - SX)}px within 2px.`, { d: Math.max(Math.abs(it.r.l - c.l), Math.abs(it.r.r - c.r)), ref: [cbox(c, it.r.t, it.r.b)] }));
@@ -3871,7 +3887,7 @@ let toggleDone = false;
 
 // ---------------------------------------------------------------- in the page: shared helpers, sent with every probe
 const LIB = String.raw`
-  const DRAWN = '[data-ui], .ui[class*=ui-], [role="img"], [aria-hidden="true"], [inert], [data-diagram], .d-win, .d-chat, .ly-piece, .dw, .app-frame, .device, [data-ly-steps]';
+  const DRAWN = '[data-example], .app-frame, .device, .ts-device, .hero__window, .ui-win, .d-win, .dw, [data-part="demo-loop"] .part-frame, [data-ui], .ui[class*=ui-], [role="img"], [aria-hidden="true"], [inert], [data-diagram], .d-win, .d-chat, .ly-piece, .dw, .app-frame, .device, [data-ly-steps]';
   const PAUSE = '.loop-pause, .ui-pause, [data-pause]';
   const drawn = (el) => !!(el && el.closest && el.closest(DRAWN)) && !(el.matches && el.matches(PAUSE));
   const sel = (el) => {
@@ -4033,9 +4049,11 @@ function pageProbe() {
     if (el.closest('[data-open-now]') || drawn(el) || el.closest('script, style, template')) continue;
     if ([...el.childNodes].some((n) => n.nodeType === 3 && /\b(open now|now open|jetzt geöffnet|jetzt offen|ouvert maintenant|abierto ahora|aperto ora|nu open|öppet nu|åben nu)\b/i.test(n.textContent)) && shown(el)) out.openNow.push({ sel: sel(el), text: squash(el.textContent).slice(0, 60), assumed: hoursAssumed, written: true, doc: doc(el) });
   }
-  out.anyAssumed = !!document.querySelector('[data-assumed]');
+  const inExample = '[data-ui],[data-example],.app-frame,.device,.hero__window,.ui-win,[data-part="demo-loop"] .part-frame,.ts-device,.d-win,.dw';
+  const assumedFacts = [...document.querySelectorAll('[data-assumed]')].filter(el => !el.closest(inExample));
+  out.anyAssumed = assumedFacts.length > 0;
   out.hours = hours.length;
-  for (const el of document.querySelectorAll('[data-assumed]')) {
+  for (const el of assumedFacts) {
     if (el.parentElement?.closest('[data-assumed]')) continue;
     const caption = el.getAttribute('aria-label') || '';
     const exhibit = el.matches('figure,[data-ui],[data-picture],.app-frame');
@@ -5929,7 +5947,7 @@ function lib(itemContext) {
       return { x0: x0 / cw, x1: (x1 + 1) / cw, y0: y0 / ch, y1: (y1 + 1) / ch, flat: true };
     } catch (e) { return null; }
   }
-  const DRAWN = '[data-ui], .ui[class*=ui-], [role="img"], [data-part="demo-loop"] .part-frame, [data-fx], [data-fx-mounted], [aria-hidden="true"]';
+  const DRAWN = '[data-example], .app-frame, .device, .ts-device, .hero__window, .ui-win, .d-win, .dw, [data-part="demo-loop"] .part-frame, [data-ui], .ui[class*=ui-], [role="img"], [data-part="demo-loop"] .part-frame, [data-fx], [data-fx-mounted], [aria-hidden="true"]';
   const inDrawn = (el) => !!(el && el.closest && el.closest(DRAWN));
   // drawn mocks the stagger check leaves alone besides DRAWN: the ui kit's fragments and loops, a diagram, and the layout
   // kit's own windows and pieces (a chat, a diff, an inbox)
@@ -9188,7 +9206,7 @@ function lib(itemContext) {
         const walk = document.createTreeWalker(sc, NodeFilter.SHOW_TEXT);
         for (let t = walk.nextNode(); t; t = walk.nextNode()) {
           const p = t.parentElement; if (!p || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|SVG|TEXTAREA)$/i.test(p.tagName)) continue;
-          if (p.closest('[data-ui], .ui[class*=ui-], [data-diagram], [role="img"], [data-fx], [data-fx-mounted], [aria-hidden="true"], svg, canvas, template, nav, [hidden], .panel__screen') || p.getClientRects().length === 0) continue;
+          if (p.closest('[data-example],.app-frame,.device,.hero__window,.ui-win,.ts-device,.d-win,.dw,[data-part="demo-loop"] .part-frame,[data-ui], .ui[class*=ui-], [data-diagram], [role="img"], [data-fx], [data-fx-mounted], [aria-hidden="true"], svg, canvas, template, nav, [hidden], .panel__screen') || p.getClientRects().length === 0) continue;
           if (!t.textContent.trim()) continue;
           range.selectNodeContents(t);
           for (const box of range.getClientRects()) if (box.height && box.width) intervals.push([box.top,box.bottom]);
@@ -9529,7 +9547,7 @@ const FIX = {
   cta: 'add the action: a button in the hero, one on every priced item, one in the closing section',
   links: 'point every link at a real section, page or file',
   forms: 'give the form an action that sends the request (an endpoint, or a mailto) and confirm it on the page',
-  'photo-set': 'grade the photographs to one look (light, colour, warmth), or replace the odd one out',
+  'photo-set': 'compare the photographs under one grade with tools/grade.mjs, then recheck light, colour and warmth',
   'photo-upscale': 'use a source at least as wide as the picture is shown (twice that for sharp screens)',
   'photo-credit': 'confirm the library photograph shows the client\'s own product, place or people; otherwise replace it',
   'ui-fit': 'give the fragment the width it needs (its meta.json size), or use a smaller fragment',
@@ -10402,7 +10420,7 @@ function groupSame(F) {
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
 const ORDER = ['assets', 'builder-words', 'footer-thin', 'heading-pair', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'hover', 'product-shown', 'same-object', 'font-load'];
-ORDER.push('picture-sparse','headline-narrow','accent-wide','arrow-links','rule-heavy');
+ORDER.push('half-empty','view-thin','picture-sparse','headline-narrow','accent-wide','arrow-links','rule-heavy');
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-shift', 'entrance-heavy', 'reveal-heavy');
 ORDER.splice(ORDER.indexOf('overlap-text') + 1, 0, 'collide', 'tap-size');

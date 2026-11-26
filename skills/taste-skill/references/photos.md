@@ -129,7 +129,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 ## Place them
 
 - Give each photograph a job. Show the whole, then the construction detail at a different scale. For six or more photographs read `subskills/image-direction/SKILL.md`.
-- Line the main frame up with the wrap or take it full bleed as the section ground. Try an overlap within the picture area or one shaped mask per page when it follows the subject. Keep one light and grade across the set. Use the PLAN's corner treatment.
+- Line the main frame up with the wrap or take it full bleed as the section ground. Try an overlap within the picture area or one shaped mask per page when it follows the subject. Keep one light and grade across the set. When photo-set finds mixed looks, compare the whole set using tools/grade.mjs and check the result again. Use the PLAN's corner treatment.
 - **Rooms** show the whole room or building, with a detail only beside a whole view. A menu or price list can stand on type.
 - **Words on a photograph** can sit on a calm part on every page kind. Check text contrast at desktop, tablet and phone crops. When the subject moves under the words, change the crop, use a solid panel or move the words onto the page ground. The place hero’s foot form allows a bottom scrim up to 35% on the lowest 40% of the picture. Keep other crops clear.
 - Give a full-bleed photograph carrying words a phone crop in `<picture>`. Check that the visitor can still recognise the subject at 390.
@@ -158,9 +158,7 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
 - A photograph in a menu or tab panel drops `loading="lazy"`. Set `object-position` to keep the subject in the phone crop.
 - **Show the complete photograph.** A dealt hero fade may include its picture, and one dealt section fade may include its whole composition. Keep individual photos free of masks, zoom, blur and travel. Shoot 1440,
   1024, 768 and 390 and look for any empty frame (a grey, blank or half-loaded frame counts): an empty ground is a fault.
-- **No print, grade or effect on any photograph**: no halftone, dither, duotone, engraving, grain, glitch, filter or
-  blend mode, and no canvas over half of it. Mixed light gets a crop and one ratio system, not an effect. A print is a
-  tech page's one effect, on a non-photo ground.
+- Keep decorative halftone, dither, duotone, grain, glitch and canvas effects on non-photo grounds. Use a corrective grade only to bring a mismatched photo set to a common light and warmth.
 - Keep the linked picture still and change its border or title underline (`motion.md`). Apply the corners from the PLAN.
 
 ## Credits and words (PH-38, CO-22)

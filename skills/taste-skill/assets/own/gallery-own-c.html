@@ -946,6 +946,7 @@
       .written-answers details { border-top: 1px solid var(--line); }
       .written-answers p { margin-block: var(--s-2) var(--s-4); }
     </style>
+  <link rel="stylesheet" href="worked-presence.css" />
   </head>
   <body>
     <header><div class="nav"><div class="wrap nav__bar"><a class="skip-link" href="#run-waterfall">Skip to examples</a><a class="nav__logo" href="index.html">Section library</a><div class="nav__actions"><a class="btn btn--primary" href="../pages/software.html">View a reference page</a></div></div></div>
@@ -1117,17 +1118,12 @@
             Open the test that stopped the run. The expected value stays beside
             the value the browser returned.
           </p>
-          <div class="excerpt">
-            <p>Example · checkout / delivery.spec.ts</p>
-            <pre><code>const day = delivery.day
-expect(day).toBe(
-  "Friday"
-)
-
-<span>Expected   Friday
-Received   Monday</span>
-
-at delivery.spec.ts:48</code></pre>
+          <div class="excerpt" data-ui><p>Example · checkout / delivery.spec.ts</p><div class="terminal-body"><pre class="source-lines"><code>44  const order = await checkout(cart)
+45  const delivery = order.delivery
+46  const day = delivery.day
+47  await order.confirm()
+48  expect(day).toBe("Friday")
+49  await order.close()</code></pre><div class="failure-detail"><strong>Assertion failed</strong><span>Line 48 · delivery.spec.ts</span><span>Expected</span><b>Friday</b><span>Received</span><b>Monday</b></div></div>
           </div>
         </div>
       </section>
@@ -1577,19 +1573,7 @@ at delivery.spec.ts:48</code></pre>
       >
         <div class="wrap">
           <div class="reading-column">
-            <svg
-              class="gate-sketch"
-              viewBox="0 0 220 75"
-              role="img"
-              aria-label="Field sketch of the closed quarry gate"
-            >
-              <g fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M9 62h198M28 63V14h5v49m143 0V12h5v51M35 25l138-5v29L35 54zm4 3 126 18m-61-22v26M36 43l56-17"
-                />
-                <path d="M158 35h10v10h-10z M160 35v-4a3 3 0 0 1 6 0v4" />
-              </g>
-            </svg>
+            <svg class="gate-sketch" viewBox="0 0 640 320" role="img" aria-label="Grass trail beside the locked quarry gate"><rect width="640" height="320" fill="#d7ecbe"/><path d="M0 150Q95 109 202 122T407 76T640 66V320H0" fill="#b5d49c"/><path d="M0 207Q96 156 220 188T439 133T640 133V320H0" fill="#8fb885"/><path d="M250 320Q441 221 414 177L391 144Q431 182 467 193T410 264L359 320" fill="#e9e2bc"/><g fill="none" stroke="#365f47" stroke-width="6"><path d="M125 258V149m218 83V133M130 166l207-18v60l-207 28zm9 7 189 28m-107-37v59m-86-5 72-49"/></g><path fill="#416c50" d="m20 176 30-79 29 73zm42-3 24-61 25 60zm430-36 21-51 22 52zm20 5 38-89 37 91z"/></svg>
             <h2 id="walk-extract-title">A note worth finding again</h2>
             <p class="intro">From the example notebook for Quarry Ridge.</p>
             <blockquote class="walk-quote">

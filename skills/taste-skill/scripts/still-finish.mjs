@@ -27,6 +27,9 @@ export function measureFinish() {
     const r = el.getBoundingClientRect();
     if (!r.width || !r.height || r.right <= 0 || r.left >= innerWidth || !painted(el)) continue;
     const style = getComputedStyle(el);
+    if (el.matches('[data-ui],[data-example],.hero__window,.app-frame,.device,.ui-win,.ts-device,[data-part="demo-loop"] .part-frame,.d-win,.dw')) {
+      actionRects.push({left:r.left,right:r.right,top:r.top+scrollY,bottom:r.bottom+scrollY});
+    }
     if (el.matches('a.btn--primary[href],button.btn--primary,input.btn--primary[type=submit]') && r.height >= 36 && r.height <= 64) {
       actionRects.push({left:r.left, right:r.right, top:r.top+scrollY, bottom:r.bottom+scrollY});
     }
@@ -91,11 +94,203 @@ export function finishWarnings(width, m, accentShare) {
   return out;
 }
 
+// Runs inside Chrome. Text ranges measure the ink even in a full-width paragraph.
+export function measurePresence() {
+  const findings = [];
+  const frames =
+    '[data-ui],[data-example],.app-frame,.hero__window,.ui-win,.device,.ts-device,.d-win,.dw,[data-part="demo-loop"] .part-frame';
+  const subjects = frames + ',[data-chart],[data-diagram],[data-visual],img,video,canvas,svg,figure';
+  const sections = [...document.querySelectorAll('main section,main > div.section')].filter(
+    (section) => !section.parentElement.closest('section')
+  );
+  const painted = (el) =>
+    el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) &&
+    el.getBoundingClientRect().width > 0;
+  const contentWidth = (el) => {
+    const style = getComputedStyle(el);
+    return el.getBoundingClientRect().width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+  };
+  const containerOf = (section) => section.querySelector(':scope > .wrap,:scope > .container') || section;
+  const pageWidth = Math.max(
+    0,
+    ...sections.filter(painted).map((section) => contentWidth(containerOf(section)))
+  );
+  const fontPixels = (el) => {
+    let scale = 1;
+    if (el instanceof SVGTextContentElement) {
+      const matrix = el.getScreenCTM();
+      if (matrix) scale = Math.hypot(matrix.c, matrix.d);
+    } else {
+      for (let parent = el; parent; parent = parent.parentElement) {
+        const style = getComputedStyle(parent);
+        if (style.transform !== 'none') {
+          const matrix = new DOMMatrixReadOnly(style.transform);
+          scale *= Math.hypot(matrix.c, matrix.d);
+        }
+        scale *= parseFloat(style.zoom) || 1;
+      }
+    }
+    return scale * parseFloat(getComputedStyle(el).fontSize);
+  };
+
+  for (const section of sections.filter(painted)) {
+    const container = containerOf(section);
+    const width = contentWidth(container);
+    const title = section.querySelector('h1');
+    const boxes = [],
+      words = [];
+    const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode,
+        el = node.parentElement;
+      if (
+        !el ||
+        !node.textContent.trim() ||
+        el.closest('script,style,template,[hidden],svg title,svg desc,svg defs') ||
+        !painted(el)
+      )
+        continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const rects = [...range.getClientRects()].filter((r) => r.width && r.height);
+      if (rects.length) {
+        words.push(el);
+        boxes.push(...rects);
+      }
+    }
+    // Edge photographs may be siblings of the wrap. The wrap supplies the measure, the section supplies the subject.
+    const media = [...section.querySelectorAll(subjects)].filter(
+      (el) => painted(el) && el.getBoundingClientRect().width >= 48
+    );
+    boxes.push(...media.map((el) => el.getBoundingClientRect()));
+    for (const el of section.querySelectorAll('pre,table,fieldset,button,a.btn,blockquote,details')) {
+      if (!painted(el)) continue;
+      const style = getComputedStyle(el);
+      if (
+        style.backgroundColor !== 'rgba(0, 0, 0, 0)' ||
+        ['Top', 'Right', 'Bottom', 'Left'].some((side) => parseFloat(style['border' + side + 'Width']) > 0)
+      )
+        boxes.push(el.getBoundingClientRect());
+    }
+    // A side heading and its reading column, or a second occupied track, count even when their text is short.
+    for (const group of section.querySelectorAll('*')) {
+      if (
+        group.children.length < 2 ||
+        !['grid', 'flex', 'inline-grid', 'inline-flex'].includes(getComputedStyle(group).display)
+      )
+        continue;
+      const tracks = [...group.children]
+        .filter(
+          (el) =>
+            painted(el) && (el.innerText?.trim() || el.matches('img,svg') || el.querySelector('img,svg'))
+        )
+        .map((el) => el.getBoundingClientRect());
+      for (const a of tracks) {
+        const neighbour = tracks.some(
+          (b) =>
+            a !== b &&
+            (a.right <= b.left + 1 || b.right <= a.left + 1) &&
+            a.top < b.bottom &&
+            b.top < a.bottom
+        );
+        if (neighbour) boxes.push(a);
+      }
+    }
+    const emit = (check, sev, message, fix) =>
+      findings.push({
+        check,
+        sev,
+        id: 0,
+        sel: section.id ? '#' + section.id : 'section',
+        text: '',
+        doc: null,
+        msg: message,
+        fix
+      });
+    const reading =
+      !media.length &&
+      !section.querySelector('table,form,pre,button') &&
+      section.querySelector('p,blockquote,dl') &&
+      [container, ...container.querySelectorAll('article,.reading-column,.measure,blockquote,div')].some(
+        (el) => {
+          const r = el.getBoundingClientRect();
+          return (
+            r.width <= 721 &&
+            Math.abs((r.left + r.right) / 2 - innerWidth / 2) < 32 &&
+            words.every((word) => el.contains(word))
+          );
+        }
+      );
+    if (!title && innerWidth === 1440 && boxes.length && !reading) {
+      const occupied =
+        Math.max(...boxes.map((r) => Math.min(innerWidth, r.right))) -
+        Math.min(...boxes.map((r) => Math.max(0, r.left)));
+      const referenceWidth = width <= 720 ? pageWidth : width;
+      if (occupied < referenceWidth * 0.6)
+        emit(
+          'half-empty',
+          'FAIL',
+          Math.round(occupied) + 'px occupied across ' + Math.round(referenceWidth) + 'px.',
+          'Use the remaining columns for the subject or centre a reading column.'
+        );
+    }
+    const windows = media.filter((el) => el.matches(frames) && !el.parentElement.closest(frames));
+    const outer = media.filter((el) => !media.some((other) => other !== el && other.contains(el)));
+    const views = windows.length ? windows : outer.length === 1 ? outer : [];
+    for (const el of views) {
+      const r = el.getBoundingClientRect();
+      const items = words.filter((word) => el.contains(word));
+      const screen = el.matches(frames) || (el.matches('[data-visual]') && items.length > 0);
+      let gap = 0;
+      for (let parent = el.parentElement; parent && section.contains(parent); parent = parent.parentElement) {
+        const style = getComputedStyle(parent);
+        if (style.display === 'grid' && style.gridTemplateColumns.split(' ').length > 1) {
+          gap = parseFloat(style.columnGap) || 0;
+          break;
+        }
+      }
+      const sevenColumns = ((width + gap) * 7) / 12 - gap;
+      const heroWindow = title && screen;
+      const plate = el.closest('.ts-gradient,[data-visual],.hero__media') || el;
+      const across =
+        heroWindow &&
+        title.getBoundingClientRect().bottom <= plate.getBoundingClientRect().top &&
+        (plate.getBoundingClientRect().width + 2 < width || r.width + 2 < contentWidth(plate));
+      const small =
+        innerWidth === 1440 &&
+        (across ||
+          r.width + 1 < (heroWindow ? Math.max(880, sevenColumns) : sevenColumns) ||
+          r.height + 1 < (heroWindow ? 480 : 360));
+      const phoneText = innerWidth === 390 && screen && items.some((word) => fontPixels(word) < 12.95);
+      const phoneWidth = innerWidth === 390 && screen && r.width < width - 2;
+      if (small || phoneWidth || phoneText || (screen && items.length < 6)) {
+        const measured =
+          Math.round(r.width) +
+          ' × ' +
+          Math.round(r.height) +
+          'px, ' +
+          items.length +
+          ' text items' +
+          (phoneText ? ', text under 13px' : '') +
+          '.';
+        emit(
+          'view-thin',
+          'WARN',
+          measured,
+          'Give the main view seven columns and a complete working state. Reflow its content at phone width.'
+        );
+      }
+    }
+  }
+  return findings;
+}
+
 // Sample all document rows at a fixed scale; tall documents stay within Chrome's capture limits.
 export async function checkFinish(tab, width, decodePng) {
   if (width !== 1440 && width !== 390) return [];
   const m = await tab.eval('(' + measureFinish.toString() + ')()');
-  if (!m) return [];
+  const presence = await tab.eval('(' + measurePresence.toString() + ')()');
+  if (!m) return presence;
   let matches = 0, pixels = 0;
   if (m.accent && Math.max(...m.accent)-Math.min(...m.accent) >= 35) {
     for (let y=0; y<m.height; y+=7200) {
@@ -113,5 +308,5 @@ export async function checkFinish(tab, width, decodePng) {
       }
     }
   }
-  return finishWarnings(width,m,pixels ? matches/pixels : 0);
+  return presence.concat(finishWarnings(width,m,pixels ? matches/pixels : 0));
 }

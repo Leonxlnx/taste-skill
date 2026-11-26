@@ -1,0 +1,108 @@
+.excerpt .source-lines {
+  margin: 0;
+  white-space: pre-wrap;
+}
+.excerpt .failure-detail {
+  padding: 18px 24px;
+  background: #29364b;
+}
+.failure-detail span,
+.failure-detail strong {
+  display: block;
+  margin-block: 8px;
+}
+.excerpt .terminal-body {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 700px) {
+  .excerpt .terminal-body {
+    display: block;
+  }
+  .excerpt .failure-detail {
+    margin-top: 18px;
+  }
+}
+@media (min-width: 701px) {
+  #walk-extract .reading-column {
+    display: grid;
+    grid-template-columns: 7fr 4.6fr;
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--gutter);
+    width: 100%;
+    max-width: none;
+  }
+  #walk-extract .gate-sketch {
+    grid-column: 1;
+    grid-row: 1/4;
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    max-width: none;
+    background: #d7ecbe;
+    border-radius: 24px;
+  }
+  #walk-extract .reading-column > :not(svg) {
+    grid-column: 2;
+  }
+}
+@media (max-width: 700px) {
+  #walk-extract .gate-sketch {
+    width: 100%;
+    height: auto;
+    max-width: none;
+  }
+}
+:is(#examples, main) #failure-excerpt .excerpt {
+  width: 100%;
+  max-width: none;
+  min-height: 360px;
+}
+:is(#examples, main) #walk-extract .reading-column {
+  max-width: none;
+}
+:is(#examples, main) #run-questions .reading-column {
+  width: min(100%, 680px);
+  margin-inline: auto;
+}
+:is(#examples, main) #roast-notes .reading-column {
+  width: 100%;
+  max-width: none;
+}
+:is(#examples, main) #roast-notes .roast-sample {
+  width: 100%;
+  height: clamp(360px, 38vw, 500px);
+  object-fit: cover;
+}
+:is(#examples, main) #roast-notes .roast-letter {
+  max-width: 680px;
+}
+:is(#examples, main) #counter-calendar .event-board {
+  grid-template-columns: 7.2fr 4.8fr;
+}
+@media (min-width: 701px) {
+  :is(#examples, main) :is(#field-observations, #exposure-pairs, #meter-contents) .wrap {
+    display: grid;
+    grid-template-columns: 4fr 7fr;
+    gap: 12px var(--gutter);
+    align-items: start;
+  }
+  :is(#examples, main) :is(#field-observations, #exposure-pairs, #meter-contents) .wrap > :first-child {
+    grid-row: 1;
+  }
+  :is(#examples, main) :is(#field-observations, #exposure-pairs, #meter-contents) .wrap > .intro {
+    grid-column: 1;
+  }
+  :is(#examples, main) :is(#field-observations, #exposure-pairs, #meter-contents) .wrap > :last-child {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    width: 100%;
+    max-width: none;
+  }
+}
+@media (max-width: 700px) {
+  :is(#examples, main) #counter-calendar .event-board {
+    grid-template-columns: 1fr;
+  }
+}
