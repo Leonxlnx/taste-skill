@@ -1136,6 +1136,7 @@
       @media (min-width: 1100px) {
         #main #opening .wrap > .hero__grid {
           grid-template-columns: repeat(12, minmax(0, 1fr));
+          align-items: start;
           gap: var(--gutter);
         }
         #main #opening .hero__text {
@@ -1143,6 +1144,7 @@
         }
         #main #opening .walking-device {
           grid-column: 4/-1;
+          margin-block: 0;
         }
       }
     </style>
@@ -1169,7 +1171,7 @@
         data-width="content"
       >
         <div class="wrap">
-          <div class="hero-text hero__grid">
+          <div class="hero-text hero__grid grid">
             <div class="hero__text">
               <h1 id="hero-title">A notebook for the way back.</h1>
               <p>Follow the 6.4 km sample walk, mark a turning and keep the notes with the map. Saved walks open offline.</p>

@@ -1327,16 +1327,16 @@
       @media (min-width: 1100px) {
         #main #opening .hero__text {
           display: grid;
-          grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+          grid-template-columns: repeat(12, minmax(0, 1fr));
           align-items: center;
-          gap: 12px 64px;
+          gap: 12px var(--gutter);
           width: 100%;
           max-width: none;
           margin-bottom: 24px;
         }
-        #main #opening h1 {grid-row: 1 / span 2; margin: 0; font-size: clamp(64px, 4.5vw, 68px)}
-        #main #opening .hero__text p {align-self: end; margin: 0}
-        #main #opening .hero__text .btn {justify-self: start; align-self: start; margin: 0}
+        #main #opening h1 {grid-column: 1 / span 7; grid-row: 1 / span 2; margin: 0; font-size: clamp(64px, 4.5vw, 68px)}
+        #main #opening .hero__text p {grid-column: 8 / -1; align-self: end; margin: 0}
+        #main #opening .hero__text .btn {grid-column: 8 / -1; justify-self: start; align-self: start; margin: 0}
         #main #opening .run-field {padding: 24px}
         #main #opening .run-list :is(td, th) {padding-block: 8px}
       }
