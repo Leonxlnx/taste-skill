@@ -2,7 +2,7 @@ for (const root of document.querySelectorAll('[data-part="video-inview"]')) {
   const video = root.querySelector('video'),
     reduce = matchMedia('(prefers-reduced-motion:reduce)');
   let visible = false,
-    manualPause = false,
+    manualPause = root.dataset.playback === 'manual',
     autoPause = false;
   function sync() {
     if (!visible || document.hidden || reduce.matches) {

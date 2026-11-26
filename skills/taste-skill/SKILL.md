@@ -6,7 +6,7 @@ description: >-
   clean first screen, air in a clear rhythm, equal edges, and sections composed for their content
   (a timeline for a timeline product, a booking bar for a stay) on a dealt frame, so pages differ.
   Pictures show the thing itself: real photographs, the product's own UI, drawings and charts made
-  in code. Motion is quiet by default. Small
+  in code. A toolbox of small generators. Motion is quiet by default. Small
   sub-skills handle single jobs (a mascot, an illustration, a logo mark, a chart, photo direction),
   and a checker and finish gate hold it in a real browser. Use this whenever you build or
   design a landing page, company, product, shop, cafe, hotel, studio, SaaS, AI, developer-tool or
@@ -52,7 +52,7 @@ These nine win over everything else in this skill.
    is complete and correct without script: a counter shows its final number, nothing waits hidden.
 3. **Keep the hero's headline, lead, action and terms in one stack.** Size a content-led opening to its words between 72 and 100svh. A large picture or product window can fill the screen. A complete heading from the next section may show. Use `.section--compact` for a short block belonging to its neighbour (48px each side at 1440, 32px on a phone).
 4. **Equal left and right content edges.**
-5. **Almost everything is simply there.** What moves is small, short and answers something the visitor did. Hover changes colour or underline. Keep focus visible. Quiet pages have no moment or scene by default. Use the dealt hero and at most one section fade.
+5. **Almost everything is simply there.** What moves is small, short and answers something the visitor did. Hover changes colour or underline. Keep focus visible. Quiet pages have no moment or scene by default. Use the dealt hero and at most one section fade. Motion parts carry content that is itself a sequence, a choice or a demonstration.
 6. **Show the thing itself.** In this order: the client's own pictures; a picture built for this
    page (the product's UI as live HTML, a drawing of the product or its world in one style, a
    figure from supplied numbers); a stand-in photograph only where its subject is right (a
@@ -180,7 +180,8 @@ world within the limits of `expressive.md`, each naming its source.
      something else; a seed is never a part to paste.
    - **`sub` lines** name a sub-skill for one job on this page (a mascot, an illustration, a logo
      mark, a chart, photo direction). Read the ones printed and use each where its condition holds: `subskills/<name>/SKILL.md`.
-   - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. Background effects are occasional and need a free hero; pass `--effect ask` for a requested effect. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
+   - **Parts.** Pass actual content with `--has ui,views:2,steps,logos:6,questions,periods:2,pictures:3,compare,command,film,form`. Mount the matching parts from the plan. Script the single dealt demo in its named window. Keep other windows still.
+   - **Motion.** Pass `--motion ask` when the brief asks for animation, scroll effects or “wow”. Quiet pages otherwise deal `moment none` and `scene none`. Follow the named gradient or effect slot. Pass `--effect ask` for a requested moving field. A requested, lively or loud page can take one fitting moment. Follow `reveals none` or mark one content block for `reveals fade`.
 
 5. **Build.** Copy the kit into the page once at the start from the installed skill folder, never from a working copy of the skill repository. Copy `assets/starter.html` to `index.html`. In it set `<html lang data-type data-radius data-buttons data-density
    data-pictures data-motion>`, the metas, the head block (`system.md`, Head) and the nav class. Link directly unless several related destinations share a panel; copy only the
@@ -236,6 +237,10 @@ world within the limits of `expressive.md`, each naming its source.
 
 7. **Report** the `GATE:` line, waivers with reasons, open FAILs, kind, deal, own sections and each ask’s location and gate state. Start “Client must supply” with missing addresses and each stand-in picture and its section. Include assumed facts, the form’s `.example` address and unverified items.
 
+## Toolbox
+
+A tool generates a small material in the page palette. Run `node <skill>/tools/<tool>.mjs --preset <name> --from index.html --out assets/<name>.css` and apply the exported class. Open `tools/lab.html` locally to compare presets. Use at most three different tools on a quiet page besides shadow. Generate a dealt show gradient in its named slot and keep the left text zone clear.
+
 ## 3. What to read
 
 Before the first page, in full: `compose.md`, `sections.md`, `layout-v4.md`, `system.md`,
@@ -251,6 +256,8 @@ Before the first page, in full: `compose.md`, `sections.md`, `layout-v4.md`, `sy
 | Tokens, nav, footer, forms, head tags | `system.md` | `assets/system.css`, `assets/system.js` |
 | Copy, voice, registers, hero forms, tells | `copy.md`, `copy-voice.md`, `copy-registers.md`, `copy-moves.md`, `copy-tells.md` | `scripts/copy-lint.mjs` |
 | Pictures and stand-ins | `photos.md` | `scripts/photos.mjs` |
+| Generated materials and placement | `tools.md` | `tools/lab.html` |
+| Content-led motion parts | `interactions.md` | `assets/motion/parts` |
 | Motion floor, helpers, entrances | `motion.md` | `assets/motion` |
 | The dealt moment or scene | `moments.md`, `scenes.md` | `assets/moments`, `assets/scenes` |
 | Feature cards, UI fragments, diagram cards, real icons | `cards.md`, `diagrams.md`, `icons.md` | `assets/ui`, `assets/diagrams`, `scripts/icons.mjs` |
@@ -287,7 +294,7 @@ For your eyes first, then the gate (its check ids in brackets):
 - **Nothing ships broken:** no console error or failed file, every link lands, forms send or open
   an email draft with real fields and each error under its field [console-error,
   links, forms, form-fields].
-- **Motion.** A still page passes. Check for excessive entrance area, long reveals and moving controls. Keep loops inside a product or media frame with its pause control. Reduced motion shows finished content [entrance-heavy, reveal-heavy, hover-shift, loop-pause, hidden-content].
+- **Motion.** A still page passes. Check for excessive entrance area, long reveals and moving controls. On quiet pages allow at most two autoplaying elements, never two in view together. Give each loop over five seconds its own pause control [autoplay-many]. Reduced motion shows finished content [entrance-heavy, reveal-heavy, hover-shift, loop-pause, hidden-content].
 - **One system:** one button pair, one card style, one radius scale, one heading scale, text
   contrast [button-styles, card-family, heading-scale, text-contrast].
 - **Story:** the h2s alone read in order; the thread comes back; the close answers the hero

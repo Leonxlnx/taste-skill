@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-type="software">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Folio edition desk · Folio</title>
+    <meta name="page-type" content="software"><meta name="site-kind" content="software"><meta name="description" content="Review an edition, inspect its plates and prepare a print proof."><title>Folio edition desk · Folio</title>
     <link rel="stylesheet" href="../../system.css" />
     <link rel="stylesheet" href="../motion.css" />
     <link rel="stylesheet" href="page.css" />
@@ -39,11 +39,9 @@
     <script defer src="form-states/part.js"></script>
     <link rel="stylesheet" href="menu-sheet/part.css" />
     <script defer src="menu-sheet/part.js"></script>
-  </head>
-  <body>
-    <main class="wrap">
-      <header class="mast">
-        <a href="#workflow">Folio</a>
+  <link rel="stylesheet" href="../../layout/layout.css"><link rel="stylesheet" href="desk.css"></head>
+  <body><header class="nav mast"><div class="wrap nav__bar mast-row">
+        <a class="skip-link" href="#workflow">Skip to content</a><a href="#workflow">Folio</a>
         <div data-part="nav-highlight">
           <nav class="part-frame desk-nav" aria-label="Workspace">
             <i aria-hidden="true"></i><a href="#demo-loop">Workflow</a
@@ -60,15 +58,7 @@
             ><a href="#price-toggle">Studio licence</a>
           </nav>
         </div>
-      </header>
-      <div class="lead" id="workflow">
-        <h1>The edition desk</h1>
-        <p>Proofs, material studies and bindery notes for independent publishers.</p>
-      </div>
-      <section id="demo-loop" data-part="demo-loop">
-        <h2>From proof to press</h2>
-        <p class="intro">Record the cover decision and pass the production note to the bindery.</p>
-        <div class="part-frame proof">
+      </div></header><main><section class="hero hero--split" id="workflow" data-enter="still"><div class="wrap"><div class="hero-text grid hero__grid"><div class="hero__text span-6"><h1>The edition desk</h1><p class="hero__lead">Review the cover and prepare a proof for the autumn print run of 240 numbered copies.</p><div class="btn-row"><a class="btn btn--primary" href="#feature-tabs">Browse edition plates</a></div></div><div class="hero__media span-6 start-7" id="demo-loop" data-part="demo-loop"><div class="part-frame proof">
           <header>Folio / Editions</header>
           <figure class="cover-sheet" aria-label="Autumn workshop catalogue cover">
             <span>Folio Editions</span
@@ -96,7 +86,7 @@
             ><strong>Field<br />Studies</strong><small>Autumn edition</small>
           </figure>
           <div class="proof-details">
-            <h3>Autumn catalogue</h3>
+            <strong>Autumn catalogue</strong>
             <div class="row">
               Cover proof <strong data-status data-start="In review">Approved</strong>
             </div>
@@ -114,9 +104,8 @@
             ><i data-at="7200" data-action="toast"></i><i data-at="8800" data-action="wait"></i
           ></template>
         </div>
-      </section>
-      <section id="feature-tabs" data-part="feature-tabs">
-        <h2>Inside the field library</h2>
+      </div></div></div></section><section class="section section--compact own" data-own="edition-feature-tabs"><div class="wrap"><h2>Choose a reference plate</h2><div class="desk-group"><div id="feature-tabs" data-playback="manual" data-part="feature-tabs">
+        <h3>Inside the field library</h3>
         <p class="intro">Browse the reference plates that accompany each workshop edition.</p>
         <div class="part-frame plates">
           <button class="pause loop-pause" hidden aria-label="Pause playback">Ⅱ</button>
@@ -131,7 +120,7 @@
                 src="../../photos/img/m130857602-1200.webp"
                 alt="Anvil and forge tools"
               />
-              <figcaption>Ironwork</figcaption>
+              <figcaption class="fact-line">Ironwork</figcaption>
             </figure>
             <figure>
               <img
@@ -139,7 +128,7 @@
                 src="../../photos/img/m117663639-1200.webp"
                 alt="Chain on a seven-speed cassette"
               />
-              <figcaption>Drivetrain</figcaption>
+              <figcaption class="fact-line">Drivetrain</figcaption>
             </figure>
             <figure>
               <img
@@ -147,13 +136,12 @@
                 src="../../photos/img/m162973523-1200.webp"
                 alt="Hand-gilding a blue book spine"
               />
-              <figcaption>Bookbinding</figcaption>
+              <figcaption class="fact-line">Bookbinding</figcaption>
             </figure>
           </div>
         </div>
-      </section>
-      <section id="snap-gallery" data-part="snap-gallery">
-        <h2>Workshop plates</h2>
+      </div><div id="snap-gallery" data-part="snap-gallery">
+        <h3>Workshop plates</h3>
         <p class="intro">Inspect the material and tool studies collected for this edition.</p>
         <div class="part-frame gallery">
           <div class="gallery-track" tabindex="0" aria-label="Workshop photographs">
@@ -163,7 +151,7 @@
                 src="../../photos/img/m130857602-1200.webp"
                 alt="Anvil and forge tools"
               />
-              <figcaption>Anvil and forge tools</figcaption>
+              <figcaption class="fact-line">Anvil and forge tools</figcaption>
             </figure>
             <figure>
               <img
@@ -171,7 +159,7 @@
                 src="../../photos/img/m117663639-1200.webp"
                 alt="Chain on a seven-speed cassette"
               />
-              <figcaption>Chain on a seven-speed cassette</figcaption>
+              <figcaption class="fact-line">Chain on a seven-speed cassette</figcaption>
             </figure>
             <figure>
               <img
@@ -179,7 +167,7 @@
                 src="../../photos/img/m162973523-1200.webp"
                 alt="Hand-gilding a blue book spine"
               />
-              <figcaption>Hand-gilding a blue book spine</figcaption>
+              <figcaption class="fact-line">Hand-gilding a blue book spine</figcaption>
             </figure>
           </div>
           <div class="bar gallery-nav" hidden>
@@ -187,9 +175,9 @@
             ><span><i></i></span>
           </div>
         </div>
-      </section>
-      <section id="compare" data-part="compare">
-        <h2>Check the tonal proof</h2>
+      </div></div></div></section>
+<section class="section section--compact own" data-own="edition-compare"><div class="wrap"><h2>Inspect the print proof</h2><div class="desk-group"><div id="compare" data-part="compare">
+        <h3>Check the tonal proof</h3>
         <p class="intro">Compare the full-colour plate with its monochrome proof at the same crop.</p>
         <figure class="part-frame tonal">
           <div class="tonal-stack">
@@ -210,9 +198,8 @@
           </div>
           <label hidden>Proof boundary <input type="range" min="0" max="100" value="50" /></label>
         </figure>
-      </section>
-      <section id="step-rail" data-part="step-rail">
-        <h2>Work through the collection</h2>
+      </div><div id="step-rail" data-part="step-rail">
+        <h3>Work through the collection</h3>
         <p class="intro">Each field note identifies the detail to inspect in its plate.</p>
         <div class="reading-rail">
           <div class="rail-screen" aria-hidden="true"></div>
@@ -246,9 +233,9 @@
             </article>
           </div>
         </div>
-      </section>
-      <section id="lightbox" data-part="lightbox">
-        <h2>Binding detail</h2>
+      </div></div></div></section>
+<section class="section section--compact own" data-own="edition-lightbox"><div class="wrap"><h2>Study the binding</h2><div class="desk-group"><div id="lightbox" data-part="lightbox">
+        <h3>Binding detail</h3>
         <p class="intro">Inspect the hand-gilded spine at full size.</p>
         <figure class="plate-detail">
           <a href="../../photos/img/m162973523-1200.webp"
@@ -257,11 +244,10 @@
               src="../../photos/img/m162973523-1200.webp"
               alt="Hand-gilding a blue book spine"
           /></a>
-          <figcaption>Finishing the raised bands</figcaption>
+          <figcaption class="fact-line">Finishing the raised bands</figcaption>
         </figure>
-      </section>
-      <section id="video-inview" data-part="video-inview">
-        <h2>Watch the proof export</h2>
+      </div><div id="video-inview" data-playback="manual" data-part="video-inview">
+        <h3>Watch the proof export</h3>
         <p class="intro">Follow the three passes that prepare an edition for print.</p>
         <figure class="part-frame proof-film">
           <video
@@ -275,11 +261,11 @@
           >
             <source src="video-inview/proof.mp4" type="video/mp4" />
           </video>
-          <figcaption>Separate the plates, check registration, then export the proof.</figcaption>
+
         </figure>
-      </section>
-      <section id="card-light" data-part="card-light">
-        <h2>Production notebook</h2>
+      </div></div></div></section>
+<section class="section section--compact own" data-own="edition-card-light"><div class="wrap"><h2>Check the production order</h2><div class="desk-group"><div id="card-light" data-part="card-light">
+        <h3>Production notebook</h3>
         <p class="intro">Open the material record for the autumn cover.</p>
         <article class="part-frame paper-card">
           <i aria-hidden="true"></i>
@@ -288,17 +274,15 @@
           <a href="#specification">Read specification</a>
         </article>
         <p class="row" id="specification">Grain runs parallel to the spine. Score before folding.</p>
-      </section>
-      <section id="count-once" data-part="count-once">
-        <h2>Edition inventory</h2>
+      </div><div id="count-once" data-part="count-once">
+        <h3>Edition inventory</h3>
         <p class="intro">The autumn production order reserves this many numbered copies.</p>
         <div class="part-frame inventory">
           <strong data-figure="240">240</strong><span> numbered copies</span>
         </div>
-      </section>
-      <div class="desk-pair">
-        <section id="price-toggle" data-part="price-toggle">
-          <h2>Studio licence</h2>
+      </div></div></div></section>
+<section class="section section--compact own" data-own="edition-price-toggle"><div class="wrap"><h2>Choose a studio licence</h2><div class="desk-group"><div id="price-toggle" data-part="price-toggle">
+          <h3>Studio licence</h3>
           <p class="intro">Choose a billing period for a shared edition workspace.</p>
           <div class="part-frame billing">
             <label hidden><input type="checkbox" role="switch" /> Bill yearly</label>
@@ -309,11 +293,10 @@
                 <p>€240 <small>per year</small></p>
               </div>
             </div>
-            <p>Includes proof history and shared production notes.</p>
+            <p>Includes proof history and shared production notes.</p><a href="#accordion">Read edition details</a>
           </div>
-        </section>
-        <section id="accordion" data-part="accordion">
-          <h2>Edition details</h2>
+        </div><div id="accordion" data-part="accordion">
+          <h3>Edition details</h3>
           <p class="intro">Check the printing and binding notes before sending a proof.</p>
           <div class="part-frame">
             <article class="fold">
@@ -331,10 +314,9 @@
               </div>
             </article>
           </div>
-        </section>
-      </div>
-      <section id="logo-row" data-part="logo-row">
-        <h2>Available through</h2>
+        </div></div></div></section>
+<section class="section section--compact own" data-own="edition-logo-row"><div class="wrap"><h2>Find an independent bookseller</h2><div class="desk-group"><div id="logo-row" data-part="logo-row">
+        <h3>Available through</h3>
         <p class="intro">Find Folio editions at these independent booksellers.</p>
         <div class="part-frame stockists">
           <button class="pause loop-pause" hidden aria-label="Pause playback">Ⅱ</button>
@@ -351,17 +333,15 @@
             </div>
           </div>
         </div>
-      </section>
-      <div class="desk-pair">
-        <section id="copy-button" data-part="copy-button">
-          <h2>Share the proof reference</h2>
+      </div></div></div></section>
+<section class="section section--compact own" data-own="edition-copy-button"><div class="wrap"><h2>Save the proof details</h2><div class="desk-group"><div id="copy-button" data-part="copy-button">
+          <h3>Share the proof reference</h3>
           <p class="intro">Include the edition reference when requesting a correction.</p>
           <div class="part-frame bar">
             <code>FOL-AUT-042</code><button hidden>⧉ Copy reference</button><span role="status"></span>
           </div>
-        </section>
-        <section id="form-states" data-part="form-states">
-          <h2>Save a delivery contact</h2>
+        </div><div id="form-states" data-part="form-states">
+          <h3>Save a delivery contact</h3>
           <p class="intro">Keep a contact address with this edition on this device.</p>
           <form class="part-frame contact">
             <label
@@ -371,8 +351,4 @@
             <button hidden>Save contact</button><output role="status"></output
             ><noscript>Local saving requires scripting.</noscript>
           </form>
-        </section>
-      </div>
-    </main>
-  </body>
-</html>
+        </div></div></div></section></main><footer class="footer closing desk-footer"><div class="wrap"><a href="#workflow">Folio edition desk</a><a href="#feature-tabs">Reference plates</a></div></footer></body></html>

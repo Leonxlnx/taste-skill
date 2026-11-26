@@ -209,7 +209,7 @@ function tokens(p, adjustSurface = true) {
 // ---------------------------------------------------------------- type
 const PAGES = ['tech', 'software', 'gaming', 'product', 'service', 'place'];
 const ALIAS = { other: 'service', 'technical-product': 'tech', technical: 'tech', hardware: 'tech', device: 'tech',
-  app: 'software', ai: 'software', dev: 'software', developer: 'software', fintech: 'software', saas: 'software',
+  app: 'software', tool: 'software', devtool: 'software', food: 'place', ai: 'software', dev: 'software', developer: 'software', fintech: 'software', saas: 'software',
   game: 'gaming', games: 'gaming', brand: 'product', shop: 'product', studio: 'service', firm: 'service' };
 const TECH = new Set(['tech', 'software', 'gaming']);
 const pageArg = opt('page', opt('kind', undefined));
@@ -372,7 +372,7 @@ const FONT_TAGS = link => `<link rel="preconnect" href="https://fonts.googleapis
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="${link}" rel="stylesheet">`;
 
-function block(tk, ty, radius) {
+function block(tk, ty, radius, materials = []) {
   const lines = [
     `  --font-display: ${ty.display};`,
     `  --font-text: ${ty.text};`,
@@ -394,7 +394,7 @@ function block(tk, ty, radius) {
 <link rel="stylesheet" href="assets/motion/motion.css">
 <link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
 <link rel="stylesheet" href="assets/layout/layout.css">
-<link rel="stylesheet" href="assets/icons/icon.css">${ty.expressive ? '\n<link rel="stylesheet" href="assets/expressive/expressive.css">' : ''}
+<link rel="stylesheet" href="assets/icons/icon.css">${materials.map(file => `\n<link rel="stylesheet" href="${file}">`).join('')}${ty.expressive ? '\n<link rel="stylesheet" href="assets/expressive/expressive.css">' : ''}
 <!-- <html lang="en" data-radius="${radius}" data-action="${opt('action-colour') === 'ink' ? 'ink' : 'accent'}"${ty.expressive ? ` data-temper="${temper === 'quiet' ? 'lively' : temper}"` : ''}>; keep this <style> after the links: layout.css resets --ly-scale -->
 <style>
 :root {
@@ -791,10 +791,10 @@ if (cmd === 'deal') {
   }
   const defaultSections = path.join(dir,'sections.txt');
   const sectionPlan = opt('section-plan', fs.existsSync(defaultSections) ? defaultSections : undefined);
-  let shows, reactionSection;
+  let rows = [], shows, reactionSection;
   if (sectionPlan !== undefined) {
     if (typeof sectionPlan !== 'string') throw new Error('--section-plan needs a text file with one line per section');
-    const rows = fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
+    rows = fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
     shows = rows.map(row => row.match(/\bshows\s+([^|]+?)(?:\s*\||$)/i)?.[1].trim());
     if (rows.length !== sections || shows.some(subject => !subject)) throw new Error('Each of the '+sections+' section lines needs shows followed by its subject.');
     const reaction = rows.findIndex((row,i) => i > 0 && i < rows.length-1 && !/^nothing\.?$/i.test(shows[i]));
@@ -804,6 +804,10 @@ if (cmd === 'deal') {
   const artPalette = expressive && (assets.has('art') || page === 'gaming');
   const { palette, type, layout } = dealFrame(frameHistory, artPalette);
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
+  if (artPalette && opt('bg') && opt('accent')) {
+    palette.bg = color.hex(opt('bg'));
+    palette.accent = color.hex(opt('accent'));
+  }
   const { hero, variant, form, peek, book, peekLine, bookLine } = run(path.join(skill, 'assets/layout/deal.mjs'), [
     '--type', pageType, '--kind', page, '--has', has, '--temper', temper,
     '--subjects', String(opt('subjects', 1)), ...(opt('no-recent') ? ['--no-recent'] : []),
@@ -819,16 +823,16 @@ if (cmd === 'deal') {
     ...(peek || book || variant ? ['--keep-hero'] : []), ...(reserveClose ? ['--keep-close'] : []), ...(action ? ['--action', action] : [])]);
   const sceneHero = motion.sceneFits.includes('hero');
   const sceneClose = motion.sceneFits.includes('close');
-  const effectSlot = page === 'gaming' ? 'band' : 'hero';
-  // a lively or loud page's one effect is its texture, from its own world (references/expressive.md): no WebGL ground
-  const occupiedHero = variant === 'wide' || hero.window && assets.has('ui')
-    || ['photo','film','place','collage','triptych'].includes(hero.id)
-    || ['split','product'].includes(hero.id) && assets.has('photo');
   const effectRequest = opt('effect') === 'ask' || /\b(?:add|use|want|include|with|show)\s+(?:an? |a subtle |a quiet )?(?:shader|background effect|canvas background)\b/i.test(briefWords);
-  const drawEffect = effectRequest || rng(seed + ':background')() < 1/6;
-  const effect = techPage && !sceneHero && !occupiedHero && !expressive && drawEffect ? run(path.join(here, 'effects.mjs'), ['pick', ...common, '--palette',
-    color.isDark(palette.bg) ? 'dark' : 'light', '--slots', effectSlot]).picks[0]?.id || null : null;
-
+  const { dealContent } = await import('./content-deal.mjs');
+  const { parts, gradient, demo, tools } = dealContent({ page, hardware: trade === 'hardware' || ['hardware','device'].includes(pageArg),
+    assets: typeof opt('has') === 'string' ? assets : new Set(), rows, seed, palette, heroWindow: hero.window || variant === 'wide',
+    dark: palette.bg && color.isDark(palette.bg), sceneHero, sceneClose, moving: effectRequest || opt('motion') === 'ask', brief: briefWords });
+  const occupiedHero = variant === 'wide' || hero.window && assets.has('ui') || ['photo','film','place','collage','triptych'].includes(hero.id) || ['split','product'].includes(hero.id) && assets.has('photo');
+  let effect = gradient?.moving ? gradient.effect : null;
+  if (!gradient && effectRequest && techPage && !sceneHero && !occupiedHero && !expressive) {
+    effect = run(path.join(here,'effects.mjs'), ['pick', ...common, '--palette', color.isDark(palette.bg) ? 'dark' : 'light', '--slots', page === 'gaming' ? 'band' : 'hero']).picks[0]?.id || null;
+  }
   const h = readHistory(histFile);
   h.layout = frameHistory.layout;
   h.dealt = frameHistory.dealt;
@@ -901,7 +905,7 @@ if (cmd === 'deal') {
     close, buttons: layout.buttons, mark: layout.mark, grounds: layout.grounds, density: layout.density,
     align: layout.align, pictures: layout.pictures, compositions: comps, own: sections < 6 ? 1 : 2,
     ideas: ideas.map(s => s.id), sub: Object.keys(sub), moments: motion.picks.map(m => m.id), rides: motion.rides,
-    scene: motion.scene, effect, story: story.id, ...(briefWords ? { brief: briefWords } : {}),
+    parts, gradient, demo, tools, seed, scene: motion.scene, effect, story: story.id, ...(briefWords ? { brief: briefWords } : {}),
   };
   if (!opt('no-record')) writeHistory(histFile, h);
   writeHistory(path.join(dir, 'plan.json'), plan, 2);
@@ -961,8 +965,24 @@ if (cmd === 'deal') {
     line('moment ' + (i + 1), m.id + ' ' + place + (i === 0 && m.early ? ', within the first three screens' : '') + ': ' + momentSource(m.id) + ', link assets/moments/' + m.id + '/moment.css' + textRule(m.text) + (m.id === 'photo-chapters' ? '. Phone photographs flow with their captions' : m.phoneRuns ? '. Runs on a phone' : '') + ' (references/moments.md)');
   });
   line('scene', motion.scene ? motion.scene + ' ' + (sceneHero ? 'as the hero' : sceneClose ? 'at the close' : 'in the matching content section') + ': ' + ref + '/assets/scenes/' + motion.scene + '/demo.html. Link scenes.css and ' + motion.scene + '/scene.css and load scenes.js.' : 'none');
-  if (expressive && !effect) line('effect', 'none: the one effect of a lively or loud page is a texture from its own world (data-texture), when it has one');
-  else line('effect', effect ? effect + ' held still on the ' + effectSlot + (page === 'gaming' ? ', clear of the key art' : '') + (motion.scene ? ', outside the scene' : '') + ' (' + ref + '/assets/effects/README.md; data-fx="' + effect + '")' : 'none this page');
+  line('parts', 'Copy matching static markup and its local stylesheet and script (references/interactions.md).');
+  for (const part of parts) line('  ' + part.id, ref + '/' + part.path + ' · ' + part.needs);
+  if (parts.some(p => ['feature-tabs','logo-row','video-inview'].includes(p.id))) line('playback', 'When two frames can share a viewport or more than two play automatically, set data-playback="manual" on extra tabs, film or logo rows.');
+  if (demo) line('demo', 'loop in the ' + demo.place + ' only, 8 to 14 seconds. Script 3 to 5 steps from the notes: ' + demo.source);
+  else if (page === 'software' && (typeof opt('has') === 'string' && assets.has('ui') || rows.some(row => /\b(product window|core view)\b/i.test(row)))) line('demo', 'still: keep product windows on their complete result. Set data-ui-still on a kit UI fragment.');
+  if (gradient?.tier === 'quiet') {
+    line('gradient', 'quiet mist · ' + gradient.place + '. node "' + path.join(skill,'tools','gradient.mjs') + '" --tier quiet --preset mist --from index.html --zone left --seed ' + gradient.seed + ' --out assets/field.css');
+  } else if (gradient) {
+    const command = 'node "' + path.join(skill,'tools','gradient.mjs') + '" --tier show --preset ' + gradient.preset +
+      ' --from index.html --zone left --seed ' + gradient.seed + (gradient.placement ? ' --placement ' + gradient.placement : '');
+    line(gradient.moving ? 'moving field' : 'gradient', 'show ' + gradient.preset + ' · ' +
+      gradient.place + '; white ink in the left 38%; hues ' + (gradient.hues?.join(', ') || 'art accent at 0, −29, −58 and −87 degrees; brand resolves the four colours') + '. ' +
+      command + (gradient.moving ? ' --format settings --out assets/field.json' : ' --out assets/field.css'));
+    if (gradient.moving) line('mount', 'node "' + path.join(skill,'scripts','effects.mjs') + '" mount --settings assets/field.json');
+  }
+  line('effect', effect || 'none this page');
+  line('tools', tools + '. Use only what the section needs.');
+
   line('hover layer', 'Colour or underline on hover; press .98 (references/motion.md)');
   if (motion.picks.length) line('re-deal', 'to replace one moment, write "<id> (re-dealt for <the old id>)" on the plan comment\'s moments line.');
   line('then', 'record this plan in the comment at the top of <body>, build in index.html from starter.html, then run node ' + ref + '/scripts/gate.mjs index.html');
@@ -995,7 +1015,29 @@ if (cmd === 'deal') {
   const radius = ['sharp', 'soft', 'round'].includes(opt('radius')) ? opt('radius') : 'soft';
   const tk = tokens(p, cmd === 'css');
   if (tk.derived) console.log('<!-- Surface tint derived from the page ground at 6% OKLCH lightness distance. -->');
-  console.log(block(tk, typeVars(t), radius));
+  const planFile = path.join(path.dirname(histFile), 'plan.json');
+  const materials = [];
+  if (fs.existsSync(planFile)) {
+    const dealt = JSON.parse(fs.readFileSync(planFile,'utf8'));
+    if (dealt.kind === page && dealt.type === t.id && (dealt.palette === p.id || dealt.palette === 'art')) {
+      if (cmd === 'brand' && dealt.gradient?.tier === 'show' && !dealt.gradient.hues) {
+        const {spectrum} = await import('../tools/lib/colour.js');
+        const field = dealt.gradient;
+        field.hues = spectrum(tk.accent,.88);
+        field.placement = field.slot === 'close' || color.isDark(tk.bg) ? 'ground' : 'panel';
+        field.place = field.slot === 'close' ? 'closing band' : field.placement === 'ground' ? 'dark hero ground' : 'hero panel';
+        writeHistory(planFile,dealt,2);
+        console.log('<!-- Show field: '+field.place+', left reading zone, '+field.hues.join(', ')+' -->');
+      }
+      for (const {id} of dealt.parts || []) {
+        if (['nav-highlight','menu-sheet','form-states'].includes(id) || !/^[a-z]+(?:-[a-z]+)*$/.test(id)) continue;
+        const file = 'assets/motion/parts/' + id + '/part.css';
+        if (fs.existsSync(path.join(here,'..',file))) materials.push(file);
+      }
+      if (dealt.gradient && !dealt.gradient.moving) materials.push('assets/field.css');
+    }
+  }
+  console.log(block(tk, typeVars(t), radius, materials));
   if (cmd === 'css') {
     const h = readHistory(histFile);
     h.palettes.push(p.id); h.types.push(t.id);

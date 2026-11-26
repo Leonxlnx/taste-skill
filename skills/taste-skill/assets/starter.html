@@ -108,14 +108,14 @@
      wordmark: no mark, the name alone. The footer repeats it.
      The skip link is the bar's first child and the page's first stop for the Tab key: hidden until focused, then
      shown over the logo (system.css .skip-link); its words in the page's language ("Zum Inhalt" on a German page). -->
-<header class="nav">
+<header class="nav" data-part="menu-sheet">
   <!-- Optional when the brief supplies a deadline or service change:
   <aside class="service-notice" data-source="brief"><span>[Service fact]</span><button type="button" data-dismiss-notice aria-label="Dismiss notice">×</button></aside>
   -->
   <div class="wrap nav__bar">
     <a class="skip-link" href="#top">Skip to content</a>
     <a class="nav__logo" href="#top"><span class="mark" data-mark="[dealt mark]" aria-hidden="true"></span>[Name]</a>
-    <nav class="nav__links" aria-label="Main">
+    <nav data-part="nav-highlight" class="nav__links" aria-label="Main">
       <div class="nav__item"><a class="nav__link" href="#[destination]">[Visitor destination]</a></div>
       <!-- Add supplied sign-in, docs, status or store links here and in the footer. Software without one links its setup section as Quickstart in both places. -->
     </nav>
@@ -125,7 +125,7 @@
       <a class="nav__link" href="#[section id]">[Second action the client has]</a>
       <a class="btn btn--primary" href="#[section id]">[Main action]</a>
     </div>
-    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu" data-close-label="Close menu">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>
   </div>
@@ -409,7 +409,7 @@
        never asks twice in a row; paste the booking-form's fields into the form (class form close__form) -->
   <div class="closing__cta close--form">
     <div class="section-head"><h2 id="close-h">[Something new: a fact or a reason, never the button]</h2><p>[A supplied booking fact.]</p></div>
-    <form class="form close__form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Confirmation after the request is received.]" novalidate>
+    <form data-part="form-states" class="form close__form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Confirmation after the request is received.]" novalidate>
       <!-- the booking-form fields below -->
     </form>
   </div>
@@ -457,7 +457,7 @@
        mailto: on .example (a stand-in the report lists) and no success line is shown. data-sent names what was sent
        in the button's own words ("Request a table" -> "Your table request is in. We reply within a day."). Six fields
        at most; never a modal. -->
-  <form class="form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Your table request is in. We reply within a day.]" novalidate>
+  <form data-part="form-states" class="form" action="mailto:[hello@brand.example]" method="post" enctype="text/plain" data-endpoint="" data-sent="[Your table request is in. We reply within a day.]" novalidate>
     <div class="field"><label for="f-name">[Name]</label>
       <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err">
       <p class="field__error" id="f-name-err" hidden>[Write the name the booking is under.]</p></div>

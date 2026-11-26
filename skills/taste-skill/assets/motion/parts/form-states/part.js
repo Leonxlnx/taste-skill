@@ -1,4 +1,5 @@
 for (const root of document.querySelectorAll('[data-part="form-states"]')) {
+  if (root.matches('form.form')) continue; // system.js mounts the starter variant.
   const form = root.querySelector('form'),
     field = form.elements.email,
     button = form.querySelector('button'),

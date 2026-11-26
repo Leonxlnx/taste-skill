@@ -392,6 +392,8 @@ window.lyCheck = function lyCheck(opts = {}) {
     if (el.closest('section[data-own]') && !el.matches('section[data-own] > .wrap')) return false;
     if (el.matches('[data-edge-free],button.loop-pause[aria-pressed], script, style, template')) return false;
     if (el.parentElement && el.parentElement.closest(INSIDE)) return false;
+    const mask = el.closest('[data-part="logo-row"] .stock-mask');
+    if (mask && mask !== el && ['clip','hidden'].includes(getComputedStyle(mask).overflowX)) return false;
     if (inBox(el)) return false;
     const p = getComputedStyle(el).position;
     if (p === 'absolute' || p === 'fixed') return false;

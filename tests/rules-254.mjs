@@ -42,6 +42,7 @@ const tmp = fs.mkdtempSync(path.join(process.env.TASTE_SKILL_TMP || os.tmpdir(),
 const profile = process.env.TASTE_SKILL_CHROME_PROFILE || path.join(tmp,'profile');
 const starter = fs.readFileSync(path.join(skill,'assets','starter.html'),'utf8');
 fs.copyFileSync(path.join(skill,'assets','system.css'),path.join(tmp,'system.css'));
+fs.symlinkSync(path.join(skill,'assets'),path.join(tmp,'kit'),'junction');
 fs.mkdirSync(path.join(tmp,'.taste-skill'));
 const notes = path.join(tmp,'.taste-skill','copy.md');
 async function run(script,args) {
@@ -153,8 +154,7 @@ if (!variant || variant==='outcomes') {
     fs.writeFileSync(path.join(tmp,name),name==='empty.pdf' ? '' : 'fixture');
   }
   fs.writeFileSync(path.join(tmp,'page-without-extension'),'<!doctype html><title>Home</title>');
-  fs.copyFileSync(path.join(skill,'assets/system.js'),path.join(tmp,'system.js'));
-  fs.writeFileSync(file,'<script type="module" src="system.js"></script><main>'+cases.map((v,i)=>'<section id="case-'+i+'">'+v[3]+'</section>').join('')+'</main>');
+  fs.writeFileSync(file,'<script type="module" src="kit/system.js"></script><main>'+cases.map((v,i)=>'<section id="case-'+i+'">'+v[3]+'</section>').join('')+'</main>');
   fs.writeFileSync(notes,'Download: https://files.mill.studio/guide.pdf\nAsks:\n'+cases.map(([ask,outcome],i)=>'- '+ask+' -> #case-'+i+(outcome?' : '+outcome:'')).join('\n')+
     '\n\n## Client must supply\n'+cases.map((v,i)=>v[4] ? '- #case-'+i+' '+v[4] : '').join('\n'));
   for (const input of [file,notes]) {
@@ -203,13 +203,12 @@ if (!variant || variant==='regressions') {
     '<input id="delay" type="radio" name="delay"><label for="delay">Six hours late</label><p id="only-price">€2,400</p></div></section>'+
     '<section id="demo" class="repeat"><div class="wrap"><h2>Review your call</h2><p data-placeholder>The demo opens an email draft with a placeholder destination.</p>'+
     '<a class="btn btn--primary" href="#demo">Book a demo</a></div></section></main></body></html>';
-  fs.copyFileSync(path.join(skill,'assets/system.js'),path.join(tmp,'system.js'));
   const controls = '<section id="pick"><h2>Choose a shift</h2><label>Shifts<input type="number" value="1" data-choice="shifts"></label><a href="#request">Request shift</a></section>'+
     '<section id="request"><h2>Request your shift</h2><form><label>Shifts<input type="number" value="1" name="shifts" data-choice="shifts"></label></form></section>'+
     '<a href="#teams" data-choice-set="team:Night">Night</a><section id="teams"><h2>Teams</h2><div role="tablist" data-choice="team">'+
     '<button type="button" role="tab" aria-selected="true" aria-controls="day">Day</button><button type="button" role="tab" aria-controls="night">Night</button></div>'+
     '<div id="day" role="tabpanel">Day shift</div><div id="night" role="tabpanel">Night shift</div></section>';
-  fs.writeFileSync(file,html.replace('</main>',controls+'</main><script type="module" src="system.js"></script>'));
+  fs.writeFileSync(file,html.replace('</main>',controls+'</main><script type="module" src="kit/system.js"></script>'));
   const layout=await run(path.join(skill,'assets/layout/check.mjs'),['--url',file,'--profile',profile,'--sizes','1440x900','--json','--no-stress','--still']);
   const rules=layout.flatMap(row=>row.findings);
   assert.ok(!rules.some(f=>f.rule==='still-wrong' && f.where.includes('delay')),'native radio has a visible label');
@@ -453,20 +452,22 @@ if (!variant || variant === 'motion') {
     const bad = treatment === 'heavy', loud = treatment === 'loud';
     const file = path.join(tmp, 'motion-'+treatment+'.html');
     const hover = bad ? 'button:hover svg { translate: 3px; }' : 'button:hover { background: #ddd; }';
+    const players = bad ? '<div data-part="demo-loop">Timer</div><div data-part="logo-row">Stockists</div><div data-part="feature-tabs">Views</div>' :
+      '<div data-part="demo-loop">Timer</div><div data-part="feature-tabs" data-playback="manual">Views</div><div style="height:105vh"></div><div data-part="logo-row">Stockists</div>';
     const frames = bad ? '<h2><span>Frame</span> <span>and</span> <span>glass</span></h2>' : '<h2>Frame and glass</h2>';
     fs.writeFileSync(file, `<!doctype html><html lang="en" class="m-enter" data-ready="1" data-temper="${loud?'loud':'quiet'}">
       <style>body{margin:0}section{min-height:100vh}button{padding:16px}button svg{width:12px;height:12px}
       ${hover} .hero p{display:inline-block} h2 span{display:inline-block}</style>
       <main><section class="hero" data-enter="${loud?'set-type':bad?'still':'rise'}"><div class="hero__copy" style="min-height:60vh"><h1>Frames</h1><p>Blue</p><p>Red</p>
       <button>Choose a frame <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="3"/></svg></button></div></section>
-      <section id="later" ${loud?'data-moment="lines-rise"':''}>${frames}<p>Local glass.</p></section></main>
+      <section id="later" ${loud?'data-moment="lines-rise"':''}>${frames}<p>Local glass.</p>${players}</section></main>
       ${!bad&&!loud?'<script type="module" src="assets/motion/motion.js"></script>':''}<script>const animate=el=>el.animate([{opacity:0,transform:'translateY(32px) scale(.9)'},{opacity:1,transform:'none'}],350);
       ${bad||loud?"document.querySelectorAll('.hero h1,.hero p').forEach(animate);":''}
       ${bad||loud?"addEventListener('scroll',()=>document.querySelectorAll('#later h2 span,#later h2').forEach(animate),{once:true});":''}
       </script></html>`);
     const rows = await run(path.join(skill,'assets/layout/check.mjs'),['--url',file,'--profile',profile,'--sizes','1440x900','--json','--no-stress']);
     fs.writeFileSync(path.join(tmp, 'motion-'+treatment+'-report.json'), JSON.stringify(rows));
-    for (const rule of ['reveal-heavy','entrance-heavy','hover-shift']) {
+    for (const rule of ['reveal-heavy','entrance-heavy','hover-shift','autoplay-many']) {
       assert.equal(rows[0].findings.some(f => f.rule === rule && f.sev === 'WARN'),bad,treatment+' '+rule);
     }
     const lint = await run(path.join(skill,'scripts/motion-lint.mjs'),[file,'--json']);

@@ -288,6 +288,7 @@ import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename, extname, relative, sep, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {partFixture,inspectParts} from './part-fixtures.mjs';
 import { inflateSync } from 'node:zlib';
 import { STOP, norm, words, stem, holds, holdsAny, headingSubjects, copyTerms, headingFindings, itemContext, closingActionMatches } from './heading-copy.mjs';
 import { areaInSource, suppliedStreet } from './place-address.mjs';
@@ -2226,11 +2227,13 @@ function measure(opt) {
       return aligned(rectOf(frame)) && aligned(rectOf(el));
     });
   }
+  const toolLayer = el => el.matches('.ts-gradient,.ts-grain,.ts-pattern,.ts-divider') &&
+    el.getAttribute('aria-hidden') === 'true' && !el.textContent.trim() && !el.querySelector('a,button,input,video');
   const layerOf = (el) => {
     if (layerMemo.has(el)) return layerMemo.get(el);
     let v = false, m = el;
     if (TU(m) === 'IMG' && m.parentElement && TU(m.parentElement) === 'PICTURE') m = m.parentElement;
-    if (/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(m)) && m.parentElement && secSet.has(m.parentElement)) {
+    if ((/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(m)) || toolLayer(m)) && m.parentElement && secSet.has(m.parentElement)) {
       const pm = picImg(m) || m;
       if (m.classList.contains('layer') || el.classList.contains('layer')) v = true;
       else { const s = cs(pm); if (s.position === 'absolute') { const r = rectOf(pm); v = r.l <= SX + 1 && r.r >= SX + W - 1; } }
@@ -2246,13 +2249,13 @@ function measure(opt) {
     const st = cs(s.el), raw = rectOf(k);
     // A transformed photographic layer is painted only inside the parent's crop.
     const r = /^(clip|hidden)$/.test(st.overflowX) && /^(clip|hidden)$/.test(st.overflowY) ? inter(raw, secR(s)) : raw;
-    if (!/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(k0))) probs.push('uses ' + k0.localName + ' where an image, picture, video, canvas or SVG is required');
+    if (!/^(IMG|PICTURE|VIDEO|CANVAS|SVG)$/.test(TU(k0)) && !toolLayer(k0)) probs.push('uses ' + k0.localName + ' where an image, picture, video, canvas or SVG is required');
     if (cs(k).position !== 'absolute') probs.push('uses ' + cs(k).position + ' positioning where absolute is required');
     if (!inPlacePicture(k0) && (Math.abs(r.l - SX) > 1 || Math.abs(r.r - SX - W) > 1)) probs.push('covers x ' + px(r.l - SX) + ' to ' + px(r.r - SX) + 'px instead of 0 to ' + W + 'px (1px tolerance)');
     if (r.t < s.top - 1 || r.b > s.bottom + 1) probs.push('extends ' + px(Math.max(s.top - r.t, r.b - s.bottom)) + 'px outside the section against a 1px limit');
     if (cs(k).zIndex !== '0') probs.push('has z-index ' + cs(k).zIndex + ' where 0 is required');
     const ah = k.getAttribute('aria-hidden') === 'true';
-    if (!s.isHero && ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
+    if (!s.isHero && !(toolLayer(k0) && k0.matches('.ts-divider')) && ht(r) < 0.9 * s.h) probs.push('covers ' + Math.round((ht(r) / s.h) * 100) + '% of the section height, needs 90%');
     const picture = TU(k) === 'IMG' ? k : k.querySelector('img');
     const described = picture?.hasAttribute('alt') || (k.getAttribute('role') === 'img' && (k.getAttribute('aria-label') || k.getAttribute('aria-labelledby')));
     if (!ah && !described) probs.push('has no accessible description or decorative marker and needs one');
@@ -2476,7 +2479,7 @@ function measure(opt) {
   const outside = (i) => rendered.filter((it) => it.z === i && (it.r.t < S[i].top - 1 || it.r.b > S[i].bottom + 1));
   const padbTok = cssVar('--padb', phone ? 88 : 128);
   // a section whose own layer (a photograph or ground edge to edge behind its words) passes SR-6 T1 is filled by it
-  const layered = (s) => [...s.el.children].some((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && layerOf(TU(k) === 'PICTURE' && k.querySelector('img') ? k.querySelector('img') : k) && !layerProblems(k, s).length);
+  const layered = (s) => [...s.el.children].some((k) => !SKIPTAG.test(TU(k)) && visible(k) && !srOnly(k) && !(toolLayer(k) && k.matches('.ts-divider')) && layerOf(TU(k) === 'PICTURE' && k.querySelector('img') ? k.querySelector('img') : k) && !layerProblems(k, s).length);
   // a section's content: its boxes in its .wrap (lines of text, pictures, controls) and every box with its own fill
   // or shadow there (a tinted panel or a card shows to its edges; one over 60% of the section's area is ground), with
   // the vertical runs they cover merged (iv)
@@ -2599,7 +2602,7 @@ function measure(opt) {
     }
     T.push(test('T-fit', fOff.length ? 'FAIL' : 'PASS', fOff));
     // T-snap (ST-02, SR-9 T1): the rhythm comes from heights and padding only, never from scroll-snap
-    { const sn = [de, body, ...allEls].filter((e) => { const v = cs(e).scrollSnapType; return v && v !== 'none' && !window.lyRules.itemRail(e); });
+    { const sn = [de, body, ...allEls].filter((e) => { const v = cs(e).scrollSnapType; return v && v !== 'none' && !window.lyRules.itemRail(e) && !(v.startsWith('x') && e.matches('[data-part="snap-gallery"] .gallery-track')); });
       T.push(test('T-snap', sn.length ? 'FAIL' : 'PASS', sn.slice(0, 3).map((e) => off(e === de || e === body ? null : e, null, `scroll-snap-type: ${cs(e).scrollSnapType} on ${e === de ? 'the html element' : e === body ? 'the body' : q(e)}: the scroll is the browser's own`, { moving: null, doc: null })))); }
     return T;
   });
@@ -2886,7 +2889,7 @@ function measure(opt) {
       if (!ex) for (let e = el; e && e !== S[z].el; e = e.parentElement) { if (e !== el && boxed(e) && wd(rectOf(e)) <= 0.5 * cw) { ex = 'small boxed element'; break; } }
       // a drawn mock's words and a card laid over a picture (a map's address card) set their own lines; a list item
       // whose words follow its icon starts at the icon (seen on a test page)
-      if (!ex && el.closest('[data-ui], .ui, [data-ui-loop], [data-m-loop], [data-diagram]')) ex = 'drawn mock';
+      if (!ex && el.closest('[data-ui], .ui, [data-ui-loop], [data-m-loop], [data-diagram], [data-part="demo-loop"] .part-frame')) ex = 'drawn mock';
       if (!ex) for (let e = el.parentElement; e && e !== S[z].el; e = e.parentElement) { if (boxed(e) && cs(e).position === 'absolute') { ex = 'card over a picture'; break; } }
       if (!ex && tag === 'LI' && el.querySelector(':scope > svg, :scope > img, :scope > i, :scope > [class*="icon"], :scope > [class*="check"]')) ex = 'list item with an icon';
       // (the kit's .checks list draws its tick as the item's ::before, a grid column of its own)
@@ -2999,11 +3002,11 @@ function measure(opt) {
     // container and shows whole cards only
     const oOff = [];
     for (const el of allEls) {
-      if (!visible(el) || el.closest('[data-moment="marquee-row"]')) continue;   // the kit's running row clips its track on purpose
+      if (!visible(el) || el.closest('[data-moment="marquee-row"]') || el.matches('[data-part="logo-row"] .stock-mask')) continue;   // the kit's running row clips its track on purpose
       const s = cs(el), extra = el.scrollWidth - el.clientWidth;
       if (extra <= 2) continue;
       if (/auto|scroll/.test(s.overflowX)) {
-        if ((/^(PRE|CODE)$/.test(TU(el)) && el.closest('.wrap')) || window.lyRules.itemRail(el)) continue;
+        if ((/^(PRE|CODE)$/.test(TU(el)) && el.closest('.wrap')) || window.lyRules.itemRail(el) || el.matches('[data-part="snap-gallery"] .gallery-track')) continue;
         oOff.push(off(el, null, `a sideways scroller: ${extra}px of it hidden behind overflow-x: ${s.overflowX}`, { d: extra }));
       } else if (/hidden|clip/.test(s.overflowX) && s.display !== 'inline') {
         let items = inFlowKids(el);
@@ -4442,6 +4445,7 @@ const KNOWN = has('known-brand');
 // (--page is its documented name, CK-03; --type is kept)
 const PAGE_FLAG = opt('page', ''), TYPE_ONLY = opt('type', ''), TYPE_FLAG = PAGE_FLAG || TYPE_ONLY;
 const target = argv[0];
+const specimen = partFixture(target);
 if (!target) {
   console.error('usage: node consistency.mjs <url or file> [--widths 1440,1024,820,768,390] [--profile dir in the OS temp folder or .taste-skill] [--category ..] [--audience ..] [--place ..] [--products ..] [--primary ..] [--known-brand] [--page tech|gaming|software|product|place|service] [--tech-subject] [--address-allow "a|b"] [--rhythm-widths 1440,768,390] [--out dir] [--root dir] [--port 5200] [--json] [--quick] [--stops] [--no-sweep] [--no-slow] [--no-reduced] [--no-hidden] [--no-gl-fallback] [--no-visuals] [--no-address] [--no-rhythm] [--no-rhythm-expand] [--no-motion-hooks]');
   process.exit(2);
@@ -5482,6 +5486,9 @@ function lib(itemContext) {
       if (!ownText(el) || !first(seen.cut, el, r)) continue;
       if (el.matches('input, textarea, select, option') || inMarquee(el)) continue; // a running line is told under marquee
       if (el.closest('[data-moment="marquee-row"] .mo-mq__rail')) continue; // the kit's running row: its rail clips the words at its faded ends
+      const rail = el.closest('[data-part="logo-row"] .stock-mask, [data-part="snap-gallery"] .gallery-track');
+      if (rail && ['auto','scroll','hidden','clip'].includes(CS(rail).overflowX)) continue;
+      if (el.matches('[data-part="demo-loop"] [data-pointer][aria-hidden=true]')) continue;
       const c = CS(el); const fs = parseFloat(c.fontSize) || 16;
       const all = lines(el); const ls = all.filter((l) => l.bottom > 0 && l.top < vh);
       if (!ls.length) continue;
@@ -5922,7 +5929,7 @@ function lib(itemContext) {
       return { x0: x0 / cw, x1: (x1 + 1) / cw, y0: y0 / ch, y1: (y1 + 1) / ch, flat: true };
     } catch (e) { return null; }
   }
-  const DRAWN = '[data-ui], .ui[class*=ui-], [role="img"], [data-fx], [data-fx-mounted], [aria-hidden="true"]';
+  const DRAWN = '[data-ui], .ui[class*=ui-], [role="img"], [data-part="demo-loop"] .part-frame, [data-fx], [data-fx-mounted], [aria-hidden="true"]';
   const inDrawn = (el) => !!(el && el.closest && el.closest(DRAWN));
   // drawn mocks the stagger check leaves alone besides DRAWN: the ui kit's fragments and loops, a diagram, and the layout
   // kit's own windows and pieces (a chat, a diff, an inbox)
@@ -7134,7 +7141,7 @@ function lib(itemContext) {
     const placeLike = type === 'place' || type === 'product';
     // a kit .frame holding a hand-built mock (a timeline, a channel, a code window: 2.5.3 told three of them "no
     // picture, effect or mock") and a code block are visuals; an empty frame is visual-empty's to tell
-    const VIS = 'img, video, canvas, iframe, picture, object, embed, svg, [data-ui], .ui[class*=ui-], [role="img"], [data-fx], [data-fx-mounted], .frame, pre';
+    const VIS = 'img, video, canvas, iframe, picture, object, embed, svg, [data-ui], .ui[class*=ui-], [role="img"], [data-fx], [data-fx-mounted], [data-part="demo-loop"] .part-frame, .frame, pre';
     const lastMain = S.filter((s) => s.tagName !== 'FOOTER').slice(-1)[0];
     for (const s of S) {
       if (s.tagName === 'FOOTER' || s.tagName === 'NAV' || !s.isConnected) continue;
@@ -7167,7 +7174,9 @@ function lib(itemContext) {
       const textForm = [...s.querySelectorAll('table,form,details,ol,dl,ul')].some(substantial);
       const hours = s.querySelector('dl.hours');
       const schedule = hours && shown(hours, hours.getBoundingClientRect()) && hours.querySelector('dt + dd');
-      if (textForm || schedule || window.lyRules.faqAnswers(s)) continue;
+      const marks = s.querySelector('[data-part="logo-row"] .stock-track ul');
+      const rates = s.querySelector('[data-part="price-toggle"] .rates');
+      if (textForm || schedule || window.lyRules.faqAnswers(s) || marks?.children.length >= 6 && marks.getClientRects().length || rates?.children.length >= 2 && rates.getClientRects().length) continue;
       if (s.matches('section[data-own]')) {
         const painted = [...s.querySelectorAll('figure *, article *, [aria-hidden=true]')].some(e => {
           const r=e.getBoundingClientRect(), css=CS(e);
@@ -7848,8 +7857,8 @@ function lib(itemContext) {
       if (ex.length) { const a0 = ex.find(visible) || ex[0]; out.stand.push({ id: idOf(a0), sel: sel(a0), text: (full(a0) || a0.getAttribute('href')).slice(0, 60), n: ex.length, href: a0.getAttribute('href').slice(0, 60), doc: visible(a0) ? doc(a0) : null }); } }
     // 2. effect ids by section (an effect id in at most two sections)
     const fxBy = new Map();
-    for (const e of document.querySelectorAll('[data-fx], [data-cx-effect], [data-glow]')) {
-      const id = fxOf(e); if (!id || id.startsWith('[')) continue;
+    for (const e of document.querySelectorAll('[data-fx], [data-cx-effect], [data-glow], .ts-gradient, .ts-pattern, .ts-grain')) {
+      const id = fxOf(e) || [...e.classList].find(c=>['ts-gradient','ts-grain','ts-pattern'].includes(c)); if (!id || id.startsWith('[')) continue;
       const r = e.getBoundingClientRect(); if (r.width < 1 && r.height < 1 && !e.closest('[hidden], [role="tabpanel"]')) continue;
       if (!fxBy.has(id)) fxBy.set(id, { els: [], secs: new Set() });
       const m = fxBy.get(id); m.els.push(e); m.secs.add(secKey(e));
@@ -8172,7 +8181,9 @@ function lib(itemContext) {
       if (tag === 'CANVAS') { if (!el.closest('[data-fx], [data-fx-mounted]')) push(el, r, 'canvas', { refused: glRefused(el) }); continue; }
       if (el.matches('[data-fx], [data-fx-mounted]')) { push(el, r, 'fx', { refused: glRefused(el.querySelector('canvas')) }); continue; }
       const c = CS(el);
-      if (c.backgroundImage && /url\(/.test(c.backgroundImage) && c.display !== 'inline' && !lineImage(c)) { push(el, r, 'bg'); continue; }
+      if (c.backgroundImage && /url\(/.test(c.backgroundImage) && c.display !== 'inline' && !lineImage(c) &&
+          !el.matches('.ts-gradient,.ts-pattern,.ts-grain,.ts-divider') &&
+          !(el.matches('.ts-surface,.ts-shadow') && !/url\(["']?(?!data:)[^"')]/i.test(c.backgroundImage))) { push(el, r, 'bg'); continue; }
       if (tag.toLowerCase() === 'svg' && r.width >= 120 && r.height >= 80 && !el.closest(FRAG)) push(el, r, 'img');
     }
     // a frame whose picture does not show (faded out at rest, hidden, or broken): the frame itself is judged
@@ -11578,6 +11589,7 @@ async function runSweep(cdp, helper, main) {
 // ---------------------------------------------------------------- run
 const chrome = await launch();
 const report = { page: server ? resolve(target) : url, url, at: new Date().toISOString(), out: outDir, widths: [] };
+if (specimen) report.scope = "Standalone interaction: viewport, media, destinations, controls, playback, motion and runtime errors.";
 // --quick reads no scroll stepping and no reveal walk; what the walk itself sees is still told: an IntersectionObserver reveal
 // (scroll-reveal), a held section (pinned) and a CSS scroll timeline (scroll-linked)
 if (quick) report.notChecked = ['scroll-linked (stepping)', 'scroll-reveal (the reveal walk; IntersectionObserver reveals are read)', 'hover-spill', 'hidden-visual', 'loop-pause', 'forms', 'reduced-motion'];
@@ -11590,6 +11602,23 @@ try {
   const helper = await Tab.open(cdp, { width: 400, height: 300 });
   await helper.eval(`(${helperLib.toString()})()`);
   for (const [i, w] of WIDTHS.entries()) {
+    if (specimen) {
+      const height = w.h || HEIGHTS[w.w] || (w.w < 700 ? 844 : 900);
+      const tab = await Tab.open(cdp,{width:w.w,height,mobile:w.w < 700,net:true});
+      try {
+        const errors = [];
+        cdp.on(tab.sid,'Runtime.exceptionThrown',e => errors.push(e.exceptionDetails.exception?.description || e.exceptionDetails.text));
+        await tab.goto(url);
+        await tab.eval('document.fonts.ready.then(()=>true)');
+        await sleep(550);
+        const observations = await tab.eval('('+inspectParts.toString()+')().concat(window.readMotionAudit())');
+        const findings = observations.map(f=>({check:f.rule,sel:f.where,msg:f.detail,sev:f.sev}));
+        for (const err of errors) findings.push({check:'console-error',sev:'FAIL',msg:err});
+        for (const req of tab.failed.filter(r => r.type !== "Other" || !r.url.endsWith("/favicon.ico"))) findings.push({check:'assets',sev:'FAIL',msg:req.url+' '+req.why});
+        report.widths.push({width:w.w,height,screens:1,findings,errors:[],held:0});
+      } finally { await tab.close(); }
+      continue;
+    }
     // a width the browser could not walk (a CDP timeout on a busy machine) is tried once more, then told as not
     // checked: never a row of PASS for a page nobody looked at
     let r = null;
@@ -11659,8 +11688,8 @@ try {
   for (const M of MODULES) if (!modOff(M) && M.when && !WIDTHS.some((w, i) => M.when({ width: w.w, height: w.h || HEIGHTS[w.w] || (w.w < 700 ? 844 : 900), mobile: w.w < 700, first: i === 0, quick, flags: MOD_FLAGS.get(M.id) }))) report.notChecked = [...(report.notChecked || []), ...M.checks.map((c) => `${c.id} (${M.id}: no width of this run is one it runs at)`)];
   // a probe that timed out or threw at a width: the checks it feeds read WARN there ("partly measured"), never PASS
   for (const r of report.widths) if (r.screens > 0) r.findings.push(...lostFindings(r.errors.lost, r.findings));
-  if (!noSweep) report.sweep = await runSweep(cdp, helper, report.widths);
-  if (NARROW) report.narrow = await narrowPass(cdp, helper, NARROW);
+  if (!specimen && !noSweep) report.sweep = await runSweep(cdp, helper, report.widths);
+  if (!specimen && NARROW) report.narrow = await narrowPass(cdp, helper, NARROW);
   else if (!has('no-narrow')) report.notChecked = [...(report.notChecked || []), 'off-viewport at 320 (no phone width in --widths)'];
   if (!WIDTHS.some((w) => w.w <= 600)) report.notChecked = [...(report.notChecked || []), 'collide (a phone width: --widths with 390)', 'tap-size (a phone width: --widths with 390)'];
 } catch (e) {

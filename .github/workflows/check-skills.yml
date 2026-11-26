@@ -21,6 +21,8 @@ jobs:
         run: node tests/text-encoding.mjs
       - name: Shell installer reads skill names
         run: node tests/install.mjs
+      - name: Static toolbox exports
+        run: node tests/tools.mjs --static
       - name: Scripts parse
         run: |
           node -e '

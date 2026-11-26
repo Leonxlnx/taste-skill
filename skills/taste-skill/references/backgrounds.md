@@ -21,7 +21,7 @@ Product, service and place (site-kind other): every ground and panel is a flat C
 photographs are shown as they are. No gradient (a hard-stop two-tone included), grain, paper,
 halo, texture, pattern, glass, contour, canvas, `backdrop-filter`, gradient mask, or shadow or tint
 on the interface. Never run `pick.mjs` for them: its `index.json` still lists grounds for product,
-service and place, and those are not used. A product page with site-kind tech is dealt as tech.
+service and place, and those are not used. A product page with site-kind tech is dealt as tech. A hardware object may take the quiet mist named on its plan behind the object alone.
 
 ## Tech: the CSS grounds
 
@@ -73,3 +73,5 @@ never animated, never over UI, text or photographs. Recipes, all still:
 - **Grid marks** (dots or plus signs at column crossings, 12-18% ink) only on one dark technical
   band, a data panel or the footer, never over text. A hairline ledger (header cells, a line-up,
   footer frame) is 1px repeated sibling rules at 12-15% ink, never between sections.
+
+A dealt show gradient replaces the ground in its named hero, panel or close. Keep other section grounds plain. Follow the command and text zone on the plan.

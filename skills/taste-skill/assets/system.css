@@ -1705,3 +1705,13 @@ html[data-action]:not([data-temper="lively"], [data-temper="loud"]) .ground-bran
 @media (max-width: 639px) {
   .footer__routes a { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+@media (min-width:1024px) {
+  .nav__links:has(.nav__highlight) { position:relative; isolation:isolate; }
+  .nav__highlight { position:absolute; z-index:-1; top:0; left:0; opacity:0; pointer-events:none; border-radius:var(--radius); background:color-mix(in srgb,var(--ink) 6%,transparent); transition:transform 150ms,opacity 120ms; }
+}
+@media (max-width:1023px) { .nav__highlight { display:none; } }
+@media (prefers-reduced-motion:reduce) { .nav__highlight { transition:none; } }
+
+.show-field { position:relative; isolation:isolate; overflow:hidden; width:100%; aspect-ratio:16/9; min-height:inherit; }
+.show-field > [data-show-field] { position:absolute; inset:0; z-index:-1; }

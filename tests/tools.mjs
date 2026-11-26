@@ -31,7 +31,8 @@ for(const preset of gradient.showPresets)for(const seed of [1,11,73]){
  if(a.pixels){const file=encode(a);assert(file.length<=48000);assert.deepEqual(file,encode(gradient.generate(opts)))}
 }
 console.log(count+' legacy cases and '+(gradient.showPresets.length*3)+' show preset/seed cases passed');
-const tmp=process.env.TASTE_SKILL_TMP||os.tmpdir(),profile=process.argv.includes('--profile')?process.argv[process.argv.indexOf('--profile')+1]:fs.mkdtempSync(path.join(tmp,'toolbox-chrome-'));
+const tmp=process.env.TASTE_SKILL_TMP||os.tmpdir();
+const getProfile=()=>process.argv.includes('--profile')?process.argv[process.argv.indexOf('--profile')+1]:fs.mkdtempSync(path.join(tmp,'toolbox-chrome-'));
 const exportsDir=fs.mkdtempSync(path.join(tmp,'show-export-'));
 const basename='fold proof',hues='#19557a,#43718d,#319b9e,#6ac9a8';
 const cli=spawnSync(process.execPath,[path.join(dir,'gradient.mjs'),'--tier','show','--preset','selvedge','--seed','7','--hues',hues,'--out',path.join(exportsDir,basename+'.css')],{encoding:'utf8',windowsHide:true});
@@ -39,8 +40,11 @@ assert.equal(cli.status,0,cli.stderr);
 const expected=gradient.generate({preset:'selvedge',seed:'7',hues,picture:'fold%20proof.png',palette:palettes.find(p=>p.id==='white-link-blue')});
 assert.equal(fs.readFileSync(path.join(exportsDir,basename+'.css'),'utf8'),expected.css);
 assert.deepEqual(fs.readFileSync(path.join(exportsDir,basename+'.png')),encode(expected));
+fs.rmSync(exportsDir,{recursive:true,force:true});
+if (process.argv.includes('--static')) process.exit(0);
+const browserProfile=getProfile();
 const chrome=[process.env.CHROME_PATH,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(p=>p&&fs.existsSync(p));assert(chrome,'Chrome is required');
-const child=spawn(chrome,['--headless=new','--user-data-dir='+profile,'--remote-debugging-pipe','--no-first-run','--no-default-browser-check','--disable-extensions','--disable-gpu','--use-angle=swiftshader','--enable-unsafe-swiftshader','about:blank'],{windowsHide:true,stdio:['ignore','ignore','ignore','pipe','pipe']});
+const child=spawn(chrome,['--headless=new','--user-data-dir='+browserProfile,'--remote-debugging-pipe','--no-first-run','--no-default-browser-check','--disable-extensions','--disable-gpu','--use-angle=swiftshader','--enable-unsafe-swiftshader','about:blank'],{windowsHide:true,stdio:['ignore','ignore','ignore','pipe','pipe']});
 const pending=new Map(),errors=[];let sequence=0,remaining='',sessionId;
 child.stdio[4].setEncoding('utf8');
 child.stdio[4].on('data',chunk=>{
@@ -103,4 +107,4 @@ try{
  try{await Promise.race([send('Browser.close',{},undefined).catch(()=>{}),exited]);await exited}
  finally{clearTimeout(shutdown);clearTimeout(guard)}
 }
-const layout=spawnSync(process.execPath,[path.join(skill,'assets/layout/check.mjs'),'--url',path.join(dir,'demo.html'),'--root',skill,'--sizes','1440x900,390x844','--profile',profile],{stdio:'inherit',timeout:580000});assert.equal(layout.status,0,'demo layout');
+const layout=spawnSync(process.execPath,[path.join(skill,'assets/layout/check.mjs'),'--url',path.join(dir,'demo.html'),'--root',skill,'--sizes','1440x900,390x844','--profile',browserProfile],{stdio:'inherit',timeout:580000});assert.equal(layout.status,0,'demo layout');
