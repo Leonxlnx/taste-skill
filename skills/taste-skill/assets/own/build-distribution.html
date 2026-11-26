@@ -1,0 +1,160 @@
+<!doctype html>
+<!-- Observed durations from one named sample. Include units, sample size and spread. Desktop and phone section heights in the second comparison: 732px at 1440; 835px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>What a typical run takes · Trestle</title>
+    <meta name="description" content="What a typical run takes at Trestle." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #build-distribution .bins {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        align-items: end;
+        gap: var(--s-2);
+        margin-block: var(--s-5);
+      }
+      #build-distribution .bins div {
+        text-align: center;
+      }
+      #build-distribution .bins i {
+        display: block;
+        background: var(--accent);
+      }
+      #build-distribution .bins small {
+        font-size: var(--t-label);
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="build-distribution"
+        data-own="build-distribution"
+        data-family="figures"
+        data-width="content"
+        aria-labelledby="build-distribution-title"
+      >
+        <div class="wrap">
+          <h2 id="build-distribution-title">What a typical run takes</h2>
+          <p class="intro">
+            A single slow run can distort the average. Trestle keeps the middle
+            and the tail together.
+          </p>
+          <figure class="stage">
+            <strong>Example · 30 builds, duration in minutes</strong>
+            <div class="bins" aria-label="Builds per time interval">
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>2–3m</small>
+              </div>
+              <div>
+                <span>5</span><i style="height: 40px"></i><small>3–4m</small>
+              </div>
+              <div>
+                <span>10</span><i style="height: 80px"></i><small>4–5m</small>
+              </div>
+              <div>
+                <span>7</span><i style="height: 56px"></i><small>5–6m</small>
+              </div>
+              <div>
+                <span>4</span><i style="height: 32px"></i><small>6–7m</small>
+              </div>
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>7–8m</small>
+              </div>
+            </div>
+            <div class="trio">
+              <div class="line">
+                <p class="big">4:46</p>
+                <p>Median</p>
+              </div>
+              <div class="line">
+                <p class="big">6:36</p>
+                <p>90th percentile</p>
+              </div>
+              <div class="line">
+                <p class="big">7:42</p>
+                <p>Longest run</p>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

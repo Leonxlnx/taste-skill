@@ -1,0 +1,137 @@
+<!doctype html>
+<!-- Two completed examples of the same process using different inputs. Desktop and phone section heights in the second comparison: 761px at 1440; 835px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="product" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Two ways to read a room · Stillmeter</title>
+    <meta name="description" content="Two ways to read a room at Stillmeter." />
+    <meta name="page-type" content="product" />
+    <meta name="site-kind" content="tech" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair {
+          grid-template-columns: 1fr;
+        }
+
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #light-studies .light-studies img {
+        aspect-ratio: 5/4;
+        object-fit: cover;
+      }
+      #light-studies .light-studies img {
+        aspect-ratio: 3/2;
+      }
+      #light-studies .light-studies figcaption {
+        font-size: var(--t-body);
+      }
+      #light-studies figure:nth-child(2) img {
+        object-position: 54% center;
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="light-studies"
+        data-own="light-studies"
+        data-family="case-studies"
+        data-width="content"
+        aria-labelledby="light-studies-title"
+      >
+        <div class="wrap">
+          <h2 id="light-studies-title">Two ways to read a room</h2>
+          <p class="intro">
+            Incident readings measure the light falling on a subject. A
+            reflected reading follows the surface you point at.
+          </p>
+          <div class="pair light-studies">
+            <figure>
+              <img
+                src="../layout/img/photo-d88.jpg"
+                alt="Cream ceramic table lamp on a glossy side table, low sun throwing long shadows across a white wall"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Light at the table</strong> · Example · f/5.6 at 1/125 s
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-954.jpg"
+                alt="Narrow opening in a white wall revealing a white staircase"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Light on the stair</strong> · Example · f/8 at 1/125 s
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+    <small class="credit-line">Photography · LoMit, Todd Quackenbush</small>
+  </body>
+</html>

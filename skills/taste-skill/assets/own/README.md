@@ -1,6 +1,6 @@
 # Content-shaped sections
 
-Thirty-five worked examples, each one section with its scoped styles and, where it needs one, its module. Open them together in [the first gallery](index.html) (the first twelve and the three story examples), [gallery A](gallery-own-a.html) and [gallery B](gallery-own-b.html). Move the styles into the page’s `#own-css` block after the kit stylesheets and place the module after the section. Keep the relationship between the content and the layout, and replace the sample copy and figures with the client’s own. Find the example by what the content is, below.
+Each of the first thirty-five worked examples contains one section with scoped styles and a module where needed. Open them together in [the first gallery](index.html) (the first twelve and the three story examples), [gallery A](gallery-own-a.html) and [gallery B](gallery-own-b.html). Move the styles into the page’s `#own-css` block after the kit stylesheets and place the module after the section. Keep the relationship between the content and the layout, and replace the sample copy and figures with the client’s own. Find the example by what the content is, below.
 
 Rebuild the three galleries and the section library links from the repository root with `node skills/taste-skill/scripts/section-index.mjs`.
 
@@ -68,3 +68,7 @@ Rebuild the three galleries and the section library links from the repository ro
 | [Release register](release-register.html) | Dated releases with differing attachments. | Change the change records, notices, CSV payloads, filenames and missing-file text. |
 | [Lead digest](lead-digest.html) | One chosen report and a few shorter ones. | Replace the lead drawing, teaser text, dates and each linked article and return destination. |
 | [Answer finder](answer-finder.html) | Support answers grouped by topic. | Replace headings, questions and answers while keeping the public fragment names callers use. |
+
+## Page rhythm
+
+[Gallery C](gallery-own-c.html) contains twenty standalone examples for the section families in [Layouts across a page](../../references/layouts.md). Open an individual example from the reference table to study its content, width and phone arrangement. Gallery C is maintained separately from the generated galleries above.

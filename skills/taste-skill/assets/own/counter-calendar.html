@@ -1,0 +1,176 @@
+<!doctype html>
+<!-- Public events with date, time and a concrete reason to come. Desktop and phone section heights in the second comparison: 724px at 1440; 748px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="place" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Saturday at the brew bar · Birchroom</title>
+    <meta name="description" content="Saturday at the brew bar at Birchroom." />
+    <meta name="page-type" content="place" />
+    <meta name="site-kind" content="other" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #counter-calendar .counter-events article {
+        display: grid;
+        grid-template-columns: 1fr 4fr auto;
+        gap: var(--s-4);
+        align-items: baseline;
+      }
+      #counter-calendar .counter-events time {
+        font-size: var(--t-card);
+      }
+      @media (max-width: 650px) {
+        #counter-calendar .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+        #counter-calendar .counter-events article div {
+          grid-row: 2;
+          grid-column: 1/-1;
+        }
+      }
+      #counter-calendar .event-board {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: var(--s-6);
+        align-items: center;
+      }
+      #counter-calendar .event-board img {
+        aspect-ratio: 4/3;
+        object-fit: cover;
+      }
+      #counter-calendar .counter-events article {
+        grid-template-columns: 4em 1fr auto;
+      }
+      @media (max-width: 700px) {
+        #counter-calendar .event-board {
+          display: block;
+        }
+        #counter-calendar .event-board figure {
+          margin-bottom: var(--s-4);
+        }
+        #counter-calendar .event-board img {
+          aspect-ratio: 3;
+        }
+        #counter-calendar .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="counter-calendar"
+        data-own="counter-calendar"
+        data-family="event-list"
+        data-width="content"
+        aria-labelledby="counter-calendar-title"
+      >
+        <div class="wrap">
+          <h2 id="counter-calendar-title">Saturday at the brew bar</h2>
+          <p class="intro">
+            Small tastings take place before lunch. Seats are first come, first
+            served.
+          </p>
+          <div class="event-board">
+            <figure>
+              <img
+                src="../layout/img/photo-c70.jpg"
+                alt="Three white bowls of coffee beans, dark to light roast, in a row on a white surface, seen from above"
+                width="960"
+                height="640"
+              />
+            </figure>
+            <div class="counter-events">
+              <article class="line">
+                <time>5 Dec</time>
+                <div>
+                  <h3>Filter side by side</h3>
+                  <p>Two brewers, one coffee</p>
+                </div>
+                <span>10:00</span>
+              </article>
+              <article class="line">
+                <time>12 Dec</time>
+                <div>
+                  <h3>A lighter roast</h3>
+                  <p>Taste the same lot at two roast levels</p>
+                </div>
+                <span>10:30</span>
+              </article>
+              <article class="line">
+                <time>19 Dec</time>
+                <div>
+                  <h3>Dialling in espresso</h3>
+                  <p>Try three shots at different grind settings</p>
+                </div>
+                <span>10:00</span>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <small class="credit-line">Photography · Alorin</small>
+  </body>
+</html>

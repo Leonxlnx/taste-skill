@@ -1,0 +1,172 @@
+<!doctype html>
+<!-- A route with endpoints, distance, elevation and time. Desktop and phone section heights in the second comparison: 1035px at 1440; 603px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>The walk to Quarry Ridge · Footnote</title>
+    <meta name="description" content="The walk to Quarry Ridge at Footnote." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #ridge-notebook .stage svg {
+        max-height: 55vh;
+      }
+      #ridge-notebook .stage {
+        padding: var(--s-5);
+      }
+      @media (max-width: 650px) {
+        #ridge-notebook dl {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: var(--s-2);
+        }
+        #ridge-notebook dd {
+          font-size: var(--t-h3);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="ridge-notebook"
+        data-own="ridge-notebook"
+        data-family="map-and-facts"
+        data-width="content"
+        aria-labelledby="ridge-notebook-title"
+      >
+        <div class="wrap">
+          <h2 id="ridge-notebook-title">The walk to Quarry Ridge</h2>
+          <p class="intro">
+            Footnote keeps your route, distance and field notes together when
+            the signal drops.
+          </p>
+          <figure class="stage">
+            <p>Example walk · Quarry Ridge</p>
+            <svg
+              viewBox="0 0 600 350"
+              role="img"
+              aria-label="Walking route between the old quarry and the ridge"
+            >
+              <rect width="600" height="350" fill="var(--surface)" />
+              <image
+                width="600"
+                height="350"
+                href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cpattern%20patternTransform%3D%22rotate(-18)%20scale(3.3)%22%20id%3D%22m11oem3m-marks%22%20patternUnits%3D%22userSpaceOnUse%22%20width%3D%2280%22%20height%3D%2280%22%3E%3Cpath%20d%3D%22M30.0%208.7L26.3%2010.0L25.0%2010.4L20.0%2012.6L15.7%2015.0L15.0%2015.5L10.8%2020.0L10.0%2022.0L9.0%2025.0L8.7%2030.0L9.4%2035.0L10.0%2037.3L10.6%2040.0L11.4%2045.0L11.7%2050.0L11.4%2055.0L11.2%2060.0L11.6%2065.0L14.8%2070.0L15.0%2070.1L20.0%2072.4L25.0%2073.2L30.0%2073.5L35.0%2073.8L40.0%2073.9L45.0%2073.8L50.0%2073.1L55.0%2071.0L56.6%2070.0L60.0%2067.9L63.8%2065.0L65.0%2064.0L69.0%2060.0L70.0%2058.4L71.7%2055.0L72.4%2050.0L71.6%2045.0L70.0%2041.8L69.0%2040.0L65.0%2035.4L64.5%2035.0L60.0%2030.9L58.9%2030.0L55.0%2026.1L54.0%2025.0L50.0%2020.0L50.0%2019.9L47.2%2015.0L45.0%2012.8L41.0%2010.0L40.0%209.5L35.0%208.4ZM30.0%2013.7L26.9%2015.0L25.0%2015.9L20.0%2019.3L19.1%2020.0L15.0%2024.7L14.8%2025.0L13.7%2030.0L14.3%2035.0L15.0%2038.1L15.5%2040.0L16.4%2045.0L16.3%2050.0L15.7%2055.0L15.3%2060.0L16.4%2065.0L20.0%2068.1L25.0%2069.6L28.4%2070.0L30.0%2070.2L35.0%2070.7L40.0%2071.0L45.0%2070.8L48.0%2070.0L50.0%2069.5L55.0%2066.8L57.4%2065.0L60.0%2062.6L62.9%2060.0L65.0%2057.6L66.9%2055.0L68.1%2050.0L66.9%2045.0L65.0%2042.3L63.0%2040.0L60.0%2037.3L57.3%2035.0L55.0%2033.0L51.9%2030.0L50.0%2028.0L47.4%2025.0L45.0%2021.9L43.4%2020.0L40.0%2016.1L38.1%2015.0L35.0%2013.5ZM30.0%2019.1L28.3%2020.0L25.0%2022.2L22.1%2025.0L20.0%2029.9L20.0%2030.0L20.0%2032.4L20.0%2035.0L21.0%2040.0L21.6%2045.0L21.2%2050.0L20.1%2055.0L20.0%2056.3L19.7%2060.0L20.0%2060.7L23.3%2065.0L25.0%2065.8L30.0%2066.9L35.0%2067.5L40.0%2067.9L45.0%2067.8L50.0%2066.3L52.0%2065.0L55.0%2062.6L57.8%2060.0L60.0%2057.0L61.8%2055.0L63.3%2050.0L61.6%2045.0L60.0%2043.2L57.3%2040.0L55.0%2038.0L52.0%2035.0L50.0%2033.1L47.0%2030.0L45.0%2027.7L42.4%2025.0L40.0%2022.3L36.4%2020.0L35.0%2019.0ZM30.0%2024.8L29.8%2025.0L26.0%2030.0L25.4%2035.0L26.0%2040.0L26.5%2045.0L26.1%2050.0L25.1%2055.0L25.8%2060.0L30.0%2062.7L35.0%2064.1L40.0%2064.8L45.0%2064.7L50.0%2062.8L53.3%2060.0L55.0%2058.0L57.3%2055.0L58.6%2050.0L56.8%2045.0L55.0%2042.9L52.7%2040.0L50.0%2037.4L47.7%2035.0L45.0%2032.2L42.6%2030.0L40.0%2027.3L36.1%2025.0L35.0%2024.2ZM35.0%2028.7L32.1%2030.0L30.0%2033.3L29.6%2035.0L29.8%2040.0L30.0%2041.7L30.3%2045.0L30.0%2050.0L30.0%2050.5L29.7%2055.0L30.0%2055.8L33.6%2060.0L35.0%2060.5L40.0%2061.6L45.0%2061.7L49.1%2060.0L50.0%2059.5L53.8%2055.0L55.0%2050.0L55.0%2050.0L55.0%2050.0L53.2%2045.0L50.0%2041.0L49.2%2040.0L45.0%2035.6L44.2%2035.0L40.0%2031.1L37.4%2030.0Z%22%20fill%3D%22none%22%20stroke%3D%22%23d1c8b7%22%20stroke-width%3D%22.95%22%2F%3E%3C%2Fpattern%3E%3CradialGradient%20id%3D%22m11oem3m-fall%22%3E%3Cstop%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%2F%3E%3C%2FradialGradient%3E%3Cmask%20id%3D%22m11oem3m-fade%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-fall)%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23efe6d6%22%2F%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-marks)%22%20%2F%3E%3C%2Fsvg%3E"
+              />
+              <path
+                d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="6"
+              />
+              <g fill="var(--ink)">
+                <circle cx="40" cy="260" r="7" />
+                <circle cx="540" cy="49" r="7" />
+              </g>
+              <g fill="var(--ink)" font-family="sans-serif" font-size="19">
+                <text x="35" y="292">Quarry gate</text>
+                <text x="224" y="145">Beech hollow</text>
+                <text x="436" y="32">Ridge path</text>
+              </g>
+              <path
+                d="M310 130l-18 -13 5 -8"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="2"
+              />
+            </svg>
+            <figcaption>Old quarry entrance to the ridge path</figcaption>
+          </figure>
+          <dl class="trio">
+            <div class="line">
+              <dt>Distance</dt>
+              <dd class="big">6.4 km</dd>
+            </div>
+            <div class="line">
+              <dt>Climb</dt>
+              <dd class="big">210 m</dd>
+            </div>
+            <div class="line">
+              <dt>On foot</dt>
+              <dd class="big">1 h 45 min</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

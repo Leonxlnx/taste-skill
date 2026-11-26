@@ -1,0 +1,129 @@
+<!doctype html>
+<!-- A reproducible error with a source location and the smallest useful code excerpt. Desktop and phone section heights in the second comparison: 698px at 1440; 591px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>The first failed assertion · Trestle</title>
+    <meta name="description" content="The first failed assertion at Trestle." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #failure-excerpt .excerpt {
+        padding: var(--s-7);
+        background: var(--ink);
+        color: var(--bg);
+      }
+      #failure-excerpt .excerpt pre {
+        margin-top: var(--s-6);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: var(--t-card);
+      }
+      #failure-excerpt .excerpt pre span {
+        color: #e7c691;
+      }
+      @media (max-width: 650px) {
+        #failure-excerpt .excerpt {
+          padding: var(--s-5);
+        }
+      }
+      #failure-excerpt .excerpt {
+        max-width: 84ch;
+        margin-inline: auto;
+      }
+      #failure-excerpt .excerpt pre {
+        border-left: 3px solid #e7c691;
+        padding-left: var(--s-4);
+      }
+      #failure-excerpt .wrap {
+        max-width: 84ch;
+      }
+      #failure-excerpt .excerpt {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="failure-excerpt"
+        data-own="failure-excerpt"
+        data-family="code-panel"
+        data-width="narrow"
+        aria-labelledby="failure-excerpt-title"
+      >
+        <div class="wrap">
+          <h2 id="failure-excerpt-title">The first failed assertion</h2>
+          <p class="intro">
+            Open the test that stopped the run. The expected value stays beside
+            the value the browser returned.
+          </p>
+          <div class="excerpt">
+            <p>Example · checkout / delivery.spec.ts</p>
+            <pre><code>const day = delivery.day
+expect(day).toBe(
+  "Friday"
+)
+
+<span>Expected   Friday
+Received   Monday</span>
+
+at delivery.spec.ts:48</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

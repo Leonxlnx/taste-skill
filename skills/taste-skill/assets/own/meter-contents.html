@@ -1,0 +1,121 @@
+<!doctype html>
+<!-- A short inventory whose quantities, sizes or materials belong beside each item. Desktop and phone section heights in the second comparison: 564px at 1440; 492px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="product" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Inside the case · Stillmeter</title>
+    <meta name="description" content="Inside the case at Stillmeter." />
+    <meta name="page-type" content="product" />
+    <meta name="site-kind" content="tech" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #meter-contents .packlist > div {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-4);
+      }
+      #meter-contents .packlist dt {
+        font-size: var(--t-card);
+      }
+      #meter-contents .wrap {
+        max-width: 66ch;
+      }
+      #meter-contents .packlist dd {
+        font-variant-numeric: tabular-nums;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="meter-contents"
+        data-own="meter-contents"
+        data-family="menu-list"
+        data-width="narrow"
+        aria-labelledby="meter-contents-title"
+      >
+        <div class="wrap">
+          <h2 id="meter-contents-title">Inside the case</h2>
+          <p class="intro">
+            Everything supplied with the S1, with sizes for the parts you may
+            want to replace.
+          </p>
+          <dl class="packlist">
+            <div class="line">
+              <dt>S1 meter</dt>
+              <dd>84 × 52 × 19 mm</dd>
+            </div>
+            <div class="line">
+              <dt>Slip case</dt>
+              <dd>Waxed cotton</dd>
+            </div>
+            <div class="line">
+              <dt>Wrist strap</dt>
+              <dd>18 cm loop</dd>
+            </div>
+            <div class="line">
+              <dt>Battery</dt>
+              <dd>One CR2032 cell</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

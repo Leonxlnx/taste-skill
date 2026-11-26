@@ -1,0 +1,146 @@
+<!doctype html>
+<!-- Alternatives that share a fixed condition and a few meaningful properties. Desktop and phone section heights in the second comparison: 638px at 1440; 634px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="product" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>One reading, four exposures · Stillmeter</title>
+    <meta
+      name="description"
+      content="One reading, four exposures at Stillmeter."
+    />
+    <meta name="page-type" content="product" />
+    <meta name="site-kind" content="tech" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #exposure-pairs .exposure table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      #exposure-pairs .exposure caption {
+        text-align: left;
+        margin-bottom: var(--s-4);
+      }
+      #exposure-pairs .exposure :is(th, td) {
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        padding: var(--s-4) var(--s-2);
+      }
+      #exposure-pairs .wrap {
+        max-width: 78ch;
+      }
+      #exposure-pairs .exposure tbody tr:nth-child(2) {
+        background: var(--surface);
+      }
+      #exposure-pairs .exposure td:first-child {
+        font-weight: 600;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="exposure-pairs"
+        data-own="exposure-pairs"
+        data-family="comparison"
+        data-width="narrow"
+        aria-labelledby="exposure-pairs-title"
+      >
+        <div class="wrap">
+          <h2 id="exposure-pairs-title">One reading, four exposures</h2>
+          <p class="intro">
+            At ISO 100, each pair admits the same amount of light. Choose the
+            depth of field or motion blur you want.
+          </p>
+          <div class="exposure">
+            <table>
+              <caption>
+                Example reading · EV 12
+              </caption>
+              <thead>
+                <tr>
+                  <th>Aperture</th>
+                  <th>Shutter</th>
+                  <th>Use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>f/4</td>
+                  <td>1/250 s</td>
+                  <td>Moving subject</td>
+                </tr>
+                <tr>
+                  <td>f/5.6</td>
+                  <td>1/125 s</td>
+                  <td>Handheld portrait</td>
+                </tr>
+                <tr>
+                  <td>f/8</td>
+                  <td>1/60 s</td>
+                  <td>Still subject</td>
+                </tr>
+                <tr>
+                  <td>f/11</td>
+                  <td>1/30 s</td>
+                  <td>Tripod</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

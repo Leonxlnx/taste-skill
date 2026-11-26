@@ -1,0 +1,138 @@
+<!doctype html>
+<!-- Comparable offers with one billing unit and meaningful capacity differences. Desktop and phone section heights in the second comparison: 601px at 1440; 745px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Choose the size of your runner · Trestle</title>
+    <meta
+      name="description"
+      content="Choose the size of your runner at Trestle."
+    />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair {
+          grid-template-columns: 1fr;
+        }
+
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #runner-plans .big small {
+        font-size: var(--t-body);
+      }
+      #runner-plans .pair {
+        max-width: 58rem;
+      }
+      #runner-plans article {
+        background: var(--surface);
+        padding: var(--s-5);
+      }
+      #runner-plans hr {
+        margin-block: var(--s-4);
+      }
+      #runner-plans .wrap {
+        max-width: 58rem;
+      }
+      #runner-plans .big {
+        margin-top: var(--s-4);
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="runner-plans"
+        data-own="runner-plans"
+        data-family="pricing"
+        data-width="content"
+        aria-labelledby="runner-plans-title"
+      >
+        <div class="wrap">
+          <h2 id="runner-plans-title">Choose the size of your runner</h2>
+          <p class="intro">
+            Both runners keep logs for 30 days. Compute time is billed by the
+            minute.
+          </p>
+          <div class="pair">
+            <article class="line">
+              <h3>Small</h3>
+              <p class="big">€0.02 <small>/ min</small></p>
+              <hr />
+              <p>2 cores · 4 GB memory</p>
+              <p>Unit tests and small builds</p>
+            </article>
+            <article class="line">
+              <h3>Large</h3>
+              <p class="big">€0.08 <small>/ min</small></p>
+              <hr />
+              <p>8 cores · 16 GB memory</p>
+              <p>Browser suites and parallel builds</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,2347 @@
+<!doctype html>
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Worked sections · Trestle</title>
+    <meta name="description" content="Worked sections at Trestle." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <script defer src="../motion/parts/accordion/part.js"></script>
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work .small {
+        font-size: var(--t-small);
+        color: var(--muted);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair,
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      .run-stage {
+        background: var(--ink);
+        color: var(--bg);
+        padding: var(--s-7);
+      }
+      .run-stage header,
+      .ruler {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--s-3);
+      }
+      .ruler {
+        margin: var(--s-7) 0 var(--s-2) 24%;
+        font-size: var(--t-label);
+      }
+      .job {
+        display: grid;
+        grid-template-columns: 24% 1fr;
+        border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+        align-items: center;
+        min-height: var(--s-7);
+      }
+      .job i {
+        margin-left: var(--left);
+        width: var(--duration);
+        height: var(--s-3);
+        background: #b8c9a4;
+      }
+      .job:nth-last-child(2) i {
+        background: #edc77f;
+      }
+      @media (max-width: 650px) {
+        .run-stage {
+          padding: var(--s-4);
+        }
+        .job {
+          grid-template-columns: 34% 1fr;
+          font-size: var(--t-small);
+        }
+        .ruler {
+          margin-left: 34%;
+        }
+      }
+      .job i {
+        height: var(--s-4);
+        border-inline-start: 2px solid var(--bg);
+      }
+      .run-stage header strong {
+        font-size: var(--t-card);
+      }
+      .bins {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        align-items: end;
+        gap: var(--s-2);
+        margin-block: var(--s-5);
+      }
+      .bins div {
+        text-align: center;
+      }
+      .bins i {
+        display: block;
+        background: var(--accent);
+      }
+      .bins small {
+        font-size: var(--t-label);
+      }
+      .excerpt {
+        padding: var(--s-7);
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .excerpt pre {
+        margin-top: var(--s-6);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: var(--t-card);
+      }
+      .excerpt pre span {
+        color: #e7c691;
+      }
+      @media (max-width: 650px) {
+        .excerpt {
+          padding: var(--s-5);
+        }
+      }
+      .excerpt {
+        max-width: 84ch;
+        margin-inline: auto;
+      }
+      .excerpt pre {
+        border-left: 3px solid #e7c691;
+        padding-left: var(--s-4);
+      }
+      #runner-plans .big small {
+        font-size: var(--t-body);
+      }
+      #runner-plans .pair {
+        max-width: 58rem;
+      }
+      #runner-plans article {
+        background: var(--surface);
+        padding: var(--s-5);
+      }
+      #runner-plans hr {
+        margin-block: var(--s-4);
+      }
+      .fold + .fold {
+        border-top: 1px solid var(--line);
+      }
+      .fold h3 button {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        border: 0;
+        background: transparent;
+        padding: 16px 0;
+      }
+      .fold b {
+        transition: transform 180ms var(--m-ease);
+      }
+      .fold [aria-expanded="true"] b {
+        transform: rotate(45deg);
+      }
+      .fold-body {
+        display: grid;
+        grid-template-rows: 1fr;
+        transition: grid-template-rows 180ms var(--m-ease);
+      }
+      .fold-body[inert] {
+        grid-template-rows: 0fr;
+      }
+      .fold-body > div {
+        overflow: hidden;
+      }
+      .fold-body p {
+        padding-bottom: 16px;
+      }
+
+      [data-part="accordion"] [hidden] {
+        display: none !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        [data-part="accordion"] *,
+        [data-part="accordion"] *::before,
+        [data-part="accordion"] *::after {
+          transition-duration: 0s !important;
+        }
+      }
+      #run-questions .wrap {
+        max-width: 72ch;
+      }
+      .fold button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+      #ridge-notebook .stage svg {
+        max-height: 55vh;
+      }
+      #ridge-notebook .stage {
+        padding: var(--s-5);
+      }
+      @media (max-width: 650px) {
+        #ridge-notebook dl {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: var(--s-2);
+        }
+        #ridge-notebook dd {
+          font-size: var(--t-h3);
+        }
+      }
+      .walklog {
+        list-style: none;
+        padding: 0;
+        max-width: 65ch;
+      }
+      .walklog li {
+        display: grid;
+        grid-template-columns: 5em 1fr;
+        padding-block: var(--s-5);
+        border-top: 1px solid var(--line);
+      }
+      .walklog time {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted);
+      }
+      #field-observations .wrap {
+        max-width: 68ch;
+      }
+      .walklog li {
+        position: relative;
+        padding-left: var(--s-5);
+        border-left: 1px solid var(--accent);
+      }
+      .walklog li:before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        top: var(--s-6);
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+      .trail-plates img {
+        aspect-ratio: 4/5;
+        object-fit: cover;
+      }
+      .trail-plates figcaption {
+        font-size: var(--t-body);
+      }
+      @media (max-width: 650px) {
+        .trail-plates img {
+          aspect-ratio: 16/9;
+        }
+      }
+      .paper-file {
+        width: 6em;
+        aspect-ratio: 4/5;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        margin-bottom: var(--s-5);
+        display: grid;
+        align-content: end;
+        padding: var(--s-3);
+        font-weight: 600;
+      }
+      .paper-file {
+        width: 8em;
+        align-content: space-between;
+      }
+      .paper-file svg {
+        height: 4em;
+      }
+      .walk-quote {
+        max-width: 23ch;
+        margin: 0;
+        font:
+          400 var(--t-h2) / 1.2 Georgia,
+          serif;
+      }
+      .walk-quote footer {
+        margin-top: var(--s-5);
+        font: var(--t-small) / 1.4 var(--font-text);
+      }
+      #walk-extract .wrap {
+        max-width: 60ch;
+      }
+      .walk-quote {
+        max-width: 30ch;
+      }
+      #walk-extract h2 {
+        font-size: var(--t-card);
+      }
+      .meter-plate svg {
+        max-height: 58svh;
+        background: var(--surface);
+      }
+      .meter-plate svg {
+        max-height: 52svh;
+      }
+      .exposure table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      .exposure caption {
+        text-align: left;
+        margin-bottom: var(--s-4);
+      }
+      .exposure :is(th, td) {
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        padding: var(--s-4) var(--s-2);
+      }
+      #exposure-pairs .wrap {
+        max-width: 78ch;
+      }
+      .exposure tbody tr:nth-child(2) {
+        background: var(--surface);
+      }
+      .exposure td:first-child {
+        font-weight: 600;
+      }
+      .meter-steps {
+        list-style: none;
+        padding: 0;
+      }
+      .meter-steps svg {
+        background: var(--surface);
+        margin-bottom: var(--s-4);
+      }
+      .meter-steps svg {
+        height: clamp(9rem, 16vw, 14rem);
+      }
+      .packlist > div {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-4);
+      }
+      .packlist dt {
+        font-size: var(--t-card);
+      }
+      #meter-contents .wrap {
+        max-width: 66ch;
+      }
+      .packlist dd {
+        font-variant-numeric: tabular-nums;
+      }
+      .light-studies img {
+        aspect-ratio: 5/4;
+        object-fit: cover;
+      }
+      .light-studies img {
+        aspect-ratio: 3/2;
+      }
+      .light-studies figcaption {
+        font-size: var(--t-body);
+      }
+      .drinks img {
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+      .drinks figcaption {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .drinks figcaption {
+        font-size: var(--t-body);
+      }
+      .drinks img {
+        aspect-ratio: 5/4;
+      }
+      @media (max-width: 650px) {
+        .drinks figure {
+          display: grid;
+          grid-template-columns: 42% 1fr;
+          align-items: center;
+          gap: var(--s-4);
+        }
+        .drinks figcaption {
+          display: grid;
+          gap: var(--s-2);
+        }
+      }
+      .roast-letter {
+        max-width: 40ch;
+        font:
+          400 var(--t-h3) / 1.55 Georgia,
+          serif;
+      }
+      .roast-letter p + p {
+        margin-top: var(--s-4);
+      }
+      #roast-notes .wrap {
+        max-width: 62ch;
+      }
+      .roast-letter p:first-child {
+        font-size: var(--t-h2);
+        line-height: 1.18;
+      }
+      .roast-letter {
+        max-width: none;
+      }
+      .counter-events article {
+        display: grid;
+        grid-template-columns: 1fr 4fr auto;
+        gap: var(--s-4);
+        align-items: baseline;
+      }
+      .counter-events time {
+        font-size: var(--t-card);
+      }
+      @media (max-width: 650px) {
+        .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+        .counter-events article div {
+          grid-row: 2;
+          grid-column: 1/-1;
+        }
+      }
+      .event-board {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: var(--s-6);
+        align-items: center;
+      }
+      .event-board img {
+        aspect-ratio: 4/3;
+        object-fit: cover;
+      }
+      .counter-events article {
+        grid-template-columns: 4em 1fr auto;
+      }
+      @media (max-width: 700px) {
+        .event-board {
+          display: block;
+        }
+        .event-board figure {
+          margin-bottom: var(--s-4);
+        }
+        .event-board img {
+          aspect-ratio: 3;
+        }
+        .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+      }
+      .journal article {
+        display: grid;
+        grid-template-columns: minmax(7em, 22%) 1fr;
+        align-items: center;
+        gap: var(--s-5);
+      }
+      .journal img {
+        aspect-ratio: 2;
+        object-fit: cover;
+      }
+      .journal {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 0 var(--s-6);
+      }
+      .journal article:first-child {
+        grid-row: span 2;
+        display: block;
+      }
+      .journal article:first-child img {
+        aspect-ratio: 2.4;
+        margin-bottom: var(--s-3);
+      }
+      .journal article:not(:first-child) {
+        grid-template-columns: 35% 1fr;
+      }
+      .journal article:not(:first-child) img {
+        aspect-ratio: 1.2;
+      }
+      @media (max-width: 650px) {
+        .journal {
+          display: block;
+        }
+      }
+      #brew-counter .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1.65fr;
+        column-gap: var(--s-7);
+        align-content: center;
+      }
+      #brew-counter h2 {
+        align-self: end;
+      }
+      #brew-counter .intro {
+        grid-column: 1;
+      }
+      #brew-counter figure {
+        grid-column: 2;
+        grid-row: 1/3;
+      }
+      .brew-wide img {
+        aspect-ratio: 3/2;
+        object-fit: cover;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .wrap {
+          display: block;
+        }
+      }
+      .brew-wide img {
+        aspect-ratio: 4/3;
+        object-position: center 70%;
+      }
+      #brew-counter .intro {
+        margin-bottom: 0;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .intro {
+          margin-bottom: var(--s-5);
+        }
+      }
+      #failure-excerpt .wrap {
+        max-width: 84ch;
+      }
+      #failure-excerpt .excerpt {
+        margin: 0;
+      }
+      #runner-plans .wrap {
+        max-width: 58rem;
+      }
+      #runner-plans .big {
+        margin-top: var(--s-4);
+      }
+      #meter-portrait .meter-plate svg {
+        max-height: none;
+      }
+      #roast-notes .intro {
+        margin-bottom: var(--s-5);
+      }
+      #light-studies figure:nth-child(2) img {
+        object-position: 54% center;
+      }
+      @media (max-width: 650px) {
+        #walk-export .line {
+          display: grid;
+          grid-template-columns: 5em 1fr;
+          column-gap: var(--s-4);
+          align-content: center;
+        }
+        #walk-export .paper-file {
+          grid-row: span 2;
+          width: 5em;
+          margin: 0;
+        }
+        #walk-export .line p {
+          grid-column: 2;
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+      #run-waterfall {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #build-distribution {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #failure-excerpt {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #runner-plans {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #run-questions {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #ridge-notebook {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #field-observations {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #trail-editions {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #walk-export {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #walk-extract {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #meter-portrait {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #exposure-pairs {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #meter-sequence {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #meter-contents {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #light-studies {
+        --p-bg: #f2f4ee;
+        --p-surface: #dfe4d9;
+        --p-ink: #202c2a;
+        --p-accent: #30615c;
+        --p-action: #30615c;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #coffee-service {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #roast-notes {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #counter-calendar {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #bean-journal {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      #brew-counter {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+        --ink: var(--p-ink);
+        --surface: var(--p-surface);
+        --bg: var(--p-bg);
+        --accent: var(--p-accent);
+        --muted: var(--p-muted);
+      }
+      .gallery-index {
+        padding-block: var(--s-7);
+      }
+      .gallery-index nav {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--s-5);
+        margin-top: var(--s-6);
+      }
+      .gallery-index h2 {
+        font-size: var(--t-h3);
+        margin-bottom: var(--s-3);
+      }
+      .gallery-index a {
+        display: block;
+        color: inherit;
+        min-height: 44px;
+        padding-block: var(--s-2);
+      }
+      @media (max-width: 700px) {
+        .gallery-index nav {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 440px) {
+        .gallery-index nav {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gallery-index">
+      <div class="wrap">
+        <h1>Worked sections</h1>
+        <nav aria-label="Section index">
+          <div>
+            <h2>Trestle</h2>
+            <a href="#run-waterfall">See what held up a build</a
+            ><a href="#build-distribution">What a typical run takes</a
+            ><a href="#failure-excerpt">The first failed assertion</a
+            ><a href="#runner-plans">Choose the size of your runner</a
+            ><a href="#run-questions">Before your first run</a>
+          </div>
+          <div>
+            <h2>Footnote</h2>
+            <a href="#ridge-notebook">The walk to Quarry Ridge</a
+            ><a href="#field-observations">Notes from the ridge</a
+            ><a href="#trail-editions">Three walks for a change of season</a
+            ><a href="#walk-export">Take the walk home</a
+            ><a href="#walk-extract">A note worth finding again</a>
+          </div>
+          <div>
+            <h2>Stillmeter</h2>
+            <a href="#meter-portrait">A reading in the palm of your hand</a
+            ><a href="#exposure-pairs">One reading, four exposures</a
+            ><a href="#meter-sequence">Measure before you compose</a
+            ><a href="#meter-contents">Inside the case</a
+            ><a href="#light-studies">Two ways to read a room</a>
+          </div>
+          <div>
+            <h2>Birchroom</h2>
+            <a href="#coffee-service">Coffee at the counter</a
+            ><a href="#roast-notes">Why we roast for filter</a
+            ><a href="#counter-calendar">Saturday at the brew bar</a
+            ><a href="#bean-journal">From the roastery</a
+            ><a href="#brew-counter">The morning pour</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section
+        class="section own layout-work"
+        id="run-waterfall"
+        data-own="run-waterfall"
+        data-family="wide-product-view"
+        data-width="content"
+        aria-labelledby="run-waterfall-title"
+      >
+        <div class="wrap">
+          <h2 id="run-waterfall-title">See what held up a build</h2>
+          <p class="intro">
+            Trestle lays every job against the same clock. In this run, the
+            browser tests finish last.
+          </p>
+          <figure class="run-stage">
+            <header>
+              <strong>Example run · Orchard</strong><span>4 min 12 s</span>
+            </header>
+            <div class="ruler">
+              <span>0:00</span><span>1:03</span><span>2:06</span
+              ><span>3:09</span><span>4:12</span>
+            </div>
+            <div class="job">
+              <span>Prepare</span><i style="--left: 0%; --duration: 14%"></i>
+            </div>
+            <div class="job">
+              <span>Compile</span><i style="--left: 14%; --duration: 31%"></i>
+            </div>
+            <div class="job">
+              <span>Unit tests</span
+              ><i style="--left: 45%; --duration: 22%"></i>
+            </div>
+            <div class="job">
+              <span>Browser tests</span
+              ><i style="--left: 45%; --duration: 55%"></i>
+            </div>
+            <div class="job">
+              <span>Package</span><i style="--left: 67%; --duration: 16%"></i>
+            </div>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="build-distribution"
+        data-own="build-distribution"
+        data-family="figures"
+        data-width="content"
+        aria-labelledby="build-distribution-title"
+      >
+        <div class="wrap">
+          <h2 id="build-distribution-title">What a typical run takes</h2>
+          <p class="intro">
+            A single slow run can distort the average. Trestle keeps the middle
+            and the tail together.
+          </p>
+          <figure class="stage">
+            <strong>Example · 30 builds, duration in minutes</strong>
+            <div class="bins" aria-label="Builds per time interval">
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>2–3m</small>
+              </div>
+              <div>
+                <span>5</span><i style="height: 40px"></i><small>3–4m</small>
+              </div>
+              <div>
+                <span>10</span><i style="height: 80px"></i><small>4–5m</small>
+              </div>
+              <div>
+                <span>7</span><i style="height: 56px"></i><small>5–6m</small>
+              </div>
+              <div>
+                <span>4</span><i style="height: 32px"></i><small>6–7m</small>
+              </div>
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>7–8m</small>
+              </div>
+            </div>
+            <div class="trio">
+              <div class="line">
+                <p class="big">4:46</p>
+                <p>Median</p>
+              </div>
+              <div class="line">
+                <p class="big">6:36</p>
+                <p>90th percentile</p>
+              </div>
+              <div class="line">
+                <p class="big">7:42</p>
+                <p>Longest run</p>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="failure-excerpt"
+        data-own="failure-excerpt"
+        data-family="code-panel"
+        data-width="narrow"
+        aria-labelledby="failure-excerpt-title"
+      >
+        <div class="wrap">
+          <h2 id="failure-excerpt-title">The first failed assertion</h2>
+          <p class="intro">
+            Open the test that stopped the run. The expected value stays beside
+            the value the browser returned.
+          </p>
+          <div class="excerpt">
+            <p>Example · checkout / delivery.spec.ts</p>
+            <pre><code>const day = delivery.day
+expect(day).toBe(
+  "Friday"
+)
+
+<span>Expected   Friday
+Received   Monday</span>
+
+at delivery.spec.ts:48</code></pre>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="runner-plans"
+        data-own="runner-plans"
+        data-family="pricing"
+        data-width="content"
+        aria-labelledby="runner-plans-title"
+      >
+        <div class="wrap">
+          <h2 id="runner-plans-title">Choose the size of your runner</h2>
+          <p class="intro">
+            Both runners keep logs for 30 days. Compute time is billed by the
+            minute.
+          </p>
+          <div class="pair">
+            <article class="line">
+              <h3>Small</h3>
+              <p class="big">€0.02 <small>/ min</small></p>
+              <hr />
+              <p>2 cores · 4 GB memory</p>
+              <p>Unit tests and small builds</p>
+            </article>
+            <article class="line">
+              <h3>Large</h3>
+              <p class="big">€0.08 <small>/ min</small></p>
+              <hr />
+              <p>8 cores · 16 GB memory</p>
+              <p>Browser suites and parallel builds</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="run-questions"
+        data-own="run-questions"
+        data-family="questions"
+        data-width="narrow"
+        aria-labelledby="run-questions-title"
+      >
+        <div class="wrap">
+          <h2 id="run-questions-title">Before your first run</h2>
+          <p class="intro">
+            How Trestle reads a repository, stores logs and handles a stopped
+            build.
+          </p>
+          <div class="answers" data-part="accordion">
+            <div class="fold">
+              <h3>Which repositories can I connect?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Connect one repository with read access to its source and
+                    write access to its build status.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="fold">
+              <h3>What happens when I cancel?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Queued jobs leave the queue immediately. Running jobs stop
+                    at the next process check.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="fold">
+              <h3>Can I take my logs with me?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Download the plain-text log from the run while it is within
+                    the 30-day retention period.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="ridge-notebook"
+        data-own="ridge-notebook"
+        data-family="map-and-facts"
+        data-width="content"
+        aria-labelledby="ridge-notebook-title"
+      >
+        <div class="wrap">
+          <h2 id="ridge-notebook-title">The walk to Quarry Ridge</h2>
+          <p class="intro">
+            Footnote keeps your route, distance and field notes together when
+            the signal drops.
+          </p>
+          <figure class="stage">
+            <p>Example walk · Quarry Ridge</p>
+            <svg
+              viewBox="0 0 600 350"
+              role="img"
+              aria-label="Walking route between the old quarry and the ridge"
+            >
+              <rect width="600" height="350" fill="var(--surface)" />
+              <image
+                width="600"
+                height="350"
+                href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cpattern%20patternTransform%3D%22rotate(-18)%20scale(3.3)%22%20id%3D%22m11oem3m-marks%22%20patternUnits%3D%22userSpaceOnUse%22%20width%3D%2280%22%20height%3D%2280%22%3E%3Cpath%20d%3D%22M30.0%208.7L26.3%2010.0L25.0%2010.4L20.0%2012.6L15.7%2015.0L15.0%2015.5L10.8%2020.0L10.0%2022.0L9.0%2025.0L8.7%2030.0L9.4%2035.0L10.0%2037.3L10.6%2040.0L11.4%2045.0L11.7%2050.0L11.4%2055.0L11.2%2060.0L11.6%2065.0L14.8%2070.0L15.0%2070.1L20.0%2072.4L25.0%2073.2L30.0%2073.5L35.0%2073.8L40.0%2073.9L45.0%2073.8L50.0%2073.1L55.0%2071.0L56.6%2070.0L60.0%2067.9L63.8%2065.0L65.0%2064.0L69.0%2060.0L70.0%2058.4L71.7%2055.0L72.4%2050.0L71.6%2045.0L70.0%2041.8L69.0%2040.0L65.0%2035.4L64.5%2035.0L60.0%2030.9L58.9%2030.0L55.0%2026.1L54.0%2025.0L50.0%2020.0L50.0%2019.9L47.2%2015.0L45.0%2012.8L41.0%2010.0L40.0%209.5L35.0%208.4ZM30.0%2013.7L26.9%2015.0L25.0%2015.9L20.0%2019.3L19.1%2020.0L15.0%2024.7L14.8%2025.0L13.7%2030.0L14.3%2035.0L15.0%2038.1L15.5%2040.0L16.4%2045.0L16.3%2050.0L15.7%2055.0L15.3%2060.0L16.4%2065.0L20.0%2068.1L25.0%2069.6L28.4%2070.0L30.0%2070.2L35.0%2070.7L40.0%2071.0L45.0%2070.8L48.0%2070.0L50.0%2069.5L55.0%2066.8L57.4%2065.0L60.0%2062.6L62.9%2060.0L65.0%2057.6L66.9%2055.0L68.1%2050.0L66.9%2045.0L65.0%2042.3L63.0%2040.0L60.0%2037.3L57.3%2035.0L55.0%2033.0L51.9%2030.0L50.0%2028.0L47.4%2025.0L45.0%2021.9L43.4%2020.0L40.0%2016.1L38.1%2015.0L35.0%2013.5ZM30.0%2019.1L28.3%2020.0L25.0%2022.2L22.1%2025.0L20.0%2029.9L20.0%2030.0L20.0%2032.4L20.0%2035.0L21.0%2040.0L21.6%2045.0L21.2%2050.0L20.1%2055.0L20.0%2056.3L19.7%2060.0L20.0%2060.7L23.3%2065.0L25.0%2065.8L30.0%2066.9L35.0%2067.5L40.0%2067.9L45.0%2067.8L50.0%2066.3L52.0%2065.0L55.0%2062.6L57.8%2060.0L60.0%2057.0L61.8%2055.0L63.3%2050.0L61.6%2045.0L60.0%2043.2L57.3%2040.0L55.0%2038.0L52.0%2035.0L50.0%2033.1L47.0%2030.0L45.0%2027.7L42.4%2025.0L40.0%2022.3L36.4%2020.0L35.0%2019.0ZM30.0%2024.8L29.8%2025.0L26.0%2030.0L25.4%2035.0L26.0%2040.0L26.5%2045.0L26.1%2050.0L25.1%2055.0L25.8%2060.0L30.0%2062.7L35.0%2064.1L40.0%2064.8L45.0%2064.7L50.0%2062.8L53.3%2060.0L55.0%2058.0L57.3%2055.0L58.6%2050.0L56.8%2045.0L55.0%2042.9L52.7%2040.0L50.0%2037.4L47.7%2035.0L45.0%2032.2L42.6%2030.0L40.0%2027.3L36.1%2025.0L35.0%2024.2ZM35.0%2028.7L32.1%2030.0L30.0%2033.3L29.6%2035.0L29.8%2040.0L30.0%2041.7L30.3%2045.0L30.0%2050.0L30.0%2050.5L29.7%2055.0L30.0%2055.8L33.6%2060.0L35.0%2060.5L40.0%2061.6L45.0%2061.7L49.1%2060.0L50.0%2059.5L53.8%2055.0L55.0%2050.0L55.0%2050.0L55.0%2050.0L53.2%2045.0L50.0%2041.0L49.2%2040.0L45.0%2035.6L44.2%2035.0L40.0%2031.1L37.4%2030.0Z%22%20fill%3D%22none%22%20stroke%3D%22%23d1c8b7%22%20stroke-width%3D%22.95%22%2F%3E%3C%2Fpattern%3E%3CradialGradient%20id%3D%22m11oem3m-fall%22%3E%3Cstop%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%2F%3E%3C%2FradialGradient%3E%3Cmask%20id%3D%22m11oem3m-fade%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-fall)%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23efe6d6%22%2F%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-marks)%22%20%2F%3E%3C%2Fsvg%3E"
+              />
+              <path
+                d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="6"
+              />
+              <g fill="var(--ink)">
+                <circle cx="40" cy="260" r="7" />
+                <circle cx="540" cy="49" r="7" />
+              </g>
+              <g fill="var(--ink)" font-family="sans-serif" font-size="19">
+                <text x="35" y="292">Quarry gate</text>
+                <text x="224" y="145">Beech hollow</text>
+                <text x="436" y="32">Ridge path</text>
+              </g>
+              <path
+                d="M310 130l-18 -13 5 -8"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="2"
+              />
+            </svg>
+            <figcaption>Old quarry entrance to the ridge path</figcaption>
+          </figure>
+          <dl class="trio">
+            <div class="line">
+              <dt>Distance</dt>
+              <dd class="big">6.4 km</dd>
+            </div>
+            <div class="line">
+              <dt>Climb</dt>
+              <dd class="big">210 m</dd>
+            </div>
+            <div class="line">
+              <dt>On foot</dt>
+              <dd class="big">1 h 45 min</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="field-observations"
+        data-own="field-observations"
+        data-family="timeline"
+        data-width="narrow"
+        aria-labelledby="field-observations-title"
+      >
+        <div class="wrap">
+          <h2 id="field-observations-title">Notes from the ridge</h2>
+          <p class="intro">
+            Three entries from one walk, in the order they were recorded.
+          </p>
+          <ol class="walklog">
+            <li>
+              <time>09:12</time>
+              <div>
+                <h3>Old quarry</h3>
+                <p>The track climbs beyond the stone gate.</p>
+              </div>
+            </li>
+            <li>
+              <time>09:46</time>
+              <div>
+                <h3>Beech hollow</h3>
+                <p>Wet leaves cover the turn just below the ridge.</p>
+              </div>
+            </li>
+            <li>
+              <time>10:18</time>
+              <div>
+                <h3>Upper path</h3>
+                <p>The view opens to the south at the second stile.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="trail-editions"
+        data-own="trail-editions"
+        data-family="photo-gallery"
+        data-width="content"
+        aria-labelledby="trail-editions-title"
+      >
+        <div class="wrap">
+          <h2 id="trail-editions-title">Three walks for a change of season</h2>
+          <p class="intro">
+            Keep a short route on hand for the first frost, a clear autumn
+            afternoon or a day under cloud.
+          </p>
+          <div class="trio trail-plates">
+            <figure>
+              <img
+                src="../layout/img/photo-559.jpg"
+                alt="Snow-covered lane lined with bare frosted trees"
+                width="960"
+                height="640"
+              />
+              <figcaption><strong>First frost</strong> · 4.1 km</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-d534.jpg"
+                alt="Tree-lined forest lane under an arch of golden autumn beeches, with soft mist and leaves on the road"
+                width="960"
+                height="640"
+              />
+              <figcaption><strong>Beech hollow</strong> · 6.4 km</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-465.jpg"
+                alt="Dark rocky peak emerging from thick white cloud"
+                width="960"
+                height="640"
+              />
+              <figcaption><strong>High pass</strong> · 8.2 km</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="walk-export"
+        data-own="walk-export"
+        data-family="feature-grid"
+        data-width="content"
+        aria-labelledby="walk-export-title"
+      >
+        <div class="wrap">
+          <h2 id="walk-export-title">Take the walk home</h2>
+          <p class="intro">
+            Save the part of your notebook you need for the next walk.
+          </p>
+          <div class="trio">
+            <article class="line">
+              <div class="paper-file">
+                <svg
+                  viewBox="0 0 600 350"
+                  role="img"
+                  aria-label="Walking route between the old quarry and the ridge"
+                >
+                  <rect width="600" height="350" fill="var(--surface)" />
+                  <g fill="none" stroke="var(--muted)" opacity=".32">
+                    <path d="M-210 350Q290 160 110 -16" />
+                    <path d="M-189 350Q296 160 132 -16" />
+                    <path d="M-168 350Q302 160 154 -16" />
+                    <path d="M-147 350Q308 160 176 -16" />
+                    <path d="M-126 350Q314 160 198 -16" />
+                    <path d="M-105 350Q320 160 220 -16" />
+                    <path d="M-84 350Q326 160 242 -16" />
+                    <path d="M-63 350Q332 160 264 -16" />
+                    <path d="M-42 350Q338 160 286 -16" />
+                    <path d="M-21 350Q344 160 308 -16" />
+                    <path d="M0 350Q350 160 330 -16" />
+                    <path d="M21 350Q356 160 352 -16" />
+                    <path d="M42 350Q362 160 374 -16" />
+                    <path d="M63 350Q368 160 396 -16" />
+                    <path d="M84 350Q374 160 418 -16" />
+                    <path d="M105 350Q380 160 440 -16" />
+                    <path d="M126 350Q386 160 462 -16" />
+                    <path d="M147 350Q392 160 484 -16" />
+                    <path d="M168 350Q398 160 506 -16" />
+                    <path d="M189 350Q404 160 528 -16" />
+                  </g>
+                  <path
+                    d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="6"
+                  />
+                  <g fill="var(--ink)">
+                    <circle cx="40" cy="260" r="7" />
+                    <circle cx="540" cy="49" r="7" />
+                  </g></svg
+                ><span>GPX</span>
+              </div>
+              <h3>Route track</h3>
+              <p>Open the path in your mapping app.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <path
+                    d="M12 14h70M12 26h57M12 38h64M12 50h47"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  /></svg
+                ><span>PDF</span>
+              </div>
+              <h3>Field sheet</h3>
+              <p>Print the route and the notes in walking order.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <text
+                    x="8"
+                    y="46"
+                    fill="currentColor"
+                    font-family="Georgia"
+                    font-size="40"
+                  >
+                    Aa
+                  </text></svg
+                ><span>TXT</span>
+              </div>
+              <h3>Plain text</h3>
+              <p>Keep a searchable copy of every entry.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="walk-extract"
+        data-own="walk-extract"
+        data-family="single-quote"
+        data-width="narrow"
+        aria-labelledby="walk-extract-title"
+      >
+        <div class="wrap">
+          <h2 id="walk-extract-title">A note worth finding again</h2>
+          <p class="intro">From the example notebook for Quarry Ridge.</p>
+          <blockquote class="walk-quote">
+            “At the fork above the quarry, take the grass path. The gravel track
+            ends at a locked gate.”
+            <footer>Upper path · 10:18</footer>
+          </blockquote>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="meter-portrait"
+        data-own="meter-portrait"
+        data-family="annotated-plate"
+        data-width="content"
+        aria-labelledby="meter-portrait-title"
+      >
+        <div class="wrap">
+          <h2 id="meter-portrait-title">A reading in the palm of your hand</h2>
+          <p class="intro">
+            The diffuser faces the light. The dial pairs a usable shutter speed
+            with your chosen aperture.
+          </p>
+          <figure class="meter-plate">
+            <svg
+              viewBox="0 0 640 350"
+              role="img"
+              aria-label="Stillmeter pocket light meter with a sliding diffuser and a circular exposure dial"
+            >
+              <rect width="640" height="350" fill="var(--surface)" />
+              <g transform="rotate(-8 320 175)">
+                <rect
+                  x="146"
+                  y="74"
+                  width="348"
+                  height="208"
+                  rx="24"
+                  fill="#26332f"
+                />
+                <rect
+                  x="158"
+                  y="84"
+                  width="324"
+                  height="184"
+                  rx="18"
+                  fill="#35443e"
+                />
+                <path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
+                <path
+                  d="M189 73q0-22 24-24"
+                  fill="none"
+                  stroke="#a8b2a6"
+                  stroke-width="2"
+                />
+                <rect
+                  x="181"
+                  y="109"
+                  width="113"
+                  height="53"
+                  rx="4"
+                  fill="#cbd4ad"
+                />
+                <text
+                  x="194"
+                  y="145"
+                  font-family="sans-serif"
+                  font-size="26"
+                  fill="#26332f"
+                >
+                  f / 5.6
+                </text>
+                <circle cx="390" cy="177" r="71" fill="#18241f" />
+                <circle cx="390" cy="177" r="60" fill="#44544c" />
+                <g stroke="#d7dec9">
+                  <path transform="rotate(0 390 177)" d="M390 121v9" />
+                  <path transform="rotate(10 390 177)" d="M390 121v4" />
+                  <path transform="rotate(20 390 177)" d="M390 121v4" />
+                  <path transform="rotate(30 390 177)" d="M390 121v9" />
+                  <path transform="rotate(40 390 177)" d="M390 121v4" />
+                  <path transform="rotate(50 390 177)" d="M390 121v4" />
+                  <path transform="rotate(60 390 177)" d="M390 121v9" />
+                  <path transform="rotate(70 390 177)" d="M390 121v4" />
+                  <path transform="rotate(80 390 177)" d="M390 121v4" />
+                  <path transform="rotate(90 390 177)" d="M390 121v9" />
+                  <path transform="rotate(100 390 177)" d="M390 121v4" />
+                  <path transform="rotate(110 390 177)" d="M390 121v4" />
+                  <path transform="rotate(120 390 177)" d="M390 121v9" />
+                  <path transform="rotate(130 390 177)" d="M390 121v4" />
+                  <path transform="rotate(140 390 177)" d="M390 121v4" />
+                  <path transform="rotate(150 390 177)" d="M390 121v9" />
+                  <path transform="rotate(160 390 177)" d="M390 121v4" />
+                  <path transform="rotate(170 390 177)" d="M390 121v4" />
+                  <path transform="rotate(180 390 177)" d="M390 121v9" />
+                  <path transform="rotate(190 390 177)" d="M390 121v4" />
+                  <path transform="rotate(200 390 177)" d="M390 121v4" />
+                  <path transform="rotate(210 390 177)" d="M390 121v9" />
+                  <path transform="rotate(220 390 177)" d="M390 121v4" />
+                  <path transform="rotate(230 390 177)" d="M390 121v4" />
+                  <path transform="rotate(240 390 177)" d="M390 121v9" />
+                  <path transform="rotate(250 390 177)" d="M390 121v4" />
+                  <path transform="rotate(260 390 177)" d="M390 121v4" />
+                  <path transform="rotate(270 390 177)" d="M390 121v9" />
+                  <path transform="rotate(280 390 177)" d="M390 121v4" />
+                  <path transform="rotate(290 390 177)" d="M390 121v4" />
+                  <path transform="rotate(300 390 177)" d="M390 121v9" />
+                  <path transform="rotate(310 390 177)" d="M390 121v4" />
+                  <path transform="rotate(320 390 177)" d="M390 121v4" />
+                  <path transform="rotate(330 390 177)" d="M390 121v9" />
+                  <path transform="rotate(340 390 177)" d="M390 121v4" />
+                  <path transform="rotate(350 390 177)" d="M390 121v4" />
+                </g>
+                <path d="M390 142v24" stroke="#e6ba6d" stroke-width="4" />
+                <g
+                  fill="#edf1e7"
+                  font-family="sans-serif"
+                  font-size="7"
+                  text-anchor="middle"
+                >
+                  <text x="363" y="155">2.8</text>
+                  <text x="380" y="138">4</text>
+                  <text x="405" y="141">5.6</text>
+                  <text x="427" y="164">8</text>
+                  <text x="427" y="190">11</text>
+                  <text x="410" y="209">16</text>
+                </g>
+                <rect
+                  x="182"
+                  y="81"
+                  width="35"
+                  height="5"
+                  rx="2"
+                  fill="#859288"
+                />
+                <g fill="#637067">
+                  <circle cx="173" cy="93" r="2.5" />
+                  <circle cx="465" cy="253" r="2.5" />
+                </g>
+                <circle cx="390" cy="177" r="13" fill="#293a31" />
+                <g fill="#c8d7c2" font-family="sans-serif" font-size="12">
+                  <text x="180" y="184">ISO 100</text>
+                  <text x="180" y="202">1/125 s</text>
+                </g>
+                <text
+                  x="181"
+                  y="229"
+                  font-family="sans-serif"
+                  fill="#dee4d8"
+                  font-size="15"
+                >
+                  Stillmeter
+                </text>
+              </g>
+              <g fill="var(--ink)" font-family="sans-serif" font-size="14">
+                <text x="40" y="48">Diffuser</text>
+                <text x="472" y="305">Exposure dial</text>
+              </g>
+              <g fill="none" stroke="var(--ink)" stroke-width="1">
+                <path d="M96 45h35l69 23" />
+                <path d="M469 300h-20l-43-74" />
+              </g>
+            </svg>
+            <figcaption>Stillmeter S1 · incident light meter</figcaption>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="exposure-pairs"
+        data-own="exposure-pairs"
+        data-family="comparison"
+        data-width="narrow"
+        aria-labelledby="exposure-pairs-title"
+      >
+        <div class="wrap">
+          <h2 id="exposure-pairs-title">One reading, four exposures</h2>
+          <p class="intro">
+            At ISO 100, each pair admits the same amount of light. Choose the
+            depth of field or motion blur you want.
+          </p>
+          <div class="exposure">
+            <table>
+              <caption>
+                Example reading · EV 12
+              </caption>
+              <thead>
+                <tr>
+                  <th>Aperture</th>
+                  <th>Shutter</th>
+                  <th>Use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>f/4</td>
+                  <td>1/250 s</td>
+                  <td>Moving subject</td>
+                </tr>
+                <tr>
+                  <td>f/5.6</td>
+                  <td>1/125 s</td>
+                  <td>Handheld portrait</td>
+                </tr>
+                <tr>
+                  <td>f/8</td>
+                  <td>1/60 s</td>
+                  <td>Still subject</td>
+                </tr>
+                <tr>
+                  <td>f/11</td>
+                  <td>1/30 s</td>
+                  <td>Tripod</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="meter-sequence"
+        data-own="meter-sequence"
+        data-family="steps"
+        data-width="content"
+        aria-labelledby="meter-sequence-title"
+      >
+        <div class="wrap">
+          <h2 id="meter-sequence-title">Measure before you compose</h2>
+          <p class="intro">
+            Three moves take you from incoming light to a camera setting.
+          </p>
+          <ol class="trio meter-steps">
+            <li class="line">
+              <svg
+                viewBox="150 28 170 158"
+                role="img"
+                aria-label="Stillmeter pocket light meter with a sliding diffuser and a circular exposure dial"
+              >
+                <rect width="640" height="350" fill="var(--surface)" />
+                <g transform="rotate(-8 320 175)">
+                  <rect
+                    x="146"
+                    y="74"
+                    width="348"
+                    height="208"
+                    rx="24"
+                    fill="#26332f"
+                  />
+                  <rect
+                    x="158"
+                    y="84"
+                    width="324"
+                    height="184"
+                    rx="18"
+                    fill="#35443e"
+                  />
+                  <path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
+                  <path
+                    d="M189 73q0-22 24-24"
+                    fill="none"
+                    stroke="#a8b2a6"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="181"
+                    y="109"
+                    width="113"
+                    height="53"
+                    rx="4"
+                    fill="#cbd4ad"
+                  />
+                  <text
+                    x="194"
+                    y="145"
+                    font-family="sans-serif"
+                    font-size="26"
+                    fill="#26332f"
+                  >
+                    f / 5.6
+                  </text>
+                  <circle cx="390" cy="177" r="71" fill="#18241f" />
+                  <circle cx="390" cy="177" r="60" fill="#44544c" />
+                  <g stroke="#d7dec9">
+                    <path transform="rotate(0 390 177)" d="M390 121v9" />
+                    <path transform="rotate(10 390 177)" d="M390 121v4" />
+                    <path transform="rotate(20 390 177)" d="M390 121v4" />
+                    <path transform="rotate(30 390 177)" d="M390 121v9" />
+                    <path transform="rotate(40 390 177)" d="M390 121v4" />
+                    <path transform="rotate(50 390 177)" d="M390 121v4" />
+                    <path transform="rotate(60 390 177)" d="M390 121v9" />
+                    <path transform="rotate(70 390 177)" d="M390 121v4" />
+                    <path transform="rotate(80 390 177)" d="M390 121v4" />
+                    <path transform="rotate(90 390 177)" d="M390 121v9" />
+                    <path transform="rotate(100 390 177)" d="M390 121v4" />
+                    <path transform="rotate(110 390 177)" d="M390 121v4" />
+                    <path transform="rotate(120 390 177)" d="M390 121v9" />
+                    <path transform="rotate(130 390 177)" d="M390 121v4" />
+                    <path transform="rotate(140 390 177)" d="M390 121v4" />
+                    <path transform="rotate(150 390 177)" d="M390 121v9" />
+                    <path transform="rotate(160 390 177)" d="M390 121v4" />
+                    <path transform="rotate(170 390 177)" d="M390 121v4" />
+                    <path transform="rotate(180 390 177)" d="M390 121v9" />
+                    <path transform="rotate(190 390 177)" d="M390 121v4" />
+                    <path transform="rotate(200 390 177)" d="M390 121v4" />
+                    <path transform="rotate(210 390 177)" d="M390 121v9" />
+                    <path transform="rotate(220 390 177)" d="M390 121v4" />
+                    <path transform="rotate(230 390 177)" d="M390 121v4" />
+                    <path transform="rotate(240 390 177)" d="M390 121v9" />
+                    <path transform="rotate(250 390 177)" d="M390 121v4" />
+                    <path transform="rotate(260 390 177)" d="M390 121v4" />
+                    <path transform="rotate(270 390 177)" d="M390 121v9" />
+                    <path transform="rotate(280 390 177)" d="M390 121v4" />
+                    <path transform="rotate(290 390 177)" d="M390 121v4" />
+                    <path transform="rotate(300 390 177)" d="M390 121v9" />
+                    <path transform="rotate(310 390 177)" d="M390 121v4" />
+                    <path transform="rotate(320 390 177)" d="M390 121v4" />
+                    <path transform="rotate(330 390 177)" d="M390 121v9" />
+                    <path transform="rotate(340 390 177)" d="M390 121v4" />
+                    <path transform="rotate(350 390 177)" d="M390 121v4" />
+                  </g>
+                  <path d="M390 142v24" stroke="#e6ba6d" stroke-width="4" />
+                  <g
+                    fill="#edf1e7"
+                    font-family="sans-serif"
+                    font-size="7"
+                    text-anchor="middle"
+                  >
+                    <text x="363" y="155">2.8</text>
+                    <text x="380" y="138">4</text>
+                    <text x="405" y="141">5.6</text>
+                    <text x="427" y="164">8</text>
+                    <text x="427" y="190">11</text>
+                    <text x="410" y="209">16</text>
+                  </g>
+                  <rect
+                    x="182"
+                    y="81"
+                    width="35"
+                    height="5"
+                    rx="2"
+                    fill="#859288"
+                  />
+                  <g fill="#637067">
+                    <circle cx="173" cy="93" r="2.5" />
+                    <circle cx="465" cy="253" r="2.5" />
+                  </g>
+                  <circle cx="390" cy="177" r="13" fill="#293a31" />
+                  <g fill="#c8d7c2" font-family="sans-serif" font-size="12">
+                    <text x="180" y="184">ISO 100</text>
+                    <text x="180" y="202">1/125 s</text>
+                  </g>
+                  <text
+                    x="181"
+                    y="229"
+                    font-family="sans-serif"
+                    fill="#dee4d8"
+                    font-size="15"
+                  >
+                    Stillmeter
+                  </text>
+                </g>
+              </svg>
+              <h3>Face the light</h3>
+              <p>Hold the white diffuser at the subject, facing the camera.</p>
+            </li>
+            <li class="line">
+              <svg
+                viewBox="155 92 170 118"
+                role="img"
+                aria-label="Stillmeter pocket light meter with a sliding diffuser and a circular exposure dial"
+              >
+                <rect width="640" height="350" fill="var(--surface)" />
+                <g transform="rotate(-8 320 175)">
+                  <rect
+                    x="146"
+                    y="74"
+                    width="348"
+                    height="208"
+                    rx="24"
+                    fill="#26332f"
+                  />
+                  <rect
+                    x="158"
+                    y="84"
+                    width="324"
+                    height="184"
+                    rx="18"
+                    fill="#35443e"
+                  />
+                  <path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
+                  <path
+                    d="M189 73q0-22 24-24"
+                    fill="none"
+                    stroke="#a8b2a6"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="181"
+                    y="109"
+                    width="113"
+                    height="53"
+                    rx="4"
+                    fill="#cbd4ad"
+                  />
+                  <text
+                    x="194"
+                    y="145"
+                    font-family="sans-serif"
+                    font-size="26"
+                    fill="#26332f"
+                  >
+                    f / 5.6
+                  </text>
+                  <circle cx="390" cy="177" r="71" fill="#18241f" />
+                  <circle cx="390" cy="177" r="60" fill="#44544c" />
+                  <g stroke="#d7dec9">
+                    <path transform="rotate(0 390 177)" d="M390 121v9" />
+                    <path transform="rotate(10 390 177)" d="M390 121v4" />
+                    <path transform="rotate(20 390 177)" d="M390 121v4" />
+                    <path transform="rotate(30 390 177)" d="M390 121v9" />
+                    <path transform="rotate(40 390 177)" d="M390 121v4" />
+                    <path transform="rotate(50 390 177)" d="M390 121v4" />
+                    <path transform="rotate(60 390 177)" d="M390 121v9" />
+                    <path transform="rotate(70 390 177)" d="M390 121v4" />
+                    <path transform="rotate(80 390 177)" d="M390 121v4" />
+                    <path transform="rotate(90 390 177)" d="M390 121v9" />
+                    <path transform="rotate(100 390 177)" d="M390 121v4" />
+                    <path transform="rotate(110 390 177)" d="M390 121v4" />
+                    <path transform="rotate(120 390 177)" d="M390 121v9" />
+                    <path transform="rotate(130 390 177)" d="M390 121v4" />
+                    <path transform="rotate(140 390 177)" d="M390 121v4" />
+                    <path transform="rotate(150 390 177)" d="M390 121v9" />
+                    <path transform="rotate(160 390 177)" d="M390 121v4" />
+                    <path transform="rotate(170 390 177)" d="M390 121v4" />
+                    <path transform="rotate(180 390 177)" d="M390 121v9" />
+                    <path transform="rotate(190 390 177)" d="M390 121v4" />
+                    <path transform="rotate(200 390 177)" d="M390 121v4" />
+                    <path transform="rotate(210 390 177)" d="M390 121v9" />
+                    <path transform="rotate(220 390 177)" d="M390 121v4" />
+                    <path transform="rotate(230 390 177)" d="M390 121v4" />
+                    <path transform="rotate(240 390 177)" d="M390 121v9" />
+                    <path transform="rotate(250 390 177)" d="M390 121v4" />
+                    <path transform="rotate(260 390 177)" d="M390 121v4" />
+                    <path transform="rotate(270 390 177)" d="M390 121v9" />
+                    <path transform="rotate(280 390 177)" d="M390 121v4" />
+                    <path transform="rotate(290 390 177)" d="M390 121v4" />
+                    <path transform="rotate(300 390 177)" d="M390 121v9" />
+                    <path transform="rotate(310 390 177)" d="M390 121v4" />
+                    <path transform="rotate(320 390 177)" d="M390 121v4" />
+                    <path transform="rotate(330 390 177)" d="M390 121v9" />
+                    <path transform="rotate(340 390 177)" d="M390 121v4" />
+                    <path transform="rotate(350 390 177)" d="M390 121v4" />
+                  </g>
+                  <path d="M390 142v24" stroke="#e6ba6d" stroke-width="4" />
+                  <g
+                    fill="#edf1e7"
+                    font-family="sans-serif"
+                    font-size="7"
+                    text-anchor="middle"
+                  >
+                    <text x="363" y="155">2.8</text>
+                    <text x="380" y="138">4</text>
+                    <text x="405" y="141">5.6</text>
+                    <text x="427" y="164">8</text>
+                    <text x="427" y="190">11</text>
+                    <text x="410" y="209">16</text>
+                  </g>
+                  <rect
+                    x="182"
+                    y="81"
+                    width="35"
+                    height="5"
+                    rx="2"
+                    fill="#859288"
+                  />
+                  <g fill="#637067">
+                    <circle cx="173" cy="93" r="2.5" />
+                    <circle cx="465" cy="253" r="2.5" />
+                  </g>
+                  <circle cx="390" cy="177" r="13" fill="#293a31" />
+                  <g fill="#c8d7c2" font-family="sans-serif" font-size="12">
+                    <text x="180" y="184">ISO 100</text>
+                    <text x="180" y="202">1/125 s</text>
+                  </g>
+                  <text
+                    x="181"
+                    y="229"
+                    font-family="sans-serif"
+                    fill="#dee4d8"
+                    font-size="15"
+                  >
+                    Stillmeter
+                  </text>
+                </g>
+              </svg>
+              <h3>Take a reading</h3>
+              <p>
+                Press once. The meter holds the exposure value while you move.
+              </p>
+            </li>
+            <li class="line">
+              <svg
+                viewBox="305 95 168 160"
+                role="img"
+                aria-label="Stillmeter pocket light meter with a sliding diffuser and a circular exposure dial"
+              >
+                <rect width="640" height="350" fill="var(--surface)" />
+                <g transform="rotate(-8 320 175)">
+                  <rect
+                    x="146"
+                    y="74"
+                    width="348"
+                    height="208"
+                    rx="24"
+                    fill="#26332f"
+                  />
+                  <rect
+                    x="158"
+                    y="84"
+                    width="324"
+                    height="184"
+                    rx="18"
+                    fill="#35443e"
+                  />
+                  <path d="M185 74q0-30 28-30t28 30" fill="#e2e3cf" />
+                  <path
+                    d="M189 73q0-22 24-24"
+                    fill="none"
+                    stroke="#a8b2a6"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="181"
+                    y="109"
+                    width="113"
+                    height="53"
+                    rx="4"
+                    fill="#cbd4ad"
+                  />
+                  <text
+                    x="194"
+                    y="145"
+                    font-family="sans-serif"
+                    font-size="26"
+                    fill="#26332f"
+                  >
+                    f / 5.6
+                  </text>
+                  <circle cx="390" cy="177" r="71" fill="#18241f" />
+                  <circle cx="390" cy="177" r="60" fill="#44544c" />
+                  <g stroke="#d7dec9">
+                    <path transform="rotate(0 390 177)" d="M390 121v9" />
+                    <path transform="rotate(10 390 177)" d="M390 121v4" />
+                    <path transform="rotate(20 390 177)" d="M390 121v4" />
+                    <path transform="rotate(30 390 177)" d="M390 121v9" />
+                    <path transform="rotate(40 390 177)" d="M390 121v4" />
+                    <path transform="rotate(50 390 177)" d="M390 121v4" />
+                    <path transform="rotate(60 390 177)" d="M390 121v9" />
+                    <path transform="rotate(70 390 177)" d="M390 121v4" />
+                    <path transform="rotate(80 390 177)" d="M390 121v4" />
+                    <path transform="rotate(90 390 177)" d="M390 121v9" />
+                    <path transform="rotate(100 390 177)" d="M390 121v4" />
+                    <path transform="rotate(110 390 177)" d="M390 121v4" />
+                    <path transform="rotate(120 390 177)" d="M390 121v9" />
+                    <path transform="rotate(130 390 177)" d="M390 121v4" />
+                    <path transform="rotate(140 390 177)" d="M390 121v4" />
+                    <path transform="rotate(150 390 177)" d="M390 121v9" />
+                    <path transform="rotate(160 390 177)" d="M390 121v4" />
+                    <path transform="rotate(170 390 177)" d="M390 121v4" />
+                    <path transform="rotate(180 390 177)" d="M390 121v9" />
+                    <path transform="rotate(190 390 177)" d="M390 121v4" />
+                    <path transform="rotate(200 390 177)" d="M390 121v4" />
+                    <path transform="rotate(210 390 177)" d="M390 121v9" />
+                    <path transform="rotate(220 390 177)" d="M390 121v4" />
+                    <path transform="rotate(230 390 177)" d="M390 121v4" />
+                    <path transform="rotate(240 390 177)" d="M390 121v9" />
+                    <path transform="rotate(250 390 177)" d="M390 121v4" />
+                    <path transform="rotate(260 390 177)" d="M390 121v4" />
+                    <path transform="rotate(270 390 177)" d="M390 121v9" />
+                    <path transform="rotate(280 390 177)" d="M390 121v4" />
+                    <path transform="rotate(290 390 177)" d="M390 121v4" />
+                    <path transform="rotate(300 390 177)" d="M390 121v9" />
+                    <path transform="rotate(310 390 177)" d="M390 121v4" />
+                    <path transform="rotate(320 390 177)" d="M390 121v4" />
+                    <path transform="rotate(330 390 177)" d="M390 121v9" />
+                    <path transform="rotate(340 390 177)" d="M390 121v4" />
+                    <path transform="rotate(350 390 177)" d="M390 121v4" />
+                  </g>
+                  <path d="M390 142v24" stroke="#e6ba6d" stroke-width="4" />
+                  <g
+                    fill="#edf1e7"
+                    font-family="sans-serif"
+                    font-size="7"
+                    text-anchor="middle"
+                  >
+                    <text x="363" y="155">2.8</text>
+                    <text x="380" y="138">4</text>
+                    <text x="405" y="141">5.6</text>
+                    <text x="427" y="164">8</text>
+                    <text x="427" y="190">11</text>
+                    <text x="410" y="209">16</text>
+                  </g>
+                  <rect
+                    x="182"
+                    y="81"
+                    width="35"
+                    height="5"
+                    rx="2"
+                    fill="#859288"
+                  />
+                  <g fill="#637067">
+                    <circle cx="173" cy="93" r="2.5" />
+                    <circle cx="465" cy="253" r="2.5" />
+                  </g>
+                  <circle cx="390" cy="177" r="13" fill="#293a31" />
+                  <g fill="#c8d7c2" font-family="sans-serif" font-size="12">
+                    <text x="180" y="184">ISO 100</text>
+                    <text x="180" y="202">1/125 s</text>
+                  </g>
+                  <text
+                    x="181"
+                    y="229"
+                    font-family="sans-serif"
+                    fill="#dee4d8"
+                    font-size="15"
+                  >
+                    Stillmeter
+                  </text>
+                </g>
+              </svg>
+              <h3>Set the camera</h3>
+              <p>Turn the dial to pair your aperture with a shutter speed.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="meter-contents"
+        data-own="meter-contents"
+        data-family="menu-list"
+        data-width="narrow"
+        aria-labelledby="meter-contents-title"
+      >
+        <div class="wrap">
+          <h2 id="meter-contents-title">Inside the case</h2>
+          <p class="intro">
+            Everything supplied with the S1, with sizes for the parts you may
+            want to replace.
+          </p>
+          <dl class="packlist">
+            <div class="line">
+              <dt>S1 meter</dt>
+              <dd>84 × 52 × 19 mm</dd>
+            </div>
+            <div class="line">
+              <dt>Slip case</dt>
+              <dd>Waxed cotton</dd>
+            </div>
+            <div class="line">
+              <dt>Wrist strap</dt>
+              <dd>18 cm loop</dd>
+            </div>
+            <div class="line">
+              <dt>Battery</dt>
+              <dd>One CR2032 cell</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="light-studies"
+        data-own="light-studies"
+        data-family="case-studies"
+        data-width="content"
+        aria-labelledby="light-studies-title"
+      >
+        <div class="wrap">
+          <h2 id="light-studies-title">Two ways to read a room</h2>
+          <p class="intro">
+            Incident readings measure the light falling on a subject. A
+            reflected reading follows the surface you point at.
+          </p>
+          <div class="pair light-studies">
+            <figure>
+              <img
+                src="../layout/img/photo-d88.jpg"
+                alt="Cream ceramic table lamp on a glossy side table, low sun throwing long shadows across a white wall"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Light at the table</strong> · Example · f/5.6 at 1/125 s
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-954.jpg"
+                alt="Narrow opening in a white wall revealing a white staircase"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Light on the stair</strong> · Example · f/8 at 1/125 s
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="coffee-service"
+        data-own="coffee-service"
+        data-family="product-shelf"
+        data-width="content"
+        aria-labelledby="coffee-service-title"
+      >
+        <div class="wrap">
+          <h2 id="coffee-service-title">Coffee at the counter</h2>
+          <p class="intro">
+            Choose your cup at Birchroom. Filter changes with the morning batch.
+          </p>
+          <div class="trio drinks">
+            <figure>
+              <img
+                src="../layout/img/photo-c7.jpg"
+                alt="Close-up of rosetta latte art in a white cup and saucer on a grey slate table"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Flat white</strong><span>€3.80</span>
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-c96.jpg"
+                alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Hand filter</strong><span>€4.50</span>
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-c166.jpg"
+                alt="Cappuccino dusted with cinnamon in a white cup on a square saucer, croissant and water glass behind, window light"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Cappuccino</strong><span>€3.60</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="roast-notes"
+        data-own="roast-notes"
+        data-family="editorial-statement"
+        data-width="narrow"
+        aria-labelledby="roast-notes-title"
+      >
+        <div class="wrap">
+          <h2 id="roast-notes-title">Why we roast for filter</h2>
+          <p class="intro">
+            Our house filter, brewed at the counter each morning.
+          </p>
+          <div class="roast-letter">
+            <p>
+              We stop this roast while the acidity is still clear. In the cup it
+              tastes of plum as it cools, with a little cocoa at the end.
+            </p>
+            <p>
+              At home, start with 16 grams of coffee and 250 grams of water.
+              Grind a little finer if the cup tastes thin.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="counter-calendar"
+        data-own="counter-calendar"
+        data-family="event-list"
+        data-width="content"
+        aria-labelledby="counter-calendar-title"
+      >
+        <div class="wrap">
+          <h2 id="counter-calendar-title">Saturday at the brew bar</h2>
+          <p class="intro">
+            Small tastings take place before lunch. Seats are first come, first
+            served.
+          </p>
+          <div class="event-board">
+            <figure>
+              <img
+                src="../layout/img/photo-c70.jpg"
+                alt="Three white bowls of coffee beans, dark to light roast, in a row on a white surface, seen from above"
+                width="960"
+                height="640"
+              />
+            </figure>
+            <div class="counter-events">
+              <article class="line">
+                <time>5 Dec</time>
+                <div>
+                  <h3>Filter side by side</h3>
+                  <p>Two brewers, one coffee</p>
+                </div>
+                <span>10:00</span>
+              </article>
+              <article class="line">
+                <time>12 Dec</time>
+                <div>
+                  <h3>A lighter roast</h3>
+                  <p>Taste the same lot at two roast levels</p>
+                </div>
+                <span>10:30</span>
+              </article>
+              <article class="line">
+                <time>19 Dec</time>
+                <div>
+                  <h3>Dialling in espresso</h3>
+                  <p>Try three shots at different grind settings</p>
+                </div>
+                <span>10:00</span>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="bean-journal"
+        data-own="bean-journal"
+        data-family="article-list"
+        data-width="content"
+        aria-labelledby="bean-journal-title"
+      >
+        <div class="wrap">
+          <h2 id="bean-journal-title">From the roastery</h2>
+          <p class="intro">
+            Short field notes on picking coffee, brewing it and tasting the
+            difference.
+          </p>
+          <div class="journal">
+            <article class="line">
+              <img
+                src="../layout/img/photo-beans-hand.jpg"
+                alt="A hand reaching for a heap of roasted coffee beans on a white table"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Selecting a sample roast</h3>
+                <p>At the sorting table</p>
+              </div>
+            </article>
+            <article class="line">
+              <img
+                src="../layout/img/photo-c70.jpg"
+                alt="Three white bowls of coffee beans, dark to light roast, in a row on a white surface, seen from above"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Reading a roast by colour</h3>
+                <p>Three sample batches</p>
+              </div>
+            </article>
+            <article class="line">
+              <img
+                src="../layout/img/photo-c96.jpg"
+                alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Keeping a steady pour</h3>
+                <p>At the filter bar</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="brew-counter"
+        data-own="brew-counter"
+        data-family="split"
+        data-width="content"
+        aria-labelledby="brew-counter-title"
+      >
+        <div class="wrap">
+          <h2 id="brew-counter-title">The morning pour</h2>
+          <p class="intro">
+            At eight we grind the first filter batch. By ten the hand brewer is
+            out for anyone who wants a single cup.
+          </p>
+          <figure class="brew-wide">
+            <img
+              src="../layout/img/photo-c96.jpg"
+              alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+              width="960"
+              height="640"
+            />
+            <figcaption>Hand filter · served until 14:00</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,1274 @@
+<!doctype html>
+<!-- Study this reference page for the order, widths and relationships between sections. Build a fresh composition for the client's material. -->
+<html lang="en" data-type="place" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Neighbourhood coffee counter · Birchroom</title>
+    <meta
+      name="description"
+      content="Neighbourhood coffee counter at Birchroom."
+    />
+    <meta name="page-type" content="place" />
+    <meta name="page-kind" content="place" />
+    <meta name="site-kind" content="other" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work .small {
+        font-size: var(--t-small);
+        color: var(--muted);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair,
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      .drinks img {
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+      .drinks .plate-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .drinks .plate-label {
+        font-size: var(--t-body);
+      }
+      .drinks img {
+        aspect-ratio: 5/4;
+      }
+      @media (max-width: 650px) {
+        .drinks article {
+          display: grid;
+          grid-template-columns: 42% 1fr;
+          align-items: center;
+          gap: var(--s-4);
+        }
+        .drinks .plate-label {
+          display: grid;
+          gap: var(--s-2);
+        }
+      }
+      .roast-letter {
+        max-width: 40ch;
+        font:
+          400 var(--t-h3) / 1.55 Georgia,
+          serif;
+      }
+      .roast-letter p + p {
+        margin-top: var(--s-4);
+      }
+      #roast-notes .wrap {
+        max-width: 62ch;
+      }
+      .roast-letter p:first-child {
+        font-size: var(--t-h2);
+        line-height: 1.18;
+      }
+      .roast-letter {
+        max-width: none;
+      }
+      .counter-events article {
+        display: grid;
+        grid-template-columns: 1fr 4fr auto;
+        gap: var(--s-4);
+        align-items: baseline;
+      }
+      .counter-events time {
+        font-size: var(--t-card);
+      }
+      @media (max-width: 650px) {
+        .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+        .counter-events article div {
+          grid-row: 2;
+          grid-column: 1/-1;
+        }
+      }
+      .event-board {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: var(--s-6);
+        align-items: center;
+      }
+      .event-board img {
+        aspect-ratio: 4/3;
+        object-fit: cover;
+      }
+      .counter-events article {
+        grid-template-columns: 4em 1fr auto;
+      }
+      @media (max-width: 700px) {
+        .event-board {
+          display: block;
+        }
+        .event-board figure {
+          margin-bottom: var(--s-4);
+        }
+        .event-board img {
+          aspect-ratio: 3;
+        }
+        .counter-events article {
+          grid-template-columns: 1fr auto;
+        }
+      }
+      .journal article {
+        display: grid;
+        grid-template-columns: minmax(7em, 22%) 1fr;
+        align-items: center;
+        gap: var(--s-5);
+      }
+      .journal img {
+        aspect-ratio: 2;
+        object-fit: cover;
+      }
+      .journal {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 0 var(--s-6);
+      }
+      .journal article:first-child {
+        grid-row: span 2;
+        display: block;
+      }
+      .journal article:first-child img {
+        aspect-ratio: 2.4;
+        margin-bottom: var(--s-3);
+      }
+      .journal article:not(:first-child) {
+        grid-template-columns: 35% 1fr;
+      }
+      .journal article:not(:first-child) img {
+        aspect-ratio: 1.2;
+      }
+      @media (max-width: 650px) {
+        .journal {
+          display: block;
+        }
+      }
+      #brew-counter .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1.65fr;
+        column-gap: var(--s-7);
+        align-content: center;
+      }
+      #brew-counter h2 {
+        align-self: end;
+      }
+      #brew-counter .intro {
+        grid-column: 1;
+      }
+      #brew-counter figure {
+        grid-column: 2;
+        grid-row: 1/3;
+      }
+      .brew-wide img {
+        aspect-ratio: 3/2;
+        object-fit: cover;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .wrap {
+          display: block;
+        }
+      }
+      .brew-wide img {
+        aspect-ratio: 4/3;
+        object-position: center 70%;
+      }
+      #brew-counter .intro {
+        margin-bottom: 0;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .intro {
+          margin-bottom: var(--s-5);
+        }
+      }
+      .ref-nav,
+      .ref-foot {
+        padding-block: var(--s-5);
+      }
+      .ref-nav .wrap,
+      .ref-foot .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-5);
+      }
+      .ref-nav a,
+      .ref-foot a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+      }
+      .ref-nav .brand {
+        font-size: var(--t-h3);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .ref-nav nav {
+        display: flex;
+        gap: var(--s-5);
+      }
+      .ref-hero {
+        padding-block: var(--s-8);
+        min-height: 76svh;
+        display: grid;
+        align-content: center;
+      }
+      .ref-hero h1 {
+        max-width: 18ch;
+        text-wrap: balance;
+      }
+      .ref-hero p {
+        max-width: 48ch;
+        margin-block: var(--s-5);
+      }
+      .ref-hero .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: var(--s-7);
+      }
+      .ref-hero .hero-art {
+        min-width: 0;
+      }
+      .hero-art svg,
+      .hero-art img {
+        width: 100%;
+        display: block;
+      }
+      .hero-art img {
+        aspect-ratio: 4/5;
+        object-fit: cover;
+      }
+      .ref-hero .btn,
+      .ref-close .btn {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: var(--s-3) var(--s-5);
+        background: var(--action);
+        color: var(--action-ink);
+        text-decoration: none;
+      }
+      .ref-page main > section:nth-child(3n + 1):not(.ref-hero) {
+        background: var(--surface);
+      }
+      .ref-close {
+        align-content: center;
+      }
+      .ref-close .wrap {
+        max-width: 64ch;
+      }
+      .ref-foot {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .ref-foot .wrap {
+        align-items: start;
+      }
+      .ref-foot nav {
+        display: grid;
+        gap: var(--s-2);
+      }
+      .ref-foot a {
+        font-size: var(--t-small);
+      }
+      .ref-foot small {
+        display: block;
+        margin-top: var(--s-5);
+      }
+      .skip-ref {
+        position: absolute;
+        left: var(--s-3);
+        background: var(--bg);
+        padding: var(--s-3);
+        transform: translateY(-140%);
+      }
+      .skip-ref:focus {
+        transform: none;
+      }
+      @media (max-width: 700px) {
+        .ref-hero .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-hero {
+          padding-block: var(--s-7);
+        }
+        .hero-art img {
+          aspect-ratio: 3/2;
+        }
+        .ref-nav nav a:nth-child(2) {
+          display: none;
+        }
+        .ref-foot .wrap {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .ref-nav nav {
+          gap: var(--s-3);
+        }
+      }
+
+      .ref-page .ref-close .btn {
+        align-self: flex-start;
+      }
+      .ref-foot {
+        padding-block: var(--s-7);
+      }
+      .ref-foot a {
+        display: block;
+        min-height: 30px;
+      }
+      .ref-foot nav strong {
+        margin-bottom: var(--s-3);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+      }
+      .ref-hero .hero-art {
+        width: 100%;
+      }
+      .software-reference .ref-hero {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .software-reference .hero-art .stage {
+        color: var(--p-ink);
+      }
+      .software-reference .ref-hero .btn {
+        background: #c8d6b7;
+        color: #253122;
+      }
+      .app-reference .ref-hero .wrap {
+        grid-template-columns: 1fr 1.15fr;
+      }
+      .app-reference .hero-art {
+        border: 1px solid var(--line);
+        padding: var(--s-5);
+        background: var(--surface);
+        transform: rotate(-2deg);
+      }
+      .product-reference .ref-hero .wrap {
+        grid-template-columns: 2fr 3fr;
+      }
+      .product-reference .ref-hero {
+        background: var(--surface);
+      }
+      .product-reference .hero-art svg {
+        width: 100%;
+      }
+      .place-reference .ref-hero {
+        position: relative;
+        isolation: isolate;
+        min-height: 78svh;
+      }
+      .place-reference .ref-hero .hero-art {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+      }
+      .place-reference .ref-hero .hero-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 45%;
+      }
+      .place-reference .ref-hero .wrap > div:first-child {
+        max-width: 46ch;
+        background: var(--bg);
+        padding: var(--s-6);
+      }
+      .place-reference :is(h1, h2, .brand) {
+        font-family: Georgia, serif;
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-hero > .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-foot a {
+          min-height: 44px;
+        }
+        .place-reference .ref-hero {
+          align-content: end;
+        }
+        .place-reference .ref-hero .wrap > div:first-child {
+          padding: var(--s-5);
+        }
+      }
+
+      #failure-excerpt .wrap {
+        max-width: 84ch;
+      }
+      #failure-excerpt .excerpt {
+        margin: 0;
+      }
+      #runner-plans .wrap {
+        max-width: 58rem;
+      }
+      #runner-plans .big {
+        margin-top: var(--s-4);
+      }
+      #meter-portrait .meter-plate svg {
+        max-height: none;
+      }
+      #roast-notes .intro {
+        margin-bottom: var(--s-5);
+      }
+      #light-studies figure:nth-child(2) img {
+        object-position: 54% center;
+      }
+      @media (max-width: 650px) {
+        #walk-export .line {
+          display: grid;
+          grid-template-columns: 5em 1fr;
+          column-gap: var(--s-4);
+          align-content: center;
+        }
+        #walk-export .paper-file {
+          grid-row: span 2;
+          width: 5em;
+          margin: 0;
+        }
+        #walk-export .line p {
+          grid-column: 2;
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+
+      .ref-page #proof .wrap {
+        max-width: 74ch;
+      }
+      .ref-page .ref-hero p {
+        color: inherit;
+      }
+      .ref-page .ref-hero .wrap {
+        height: auto;
+      }
+      .ref-page .ref-hero .hero-art p {
+        color: var(--ink);
+      }
+      .ref-page .hero-art {
+        transform: none;
+      }
+      .ref-foot .credit-line {
+        margin-top: var(--s-5);
+      }
+      .ref-page .ref-hero .btn {
+        min-height: 44px;
+      }
+      .ref-page .ref-nav nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+
+      .ref-page .ref-nav {
+        position: absolute;
+        inset: 0 0 auto;
+        height: var(--nav);
+        padding: 0;
+        z-index: 5;
+        background: var(--bg);
+      }
+      .ref-page .ref-nav .wrap {
+        height: 100%;
+      }
+      .ref-page main > .ref-hero {
+        min-height: 100svh;
+        box-sizing: border-box;
+        padding-block: calc(var(--nav) + var(--s-6)) var(--s-6);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-hero .wrap > div:first-child {
+        grid-column: 1 / span 5;
+      }
+      .ref-page .ref-hero .hero-art {
+        grid-column: 7/-1;
+      }
+      .ref-page main > .ref-close > .wrap {
+        max-width: var(--container);
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        column-gap: var(--gutter);
+      }
+      .ref-page .ref-close .wrap > * {
+        grid-column: 4 / span 6;
+        justify-self: start;
+      }
+      .ref-page .ref-foot .wrap {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-foot nav {
+        min-width: 0;
+      }
+      .place-reference .ref-hero .hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%;
+        z-index: -1;
+      }
+      @media (max-width: 700px) {
+        .ref-page .ref-hero .wrap > div:first-child,
+        .ref-page .ref-hero .hero-art,
+        .ref-page .ref-close .wrap > * {
+          grid-column: 1/-1;
+        }
+        .ref-page .ref-foot .wrap {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .ref-page main > .ref-hero {
+          padding-top: calc(var(--nav) + var(--s-4));
+        }
+      }
+
+      [data-own="day-bar"] .wrap > h2 + .t-lead {
+        margin-top: var(--s-4);
+      }
+      [data-own="day-bar"] .wrap > .t-lead + * {
+        margin-top: var(--head-gap);
+      }
+      [data-own="day-bar"] .week {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      [data-own="day-bar"] th {
+        text-align: left;
+        font-weight: 500;
+      }
+      [data-own="day-bar"] th:first-child {
+        width: 19%;
+        padding-right: var(--s-3);
+      }
+      [data-own="day-bar"] thead th {
+        color: var(--muted);
+        font-size: var(--t-small);
+      }
+      [data-own="day-bar"] th,
+      [data-own="day-bar"] td {
+        border-bottom: 1px solid var(--line);
+        padding-block: var(--s-2);
+      }
+      [data-own="day-bar"] .axis {
+        display: grid;
+        grid-template-columns: 1fr 2fr 2fr 1fr;
+        text-align: center;
+      }
+      [data-own="day-bar"] .axis span:first-child {
+        text-align: left;
+      }
+      [data-own="day-bar"] .axis span:last-child {
+        text-align: right;
+      }
+      [data-own="day-bar"] .day-track {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        background: var(--surface);
+      }
+      [data-own="day-bar"] .session {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--s-1);
+        background: var(--ink);
+        color: var(--bg);
+        padding: var(--s-1) var(--s-2);
+        font-size: var(--t-small);
+      }
+      [data-own="day-bar"] tr:nth-child(4) .session {
+        background: var(--action);
+        color: var(--action-ink);
+      }
+      [data-own="day-bar"] .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+      }
+      @media (max-width: 639px) {
+        [data-own="day-bar"] th:first-child {
+          width: auto;
+        }
+        [data-own="day-bar"] thead th:first-child {
+          display: none;
+        }
+        [data-own="day-bar"] tr,
+        [data-own="day-bar"] td {
+          display: block;
+        }
+        [data-own="day-bar"] th {
+          display: block;
+          border: 0;
+          padding-bottom: var(--s-1);
+        }
+        [data-own="day-bar"] td {
+          padding-top: 0;
+        }
+        [data-own="day-bar"] .session {
+          padding-inline: var(--s-1);
+        }
+      }
+      .brew-stages {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 12px;
+        border-top: 1px solid currentColor;
+        font-size: 0.9rem;
+      }
+      .ref-page main > section[data-width="narrow"] > .wrap,
+      .ref-page main > #runner-plans > .wrap {
+        max-width: var(--container);
+      }
+      .ref-page .reading-column {
+        max-width: min(100%, 72ch);
+      }
+      .ref-page main > .ref-close > .wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--s-6);
+      }
+      .ref-page .ref-close .reading-column {
+        flex: 1;
+      }
+      .ref-page .closing-mark {
+        width: clamp(85px, 17%, 200px);
+        height: auto;
+        color: var(--accent);
+      }
+      .ref-page .ref-foot .wrap {
+        display: block;
+      }
+      .ref-page .foot-groups {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gutter);
+        margin-top: var(--s-5);
+      }
+      .ref-page :focus-visible {
+        outline: 3px solid currentColor;
+        outline-offset: 3px;
+      }
+      .ref-page .ref-hero a:focus-visible {
+        outline: 3px solid var(--ink);
+        box-shadow: 0 0 0 6px var(--bg);
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-close > .wrap {
+          display: block;
+        }
+        .ref-page .closing-mark {
+          width: 72px;
+          margin-top: 20px;
+        }
+        .ref-page .foot-groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .ref-page .ref-foot .credit-line {
+        grid-column: 1/-1;
+        width: auto;
+        margin-inline: 0;
+      }
+      #main > section[data-width="narrow"] > .wrap {
+        max-width: var(--container);
+      }
+      #main > .ref-close > .wrap {
+        flex-direction: row;
+      }
+      .ref-page .skip-ref:not(:focus-visible) {
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        clip-path: inset(50%);
+        overflow: hidden;
+      }
+      .ref-page .skip-ref {
+        left: max(var(--gut), calc((100% - var(--container)) / 2));
+      }
+      #main .ref-hero .wrap > .hero__grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-column: 1/-1;
+        gap: var(--s-6) var(--gutter);
+        align-items: center;
+        width: 100%;
+      }
+      #main .hero__grid > .hero__text {
+        grid-column: 1 / span 5;
+      }
+      #main .hero__grid > .hero-art {
+        grid-column: 7/-1;
+      }
+      #main .intro {
+        color: var(--ink);
+      }
+      @media (max-width: 700px) {
+        #main .ref-hero .wrap > .hero__grid {
+          grid-template-columns: 1fr;
+        }
+        #main .hero__grid > .hero-art,
+        #main .hero__grid > .hero__text {
+          grid-column: 1;
+        }
+        #main .ref-close .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .ref-page .closing-mark {
+          width: calc((100% - 3 * var(--gutter)) / 4);
+        }
+      }
+      .ref-page .layout-work .plate-label {
+        padding: 0 0 var(--s-3);
+        font-size: var(--t-small);
+        color: var(--ink);
+      }
+      .ref-page .layout-work .big {
+        line-height: 1.22;
+      }
+      .ref-page #proof .big {
+        margin-block: var(--s-3) var(--s-2);
+      }
+      .ref-page #proof .big {
+        font-size: var(--t-h2);
+      }
+      .ref-page .ref-foot .credit-line {
+        padding-inline: 0;
+      }
+      .ref-page a:focus-visible,
+      .ref-page button:focus-visible {
+        outline: 3px solid #151a17;
+        outline-offset: 3px;
+        box-shadow: 0 0 0 6px #fff;
+      }
+      @media (min-width: 701px) {
+        .ref-page .closing-mark {
+          width: calc((100% + var(--gutter)) / 6 - var(--gutter));
+        }
+      }
+      #main .roast-sample {
+        width: 100%;
+        height: clamp(180px, 32vw, 365px);
+        object-fit: cover;
+        margin-bottom: var(--s-5);
+      }
+      .place-reference .ref-hero .hero__bg {
+        z-index: 0;
+      }
+      .place-reference #opening .wrap {
+        position: relative;
+        z-index: 1;
+      }
+      @media (max-width: 700px) {
+        .place-reference #opening .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    @media(max-width:700px){.place-reference #opening .hero-text > .btn {display:flex;width:calc(100% + 2 * var(--s-5));max-width:none;margin-inline:calc(-1 * var(--s-5));margin-bottom:calc(-1 * var(--s-5));border-radius:0;}} </style>
+  </head>
+  <body class="ref-page place-reference">
+    <header class="nav ref-nav">
+      <a class="skip-ref" href="#main">Skip to content</a>
+      <div class="wrap">
+        <a class="brand" href="#main">Birchroom</a>
+        <nav aria-label="Main">
+          <a href="#coffee-service">Coffee menu</a
+          ><a href="#counter-calendar">Tastings</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section
+        class="hero hero--place ref-hero layout-work"
+        data-enter="still"
+        aria-labelledby="hero-title"
+        id="opening"
+        data-family="hero"
+        data-width="full"
+      >
+        <img
+          class="hero__bg"
+          fetchpriority="high"
+          src="../layout/img/photo-c8.jpg"
+          alt="Milk poured into a cream cup of latte art held in one hand, warm bokeh behind"
+          width="960"
+          height="640"
+        />
+        <div class="wrap">
+          <div class="hero-text">
+            <h1 id="hero-title">Morning coffee at Birchroom.</h1>
+            <p>
+              Filter by the cup, espresso at the counter and a seat by the
+              window on Mill Lane.
+            </p>
+            <a class="btn" href="#visit">See opening hours</a>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own"
+        id="visit"
+        data-family="visit-hours"
+        data-width="content"
+        data-own="day-bar"
+        aria-labelledby="day-bar-title"
+      >
+        <div class="wrap">
+          <h2 id="day-bar-title">Find the counter</h2>
+          <p class="t-lead measure">
+            Mill Lane, East Quarter. Walk in for coffee and Saturday tastings.
+            We close on Mondays.
+          </p>
+          <table class="week" data-assumed>
+            <thead>
+              <tr>
+                <th scope="col">Day</th>
+                <th scope="col">
+                  <span class="axis"
+                    ><span>08:00</span><span>12:00</span><span>16:00</span
+                    ><span>20:00</span></span
+                  ><span class="sr-only">Opening hours</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Tuesday–Friday</th>
+                <td>
+                  <div class="day-track">
+                    <span class="session" style="grid-column: 1 / 8"
+                      ><time>08:00</time><span class="sr-only"> to </span
+                      ><time>15:00</time></span
+                    >
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Saturday–Sunday</th>
+                <td>
+                  <div class="day-track">
+                    <span class="session" style="grid-column: 2 / 7"
+                      ><time>09:00</time><span class="sr-only"> to </span
+                      ><time>14:00</time></span
+                    >
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="coffee-service"
+        data-own="coffee-service"
+        data-family="product-shelf"
+        data-width="content"
+        aria-labelledby="coffee-service-title"
+      >
+        <div class="wrap">
+          <h2 id="coffee-service-title">Coffee at the counter</h2>
+          <p class="intro">
+            Choose your cup at Birchroom. Filter changes with the morning batch.
+          </p>
+          <div class="trio drinks">
+            <article>
+              <header class="plate-label">
+                <strong>Flat white</strong><span>€3.80</span>
+              </header>
+              <img
+                src="../layout/img/photo-c7.jpg"
+                alt="Close-up of rosetta latte art in a white cup and saucer on a grey slate table"
+                width="960"
+                height="640"
+              />
+            </article>
+            <article>
+              <header class="plate-label">
+                <strong>Espresso</strong><span>€2.80</span>
+              </header>
+              <img
+                src="../photos/img/m28989985-1200.webp"
+                alt="A hand holding a small white cup under a bottomless portafilter as espresso runs, pressure gauge and steel machine behind"
+                width="960"
+                height="640"
+              />
+            </article>
+            <article>
+              <header class="plate-label">
+                <strong>Cappuccino</strong><span>€3.60</span>
+              </header>
+              <img
+                src="../layout/img/photo-c166.jpg"
+                alt="Cappuccino dusted with cinnamon in a white cup on a square saucer, croissant and water glass behind, window light"
+                width="960"
+                height="640"
+              />
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="brew-counter"
+        data-own="brew-counter"
+        data-family="split"
+        data-width="content"
+        aria-labelledby="brew-counter-title"
+      >
+        <div class="wrap">
+          <h2 id="brew-counter-title">The morning pour</h2>
+          <p class="intro">
+            At eight we grind the first filter batch. By ten the hand brewer is
+            out for anyone who wants a single cup.
+          </p>
+          <article class="brew-wide">
+            <header class="plate-label">
+              Hand filter · served until 14:00
+            </header>
+            <img
+              src="../layout/img/photo-c96.jpg"
+              alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+              width="960"
+              height="640"
+            />
+          </article>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="roast-notes"
+        data-own="roast-notes"
+        data-family="editorial-statement"
+        data-width="narrow"
+        aria-labelledby="roast-notes-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <img
+              class="roast-sample"
+              src="../layout/img/photo-beans-hand.jpg"
+              alt="A handful of beans on the roastery sample table"
+              loading="eager"
+            />
+            <h2 id="roast-notes-title">Why we roast for filter</h2>
+            <p class="intro">
+              Our house filter, brewed at the counter each morning.
+            </p>
+            <div class="roast-letter">
+              <p>
+                We stop this roast while the acidity is still clear. In the cup
+                it tastes of plum as it cools, with a little cocoa at the end.
+              </p>
+              <p>
+                At home, start with 16 grams of coffee and 250 grams of water.
+                Grind a little finer if the cup tastes thin.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="counter-calendar"
+        data-own="counter-calendar"
+        data-family="event-list"
+        data-width="content"
+        aria-labelledby="counter-calendar-title"
+      >
+        <div class="wrap">
+          <h2 id="counter-calendar-title">Saturday at the brew bar</h2>
+          <p class="intro">
+            Small tastings take place before lunch. Seats are first come, first
+            served.
+          </p>
+          <div class="event-board">
+            <figure>
+              <img
+                src="../layout/img/photo-c70.jpg"
+                alt="Three white bowls of coffee beans, dark to light roast, in a row on a white surface, seen from above"
+                width="960"
+                height="640"
+              />
+            </figure>
+            <div class="counter-events">
+              <article class="line">
+                <time>5 Dec</time>
+                <div>
+                  <h3>Filter side by side</h3>
+                  <p>Two brewers, one coffee</p>
+                </div>
+                <span>10:00</span>
+              </article>
+              <article class="line">
+                <time>12 Dec</time>
+                <div>
+                  <h3>A lighter roast</h3>
+                  <p>Taste the same lot at two roast levels</p>
+                </div>
+                <span>10:30</span>
+              </article>
+              <article class="line">
+                <time>19 Dec</time>
+                <div>
+                  <h3>Dialling in espresso</h3>
+                  <p>Try three shots at different grind settings</p>
+                </div>
+                <span>10:00</span>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="bean-journal"
+        data-own="bean-journal"
+        data-family="article-list"
+        data-width="content"
+        aria-labelledby="bean-journal-title"
+      >
+        <div class="wrap">
+          <h2 id="bean-journal-title">From the roastery</h2>
+          <p class="intro">
+            Short field notes on picking coffee, brewing it and tasting the
+            difference.
+          </p>
+          <div class="journal">
+            <article class="line">
+              <img
+                src="../photos/img/m147143894-1200.webp"
+                alt="A steel sample trier with a wooden handle pulled from a coffee roaster's drum, holding pale green beans mid-roast"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Selecting a sample roast</h3>
+                <p>At the sorting table</p>
+              </div>
+            </article>
+            <article class="line">
+              <img
+                src="../photos/img/m147143898-1200.webp"
+                alt="A steel sample trier held out of a roaster holding a few freshly roasted beans, the drum blurred behind"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Reading a roast by colour</h3>
+                <p>Three sample batches</p>
+              </div>
+            </article>
+            <article class="line">
+              <img
+                src="../photos/img/m187311853-1200.webp"
+                alt="A barista's hands tamping ground coffee in a portafilter beside an espresso machine"
+                width="960"
+                height="640"
+              />
+              <div>
+                <h3>Packing the basket</h3>
+                <p>At the espresso machine</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="proof"
+        data-own="proof"
+        data-family="evidence"
+        data-width="narrow"
+        aria-labelledby="proof-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="proof-title">Start with sixteen grams</h2>
+            <p class="intro">
+              For our morning filter, pour 250 grams of water over 16 grams of
+              ground coffee. Leave the first pour to bloom for half a minute.
+            </p>
+            <div class="stage">
+              <svg
+                viewBox="0 0 360 142"
+                role="img"
+                aria-label="Paper cone seated above a brewing cup, with the wetted grounds and the water line marked"
+              >
+                <g fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M40 16h114l-44 63H85z M48 22l40 50h18l37-50M34 81h128M57 87h83v34q0 9-9 9H68q-11 0-11-9zM142 91h12q16 0 9 14-4 8-19 8M65 60h62"
+                  />
+                  <path d="M91 42h85l18-12h22M100 77h76l18-5h22" />
+                </g>
+                <g fill="currentColor" font-size="14">
+                  <text x="225" y="34">Water line</text>
+                  <text x="225" y="77">Ground coffee</text>
+                </g>
+              </svg>
+              <div class="big">16 g / 250 g</div>
+              <p>Medium grind · 30 second bloom</p>
+              <div class="brew-stages">
+                <span>Wet the grounds</span><span>Wait 30 seconds</span
+                ><span>Finish the pour</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section layout-work ref-close"
+        id="close"
+        data-family="closing-action"
+        data-width="narrow"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2>Come to the next tasting</h2>
+            <p class="intro">
+              Saturday 5 December at 10:00, on Mill Lane. Save the half-hour
+              tasting to your calendar.
+            </p>
+            <a
+              class="btn"
+              download="birchroom-tasting.ics"
+              href="data:text/calendar;charset=utf-8,BEGIN%3AVCALENDAR%0D%0AVERSION%3A2.0%0D%0APRODID%3A-%2F%2FBirchroom%2F%2FCounter%20tastings%2F%2FEN%0D%0ABEGIN%3AVEVENT%0D%0AUID%3Afilter-20261205%40birchroom.example%0D%0ADTSTAMP%3A20261126T000000Z%0D%0ADTSTART%3A20261205T100000%0D%0ADTEND%3A20261205T103000%0D%0ASUMMARY%3AFilter%20side%20by%20side%0D%0ALOCATION%3ABirchroom%5C%2C%20Mill%20Lane%5C%2C%20East%20Quarter%0D%0ADESCRIPTION%3AWalk-in%20tasting.%20Seats%20are%20first%20come%20first%20served.%0D%0AEND%3AVEVENT%0D%0AEND%3AVCALENDAR%0D%0A"
+              >Save the tasting</a
+            >
+          </div>
+          <svg
+            class="closing-mark"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-label="Tasting calendar"
+          >
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <path
+                d="M20 26h82v80H20z M20 45h82 M39 19v16 M82 19v16 M35 62h12 M58 62h12 M80 62h9 M35 82h12"
+              />
+            </g>
+          </svg>
+        </div>
+      </section>
+    </main>
+    <footer class="ref-foot closing">
+      <div class="wrap">
+        <strong>Birchroom</strong>
+        <div class="closing__links foot-groups">
+          <nav aria-label="Explore">
+            <strong>Explore</strong><a href="#visit">Hours and address</a
+            ><a href="#coffee-service">Coffee menu</a
+            ><a href="#brew-counter">Morning filter</a>
+          </nav>
+          <nav aria-label="Details">
+            <strong>Details</strong><a href="#roast-notes">House roast</a
+            ><a href="#counter-calendar">Tastings</a
+            ><a href="#bean-journal">Roastery journal</a>
+          </nav>
+          <nav aria-label="Resources">
+            <strong>Resources</strong><a href="#proof">Brew ratio</a
+            ><a href="#close">Tasting reminder</a>
+          </nav>
+          <small class="credit-line"
+            >Photography · Kim Sanso, Drew Coffman, Takeaway, Katerina
+            Pavlickova, Alorin, Jameswasswa, Shixart1985, www.Pixel.la Free
+            Stock Photos</small
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1314 @@
+<!doctype html>
+<!-- Study this reference page for the order, widths and relationships between sections. Build a fresh composition for the client's material. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Offline walking notebook · Footnote</title>
+    <meta name="description" content="Offline walking notebook at Footnote." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work .small {
+        font-size: var(--t-small);
+        color: var(--muted);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair,
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #ridge-notebook .stage svg {
+        max-height: 55vh;
+      }
+      #ridge-notebook .stage {
+        padding: var(--s-5);
+      }
+      @media (max-width: 650px) {
+        #ridge-notebook dl {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: var(--s-2);
+        }
+        #ridge-notebook dd {
+          font-size: var(--t-h3);
+        }
+      }
+      .walklog {
+        list-style: none;
+        padding: 0;
+        max-width: 65ch;
+      }
+      .walklog li {
+        display: grid;
+        grid-template-columns: 5em 1fr;
+        padding-block: var(--s-5);
+        border-top: 1px solid var(--line);
+      }
+      .walklog time {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted);
+      }
+      #field-observations .wrap {
+        max-width: 68ch;
+      }
+      .walklog li {
+        position: relative;
+        padding-left: var(--s-5);
+        border-left: 1px solid var(--accent);
+      }
+      .walklog li:before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        top: var(--s-6);
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+      .trail-plates img {
+        aspect-ratio: 4/5;
+        object-fit: cover;
+      }
+      .trail-plates .plate-label {
+        font-size: var(--t-body);
+      }
+      @media (max-width: 650px) {
+        .trail-plates img {
+          aspect-ratio: 16/9;
+        }
+      }
+      .paper-file {
+        width: 6em;
+        aspect-ratio: 4/5;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        margin-bottom: var(--s-5);
+        display: grid;
+        align-content: end;
+        padding: var(--s-3);
+        font-weight: 600;
+      }
+      .paper-file {
+        width: 8em;
+        align-content: space-between;
+      }
+      .paper-file svg {
+        height: 4em;
+      }
+      .walk-quote {
+        max-width: 23ch;
+        margin: 0;
+        font:
+          400 var(--t-h2) / 1.2 Georgia,
+          serif;
+      }
+      .walk-quote footer {
+        margin-top: var(--s-5);
+        font: var(--t-small) / 1.4 var(--font-text);
+      }
+      #walk-extract .wrap {
+        max-width: 60ch;
+      }
+      .walk-quote {
+        max-width: 30ch;
+      }
+      #walk-extract h2 {
+        font-size: var(--t-card);
+      }
+      .ref-nav,
+      .ref-foot {
+        padding-block: var(--s-5);
+      }
+      .ref-nav .wrap,
+      .ref-foot .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-5);
+      }
+      .ref-nav a,
+      .ref-foot a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+      }
+      .ref-nav .brand {
+        font-size: var(--t-h3);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .ref-nav nav {
+        display: flex;
+        gap: var(--s-5);
+      }
+      .ref-hero {
+        padding-block: var(--s-8);
+        min-height: 76svh;
+        display: grid;
+        align-content: center;
+      }
+      .ref-hero h1 {
+        max-width: 18ch;
+        text-wrap: balance;
+      }
+      .ref-hero p {
+        max-width: 48ch;
+        margin-block: var(--s-5);
+      }
+      .ref-hero .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: var(--s-7);
+      }
+      .ref-hero .hero-art {
+        min-width: 0;
+      }
+      .hero-art svg,
+      .hero-art img {
+        width: 100%;
+        display: block;
+      }
+      .hero-art img {
+        aspect-ratio: 4/5;
+        object-fit: cover;
+      }
+      .ref-hero .btn,
+      .ref-close .btn {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: var(--s-3) var(--s-5);
+        background: var(--action);
+        color: var(--action-ink);
+        text-decoration: none;
+      }
+      .ref-page main > section:nth-child(3n + 1):not(.ref-hero) {
+        background: var(--surface);
+      }
+      .ref-close {
+        align-content: center;
+      }
+      .ref-close .wrap {
+        max-width: 64ch;
+      }
+      .ref-foot {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .ref-foot .wrap {
+        align-items: start;
+      }
+      .ref-foot nav {
+        display: grid;
+        gap: var(--s-2);
+      }
+      .ref-foot a {
+        font-size: var(--t-small);
+      }
+      .ref-foot small {
+        display: block;
+        margin-top: var(--s-5);
+      }
+      .skip-ref {
+        position: absolute;
+        left: var(--s-3);
+        background: var(--bg);
+        padding: var(--s-3);
+        transform: translateY(-140%);
+      }
+      .skip-ref:focus {
+        transform: none;
+      }
+      @media (max-width: 700px) {
+        .ref-hero .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-hero {
+          padding-block: var(--s-7);
+        }
+        .hero-art img {
+          aspect-ratio: 3/2;
+        }
+        .ref-nav nav a:nth-child(2) {
+          display: none;
+        }
+        .ref-foot .wrap {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .ref-nav nav {
+          gap: var(--s-3);
+        }
+      }
+
+      .ref-page .ref-close .btn {
+        align-self: flex-start;
+      }
+      .ref-foot {
+        padding-block: var(--s-7);
+      }
+      .ref-foot a {
+        display: block;
+        min-height: 30px;
+      }
+      .ref-foot nav strong {
+        margin-bottom: var(--s-3);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+      }
+      .ref-hero .hero-art {
+        width: 100%;
+      }
+      .software-reference .ref-hero {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .software-reference .hero-art .stage {
+        color: var(--p-ink);
+      }
+      .software-reference .ref-hero .btn {
+        background: #c8d6b7;
+        color: #253122;
+      }
+      .app-reference .ref-hero .wrap {
+        grid-template-columns: 1fr 1.15fr;
+      }
+      .app-reference .hero-art {
+        border: 1px solid var(--line);
+        padding: var(--s-5);
+        background: var(--surface);
+        transform: rotate(-2deg);
+      }
+      .product-reference .ref-hero .wrap {
+        grid-template-columns: 2fr 3fr;
+      }
+      .product-reference .ref-hero {
+        background: var(--surface);
+      }
+      .product-reference .hero-art svg {
+        width: 100%;
+      }
+      .place-reference .ref-hero {
+        position: relative;
+        isolation: isolate;
+        min-height: 78svh;
+      }
+      .place-reference .ref-hero .hero-art {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+      }
+      .place-reference .ref-hero .hero-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 45%;
+      }
+      .place-reference .ref-hero .wrap > div:first-child {
+        max-width: 46ch;
+        background: var(--bg);
+        padding: var(--s-6);
+      }
+      .place-reference :is(h1, h2, .brand) {
+        font-family: Georgia, serif;
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-hero > .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-foot a {
+          min-height: 44px;
+        }
+        .place-reference .ref-hero {
+          align-content: end;
+        }
+        .place-reference .ref-hero .wrap > div:first-child {
+          padding: var(--s-5);
+        }
+      }
+
+      #failure-excerpt .wrap {
+        max-width: 84ch;
+      }
+      #failure-excerpt .excerpt {
+        margin: 0;
+      }
+      #runner-plans .wrap {
+        max-width: 58rem;
+      }
+      #runner-plans .big {
+        margin-top: var(--s-4);
+      }
+      #meter-portrait .meter-plate svg {
+        max-height: none;
+      }
+      #roast-notes .intro {
+        margin-bottom: var(--s-5);
+      }
+      #light-studies figure:nth-child(2) img {
+        object-position: 54% center;
+      }
+      @media (max-width: 650px) {
+        #walk-export .line {
+          display: grid;
+          grid-template-columns: 5em 1fr;
+          column-gap: var(--s-4);
+          align-content: center;
+        }
+        #walk-export .paper-file {
+          grid-row: span 2;
+          width: 5em;
+          margin: 0;
+        }
+        #walk-export .line p {
+          grid-column: 2;
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+
+      .ref-page #proof .wrap {
+        max-width: 74ch;
+      }
+      .ref-page .ref-hero p {
+        color: inherit;
+      }
+      .ref-page .ref-hero .wrap {
+        height: auto;
+      }
+      .ref-page .ref-hero .hero-art p {
+        color: var(--ink);
+      }
+      .ref-page .hero-art {
+        transform: none;
+      }
+      .ref-foot .credit-line {
+        margin-top: var(--s-5);
+      }
+      .ref-page .ref-hero .btn {
+        min-height: 44px;
+      }
+      .ref-page .ref-nav nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+      .app-reference .notebook-cover {
+        padding: 0;
+        background: var(--bg);
+      }
+      .field-print {
+        display: flex;
+        gap: var(--s-3);
+        align-items: baseline;
+        justify-content: space-between;
+        padding: var(--s-4);
+        font-size: var(--t-small);
+      }
+      .notebook-cover img {
+        aspect-ratio: 2.1;
+        object-fit: cover;
+      }
+      #story svg {
+        max-height: 36vh;
+      }
+
+      .ref-page .ref-nav {
+        position: absolute;
+        inset: 0 0 auto;
+        height: var(--nav);
+        padding: 0;
+        z-index: 5;
+        background: var(--bg);
+      }
+      .ref-page .ref-nav .wrap {
+        height: 100%;
+      }
+      .ref-page main > .ref-hero {
+        min-height: 100svh;
+        box-sizing: border-box;
+        padding-block: calc(var(--nav) + var(--s-6)) var(--s-6);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-hero .wrap > div:first-child {
+        grid-column: 1 / span 5;
+      }
+      .ref-page .ref-hero .hero-art {
+        grid-column: 7/-1;
+      }
+      .ref-page main > .ref-close > .wrap {
+        max-width: var(--container);
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        column-gap: var(--gutter);
+      }
+      .ref-page .ref-close .wrap > * {
+        grid-column: 4 / span 6;
+        justify-self: start;
+      }
+      .ref-page .ref-foot .wrap {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-foot nav {
+        min-width: 0;
+      }
+      .place-reference .ref-hero .hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%;
+        z-index: -1;
+      }
+      @media (max-width: 700px) {
+        .ref-page .ref-hero .wrap > div:first-child,
+        .ref-page .ref-hero .hero-art,
+        .ref-page .ref-close .wrap > * {
+          grid-column: 1/-1;
+        }
+        .ref-page .ref-foot .wrap {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .ref-page main > .ref-hero {
+          padding-top: calc(var(--nav) + var(--s-4));
+        }
+      }
+
+      [data-own="scale"] .wrap > h2 + .t-lead {
+        margin-top: var(--s-4);
+      }
+      [data-own="scale"] .wrap > .t-lead + * {
+        margin-top: var(--head-gap);
+      }
+      [data-own="scale"] .thermometer {
+        padding: var(--s-6);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        font-variant-numeric: tabular-nums;
+      }
+      [data-own="scale"] .ruler svg {
+        width: 100%;
+        height: var(--s-7);
+        overflow: visible;
+      }
+      [data-own="scale"] .ruler path {
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1px;
+        vector-effect: non-scaling-stroke;
+      }
+      [data-own="scale"] .points {
+        display: grid;
+        grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+      }
+      [data-own="scale"] .points li {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: var(--s-1);
+        align-items: start;
+        text-align: center;
+        justify-items: center;
+      }
+      [data-own="scale"] .points li:first-child {
+        text-align: left;
+        justify-items: start;
+      }
+      [data-own="scale"] .points li:last-child {
+        text-align: right;
+        justify-items: end;
+      }
+      [data-own="scale"] .points strong {
+        font-weight: 500;
+        font-size: var(--t-h3);
+        white-space: nowrap;
+      }
+      [data-own="scale"] figcaption {
+        color: var(--muted);
+        font-size: var(--t-small);
+        margin-top: var(--s-6);
+      }
+      @media (max-width: 639px) {
+        [data-own="scale"] .thermometer {
+          padding: var(--s-4);
+        }
+        [data-own="scale"] .points strong {
+          font-size: var(--t-small);
+        }
+        [data-own="scale"] .points {
+          grid-template-columns:
+            minmax(0, 1fr) repeat(3, minmax(0, 2fr))
+            minmax(0, 1fr);
+        }
+        [data-own="scale"] .points span {
+          font-size: var(--t-small);
+          line-height: 1.3;
+        }
+        [data-own="scale"] .ruler svg {
+          height: var(--s-6);
+        }
+      }
+      .app-reference .ref-hero {
+        background: #eee1ca;
+      }
+      @media (max-width: 700px) {
+        .app-reference main > .ref-hero > .wrap {
+          align-content: center;
+          row-gap: var(--s-6);
+        }
+      }
+
+      .ref-page main > section[data-width="narrow"] > .wrap,
+      .ref-page main > #runner-plans > .wrap {
+        max-width: var(--container);
+      }
+      .ref-page .reading-column {
+        max-width: min(100%, 72ch);
+      }
+      .ref-page main > .ref-close > .wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--s-6);
+      }
+      .ref-page .ref-close .reading-column {
+        flex: 1;
+      }
+      .ref-page .closing-mark {
+        width: clamp(85px, 17%, 200px);
+        height: auto;
+        color: var(--accent);
+      }
+      .ref-page .ref-foot .wrap {
+        display: block;
+      }
+      .ref-page .foot-groups {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gutter);
+        margin-top: var(--s-5);
+      }
+      .ref-page :focus-visible {
+        outline: 3px solid currentColor;
+        outline-offset: 3px;
+      }
+      .ref-page .ref-hero a:focus-visible {
+        outline: 3px solid var(--ink);
+        box-shadow: 0 0 0 6px var(--bg);
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-close > .wrap {
+          display: block;
+        }
+        .ref-page .closing-mark {
+          width: 72px;
+          margin-top: 20px;
+        }
+        .ref-page .foot-groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .ref-page .ref-foot .credit-line {
+        grid-column: 1/-1;
+        width: auto;
+        margin-inline: 0;
+      }
+      #main > section[data-width="narrow"] > .wrap {
+        max-width: var(--container);
+      }
+      #main > .ref-close > .wrap {
+        flex-direction: row;
+      }
+      .ref-page .skip-ref:not(:focus-visible) {
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        clip-path: inset(50%);
+        overflow: hidden;
+      }
+      .ref-page .skip-ref {
+        left: max(var(--gut), calc((100% - var(--container)) / 2));
+      }
+      #main .ref-hero .wrap > .hero__grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-column: 1/-1;
+        gap: var(--s-6) var(--gutter);
+        align-items: center;
+        width: 100%;
+      }
+      #main .hero__grid > .hero__text {
+        grid-column: 1 / span 5;
+      }
+      #main .hero__grid > .hero-art {
+        grid-column: 7/-1;
+      }
+      #main .intro {
+        color: var(--ink);
+      }
+      @media (max-width: 700px) {
+        #main .ref-hero .wrap > .hero__grid {
+          grid-template-columns: 1fr;
+        }
+        #main .hero__grid > .hero-art,
+        #main .hero__grid > .hero__text {
+          grid-column: 1;
+        }
+        #main .ref-close .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .ref-page .closing-mark {
+          width: calc((100% - 3 * var(--gutter)) / 4);
+        }
+      }
+      #main #walk-extract h2 {
+        font-size: var(--t-h2);
+      }
+      #main #ridge-notebook .big {
+        font-size: var(--t-h2);
+      }
+      .plate-title {
+        font: var(--display-weight) var(--t-body) / 1.3 var(--font-display);
+        margin-bottom: var(--s-3);
+      }
+      .ref-page .layout-work .plate-label {
+        padding: 0 0 var(--s-3);
+        font-size: var(--t-small);
+        color: var(--ink);
+      }
+      .ref-page .layout-work .big {
+        line-height: 1.22;
+      }
+      .ref-page #proof .big {
+        margin-block: var(--s-3) var(--s-2);
+      }
+      .ref-page #proof .big {
+        font-size: var(--t-h2);
+      }
+      .ref-page .ref-foot .credit-line {
+        padding-inline: 0;
+      }
+      .ref-page a:focus-visible,
+      .ref-page button:focus-visible {
+        outline: 3px solid #151a17;
+        outline-offset: 3px;
+        box-shadow: 0 0 0 6px #fff;
+      }
+      @media (min-width: 701px) {
+        .ref-page .closing-mark {
+          width: calc((100% + var(--gutter)) / 6 - var(--gutter));
+        }
+      }
+      #walk-extract .gate-sketch {
+        width: min(200px, 55%);
+        margin: 0 0 var(--s-4);
+        color: var(--accent);
+      }
+      @media (min-width: 701px) {
+        #field-observations .reading-column {
+          max-width: calc((100% + var(--gutter)) * 7 / 12 - var(--gutter));
+          width: 100%;
+        }
+        #field-observations .walklog {
+          width: 100%;
+          max-width: none;
+        }
+      }
+      @media (max-width: 700px) {
+        #main > #close > .wrap {
+          display: block;
+        }
+        #close .reading-column,
+        #close .reading-column > .btn {
+          width: 100%;
+          max-width: none;
+          box-sizing: border-box;
+        }
+      }
+    </style>
+  </head>
+  <body class="ref-page app-reference">
+    <header class="nav ref-nav">
+      <a class="skip-ref" href="#main">Skip to content</a>
+      <div class="wrap">
+        <a class="brand" href="#main">Footnote</a>
+        <nav aria-label="Main">
+          <a href="#walk-extract">Field note</a
+          ><a href="#story">Route distances</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section
+        class="hero hero--split ref-hero layout-work"
+        data-enter="still"
+        aria-labelledby="hero-title"
+        id="opening"
+        data-family="hero"
+        data-width="content"
+      >
+        <div class="wrap">
+          <div class="hero-text hero__grid">
+            <div class="hero__text">
+              <h1 id="hero-title">A notebook for the way back.</h1>
+              <p>
+                Trace a walk, mark a turning and keep the notes with the map.
+                Saved walks open offline.
+              </p>
+              <a class="btn" href="#ridge-notebook">Open a sample walk</a>
+            </div>
+            <div class="hero-art notebook-cover">
+              <div class="field-print">
+                <strong>My walks</strong><span>Example notebook</span>
+              </div>
+              <img
+                src="../layout/img/photo-d540.jpg"
+                alt="Orange gravel road curving through an autumn forest"
+              />
+              <div class="field-print">
+                <strong>Quarry Ridge</strong><span>6.4 km · Saved offline</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="ridge-notebook"
+        data-own="ridge-notebook"
+        data-family="map-and-facts"
+        data-width="content"
+        aria-labelledby="ridge-notebook-title"
+      >
+        <div class="wrap">
+          <h2 id="ridge-notebook-title">The walk to Quarry Ridge</h2>
+          <p class="intro">
+            Footnote keeps your route, distance and field notes together when
+            the signal drops.
+          </p>
+          <figure class="stage">
+            <p>Example walk · Quarry Ridge</p>
+            <svg
+              viewBox="0 0 600 350"
+              role="img"
+              aria-label="Walking route between the old quarry and the ridge"
+            >
+              <rect width="600" height="350" fill="var(--surface)" />
+              <image
+                width="600"
+                height="350"
+                href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cpattern%20patternTransform%3D%22rotate(-18)%20scale(3.3)%22%20id%3D%22m11oem3m-marks%22%20patternUnits%3D%22userSpaceOnUse%22%20width%3D%2280%22%20height%3D%2280%22%3E%3Cpath%20d%3D%22M30.0%208.7L26.3%2010.0L25.0%2010.4L20.0%2012.6L15.7%2015.0L15.0%2015.5L10.8%2020.0L10.0%2022.0L9.0%2025.0L8.7%2030.0L9.4%2035.0L10.0%2037.3L10.6%2040.0L11.4%2045.0L11.7%2050.0L11.4%2055.0L11.2%2060.0L11.6%2065.0L14.8%2070.0L15.0%2070.1L20.0%2072.4L25.0%2073.2L30.0%2073.5L35.0%2073.8L40.0%2073.9L45.0%2073.8L50.0%2073.1L55.0%2071.0L56.6%2070.0L60.0%2067.9L63.8%2065.0L65.0%2064.0L69.0%2060.0L70.0%2058.4L71.7%2055.0L72.4%2050.0L71.6%2045.0L70.0%2041.8L69.0%2040.0L65.0%2035.4L64.5%2035.0L60.0%2030.9L58.9%2030.0L55.0%2026.1L54.0%2025.0L50.0%2020.0L50.0%2019.9L47.2%2015.0L45.0%2012.8L41.0%2010.0L40.0%209.5L35.0%208.4ZM30.0%2013.7L26.9%2015.0L25.0%2015.9L20.0%2019.3L19.1%2020.0L15.0%2024.7L14.8%2025.0L13.7%2030.0L14.3%2035.0L15.0%2038.1L15.5%2040.0L16.4%2045.0L16.3%2050.0L15.7%2055.0L15.3%2060.0L16.4%2065.0L20.0%2068.1L25.0%2069.6L28.4%2070.0L30.0%2070.2L35.0%2070.7L40.0%2071.0L45.0%2070.8L48.0%2070.0L50.0%2069.5L55.0%2066.8L57.4%2065.0L60.0%2062.6L62.9%2060.0L65.0%2057.6L66.9%2055.0L68.1%2050.0L66.9%2045.0L65.0%2042.3L63.0%2040.0L60.0%2037.3L57.3%2035.0L55.0%2033.0L51.9%2030.0L50.0%2028.0L47.4%2025.0L45.0%2021.9L43.4%2020.0L40.0%2016.1L38.1%2015.0L35.0%2013.5ZM30.0%2019.1L28.3%2020.0L25.0%2022.2L22.1%2025.0L20.0%2029.9L20.0%2030.0L20.0%2032.4L20.0%2035.0L21.0%2040.0L21.6%2045.0L21.2%2050.0L20.1%2055.0L20.0%2056.3L19.7%2060.0L20.0%2060.7L23.3%2065.0L25.0%2065.8L30.0%2066.9L35.0%2067.5L40.0%2067.9L45.0%2067.8L50.0%2066.3L52.0%2065.0L55.0%2062.6L57.8%2060.0L60.0%2057.0L61.8%2055.0L63.3%2050.0L61.6%2045.0L60.0%2043.2L57.3%2040.0L55.0%2038.0L52.0%2035.0L50.0%2033.1L47.0%2030.0L45.0%2027.7L42.4%2025.0L40.0%2022.3L36.4%2020.0L35.0%2019.0ZM30.0%2024.8L29.8%2025.0L26.0%2030.0L25.4%2035.0L26.0%2040.0L26.5%2045.0L26.1%2050.0L25.1%2055.0L25.8%2060.0L30.0%2062.7L35.0%2064.1L40.0%2064.8L45.0%2064.7L50.0%2062.8L53.3%2060.0L55.0%2058.0L57.3%2055.0L58.6%2050.0L56.8%2045.0L55.0%2042.9L52.7%2040.0L50.0%2037.4L47.7%2035.0L45.0%2032.2L42.6%2030.0L40.0%2027.3L36.1%2025.0L35.0%2024.2ZM35.0%2028.7L32.1%2030.0L30.0%2033.3L29.6%2035.0L29.8%2040.0L30.0%2041.7L30.3%2045.0L30.0%2050.0L30.0%2050.5L29.7%2055.0L30.0%2055.8L33.6%2060.0L35.0%2060.5L40.0%2061.6L45.0%2061.7L49.1%2060.0L50.0%2059.5L53.8%2055.0L55.0%2050.0L55.0%2050.0L55.0%2050.0L53.2%2045.0L50.0%2041.0L49.2%2040.0L45.0%2035.6L44.2%2035.0L40.0%2031.1L37.4%2030.0Z%22%20fill%3D%22none%22%20stroke%3D%22%23d1c8b7%22%20stroke-width%3D%22.95%22%2F%3E%3C%2Fpattern%3E%3CradialGradient%20id%3D%22m11oem3m-fall%22%3E%3Cstop%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%2F%3E%3C%2FradialGradient%3E%3Cmask%20id%3D%22m11oem3m-fade%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-fall)%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23efe6d6%22%2F%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23m11oem3m-marks)%22%20%2F%3E%3C%2Fsvg%3E"
+              />
+              <path
+                d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="6"
+              />
+              <g fill="var(--ink)">
+                <circle cx="40" cy="260" r="7" />
+                <circle cx="540" cy="49" r="7" />
+              </g>
+              <g fill="var(--ink)" font-family="sans-serif" font-size="19">
+                <text x="35" y="292">Quarry gate</text>
+                <text x="224" y="145">Beech hollow</text>
+                <text x="436" y="32">Ridge path</text>
+              </g>
+              <path
+                d="M310 130l-18 -13 5 -8"
+                fill="none"
+                stroke="var(--accent)"
+                stroke-width="2"
+              />
+            </svg>
+          </figure>
+          <dl class="trio">
+            <div class="line">
+              <dt>Distance</dt>
+              <dd class="big">6.4 km</dd>
+            </div>
+            <div class="line">
+              <dt>Climb</dt>
+              <dd class="big">210 m</dd>
+            </div>
+            <div class="line">
+              <dt>On foot</dt>
+              <dd class="big">1 h 45 min</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="walk-extract"
+        data-own="walk-extract"
+        data-family="single-quote"
+        data-width="narrow"
+        aria-labelledby="walk-extract-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <svg
+              class="gate-sketch"
+              viewBox="0 0 220 75"
+              role="img"
+              aria-label="Field sketch of the closed quarry gate"
+            >
+              <g fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M9 62h198M28 63V14h5v49m143 0V12h5v51M35 25l138-5v29L35 54zm4 3 126 18m-61-22v26M36 43l56-17"
+                />
+                <path d="M158 35h10v10h-10z M160 35v-4a3 3 0 0 1 6 0v4" />
+              </g>
+            </svg>
+            <h2 id="walk-extract-title">A note worth finding again</h2>
+            <p class="intro">From the example notebook for Quarry Ridge.</p>
+            <blockquote class="walk-quote">
+              “At the fork above the quarry, take the grass path. The gravel
+              track ends at a locked gate.”
+              <footer>Upper path · 10:18</footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="trail-editions"
+        data-own="trail-editions"
+        data-family="photo-gallery"
+        data-width="content"
+        aria-labelledby="trail-editions-title"
+      >
+        <div class="wrap">
+          <h2 id="trail-editions-title">Three walks for a change of season</h2>
+          <p class="intro">
+            Keep a short route on hand for the first frost, a clear autumn
+            afternoon or a day under cloud.
+          </p>
+          <div class="trio trail-plates">
+            <article>
+              <header class="plate-label">
+                <strong>First frost</strong> · 4.1 km
+              </header>
+              <img
+                src="../layout/img/photo-559.jpg"
+                alt="Snow-covered lane lined with bare frosted trees"
+                width="960"
+                height="640"
+              />
+            </article>
+            <article>
+              <header class="plate-label">
+                <strong>Beech hollow</strong> · 6.4 km
+              </header>
+              <img
+                src="../layout/img/photo-d534.jpg"
+                alt="Tree-lined forest lane under an arch of golden autumn beeches, with soft mist and leaves on the road"
+                width="960"
+                height="640"
+              />
+            </article>
+            <article>
+              <header class="plate-label">
+                <strong>High pass</strong> · 8.2 km
+              </header>
+              <img
+                src="../layout/img/photo-465.jpg"
+                alt="Dark rocky peak emerging from thick white cloud"
+                width="960"
+                height="640"
+              />
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="field-observations"
+        data-own="field-observations"
+        data-family="timeline"
+        data-width="narrow"
+        aria-labelledby="field-observations-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="field-observations-title">Notes from the ridge</h2>
+            <p class="intro">
+              Three entries from one walk, in the order they were recorded.
+            </p>
+            <ol class="walklog">
+              <li>
+                <time>09:12</time>
+                <div>
+                  <h3>Old quarry</h3>
+                  <p>The track climbs beyond the stone gate.</p>
+                </div>
+              </li>
+              <li>
+                <time>09:46</time>
+                <div>
+                  <h3>Beech hollow</h3>
+                  <p>Wet leaves cover the turn just below the ridge.</p>
+                </div>
+              </li>
+              <li>
+                <time>10:18</time>
+                <div>
+                  <h3>Upper path</h3>
+                  <p>The view opens to the south at the second stile.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own"
+        id="story"
+        data-family="distance-scale"
+        data-width="content"
+        data-own="scale"
+        aria-labelledby="scale-title"
+      >
+        <div class="wrap">
+          <h2 id="scale-title">Where the ridge begins</h2>
+          <p class="t-lead measure">
+            The steepest stretch starts beyond Beech hollow. These distances are
+            measured from the quarry gate.
+          </p>
+          <article
+            class="thermometer"
+            data-chart
+            data-assumed
+            aria-label="Route landmarks over 6.4 kilometres"
+          >
+            <header class="plate-label">
+              Distances along the example Quarry Ridge walk.
+            </header>
+            <div class="ruler">
+              <svg
+                viewBox="0 0 100 15"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path d="M0 0h100" />
+                <path d="M0 0v13" />
+                <path d="M5 0v5" />
+                <path d="M10 0v5" />
+                <path d="M15 0v5" />
+                <path d="M20 0v5" />
+                <path d="M25 0v13" />
+                <path d="M30 0v5" />
+                <path d="M35 0v5" />
+                <path d="M40 0v5" />
+                <path d="M45 0v5" />
+                <path d="M50 0v13" />
+                <path d="M55 0v5" />
+                <path d="M60 0v5" />
+                <path d="M65 0v5" />
+                <path d="M70 0v5" />
+                <path d="M75 0v13" />
+                <path d="M80 0v5" />
+                <path d="M85 0v5" />
+                <path d="M90 0v5" />
+                <path d="M95 0v5" />
+                <path d="M100 0v13" />
+              </svg>
+            </div>
+            <ol class="points">
+              <li><strong>0 km</strong><span>Quarry gate</span></li>
+              <li><strong>1.6 km</strong><span>Beech hollow</span></li>
+              <li><strong>3.2 km</strong><span>Upper stile</span></li>
+              <li><strong>4.8 km</strong><span>Grass fork</span></li>
+              <li><strong>6.4 km</strong><span>Ridge path</span></li>
+            </ol>
+          </article>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="walk-export"
+        data-own="walk-export"
+        data-family="feature-grid"
+        data-width="content"
+        aria-labelledby="walk-export-title"
+      >
+        <div class="wrap">
+          <h2 id="walk-export-title">Take the walk home</h2>
+          <p class="intro">
+            Save the part of your notebook you need for the next walk.
+          </p>
+          <div class="trio">
+            <article class="line">
+              <div class="paper-file">
+                <svg
+                  viewBox="0 0 600 350"
+                  role="img"
+                  aria-label="Walking route between the old quarry and the ridge"
+                >
+                  <rect width="600" height="350" fill="var(--surface)" />
+                  <g fill="none" stroke="var(--muted)" opacity=".32">
+                    <path d="M-210 350Q290 160 110 -16" />
+                    <path d="M-189 350Q296 160 132 -16" />
+                    <path d="M-168 350Q302 160 154 -16" />
+                    <path d="M-147 350Q308 160 176 -16" />
+                    <path d="M-126 350Q314 160 198 -16" />
+                    <path d="M-105 350Q320 160 220 -16" />
+                    <path d="M-84 350Q326 160 242 -16" />
+                    <path d="M-63 350Q332 160 264 -16" />
+                    <path d="M-42 350Q338 160 286 -16" />
+                    <path d="M-21 350Q344 160 308 -16" />
+                    <path d="M0 350Q350 160 330 -16" />
+                    <path d="M21 350Q356 160 352 -16" />
+                    <path d="M42 350Q362 160 374 -16" />
+                    <path d="M63 350Q368 160 396 -16" />
+                    <path d="M84 350Q374 160 418 -16" />
+                    <path d="M105 350Q380 160 440 -16" />
+                    <path d="M126 350Q386 160 462 -16" />
+                    <path d="M147 350Q392 160 484 -16" />
+                    <path d="M168 350Q398 160 506 -16" />
+                    <path d="M189 350Q404 160 528 -16" />
+                  </g>
+                  <path
+                    d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="6"
+                  />
+                  <g fill="var(--ink)">
+                    <circle cx="40" cy="260" r="7" />
+                    <circle cx="540" cy="49" r="7" />
+                  </g></svg
+                ><span>GPX</span>
+              </div>
+              <h3>Route track</h3>
+              <p>Open the path in your mapping app.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <path
+                    d="M12 14h70M12 26h57M12 38h64M12 50h47"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  /></svg
+                ><span>PDF</span>
+              </div>
+              <h3>Field sheet</h3>
+              <p>Print the route and the notes in walking order.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <text
+                    x="8"
+                    y="46"
+                    fill="currentColor"
+                    font-family="Georgia"
+                    font-size="40"
+                  >
+                    Aa
+                  </text></svg
+                ><span>TXT</span>
+              </div>
+              <h3>Plain text</h3>
+              <p>Keep a searchable copy of every entry.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="proof"
+        data-own="proof"
+        data-family="evidence"
+        data-width="narrow"
+        aria-labelledby="proof-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="proof-title">Carry the important turn</h2>
+            <p class="intro">
+              The route card keeps the fork, distance and return point on one
+              printable sheet.
+            </p>
+            <div class="stage">
+              <svg
+                viewBox="0 0 360 145"
+                role="img"
+                aria-label="Fork diagram showing the grass path turning left and the gravel track ending at a gate"
+              >
+                <path
+                  d="M194 134l-1-61 54-47"
+                  stroke="#aea490"
+                  stroke-width="4"
+                  fill="none"
+                />
+                <path
+                  d="M194 134l-1-61-80-48"
+                  stroke="var(--accent)"
+                  stroke-width="6"
+                  fill="none"
+                />
+                <path
+                  d="M231 23l20 21m-14-26 20 21"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <text x="10" y="28" font-size="15">Grass path</text>
+                <text x="262" y="29" font-size="15">Gate</text>
+                <circle cx="194" cy="128" r="6" fill="currentColor" />
+              </svg>
+              <div class="line">Quarry Ridge · upper fork</div>
+              <p>Grass path uphill · gravel track closed</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section layout-work ref-close"
+        id="close"
+        data-family="closing-action"
+        data-width="narrow"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2>Pocket the quarry walk</h2>
+            <p class="intro">Save the route notes before leaving home.</p>
+            <a
+              class="btn"
+              download="quarry-walk.txt"
+              href="data:text/plain;charset=utf-8,Quarry%20Ridge%20%E2%80%94%206.4%20km%2C%20210%20m%20climb.%20Start%20at%20the%20old%20quarry%20gate.%20Take%20the%20grass%20path%20at%20the%20fork.%20Return%20on%20the%20upper%20path."
+              >Save the field notes</a
+            >
+          </div>
+          <svg
+            class="closing-mark"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-label="Walk route"
+          >
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 94l25-37 24 12 22-46 23 7 M13 100h94" />
+              <circle cx="38" cy="57" r="3" />
+            </g>
+          </svg>
+        </div>
+      </section>
+    </main>
+    <footer class="ref-foot closing">
+      <div class="wrap">
+        <strong>Footnote</strong>
+        <div class="closing__links foot-groups">
+          <nav aria-label="Explore">
+            <strong>Explore</strong><a href="#ridge-notebook">Quarry Ridge</a
+            ><a href="#walk-extract">Field note</a
+            ><a href="#trail-editions">Seasonal walks</a>
+          </nav>
+          <nav aria-label="Details">
+            <strong>Details</strong
+            ><a href="#field-observations">Walking diary</a
+            ><a href="#story">Route distances</a
+            ><a href="#walk-export">Export formats</a>
+          </nav>
+          <nav aria-label="Resources">
+            <strong>Resources</strong><a href="#proof">Route card</a
+            ><a href="#close">Save the walk</a>
+          </nav>
+          <small class="credit-line"
+            >Photography · Tony Webster from Minneapolis, Minnesota, United
+            States, Ali Inay, Dietmar Rabich, Paula Vermeulen</small
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

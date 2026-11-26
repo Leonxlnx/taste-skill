@@ -1,0 +1,137 @@
+<!doctype html>
+<!-- One service and one informative photograph with a useful time or price. Desktop and phone section heights in the second comparison: 753px at 1440; 555px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="place" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>The morning pour · Birchroom</title>
+    <meta name="description" content="The morning pour at Birchroom." />
+    <meta name="page-type" content="place" />
+    <meta name="site-kind" content="other" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #brew-counter .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1.65fr;
+        column-gap: var(--s-7);
+        align-content: center;
+      }
+      #brew-counter h2 {
+        align-self: end;
+      }
+      #brew-counter .intro {
+        grid-column: 1;
+      }
+      #brew-counter figure {
+        grid-column: 2;
+        grid-row: 1/3;
+      }
+      #brew-counter .brew-wide img {
+        aspect-ratio: 3/2;
+        object-fit: cover;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .wrap {
+          display: block;
+        }
+      }
+      #brew-counter .brew-wide img {
+        aspect-ratio: 4/3;
+        object-position: center 70%;
+      }
+      #brew-counter .intro {
+        margin-bottom: 0;
+      }
+      @media (max-width: 650px) {
+        #brew-counter .intro {
+          margin-bottom: var(--s-5);
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="brew-counter"
+        data-own="brew-counter"
+        data-family="split"
+        data-width="content"
+        aria-labelledby="brew-counter-title"
+      >
+        <div class="wrap">
+          <h2 id="brew-counter-title">The morning pour</h2>
+          <p class="intro">
+            At eight we grind the first filter batch. By ten the hand brewer is
+            out for anyone who wants a single cup.
+          </p>
+          <figure class="brew-wide">
+            <img
+              src="../layout/img/photo-c96.jpg"
+              alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+              width="960"
+              height="640"
+            />
+            <figcaption>Hand filter · served until 14:00</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+    <small class="credit-line">Photography · Kim Sanso</small>
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<!-- Dated or timed changes on one route. Keep the time attached to the entry. Desktop and phone section heights in the second comparison: 573px at 1440; 609px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Notes from the ridge · Footnote</title>
+    <meta name="description" content="Notes from the ridge at Footnote." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #field-observations .walklog {
+        list-style: none;
+        padding: 0;
+        max-width: 65ch;
+      }
+      #field-observations .walklog li {
+        display: grid;
+        grid-template-columns: 5em 1fr;
+        padding-block: var(--s-5);
+        border-top: 1px solid var(--line);
+      }
+      #field-observations .walklog time {
+        font-variant-numeric: tabular-nums;
+        color: var(--muted);
+      }
+      #field-observations .wrap {
+        max-width: 68ch;
+      }
+      #field-observations .walklog li {
+        position: relative;
+        padding-left: var(--s-5);
+        border-left: 1px solid var(--accent);
+      }
+      #field-observations .walklog li:before {
+        content: "";
+        position: absolute;
+        left: -4px;
+        top: var(--s-6);
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="field-observations"
+        data-own="field-observations"
+        data-family="timeline"
+        data-width="narrow"
+        aria-labelledby="field-observations-title"
+      >
+        <div class="wrap">
+          <h2 id="field-observations-title">Notes from the ridge</h2>
+          <p class="intro">
+            Three entries from one walk, in the order they were recorded.
+          </p>
+          <ol class="walklog">
+            <li>
+              <time>09:12</time>
+              <div>
+                <h3>Old quarry</h3>
+                <p>The track climbs beyond the stone gate.</p>
+              </div>
+            </li>
+            <li>
+              <time>09:46</time>
+              <div>
+                <h3>Beech hollow</h3>
+                <p>Wet leaves cover the turn just below the ridge.</p>
+              </div>
+            </li>
+            <li>
+              <time>10:18</time>
+              <div>
+                <h3>Upper path</h3>
+                <p>The view opens to the south at the second stile.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

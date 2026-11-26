@@ -1,0 +1,1499 @@
+<!doctype html>
+<!-- Study this reference page for the order, widths and relationships between sections. Build a fresh composition for the client's material. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Build records for small teams · Trestle</title>
+    <meta
+      name="description"
+      content="Build records for small teams at Trestle."
+    />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work .pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--s-6);
+      }
+      .layout-work .stage {
+        padding: var(--s-7);
+        background: var(--surface);
+      }
+      .layout-work .small {
+        font-size: var(--t-small);
+        color: var(--muted);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work .big {
+        font: var(--display-weight) var(--t-h1) / 1.06 var(--font-display);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .pair,
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+        .layout-work .stage {
+          padding: var(--s-5);
+        }
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      .run-stage {
+        background: var(--ink);
+        color: var(--bg);
+        padding: var(--s-7);
+      }
+      .run-stage header,
+      .ruler {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--s-3);
+      }
+      .ruler {
+        margin: var(--s-7) 0 var(--s-2) 24%;
+        font-size: var(--t-label);
+      }
+      .job {
+        display: grid;
+        grid-template-columns: 24% 1fr;
+        border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+        align-items: center;
+        min-height: var(--s-7);
+      }
+      .job i {
+        margin-left: var(--left);
+        width: var(--duration);
+        height: var(--s-3);
+        background: #b8c9a4;
+      }
+      .job:nth-last-child(2) i {
+        background: #edc77f;
+      }
+      @media (max-width: 650px) {
+        .run-stage {
+          padding: var(--s-4);
+        }
+        .job {
+          grid-template-columns: 34% 1fr;
+          font-size: var(--t-small);
+        }
+        .ruler {
+          margin-left: 34%;
+        }
+      }
+      .job i {
+        height: var(--s-4);
+        border-inline-start: 2px solid var(--bg);
+      }
+      .run-stage header strong {
+        font-size: var(--t-card);
+      }
+      .bins {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        align-items: end;
+        gap: var(--s-2);
+        margin-block: var(--s-5);
+      }
+      .bins div {
+        text-align: center;
+      }
+      .bins i {
+        display: block;
+        background: var(--accent);
+      }
+      .bins small {
+        font-size: var(--t-label);
+      }
+      .excerpt {
+        padding: var(--s-7);
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .excerpt pre {
+        margin-top: var(--s-6);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: var(--t-card);
+      }
+      .excerpt pre span {
+        color: #e7c691;
+      }
+      @media (max-width: 650px) {
+        .excerpt {
+          padding: var(--s-5);
+        }
+      }
+      .excerpt {
+        max-width: 84ch;
+        margin-inline: auto;
+      }
+      .excerpt pre {
+        border-left: 3px solid #e7c691;
+        padding-left: var(--s-4);
+      }
+      #runner-plans .big small {
+        font-size: var(--t-body);
+      }
+      #runner-plans .pair {
+        max-width: 58rem;
+      }
+      #runner-plans article {
+        background: var(--surface);
+        padding: var(--s-5);
+      }
+      #runner-plans hr {
+        margin-block: var(--s-4);
+      }
+      .fold + .fold {
+        border-top: 1px solid var(--line);
+      }
+      .fold h3 button {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        border: 0;
+        background: transparent;
+        padding: 16px 0;
+      }
+      .fold b {
+        transition: transform 180ms var(--m-ease);
+      }
+      .fold [aria-expanded="true"] b {
+        transform: rotate(45deg);
+      }
+      .fold-body {
+        display: grid;
+        grid-template-rows: 1fr;
+        transition: grid-template-rows 180ms var(--m-ease);
+      }
+      .fold-body[inert] {
+        grid-template-rows: 0fr;
+      }
+      .fold-body > div {
+        overflow: hidden;
+      }
+      .fold-body p {
+        padding-bottom: 16px;
+      }
+
+      [data-part="accordion"] [hidden] {
+        display: none !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        [data-part="accordion"] *,
+        [data-part="accordion"] *::before,
+        [data-part="accordion"] *::after {
+          transition-duration: 0s !important;
+        }
+      }
+      #run-questions .wrap {
+        max-width: 72ch;
+      }
+      .fold button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+      .ref-nav,
+      .ref-foot {
+        padding-block: var(--s-5);
+      }
+      .ref-nav .wrap,
+      .ref-foot .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--s-5);
+      }
+      .ref-nav a,
+      .ref-foot a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+      }
+      .ref-nav .brand {
+        font-size: var(--t-h3);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .ref-nav nav {
+        display: flex;
+        gap: var(--s-5);
+      }
+      .ref-hero {
+        padding-block: var(--s-8);
+        min-height: 76svh;
+        display: grid;
+        align-content: center;
+      }
+      .ref-hero h1 {
+        max-width: 18ch;
+        text-wrap: balance;
+      }
+      .ref-hero p {
+        max-width: 48ch;
+        margin-block: var(--s-5);
+      }
+      .ref-hero .wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: var(--s-7);
+      }
+      .ref-hero .hero-art {
+        min-width: 0;
+      }
+      .hero-art svg,
+      .hero-art img {
+        width: 100%;
+        display: block;
+      }
+      .hero-art img {
+        aspect-ratio: 4/5;
+        object-fit: cover;
+      }
+      .ref-hero .btn,
+      .ref-close .btn {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: var(--s-3) var(--s-5);
+        background: var(--action);
+        color: var(--action-ink);
+        text-decoration: none;
+      }
+      .ref-page main > section:nth-child(3n + 1):not(.ref-hero) {
+        background: var(--surface);
+      }
+      .ref-close {
+        align-content: center;
+      }
+      .ref-close .wrap {
+        max-width: 64ch;
+      }
+      .ref-foot {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .ref-foot .wrap {
+        align-items: start;
+      }
+      .ref-foot nav {
+        display: grid;
+        gap: var(--s-2);
+      }
+      .ref-foot a {
+        font-size: var(--t-small);
+      }
+      .ref-foot small {
+        display: block;
+        margin-top: var(--s-5);
+      }
+      .skip-ref {
+        position: absolute;
+        left: var(--s-3);
+        background: var(--bg);
+        padding: var(--s-3);
+        transform: translateY(-140%);
+      }
+      .skip-ref:focus {
+        transform: none;
+      }
+      @media (max-width: 700px) {
+        .ref-hero .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-hero {
+          padding-block: var(--s-7);
+        }
+        .hero-art img {
+          aspect-ratio: 3/2;
+        }
+        .ref-nav nav a:nth-child(2) {
+          display: none;
+        }
+        .ref-foot .wrap {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .ref-nav nav {
+          gap: var(--s-3);
+        }
+      }
+
+      .ref-page .ref-close .btn {
+        align-self: flex-start;
+      }
+      .ref-foot {
+        padding-block: var(--s-7);
+      }
+      .ref-foot a {
+        display: block;
+        min-height: 30px;
+      }
+      .ref-foot nav strong {
+        margin-bottom: var(--s-3);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+      }
+      .ref-hero .hero-art {
+        width: 100%;
+      }
+      .software-reference .ref-hero {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .software-reference .hero-art .stage {
+        color: var(--p-ink);
+      }
+      .software-reference .ref-hero .btn {
+        background: #c8d6b7;
+        color: #253122;
+      }
+      .app-reference .ref-hero .wrap {
+        grid-template-columns: 1fr 1.15fr;
+      }
+      .app-reference .hero-art {
+        border: 1px solid var(--line);
+        padding: var(--s-5);
+        background: var(--surface);
+        transform: rotate(-2deg);
+      }
+      .product-reference .ref-hero .wrap {
+        grid-template-columns: 2fr 3fr;
+      }
+      .product-reference .ref-hero {
+        background: var(--surface);
+      }
+      .product-reference .hero-art svg {
+        width: 100%;
+      }
+      .place-reference .ref-hero {
+        position: relative;
+        isolation: isolate;
+        min-height: 78svh;
+      }
+      .place-reference .ref-hero .hero-art {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+      }
+      .place-reference .ref-hero .hero-art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 45%;
+      }
+      .place-reference .ref-hero .wrap > div:first-child {
+        max-width: 46ch;
+        background: var(--bg);
+        padding: var(--s-6);
+      }
+      .place-reference :is(h1, h2, .brand) {
+        font-family: Georgia, serif;
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-hero > .wrap {
+          grid-template-columns: 1fr;
+        }
+        .ref-foot a {
+          min-height: 44px;
+        }
+        .place-reference .ref-hero {
+          align-content: end;
+        }
+        .place-reference .ref-hero .wrap > div:first-child {
+          padding: var(--s-5);
+        }
+      }
+
+      #failure-excerpt .wrap {
+        max-width: 84ch;
+      }
+      #failure-excerpt .excerpt {
+        margin: 0;
+      }
+      #runner-plans .wrap {
+        max-width: 58rem;
+      }
+      #runner-plans .big {
+        margin-top: var(--s-4);
+      }
+      #meter-portrait .meter-plate svg {
+        max-height: none;
+      }
+      #roast-notes .intro {
+        margin-bottom: var(--s-5);
+      }
+      #light-studies figure:nth-child(2) img {
+        object-position: 54% center;
+      }
+      @media (max-width: 650px) {
+        #walk-export .line {
+          display: grid;
+          grid-template-columns: 5em 1fr;
+          column-gap: var(--s-4);
+          align-content: center;
+        }
+        #walk-export .paper-file {
+          grid-row: span 2;
+          width: 5em;
+          margin: 0;
+        }
+        #walk-export .line p {
+          grid-column: 2;
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+
+      .ref-page #proof .wrap {
+        max-width: 74ch;
+      }
+      .ref-page .ref-hero p {
+        color: inherit;
+      }
+      .ref-page .ref-hero .wrap {
+        height: auto;
+      }
+      .ref-page .ref-hero .hero-art p {
+        color: var(--ink);
+      }
+      .ref-page .hero-art {
+        transform: none;
+      }
+      .ref-foot .credit-line {
+        margin-top: var(--s-5);
+      }
+      .ref-page .ref-hero .btn {
+        min-height: 44px;
+      }
+      .ref-page .ref-nav nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+
+      [data-own="bars"] .wrap > h2 + .t-lead {
+        margin-top: var(--s-4);
+      }
+      [data-own="bars"] .wrap > .t-lead + * {
+        margin-top: var(--head-gap);
+      }
+      [data-own="bars"] .packing {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: var(--s-6) var(--s-8);
+        align-items: center;
+        font-variant-numeric: tabular-nums;
+        padding-top: var(--s-5);
+        border-top: 1px solid var(--line);
+      }
+      [data-own="bars"] .difference {
+        display: grid;
+        gap: var(--s-2);
+      }
+      [data-own="bars"] .difference strong {
+        font-family: var(--font-display);
+        font-weight: var(--display-weight);
+        letter-spacing: var(--display-tracking);
+      }
+      [data-own="bars"] .difference span {
+        font-size: var(--t-lead);
+      }
+      [data-own="bars"] .bar-label {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-2);
+      }
+      [data-own="bars"] .bar-label b {
+        font-weight: 500;
+      }
+      [data-own="bars"] .length {
+        margin-top: var(--s-2);
+        height: var(--s-6);
+        background: var(--surface);
+      }
+      [data-own="bars"] .length i {
+        display: block;
+        height: 100%;
+        background: var(--ink);
+      }
+      [data-own="bars"] .length + .bar-label {
+        margin-top: var(--s-5);
+      }
+      [data-own="bars"] .length:last-child i {
+        width: 72.4%;
+        background: var(--action);
+      }
+      [data-own="bars"] figcaption {
+        grid-column: 1 / -1;
+        border-top: 1px solid var(--line);
+        padding-top: var(--s-3);
+        color: var(--muted);
+        font-size: var(--t-small);
+      }
+      @media (max-width: 639px) {
+        [data-own="bars"] .packing {
+          grid-template-columns: 1fr;
+          gap: var(--s-5);
+        }
+      }
+
+      .ref-page .ref-nav {
+        position: absolute;
+        inset: 0 0 auto;
+        height: var(--nav);
+        padding: 0;
+        z-index: 5;
+        background: var(--bg);
+      }
+      .ref-page .ref-nav .wrap {
+        height: 100%;
+      }
+      .ref-page main > .ref-hero {
+        min-height: 100svh;
+        box-sizing: border-box;
+        padding-block: calc(var(--nav) + var(--s-6)) var(--s-6);
+      }
+      .ref-page main > .ref-hero > .wrap {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-hero .wrap > div:first-child {
+        grid-column: 1 / span 5;
+      }
+      .ref-page .ref-hero .hero-art {
+        grid-column: 7/-1;
+      }
+      .ref-page main > .ref-close > .wrap {
+        max-width: var(--container);
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        column-gap: var(--gutter);
+      }
+      .ref-page .ref-close .wrap > * {
+        grid-column: 4 / span 6;
+        justify-self: start;
+      }
+      .ref-page .ref-foot .wrap {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--s-5) var(--gutter);
+      }
+      .ref-page .ref-foot nav {
+        min-width: 0;
+      }
+      .place-reference .ref-hero .hero__bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%;
+        z-index: -1;
+      }
+      @media (max-width: 700px) {
+        .ref-page .ref-hero .wrap > div:first-child,
+        .ref-page .ref-hero .hero-art,
+        .ref-page .ref-close .wrap > * {
+          grid-column: 1/-1;
+        }
+        .ref-page .ref-foot .wrap {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .ref-page main > .ref-hero {
+          padding-top: calc(var(--nav) + var(--s-4));
+        }
+      }
+
+      .build-reader {
+        color: var(--p-ink);
+        background: var(--p-bg);
+        padding: var(--s-5);
+      }
+      .build-reader header,
+      .build-current {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--s-4);
+      }
+      .build-reader header {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: var(--s-4);
+      }
+      .build-current {
+        padding-block: var(--s-5);
+      }
+      .build-current div {
+        display: grid;
+        gap: var(--s-2);
+      }
+      .build-current strong {
+        font-size: var(--t-h3);
+        font-weight: 500;
+      }
+      .build-current div:first-child strong {
+        font-size: var(--t-stat);
+      }
+      .build-reader table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--t-small);
+        font-variant-numeric: tabular-nums;
+      }
+      .build-reader :is(th, td) {
+        text-align: left;
+        border-top: 1px solid var(--line);
+        padding: var(--s-3) var(--s-2);
+      }
+      .build-reader :is(th, td):first-child {
+        padding-left: 0;
+      }
+      @media (max-width: 650px) {
+        .build-reader {
+          padding: var(--s-4);
+        }
+        .build-current {
+          padding-block: var(--s-4);
+        }
+        .build-reader :is(th, td) {
+          padding-block: var(--s-2);
+        }
+      }
+      @media (max-width: 700px) {
+        .software-reference main > .ref-hero > .wrap {
+          align-content: center;
+          row-gap: var(--s-6);
+        }
+        #build-distribution .trio {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .ref-page main > section[data-width="narrow"] > .wrap,
+      .ref-page main > #runner-plans > .wrap {
+        max-width: var(--container);
+      }
+      .ref-page .reading-column {
+        max-width: min(100%, 72ch);
+      }
+      .ref-page main > .ref-close > .wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--s-6);
+      }
+      .ref-page .ref-close .reading-column {
+        flex: 1;
+      }
+      .ref-page .closing-mark {
+        width: clamp(85px, 17%, 200px);
+        height: auto;
+        color: var(--accent);
+      }
+      .ref-page .ref-foot .wrap {
+        display: block;
+      }
+      .ref-page .foot-groups {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gutter);
+        margin-top: var(--s-5);
+      }
+      .ref-page :focus-visible {
+        outline: 3px solid currentColor;
+        outline-offset: 3px;
+      }
+      .ref-page .ref-hero a:focus-visible {
+        outline: 3px solid var(--ink);
+        box-shadow: 0 0 0 6px var(--bg);
+      }
+      @media (max-width: 700px) {
+        .ref-page main > .ref-close > .wrap {
+          display: block;
+        }
+        .ref-page .closing-mark {
+          width: 72px;
+          margin-top: 20px;
+        }
+        .ref-page .foot-groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .written-answers .fold {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .written-answers h3 {
+        margin-bottom: var(--s-2);
+      }
+      .written-answers .fold-body {
+        display: block;
+      }
+      .written-answers .fold-body p {
+        padding: 0;
+      }
+      .job {
+        display: flex;
+      }
+      .job > span {
+        width: 24%;
+        flex: none;
+      }
+      .job > i {
+        flex: none;
+      }
+      @media (max-width: 650px) {
+        .job > span {
+          width: 34%;
+        }
+      }
+      .job > .job-track {
+        width: auto;
+        flex: 1;
+        min-width: 0;
+        display: block;
+      }
+      .job-track i {
+        display: block;
+      }
+      .ref-page .ref-foot .credit-line {
+        grid-column: 1/-1;
+        width: auto;
+        margin-inline: 0;
+      }
+      #main > section[data-width="narrow"] > .wrap {
+        max-width: var(--container);
+      }
+      #main > .ref-close > .wrap {
+        flex-direction: row;
+      }
+      .ref-page .skip-ref:not(:focus-visible) {
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        clip-path: inset(50%);
+        overflow: hidden;
+      }
+      .ref-page .skip-ref {
+        left: max(var(--gut), calc((100% - var(--container)) / 2));
+      }
+      #main .ref-hero .wrap > .hero__grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-column: 1/-1;
+        gap: var(--s-6) var(--gutter);
+        align-items: center;
+        width: 100%;
+      }
+      #main .hero__grid > .hero__text {
+        grid-column: 1 / span 5;
+      }
+      #main .hero__grid > .hero-art {
+        grid-column: 7/-1;
+      }
+      #main .intro {
+        color: var(--ink);
+      }
+      @media (max-width: 700px) {
+        #main .ref-hero .wrap > .hero__grid {
+          grid-template-columns: 1fr;
+        }
+        #main .hero__grid > .hero-art,
+        #main .hero__grid > .hero__text {
+          grid-column: 1;
+        }
+        #main .ref-close .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .ref-page .closing-mark {
+          width: calc((100% - 3 * var(--gutter)) / 4);
+        }
+      }
+      .ref-page .layout-work .big {
+        line-height: 1.22;
+      }
+      .ref-page #proof .big {
+        margin-block: var(--s-3) var(--s-2);
+      }
+      .ref-page #proof .big {
+        font-size: var(--t-h2);
+      }
+      .ref-page .ref-foot .credit-line {
+        padding-inline: 0;
+      }
+      .ref-page a:focus-visible,
+      .ref-page button:focus-visible {
+        outline: 3px solid #151a17;
+        outline-offset: 3px;
+        box-shadow: 0 0 0 6px #fff;
+      }
+      @media (min-width: 701px) {
+        .ref-page .closing-mark {
+          width: calc((100% + var(--gutter)) / 6 - var(--gutter));
+        }
+      }
+      .runner-chip {
+        max-width: 290px;
+        margin-block: var(--s-4);
+      }
+      @media (max-width: 700px) {
+        .build-reader .build-current {
+          display: block;
+        }
+        .build-current > div {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 12px;
+        }
+      }
+      .written-answers dt {
+        font-weight: 600;
+        margin-bottom: var(--s-2);
+      }
+      .written-answers dd {
+        margin: 0;
+      }
+    @media(max-width:360px){.software-reference #main > #opening {height:auto;min-height:100svh;padding-top:calc(var(--nav) + var(--s-7));} .software-reference #opening > .wrap,.software-reference #opening .hero__grid {height:auto;align-content:start;} } @media(max-width:360px){body.software-reference > header.nav.ref-nav {position:relative;inset:auto;} .software-reference #main > #opening {display:block;padding:var(--s-7) 0;} .software-reference #opening > .wrap,.software-reference #opening .hero__grid {display:block;position:static;transform:none;} .software-reference #opening .hero-art {margin-top:var(--s-6);} } @media(max-width:360px){.software-reference #main > #opening {max-height:none;overflow:visible;}} </style>
+  </head>
+  <body class="ref-page software-reference">
+    <header class="nav ref-nav">
+      <a class="skip-ref" href="#main">Skip to content</a>
+      <div class="wrap">
+        <a class="brand" href="#main">Trestle</a>
+        <nav aria-label="Main">
+          <a href="#proof">Run log</a><a href="#story">Parallel jobs</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section
+        class="hero hero--split ref-hero layout-work"
+        data-enter="still"
+        aria-labelledby="hero-title"
+        id="opening"
+        data-family="hero"
+        data-width="content"
+      >
+        <div class="wrap">
+          <div class="hero-text hero__grid">
+            <div class="hero__text">
+              <h1 id="hero-title">Find the job that slowed your build.</h1>
+              <p>
+                Trestle keeps 30 days of timings, test output and failed lines for every commit.
+              </p>
+              <a class="btn" href="#run-waterfall">Inspect a run</a>
+            </div>
+            <div class="hero-art build-reader" data-ui>
+              <header>
+                <strong>Orchard / main</strong><span>Example runs</span>
+              </header>
+              <div class="build-current">
+                <div><span>Latest build</span><strong>4 min 12 s</strong></div>
+                <div>
+                  <span>Longest job</span><strong>Browser tests</strong>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Commit</th>
+                    <th>Elapsed</th>
+                    <th>Change</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Cache browser assets</td>
+                    <td>4:12</td>
+                    <td>−55 s</td>
+                  </tr>
+                  <tr>
+                    <td>Update checkout tests</td>
+                    <td>5:07</td>
+                    <td>+14 s</td>
+                  </tr>
+                  <tr>
+                    <td>Pin the runner image</td>
+                    <td>4:53</td>
+                    <td>−8 s</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="run-waterfall"
+        data-own="run-waterfall"
+        data-family="wide-product-view"
+        data-width="content"
+        aria-labelledby="run-waterfall-title"
+      >
+        <div class="wrap">
+          <h2 id="run-waterfall-title">See what held up a build</h2>
+          <p class="intro">
+            Trestle lays every job against the same clock. In this run, the
+            browser tests finish last.
+          </p>
+          <figure class="run-stage mock">
+            <header>
+              <strong>Example run · Orchard</strong><span>4 min 12 s</span>
+            </header>
+            <div class="ruler">
+              <span>0:00</span><span>1:03</span><span>2:06</span
+              ><span>3:09</span><span>4:12</span>
+            </div>
+            <div class="job">
+              <span>Prepare</span
+              ><span class="job-track"
+                ><i style="--left: 0%; --duration: 14%"></i
+              ></span>
+            </div>
+            <div class="job">
+              <span>Compile</span
+              ><span class="job-track"
+                ><i style="--left: 14%; --duration: 31%"></i
+              ></span>
+            </div>
+            <div class="job">
+              <span>Unit tests</span
+              ><span class="job-track"
+                ><i style="--left: 45%; --duration: 22%"></i
+              ></span>
+            </div>
+            <div class="job">
+              <span>Browser tests</span
+              ><span class="job-track"
+                ><i style="--left: 45%; --duration: 55%"></i
+              ></span>
+            </div>
+            <div class="job">
+              <span>Package</span
+              ><span class="job-track"
+                ><i style="--left: 67%; --duration: 16%"></i
+              ></span>
+            </div>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="proof"
+        data-own="proof"
+        data-family="evidence"
+        data-width="narrow"
+        aria-labelledby="proof-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="proof-title">Read the run in plain text</h2>
+            <p class="intro">
+              The example log from the main branch of Orchard contains all five jobs and timestamps.
+              Each line carries its original job name.
+            </p>
+            <div class="stage build-view" data-ui>
+              
+              <svg
+                viewBox="0 0 540 108"
+                role="img"
+                aria-label="Five completions from 35 seconds to 4 minutes 12 seconds"
+              >
+                <path d="M16 46H520" stroke="currentColor" stroke-width="2" />
+                <path d="M86 46V66" stroke="currentColor" />
+                <circle cx="86" cy="46" r="5" fill="var(--accent)" />
+                <text x="86" y="86" text-anchor="middle" font-size="16">
+                  Prepare
+                </text>
+                <path d="M242 46V30" stroke="currentColor" />
+                <circle cx="242" cy="46" r="5" fill="var(--accent)" />
+                <text x="242" y="24" text-anchor="middle" font-size="16">
+                  Compile
+                </text>
+                <path d="M354 46V66" stroke="currentColor" />
+                <circle cx="354" cy="46" r="5" fill="var(--accent)" />
+                <text x="354" y="86" text-anchor="middle" font-size="16">
+                  Unit
+                </text>
+                <path d="M434 46V30" stroke="currentColor" />
+                <circle cx="434" cy="46" r="5" fill="var(--accent)" />
+                <text x="434" y="24" text-anchor="middle" font-size="16">
+                  Package
+                </text>
+                <path d="M520 46V66" stroke="currentColor" />
+                <circle cx="520" cy="46" r="5" fill="var(--accent)" />
+                <text x="520" y="86" text-anchor="end" font-size="16">
+                  Browser
+                </text>
+              </svg>
+              <div class="line">00:35 · Prepare finished</div>
+              <div class="line">01:53 · Compile finished</div>
+              <div class="line">02:49 · Unit tests finished</div>
+              <div class="line">03:29 · Package finished</div>
+              <div class="line">04:12 · Browser tests finished</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="build-distribution"
+        data-own="build-distribution"
+        data-family="figures"
+        data-width="content"
+        aria-labelledby="build-distribution-title"
+      >
+        <div class="wrap">
+          <h2 id="build-distribution-title">What a typical run takes</h2>
+          <p class="intro">
+            A single slow run can distort the average. Trestle keeps the middle
+            and the tail together.
+          </p>
+          <figure class="stage build-view" data-ui>
+            <strong>Example · 30 builds, duration in minutes</strong>
+            <div
+              class="bins"
+              data-chart="histogram"
+              role="img"
+              aria-label="Builds in successive minute intervals from two through eight minutes: 2, 5, 10, 7, 4 and 2."
+            >
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>2–3m</small>
+              </div>
+              <div>
+                <span>5</span><i style="height: 40px"></i><small>3–4m</small>
+              </div>
+              <div>
+                <span>10</span><i style="height: 80px"></i><small>4–5m</small>
+              </div>
+              <div>
+                <span>7</span><i style="height: 56px"></i><small>5–6m</small>
+              </div>
+              <div>
+                <span>4</span><i style="height: 32px"></i><small>6–7m</small>
+              </div>
+              <div>
+                <span>2</span><i style="height: 16px"></i><small>7–8m</small>
+              </div>
+            </div>
+            <div class="trio">
+              <div class="line">
+                <p class="big">4:46</p>
+                <p>Median</p>
+              </div>
+              <div class="line">
+                <p class="big">6:36</p>
+                <p>90th percentile</p>
+              </div>
+              <div class="line">
+                <p class="big">7:42</p>
+                <p>Longest run</p>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="failure-excerpt"
+        data-own="failure-excerpt"
+        data-family="code-panel"
+        data-width="narrow"
+        aria-labelledby="failure-excerpt-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="failure-excerpt-title">The first failed assertion</h2>
+            <p class="intro">
+              Open the test that stopped the run. The expected value stays
+              beside the value the browser returned.
+            </p>
+            <div class="excerpt">
+              <p>Example · checkout / delivery.spec.ts</p>
+              <pre><code>const day = delivery.day
+expect(day).toBe(
+  "Friday"
+)
+
+<span>Expected   Friday
+Received   Monday</span>
+
+at delivery.spec.ts:48</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own"
+        id="story"
+        data-family="comparison"
+        data-width="content"
+        data-own="bars"
+        aria-labelledby="bars-title"
+      >
+        <div class="wrap">
+          <h2 id="bars-title">Two jobs can share a minute</h2>
+          <p class="t-lead measure">
+            Unit tests and browser tests can start from the same compiled files.
+          </p>
+          <figure class="packing" data-assumed>
+            <div class="difference">
+              <strong class="t-h1">96 sec</strong><span>saved on this run</span>
+            </div>
+            <div class="times">
+              <div class="bar-label">
+                <span>Jobs in sequence</span><b>5 min 48 s</b>
+              </div>
+              <div class="length" aria-hidden="true"><i></i></div>
+              <div class="bar-label">
+                <span>Parallel tests</span><b>4 min 12 s</b>
+              </div>
+              <div class="length" aria-hidden="true"><i></i></div>
+            </div>
+            <figcaption>
+              Example · Orchard build, with the same jobs and runner.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="runner-plans"
+        data-own="runner-plans"
+        data-family="pricing"
+        data-width="content"
+        aria-labelledby="runner-plans-title"
+      >
+        <div class="wrap">
+          <h2 id="runner-plans-title">Choose the size of your runner</h2>
+          <p class="intro">
+            Both runners keep logs for 30 days. Compute time is billed by the
+            minute.
+          </p>
+          <div class="pair">
+            <article class="line">
+              <h3>Small</h3>
+              <p class="big">€0.02 <small>/ min</small></p>
+              <hr />
+              <p>2 cores · 4 GB memory</p>
+              <p>Unit tests and small builds</p>
+              <svg
+                viewBox="0 0 290 80"
+                class="runner-chip"
+                role="img"
+                aria-label="2 processor cores"
+              >
+                <rect
+                  x="16"
+                  y="9"
+                  width="116"
+                  height="60"
+                  rx="4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path d="M22 4v5m0 60v5" stroke="currentColor" />
+                <path d="M31 4v5m0 60v5" stroke="currentColor" />
+                <path d="M40 4v5m0 60v5" stroke="currentColor" />
+                <path d="M49 4v5m0 60v5" stroke="currentColor" />
+                <path d="M58 4v5m0 60v5" stroke="currentColor" />
+                <path d="M67 4v5m0 60v5" stroke="currentColor" />
+                <path d="M76 4v5m0 60v5" stroke="currentColor" />
+                <path d="M85 4v5m0 60v5" stroke="currentColor" />
+                <path d="M94 4v5m0 60v5" stroke="currentColor" />
+                <path d="M103 4v5m0 60v5" stroke="currentColor" />
+                <path d="M112 4v5m0 60v5" stroke="currentColor" />
+                <path d="M121 4v5m0 60v5" stroke="currentColor" />
+                <rect
+                  x="27"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <text x="150" y="44" font-size="17" fill="currentColor">
+                  2 CPU cores
+                </text></svg
+              ><a href="mailto:runners@trestle.example?subject=Small%20runner"
+                >Request a small runner</a
+              >
+            </article>
+            <article class="line">
+              <h3>Large</h3>
+              <p class="big">€0.08 <small>/ min</small></p>
+              <hr />
+              <p>8 cores · 16 GB memory</p>
+              <p>Browser suites and parallel builds</p>
+              <svg
+                viewBox="0 0 290 80"
+                class="runner-chip"
+                role="img"
+                aria-label="8 processor cores"
+              >
+                <rect
+                  x="16"
+                  y="9"
+                  width="116"
+                  height="60"
+                  rx="4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path d="M22 4v5m0 60v5" stroke="currentColor" />
+                <path d="M31 4v5m0 60v5" stroke="currentColor" />
+                <path d="M40 4v5m0 60v5" stroke="currentColor" />
+                <path d="M49 4v5m0 60v5" stroke="currentColor" />
+                <path d="M58 4v5m0 60v5" stroke="currentColor" />
+                <path d="M67 4v5m0 60v5" stroke="currentColor" />
+                <path d="M76 4v5m0 60v5" stroke="currentColor" />
+                <path d="M85 4v5m0 60v5" stroke="currentColor" />
+                <path d="M94 4v5m0 60v5" stroke="currentColor" />
+                <path d="M103 4v5m0 60v5" stroke="currentColor" />
+                <path d="M112 4v5m0 60v5" stroke="currentColor" />
+                <path d="M121 4v5m0 60v5" stroke="currentColor" />
+                <rect
+                  x="27"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="75"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="99"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="27"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="75"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="99"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <text x="150" y="44" font-size="17" fill="currentColor">
+                  8 CPU cores
+                </text></svg
+              ><a href="mailto:runners@trestle.example?subject=Large%20runner"
+                >Request a large runner</a
+              >
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section own layout-work"
+        id="run-questions"
+        data-own="run-questions"
+        data-family="questions"
+        data-width="narrow"
+        aria-labelledby="run-questions-title"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2 id="run-questions-title">Before your first run</h2>
+            <p class="intro">
+              How Trestle reads a repository, stores logs and handles a stopped
+              build.
+            </p>
+            <dl class="written-answers">
+              <div class="fold">
+                <dt>Which repositories can I connect?</dt>
+                <dd>
+                  Connect one repository with read access to its source and
+                  write access to its build status.
+                </dd>
+              </div>
+              <div class="fold">
+                <dt>What happens when I cancel?</dt>
+                <dd>
+                  Queued jobs leave the queue immediately. Running jobs stop at
+                  the next process check.
+                </dd>
+              </div>
+              <div class="fold">
+                <dt>Can I take my logs with me?</dt>
+                <dd>
+                  Download the plain-text log from the run while it is within
+                  the 30-day retention period.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+      <section
+        class="section layout-work ref-close"
+        id="close"
+        data-family="closing-action"
+        data-width="narrow"
+      >
+        <div class="wrap">
+          <div class="reading-column">
+            <h2>Take a run with you</h2>
+            <p class="intro">
+              Save the example timing record as a CSV to compare it with your
+              own build.
+            </p>
+            <a
+              class="btn"
+              download="orchard-run.csv"
+              href="data:text/csv;charset=utf-8,job%2Cstart_seconds%2Cend_seconds%0APrepare%2C0%2C35%0ACompile%2C35%2C113%0AUnit%20tests%2C113%2C169%0ABrowser%20tests%2C113%2C252%0APackage%2C169%2C209"
+              >Download the run</a
+            >
+          </div>
+          <svg
+            class="closing-mark"
+            viewBox="0 0 120 120"
+            role="img"
+            aria-label="Saved run record"
+          >
+            <path
+              d="M20 20h78v92H20z M35 42h48 M35 57h26 M35 72h39 M35 87h16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+      </section>
+    </main>
+    <footer class="ref-foot closing">
+      <div class="wrap">
+        <strong>Trestle</strong>
+        <div class="closing__links foot-groups">
+          <nav aria-label="Explore">
+            <strong>Explore</strong><a href="#run-waterfall">Job timings</a
+            ><a href="#proof">Run log</a
+            ><a href="#build-distribution">Build durations</a>
+          </nav>
+          <nav aria-label="Details">
+            <strong>Details</strong><a href="#failure-excerpt">Test output</a
+            ><a href="#story">Parallel jobs</a
+            ><a href="#runner-plans">Runner prices</a>
+          </nav>
+          <nav aria-label="Resources">
+            <strong>Resources</strong
+            ><a href="#run-questions">Common questions</a
+            ><a href="#close">Export the run</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

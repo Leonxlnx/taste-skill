@@ -1,0 +1,207 @@
+<!doctype html>
+<!-- Distinct output formats with their actual purpose. Desktop and phone section heights in the second comparison: 546px at 1440; 1087px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Take the walk home · Footnote</title>
+    <meta name="description" content="Take the walk home at Footnote." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #faf6ed;
+        --p-surface: #efe6d6;
+        --p-ink: #242922;
+        --p-accent: #865220;
+        --p-action: #865220;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .line {
+        border-top: 1px solid var(--line);
+        padding-block: var(--s-4);
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #walk-export .paper-file {
+        width: 6em;
+        aspect-ratio: 4/5;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        margin-bottom: var(--s-5);
+        display: grid;
+        align-content: end;
+        padding: var(--s-3);
+        font-weight: 600;
+      }
+      #walk-export .paper-file {
+        width: 8em;
+        align-content: space-between;
+      }
+      #walk-export .paper-file svg {
+        height: 4em;
+      }
+      @media (max-width: 650px) {
+        #walk-export .line {
+          display: grid;
+          grid-template-columns: 5em 1fr;
+          column-gap: var(--s-4);
+          align-content: center;
+        }
+        #walk-export .paper-file {
+          grid-row: span 2;
+          width: 5em;
+          margin: 0;
+        }
+        #walk-export .line p {
+          grid-column: 2;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="walk-export"
+        data-own="walk-export"
+        data-family="feature-grid"
+        data-width="content"
+        aria-labelledby="walk-export-title"
+      >
+        <div class="wrap">
+          <h2 id="walk-export-title">Take the walk home</h2>
+          <p class="intro">
+            Save the part of your notebook you need for the next walk.
+          </p>
+          <div class="trio">
+            <article class="line">
+              <div class="paper-file">
+                <svg
+                  viewBox="0 0 600 350"
+                  role="img"
+                  aria-label="Walking route between the old quarry and the ridge"
+                >
+                  <rect width="600" height="350" fill="var(--surface)" />
+                  <g fill="none" stroke="var(--muted)" opacity=".32">
+                    <path d="M-210 350Q290 160 110 -16" />
+                    <path d="M-189 350Q296 160 132 -16" />
+                    <path d="M-168 350Q302 160 154 -16" />
+                    <path d="M-147 350Q308 160 176 -16" />
+                    <path d="M-126 350Q314 160 198 -16" />
+                    <path d="M-105 350Q320 160 220 -16" />
+                    <path d="M-84 350Q326 160 242 -16" />
+                    <path d="M-63 350Q332 160 264 -16" />
+                    <path d="M-42 350Q338 160 286 -16" />
+                    <path d="M-21 350Q344 160 308 -16" />
+                    <path d="M0 350Q350 160 330 -16" />
+                    <path d="M21 350Q356 160 352 -16" />
+                    <path d="M42 350Q362 160 374 -16" />
+                    <path d="M63 350Q368 160 396 -16" />
+                    <path d="M84 350Q374 160 418 -16" />
+                    <path d="M105 350Q380 160 440 -16" />
+                    <path d="M126 350Q386 160 462 -16" />
+                    <path d="M147 350Q392 160 484 -16" />
+                    <path d="M168 350Q398 160 506 -16" />
+                    <path d="M189 350Q404 160 528 -16" />
+                  </g>
+                  <path
+                    d="M40 260L125 241 163 206 204 215 231 168 278 176 304 130 401 92 428 104 540 49"
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="6"
+                  />
+                  <g fill="var(--ink)">
+                    <circle cx="40" cy="260" r="7" />
+                    <circle cx="540" cy="49" r="7" />
+                  </g></svg
+                ><span>GPX</span>
+              </div>
+              <h3>Route track</h3>
+              <p>Open the path in your mapping app.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <path
+                    d="M12 14h70M12 26h57M12 38h64M12 50h47"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  /></svg
+                ><span>PDF</span>
+              </div>
+              <h3>Field sheet</h3>
+              <p>Print the route and the notes in walking order.</p>
+            </article>
+            <article class="line">
+              <div class="paper-file">
+                <svg viewBox="0 0 100 64" aria-hidden="true">
+                  <text
+                    x="8"
+                    y="46"
+                    fill="currentColor"
+                    font-family="Georgia"
+                    font-size="40"
+                  >
+                    Aa
+                  </text></svg
+                ><span>TXT</span>
+              </div>
+              <h3>Plain text</h3>
+              <p>Keep a searchable copy of every entry.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

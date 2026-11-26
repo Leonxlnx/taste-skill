@@ -1,0 +1,163 @@
+<!doctype html>
+<!-- Related things for sale with a photograph, name and price each. Desktop and phone section heights in the second comparison: 645px at 1440; 641px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="place" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Coffee at the counter · Birchroom</title>
+    <meta name="description" content="Coffee at the counter at Birchroom." />
+    <meta name="page-type" content="place" />
+    <meta name="site-kind" content="other" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f9f5ea;
+        --p-surface: #ebe4d2;
+        --p-ink: #352c23;
+        --p-accent: #805030;
+        --p-action: #805030;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work .trio {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--s-5);
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .trio {
+          grid-template-columns: 1fr;
+        }
+
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #coffee-service .drinks img {
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+      #coffee-service .drinks figcaption {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      #coffee-service .drinks figcaption {
+        font-size: var(--t-body);
+      }
+      #coffee-service .drinks img {
+        aspect-ratio: 5/4;
+      }
+      @media (max-width: 650px) {
+        #coffee-service .drinks figure {
+          display: grid;
+          grid-template-columns: 42% 1fr;
+          align-items: center;
+          gap: var(--s-4);
+        }
+        #coffee-service .drinks figcaption {
+          display: grid;
+          gap: var(--s-2);
+        }
+      }
+      .credit-line {
+        display: block;
+        font-size: var(--t-label);
+        padding: var(--s-4) var(--gut);
+        color: inherit;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="coffee-service"
+        data-own="coffee-service"
+        data-family="product-shelf"
+        data-width="content"
+        aria-labelledby="coffee-service-title"
+      >
+        <div class="wrap">
+          <h2 id="coffee-service-title">Coffee at the counter</h2>
+          <p class="intro">
+            Choose your cup at Birchroom. Filter changes with the morning batch.
+          </p>
+          <div class="trio drinks">
+            <figure>
+              <img
+                src="../layout/img/photo-c7.jpg"
+                alt="Close-up of rosetta latte art in a white cup and saucer on a grey slate table"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Flat white</strong><span>€3.80</span>
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-c96.jpg"
+                alt="Hot water poured from a copper gooseneck kettle into a pour-over dripper, jars and cups on a pale table, seen from above"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Hand filter</strong><span>€4.50</span>
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                src="../layout/img/photo-c166.jpg"
+                alt="Cappuccino dusted with cinnamon in a white cup on a square saucer, croissant and water glass behind, window light"
+                width="960"
+                height="640"
+              />
+              <figcaption>
+                <strong>Cappuccino</strong><span>€3.60</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+    <small class="credit-line"
+      >Photography · Drew Coffman, Kim Sanso, Katerina Pavlickova</small
+    >
+  </body>
+</html>

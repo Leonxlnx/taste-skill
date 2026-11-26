@@ -1,0 +1,170 @@
+<!doctype html>
+<!-- Recurring practical questions with short self-contained answers. Desktop and phone section heights in the second comparison: 543px at 1440; 477px at 390. The content stays inside the kit gutters. -->
+<html lang="en" data-type="software" data-radius="sharp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Before your first run · Trestle</title>
+    <meta name="description" content="Before your first run at Trestle." />
+    <meta name="page-type" content="software" />
+    <meta name="site-kind" content="software" />
+    <link rel="icon" href="data:," />
+    <script defer src="../motion/parts/accordion/part.js"></script>
+    <link rel="stylesheet" href="../system.css" />
+    <style id="own-css">
+      :root {
+        --p-bg: #f6f5f0;
+        --p-surface: #eae9df;
+        --p-ink: #242c24;
+        --p-accent: #4e604b;
+        --p-action: #4e604b;
+        --p-muted: #51554d;
+        --p-action-ink: #fff;
+      }
+      .layout-work {
+        color: var(--ink);
+        background: var(--bg);
+      }
+      .layout-work h2 {
+        max-width: 24ch;
+        text-wrap: balance;
+      }
+      .layout-work .intro {
+        max-width: 58ch;
+        margin-block: var(--s-4) var(--s-7);
+        color: var(--muted);
+        font-size: var(--t-lead);
+      }
+      .layout-work figure,
+      .layout-work dl,
+      .layout-work dd {
+        margin: 0;
+      }
+      .layout-work img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .layout-work figcaption {
+        padding-top: var(--s-3);
+        font-size: var(--t-small);
+      }
+      .layout-work svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      @media (max-width: 650px) {
+        .layout-work .intro {
+          margin-bottom: var(--s-6);
+        }
+      }
+      #run-questions .fold + .fold {
+        border-top: 1px solid var(--line);
+      }
+      #run-questions .fold h3 button {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        border: 0;
+        background: transparent;
+        padding: 16px 0;
+      }
+      #run-questions .fold b {
+        transition: transform 180ms var(--m-ease);
+      }
+      #run-questions .fold [aria-expanded="true"] b {
+        transform: rotate(45deg);
+      }
+      #run-questions .fold-body {
+        display: grid;
+        grid-template-rows: 1fr;
+        transition: grid-template-rows 180ms var(--m-ease);
+      }
+      #run-questions .fold-body[inert] {
+        grid-template-rows: 0fr;
+      }
+      #run-questions .fold-body > div {
+        overflow: hidden;
+      }
+      #run-questions .fold-body p {
+        padding-bottom: 16px;
+      }
+      #run-questions [data-part="accordion"] [hidden] {
+        display: none !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #run-questions [data-part="accordion"] *,
+        #run-questions [data-part="accordion"] *::before,
+        #run-questions [data-part="accordion"] *::after {
+          transition-duration: 0s !important;
+        }
+      }
+      #run-questions .wrap {
+        max-width: 72ch;
+      }
+      #run-questions .fold button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <section
+        class="section own layout-work"
+        id="run-questions"
+        data-own="run-questions"
+        data-family="questions"
+        data-width="narrow"
+        aria-labelledby="run-questions-title"
+      >
+        <div class="wrap">
+          <h2 id="run-questions-title">Before your first run</h2>
+          <p class="intro">
+            How Trestle reads a repository, stores logs and handles a stopped
+            build.
+          </p>
+          <div class="answers" data-part="accordion">
+            <div class="fold">
+              <h3>Which repositories can I connect?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Connect one repository with read access to its source and
+                    write access to its build status.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="fold">
+              <h3>What happens when I cancel?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Queued jobs leave the queue immediately. Running jobs stop
+                    at the next process check.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="fold">
+              <h3>Can I take my logs with me?</h3>
+              <div class="fold-body">
+                <div>
+                  <p>
+                    Download the plain-text log from the run while it is within
+                    the 30-day retention period.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
