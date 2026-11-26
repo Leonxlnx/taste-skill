@@ -1,0 +1,41 @@
+.gallery-track {
+  display: flex;
+  gap: 16px;
+  overflow: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+}
+.gallery-track figure {
+  flex: 0 0 86%;
+  scroll-snap-align: start;
+}
+.gallery-track img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.gallery-nav {
+  margin-top: 18px;
+}
+.gallery-nav span {
+  height: 2px;
+  background: var(--line);
+  flex: 1;
+}
+.gallery-nav i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+}
+.gallery-track[data-drag] {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+[data-part="snap-gallery"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="snap-gallery"] *, [data-part="snap-gallery"] *::before, [data-part="snap-gallery"] *::after {
+    transition-duration: 0s !important;
+  }
+}

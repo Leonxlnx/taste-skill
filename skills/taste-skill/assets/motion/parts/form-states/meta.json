@@ -1,0 +1,19 @@
+{
+  "id": "form-states",
+  "what": "form states",
+  "where": "A real form",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "Validation, a persistence operation and its outcome",
+  "avoid": "Showing success before saving",
+  "numbers": {
+    "feedback": "on actual storage completion"
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

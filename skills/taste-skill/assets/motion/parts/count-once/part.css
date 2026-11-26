@@ -1,0 +1,17 @@
+.inventory strong {
+  display: block;
+  font:
+    normal clamp(60px, 12vw, 140px) / 1.1 Georgia,
+    serif;
+  font-variant-numeric: tabular-nums;
+}
+.inventory span {
+  color: var(--accent);
+}
+
+[data-part="count-once"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="count-once"] *, [data-part="count-once"] *::before, [data-part="count-once"] *::after {
+    transition-duration: 0s !important;
+  }
+}

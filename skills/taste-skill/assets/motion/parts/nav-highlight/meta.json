@@ -1,0 +1,20 @@
+{
+  "id": "nav-highlight",
+  "what": "nav highlight",
+  "where": "Desktop navigation",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "Short destinations and a real group of child links",
+  "avoid": "Sliding the link text",
+  "numbers": {
+    "openMs": 150,
+    "closeMs": 120
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "menu-sheet",
+  "what": "menu sheet",
+  "where": "The mobile header",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "A short list of working destinations",
+  "avoid": "A second menu covering an open one",
+  "numbers": {
+    "openMs": 180,
+    "closeMs": 150,
+    "travelPx": 16
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

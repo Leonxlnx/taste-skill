@@ -1,0 +1,22 @@
+{
+  "id": "compare",
+  "what": "compare",
+  "where": "A proofing or editing section",
+  "pageKinds": [
+    "software",
+    "studio",
+    "publication"
+  ],
+  "contentNeeded": "Two registered images at the same scale",
+  "avoid": "Unrelated crops",
+  "numbers": {
+    "range": "0–100%",
+    "durationMs": 0
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

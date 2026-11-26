@@ -1,0 +1,19 @@
+{
+  "id": "copy-button",
+  "what": "copy button",
+  "where": "Beside a reusable value",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "The exact selectable text",
+  "avoid": "Acknowledging a failed copy",
+  "numbers": {
+    "holdMs": 1200
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

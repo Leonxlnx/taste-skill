@@ -1,0 +1,26 @@
+{
+  "id": "accordion",
+  "what": "accordion",
+  "where": "Specifications and questions",
+  "pageKinds": [
+    "software",
+    "studio",
+    "publication"
+  ],
+  "contentNeeded": "Short headings with independent answers",
+  "avoid": "Hiding the primary offer",
+  "numbers": {
+    "ms": 180,
+    "rows": "0fr–1fr"
+  },
+  "observedSites": 3,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [
+      "Slack",
+      "Aesop",
+      "Stripe"
+    ],
+    "note": "Named controls on Slack and Aesop. Stripe Billing exposes details elements in its billing accordion. Exact animated height timing was unresolved."
+  }
+}

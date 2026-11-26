@@ -1,0 +1,39 @@
+.fold + .fold {
+  border-top: 1px solid var(--line);
+}
+.fold h3 button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  border: 0;
+  background: transparent;
+  padding: 16px 0;
+}
+.fold b {
+  transition: transform 180ms var(--m-ease);
+}
+.fold [aria-expanded='true'] b {
+  transform: rotate(45deg);
+}
+.fold-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 180ms var(--m-ease);
+}
+.fold-body[inert] {
+  grid-template-rows: 0fr;
+}
+.fold-body > div {
+  overflow: hidden;
+}
+.fold-body p {
+  padding-bottom: 16px;
+}
+
+[data-part="accordion"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="accordion"] *, [data-part="accordion"] *::before, [data-part="accordion"] *::after {
+    transition-duration: 0s !important;
+  }
+}

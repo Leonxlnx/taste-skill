@@ -1,0 +1,20 @@
+{
+  "id": "step-rail",
+  "what": "step rail",
+  "where": "A multi-stage reading sequence",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "A distinct visual for each step",
+  "avoid": "Pinning the narrative on a phone",
+  "numbers": {
+    "fadeMs": 180,
+    "readingLine": 0.48
+  },
+  "observedSites": 0,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [],
+    "note": "No exact identification in the reviewed captures. Related property measurements are in the report."
+  }
+}

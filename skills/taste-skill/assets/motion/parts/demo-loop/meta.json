@@ -1,0 +1,23 @@
+{
+  "id": "demo-loop",
+  "what": "demo loop",
+  "where": "Inside the hero’s product window",
+  "pageKinds": [
+    "software"
+  ],
+  "contentNeeded": "One workflow with a starting state, action and visible result",
+  "avoid": "Invented actions or a page-wide entrance",
+  "numbers": {
+    "cycleMs": 10400,
+    "pointerMs": 650
+  },
+  "observedSites": 2,
+  "countType": "Confirmed lower bound for the interaction family, unique sites",
+  "evidence": {
+    "sites": [
+      "Notion",
+      "Stripe"
+    ],
+    "note": "Notion types inside its product frame. Stripe Billing populates price plans inside a stationary frame. The strips do not establish a full cycle."
+  }
+}

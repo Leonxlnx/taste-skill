@@ -1,0 +1,65 @@
+.desk-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible;
+  padding: 12px;
+}
+.desk-nav > a,
+.desk-nav > button {
+  position: relative;
+  padding: 8px 14px;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.desk-nav > i {
+  pointer-events: none;
+  position: absolute;
+  top: 12px;
+  left: 0;
+  border-radius: 7px;
+  background: #e4eae0;
+  pointer-events: none;
+  transition:
+    transform 150ms var(--m-ease),
+    opacity 120ms;
+  opacity: 0;
+}
+.desk-nav[data-ready] .desk-panel {
+  position: absolute;
+  z-index: 2;
+  top: 100%;
+  left: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: opacity 150ms var(--m-ease);
+}
+.desk-panel[inert] {
+  opacity: 0;
+  transition-duration: 120ms !important;
+}
+.desk-nav .desk-panel {
+  display: grid;
+  gap: 8px;
+}
+@media (max-width: 540px) {
+  .mast:has(.desk-nav:not([data-ready])) {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .mast .desk-nav {
+    gap: 4px;
+    padding: 6px;
+  }
+}
+
+[data-part="nav-highlight"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="nav-highlight"] *, [data-part="nav-highlight"] *::before, [data-part="nav-highlight"] *::after {
+    transition-duration: 0s !important;
+  }
+}

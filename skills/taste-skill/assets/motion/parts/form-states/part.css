@@ -1,0 +1,39 @@
+.contact label {
+  display: grid;
+  gap: 6px;
+  max-width: 32em;
+}
+.contact input {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 10px;
+  border-radius: 6px;
+}
+.contact input[aria-invalid='true'] {
+  border-color: #943d30;
+}
+.contact input[data-saved] {
+  border-color: #41744d;
+}
+.contact .message {
+  min-height: 1.6em;
+  color: #82372d;
+}
+.contact output {
+  display: block;
+  min-height: 1.6em;
+  margin-top: 12px;
+}
+
+.contact input {
+  transition: border-color var(--m-state, 180ms) var(--m-ease, ease);
+}
+.contact button{min-inline-size:8em}
+
+[data-part="form-states"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="form-states"] *, [data-part="form-states"] *::before, [data-part="form-states"] *::after {
+    transition-duration: 0s !important;
+  }
+}

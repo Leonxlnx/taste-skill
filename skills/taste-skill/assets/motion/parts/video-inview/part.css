@@ -1,0 +1,17 @@
+.proof-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  background: #e5e9de;
+}
+.proof-film figcaption {
+  margin-top: 12px;
+}
+
+[data-part="video-inview"] [hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-part="video-inview"] *, [data-part="video-inview"] *::before, [data-part="video-inview"] *::after {
+    transition-duration: 0s !important;
+  }
+}
