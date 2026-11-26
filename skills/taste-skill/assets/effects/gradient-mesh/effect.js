@@ -5,12 +5,19 @@
 // tool, bunching where the surface folds. By default there is no grid.
 import { shader, color } from '../fx.js';
 
+const packedColour = {default:0,min:0,max:16777215,step:1};
 const params = {
-  speed:    { default: 0.06, min: 0,   max: 0.4, step: 0.01 }, // drift; 0.06 gives cycles of about 30 s
+  field: {default:0,min:0,max:1,step:1},
+  zone: {default:1,min:0,max:3,step:1},
+  sweep:{default:0,min:0,max:1,step:1},
+  base: packedColour, bright: packedColour, middle: packedColour, edge: packedColour,
+  x:{default:.75,min:-.25,max:1.25}, y:{default:.7,min:-.25,max:1.25},
+  w:{default:1,min:.01,max:4}, h:{default:1,min:.01,max:4},
+  speed:    { default: 0.06, min: 0,   max: 0.4, step: 0.01 }, // drift; 0.06 gives a 48-second loop
   lines:    { default: 0,    min: 0,   max: 16,  step: 1 },    // grid lines across the height; 0 (the default) for none, 6 to 10 for a design-tool mesh
-  warp:     { default: 0.65, min: 0,   max: 1,   step: 0.01 }, // how deeply the plane folds
-  relief:   { default: 0.5,  min: 0,   max: 1,   step: 0.01 }, // light and shade on the folds
-  softness: { default: 0.55, min: 0,   max: 1,   step: 0.01 }, // 0 distinct islands .. 1 long blends
+  warp:     { default: 0.35, min: 0,   max: 1,   step: 0.01 }, // how deeply the plane folds
+  relief:   { default: 0.22,  min: 0,   max: 1,   step: 0.01 }, // light and shade on the folds
+  softness: { default: 0.78, min: 0,   max: 1,   step: 0.01 }, // 0 distinct islands .. 1 long blends
   joins:    { default: 1,    min: 0,   max: 1,   step: 1 },    // small points where the grid lines meet
   angle:    { default: -12,  min: -90, max: 90,  step: 1 },    // turns the mesh, degrees
   tint:     { default: 0.6,  min: 0,   max: 1,   step: 0.01 }, // how strong the accent islands are
@@ -35,7 +42,7 @@ vec2 warpHi(vec2 q, float t) {
 void main() {
   vec2 uv = fx_uv();
   vec2 p = fx_p();
-  float t = u_time * u_speed * 3.4 + u_seed * 0.0731;
+  float t = sin(u_time * 6.2831853 / 48.0 * (u_speed / 0.06)) + u_seed * 0.0731;
   vec2 so = vec2(u_seed * 0.0131, u_seed * 0.0217);
   float px = 1.0 / u_res.y;                      // one canvas pixel in height units
 
@@ -144,7 +151,7 @@ function tones(P, prm, kind) {
 
 // the tone of each grid point: the ground near the calm area, then the others dealt so that no two
 // neighbours share a tone
-const DEAL = [1, 2, 5, 3, 4, 2, 1, 5, 3, 2, 4, 1];
+const TONE_BY_DISTANCE = [0, 0, 0, 0, 0, 4, 4, 5, 5, 3, 2, 1];
 function uniforms({ palette, params, rng, kind, width, height }) {
   const r = rng;
   const T = tones(palette, params, kind);
@@ -160,16 +167,15 @@ function uniforms({ palette, params, rng, kind, width, height }) {
   }
   const calm = [(params.calmX - 0.5) * asp, 0.5 - params.calmY];
   const dist = s => Math.hypot(s[0] - calm[0], s[1] - calm[1]);
-  const off = Math.floor(r() * DEAL.length);
-  const tone = pts.map((s, n) => DEAL[(n + off) % DEAL.length]);
-  // the point nearest the calm area holds the ground, and so does a close neighbour of it
-  const near = pts.map((s, n) => n).sort((m, n) => dist(pts[m]) - dist(pts[n]));
-  tone[near[0]] = 0;
-  if (dist(pts[near[1]]) < 0.35) tone[near[1]] = 0;
+  // Neighbouring points share a tone. The far side holds the only accent and highlight.
+  const ordered = pts.map((point, index) => ({index, distance:dist(point)}))
+    .sort((a,b) => a.distance-b.distance);
+  const tone = [];
+  ordered.forEach(({index}, rank) => { tone[index] = TONE_BY_DISTANCE[rank]; });
   // the grid is turned a little off the mesh angle, so its lines never run square to the frame
   const ga = a * 0.5 + (r() - 0.5) * 0.3;
   const u = {
-    u_sigma: Math.min(sx, sy) * 0.4,
+    u_sigma: Math.min(sx, sy) * 0.53,
     u_rot: [Math.cos(ga), Math.sin(ga)],
     u_hi: color.labVec(T.hi), u_lo: color.labVec(T.lo), u_ground: color.labVec(T.ground),
     u_line: color.labVec(T.line), u_lineA: T.lineA,
@@ -187,6 +193,35 @@ export default {
   family: 'mesh',
   params,
   mount(el, { palette, params: given, seed }) {
+    if (given?.field) {
+      const {x,y,w,h,zone,sweep}=given;
+      const [base,bright,edge,middle]=[given.base,given.bright,given.edge,given.middle].map(n=>'#'+n.toString(16).padStart(6,'0'));
+      const veil = zone===0?'':zone===3?`linear-gradient(90deg, ${base}00, ${base} 25% 75%, ${base}00), `:`linear-gradient(${zone===2?180:90}deg, ${base} 38%, ${base}00 78%), `;
+      const angular=sweep?`conic-gradient(at 108% 110%, ${bright}00 252deg, ${bright}1f 288deg, ${bright}00 324deg), `:'';
+      const field = `void main() {
+        vec2 uv = fx_uv();
+        float phase = u_time * 6.2831853 / 48.0;
+        vec2 drift = vec2(sin(phase), 1.0 - cos(phase)) * 0.025;
+        float r = length((uv - u_focus - drift) / u_radius);
+        vec3 col = mix(u_bright, u_mid, clamp(r / 0.4, 0.0, 1.0));
+        col = mix(col, u_base, clamp((r - 0.4) / 0.46, 0.0, 1.0));
+        col = mix(col, u_edge, clamp((r - 0.86) / 0.14, 0.0, 1.0));
+        if (u_sweep > 0.5) {
+          vec2 delta=(uv-vec2(1.08,1.10))*u_res;
+          float degreesAround=mod(degrees(atan(delta.x,-delta.y))+360.0,360.0);
+          float intensity=max(0.0,1.0-abs(degreesAround-288.0)/36.0)*0.12;
+          col=mix(col,u_bright,intensity);
+        }
+        float axis = u_zone == 2.0 ? uv.y : uv.x;
+        float veil = u_zone == 3.0 ? min(clamp(axis * 4.0,0.0,1.0),clamp((1.0-axis)*4.0,0.0,1.0)) : clamp((0.78-axis)/0.4,0.0,1.0);
+        col = mix(col, u_base, u_zone == 0.0 ? 0.0 : veil);
+        fxColor = vec4(fx_dither(fx_rgb(col)), 1.0);
+      }`;
+      return shader(el, {frag:field, palette, seed, maxDpr:1.25, still:0,
+        uniforms:()=>({u_focus:[x,y],u_radius:[w,h],u_bright:color.labVec(bright),u_mid:color.labVec(middle),u_base:color.labVec(base),u_edge:color.labVec(edge),u_zone:zone,u_sweep:sweep}),
+        fallback:()=>`${veil}${angular}radial-gradient(${w*100}% ${h*100}% at ${x*100}% ${y*100}%, ${bright}, ${middle} 40%, ${base} 86%, ${edge})`
+      });
+    }
     return shader(el, {
       frag,
       schema: params,
