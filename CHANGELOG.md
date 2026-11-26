@@ -6,6 +6,8 @@ All notable changes to taste-skill live here. The repo follows SemVer-ish discip
 
 ## 2.5.4 - unreleased
 
+- Plans suggest a section sequence by kind and check each supplied layout family before building.
+
 - Plans match motion parts to supplied content and place a palette-matched show gradient in one hero or closing band.
 
 The 24-site comparison showed price lists padded with photographs, games without pictures of their worlds, and booking forms a long scroll from the first booking button.

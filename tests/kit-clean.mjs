@@ -60,6 +60,8 @@ pages.push(join(SKILL, 'tools', 'demo.html'), join(SKILL, 'assets', 'motion', 'p
 
   join(SKILL, 'assets', 'own', 'gallery-own-a.html'), join(SKILL, 'assets', 'own', 'gallery-own-b.html'),
   join(SKILL, 'assets', 'expressive', 'demo.html'));   // the expressive kit on a loud page (references/expressive.md)
+pages.push(join(SKILL, 'assets', 'own', 'gallery-own-c.html'));
+for (const file of readdirSync(join(SKILL, 'assets', 'pages')).sort()) if (file.endsWith('.html')) pages.push(join(SKILL, 'assets', 'pages', file));
 const moments = join(SKILL, 'assets', 'moments');
 for (const f of readdirSync(join(moments, '_demo')).sort()) if (/^in-page.*\.html$/.test(f)) pages.push(join(moments, '_demo', f));
 if (DEMOS) for (const d of readdirSync(moments).sort()) {

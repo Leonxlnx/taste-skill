@@ -26,7 +26,7 @@ const headings = ['letters-assemble', 'word-highlight', 'word-rotate', 'lines-ri
 for (const id of ['edge-split','colour-half','intro-rail','shopfronts','name-foot','story-line','menu-tabs','pantry-tiles','archive-prints','record-handoff','setup-by-environment','test-record','release-documents']) {
   assert.equal(seeds.filter(seed => seed.id === id).length, 1, 'missing or duplicate idea: ' + id);
 }
-const keys = 'parts demo gradient tools seed actionColour footerWordmark headline version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance reveals nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
+const keys = 'rhythm parts demo gradient tools seed actionColour footerWordmark headline version kind pageType trade temper temperWhy sections palette type hero heroPeek heroBook entrance reveals nav footer close buttons mark grounds density align pictures compositions own ideas sub moments rides scene effect story'.split(' ');
 const varied = 'palette type hero entrance nav footer close buttons mark grounds density align pictures compositions ideas sub moments scene effect'.split(' ');
 const kindsToRun = opt('kind') ? [opt('kind')] : kinds;
 const hasByKind = { software: 'ui,logo', gaming: 'setting', tech: 'ui', product: 'object', service: 'photo', place: 'photo' };

@@ -4,7 +4,20 @@ Study the reference pages for how the reader moves between tasks. Build a fresh 
 
 Across 45 outside captures the median page showed 7 different families. Long galleries and catalogues sometimes kept one form for most of the page. The median product page used nine families and changed width twice. The median place or shop used six families and changed width three times. In the six local builds, three pages ran three consecutive splits. Count one continuous catalogue once, even when it spans many screens.
 
-For a nine-section product story, allow at least five forms and two changes between a wide subject, the content grid and a reading column. A change of background colour alone leaves the width unchanged. Review a third consecutive split. Keep a repeated arrangement when the reader needs a stable comparison.
+For a nine-section product story, allow at least five forms and two changes between a wide subject, the content grid and a reading column. A change of background colour alone leaves the width unchanged. Change the form before a third consecutive split. Keep related items in one comparison when the reader needs a stable frame.
+
+## Plan a page
+
+Count the hero and close, excluding a links-only footer. These are suggestions drawn from the capture study. A thin brief can support fewer sections. Count the wide subject at its real width and change its measure twice. From seven sections use at least four families. Keep adjacent splits to two.
+
+| Kind | Suggested sections | Typical order when material exists |
+|---|---|---|
+| software | 9 ± 2 | hero → wide-product-view → logo-wall → feature-grid → split → comparison → single-quote → pricing → closing-action |
+| tech | 9 ± 2 | hero → wide-product-view → evidence → code-panel → feature-grid → integration-grid → comparison → pricing → closing-action |
+| product | 9 ± 2 | hero → wide-product-view → figures → annotated-plate → steps → comparison → case-studies → inventory → closing-action |
+| gaming | 6 ± 2 | hero → wide-product-view → editorial-statement → photo-gallery → product-shelf → closing-action |
+| service | 6 ± 2 | hero → case-studies → wide-product-view → steps → team → closing-action |
+| place | 7 ± 2 | hero → product-shelf → photo-gallery → split → event-list → visit-hours → closing-action |
 
 **Software.** Open with the actual tool, then make a result inspectable. When approved customer marks exist, a short proof row can sit immediately below the first interface. Follow a detailed screen with a compact decision, such as a pricing comparison or a code excerpt. End with an action and grouped destinations.
 

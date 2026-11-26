@@ -3,7 +3,7 @@
 Read `compose.md` before the first page. Look up a recipe here when it fits the section's content. Each gives its job, markup and sizes at 1440 and 390. For place pages see `sections.md` section 4.
 
 <!-- recipe index -->
-[Navigation](#navigation) · [Heroes](#heroes) · [Proof](#proof) · [Features](#features) · [Photographs, rooms, services and people](#photographs-rooms-services-and-people) · [Sections for a kind of content](#sections-for-a-kind-of-content) · [Price and questions](#price-and-questions) · [Closes](#closes) · [Compositions](#compositions) · [Footers](#footers) · [Page plans](#page-plans)
+[Navigation](#navigation) · [Heroes](#heroes) · [Proof](#proof) · [Features](#features) · [Photographs, rooms, services and people](#photographs-rooms-services-and-people) · [Sections for a kind of content](#sections-for-a-kind-of-content) · [Price and questions](#price-and-questions) · [Closes](#closes) · [Compositions](#compositions) · [Footers](#footers) · [Page plans](#page-plans) · [Worked families](#worked-families)
 <!-- end recipe index -->
 
 ## What every recipe assumes
@@ -236,6 +236,8 @@ into quote cards.
 
 ## product-statement
 
+[Worked example](../assets/own/meter-portrait.html)
+
 **Job and use.** One plain paragraph on what the product is and what makes it different, then the
 product in one wide picture with three facts. Products (never on a place). Never straight after a
 hero frame of the same width.
@@ -261,6 +263,8 @@ pointer (the page's effect), with its own pause button.
 edge; an object that is not the client's kind of product; facts that are claims.
 
 ## features-2x2
+
+[Worked example](../assets/own/walk-export.html)
 
 **Job and use.** What it does, in one screen: four features of equal weight, each with its own
 small working visual (the 2x2: a headline, two lines, an inset panel with a smaller card on it).
@@ -368,6 +372,8 @@ plain. The main piece shows the text step for step; the small one shows what com
 text does not say; a button pair instead of one link; a second split on the other side.
 
 ## tabs-tour
+
+[Worked example](../assets/own/chapter-stage.html)
 
 **Job and use.** Three to six uses of one subject share a frame. Switch by click, tap or keyboard.
 
@@ -529,6 +535,8 @@ cut, oiled and tested in our workshop before it ships."
 
 ## photo-pair
 
+[Photo-led journal example](../assets/own/bean-journal.html)
+
 **Job and use.** Two photographs side by side: inside and out, a detail and the whole, two cases of
 work. A light section between heavier ones.
 
@@ -540,6 +548,8 @@ one ratio, one light. A fact line can distinguish the two projects (`copy.md`).
 **Mistakes.** Two incompatible grades or copy that just describes the picture.
 
 ## line-up
+
+[Collection shelf with names and prices](../assets/own/coffee-service.html)
 
 **Job and use.** The models or sizes of a product, picture first, each with a price from, so the
 buyer can choose (8 of 15 good product sites show the range early).
@@ -640,6 +650,8 @@ in a card.
 
 ## calendar-frame
 
+[Worked example](../assets/own/counter-calendar.html)
+
 **Job and use.** The dates the product deals with, on the client's real month, beside what they are
 for. Tech only, with real dates.
 
@@ -662,6 +674,8 @@ through its rows.
 
 ## timeline-rail
 
+[Worked example](../assets/own/field-observations.html)
+
 **Job and use.** Four dated moments in order on one line, each with a small panel: releases, a
 history. Software and product only, never a place.
 
@@ -678,11 +692,15 @@ next column, an 8px still dot, the newest in `--accent`), the date in `.t-label`
 
 ## menu-in-type
 
+[Worked example](../assets/own/meter-contents.html)
+
 **Job and use.** Group a menu or price list in live text. Put item and price on the same row. A product sold by weight or size includes its unit. The list can stand alone.
 
 **Mistakes.** Ragged prices, mixed currency formats, a menu available only as a PDF or image, or a strip of unrelated details under the prices.
 
 ## visit-map
+
+[Worked example](../assets/own/ridge-notebook.html)
 
 **Job and use.** Where the place is, when it opens and how to get there, with the practical facts
 (parking, dogs, step-free access, check-in) as two to six rows. Showrooms, studios, services with a
@@ -790,6 +808,8 @@ for something that is no subscription (a product, a place).
 
 ## pricing-two
 
+[Worked example](../assets/own/runner-plans.html)
+
 **Job and use.** A free and a paid plan, or two fixed prices for a service; what both include said
 once.
 
@@ -802,6 +822,8 @@ button, 5 to 7 lines), the recommended one `.is-featured`.
 **Mistakes.** Buttons at different heights; the every-plan list repeated in the cards.
 
 ## comparison-table
+
+[Worked example](../assets/own/exposure-pairs.html)
 
 **Job and use.** Plans or models, or the product against how the job is done today, row by row.
 
@@ -816,6 +838,8 @@ Group headings in `.t-label`; 48px rows, each closed by a 1px rule; a check with
 **Mistakes.** Sideways scroll on the phone; columns off the grid.
 
 ## faq
+
+[Worked example](../assets/own/run-questions.html)
 
 **Job and use.** Answer the buyer's questions about price, terms or use. Put a short set with the subject that raised the questions.
 
@@ -962,15 +986,13 @@ Row 2 of `footer.closing`: the directory on one ground and the legal row (`syste
 the legal row. Software, products, services.
 
 **At 1440.** As `starter.html`: the company block on `span-4` (the logo, then `p.footer__lede`, one
-line of at most eight words in the display face at 28px), four `.footer__col.span-2` named and
-ordered as the nav, each link a section of the page and Contact `#contact`; the newsletter field
-(once, "Subscribe") when the page has one; then `.footer__legal`: the brand and year, Privacy, Terms
-(an Imprint only when the brief gives the company's own details), the empty `.socials`, the credits
+line of at most eight words in the display face at 28px), groups of supplied product parts, page sections and company routes. Give each heading at least three related links; the newsletter field
+(once, "Subscribe") when the page has one; then `.footer__legal`: the brand, year and supplied legal routes, the empty `.socials`, the credits
 line last.
 
 **At 390.** Columns two-up, the legal row stacked.
 
-**Mistakes.** Columns that differ from the nav; links to pages the build does not have; drawn or
+**Mistakes.** Filling a heading with invented routes; links to pages the build does not have; drawn or
 coloured social icons; effects in the footer.
 
 ## footer-dark
@@ -979,7 +1001,7 @@ coloured social icons; effects in the footer.
 Software and product (the one dark band at the end).
 
 **At 1440.** `footer.closing.footer--dark.ground-inverse`: `.grid` with the company block on
-`span-4` (the mark and name at the item-title size), four `.footer__col.span-2`, the legal
+`span-4` (the mark and name at the item-title size), groups of three or more supplied routes, the legal
 row. On a dark page system.css keeps it a step darker than the page with a hairline on top.
 
 **At 390.** Keep the normal name size and set the columns two-up. Only a dealt large wordmark spans the footer.
@@ -1042,3 +1064,32 @@ For a pottery studio, put class times on a week strip. Use a photograph pair to 
 For a clinic, match each treatment to the stated fee. Show the steps from check-in to follow-up, the people named in the brief and answers to patients' questions. Put the enquiry fields where the visitor can act.
 
 Keep a project caption inside its own figure. Use a column sized for both menu name and price so they share a row.
+
+## Worked families
+
+[Browse the twenty sections together](../assets/own/gallery-own-c.html) or open a single example below.
+
+| Content and worked example | Layout family | What it needs | Width |
+|---|---|---|---|
+| [Parallel jobs](../assets/own/run-waterfall.html) | Job waterfall | Start, duration, common clock | Wide |
+| [Spread of results](../assets/own/build-distribution.html) | Distribution and figures | Intervals, counts and units | Content |
+| [Failed assertion](../assets/own/failure-excerpt.html) | Code panel | Source, expected and observed value | Reading |
+| [Price choices](../assets/own/runner-plans.html) | Pricing columns | Comparable unit and capacity | Content |
+| [Practical questions](../assets/own/run-questions.html) | Question list | Short independent answers | Reading |
+| [A route](../assets/own/ridge-notebook.html) | Map and facts | Named turns, scale or distance | Wide |
+| [Timed entries](../assets/own/field-observations.html) | Timeline | Time and change at each stop | Reading |
+| [Related walks](../assets/own/trail-editions.html) | Gallery | Distinct pictures and route lengths | Content |
+| [Output formats](../assets/own/walk-export.html) | Feature grid | Example output and its use | Content |
+| [One source excerpt](../assets/own/walk-extract.html) | Single quote | Exact passage and attribution | Reading |
+| [Physical controls](../assets/own/meter-portrait.html) | Annotated object | A whole-object view | Wide |
+| [Equivalent choices](../assets/own/exposure-pairs.html) | Comparison table | Shared conditions and units | Reading |
+| [Physical steps](../assets/own/meter-sequence.html) | Steps | The part touched at each step | Content |
+| [An inventory](../assets/own/meter-contents.html) | Inventory | Part, size or material | Reading |
+| [Two cases](../assets/own/light-studies.html) | Paired cases | Evidence from each case | Content |
+| [Items for sale](../assets/own/coffee-service.html) | Product shelf | Picture, name and price | Content |
+| [A house position](../assets/own/roast-notes.html) | Editorial statement | A specific reason and consequence | Reading |
+| [Upcoming events](../assets/own/counter-calendar.html) | Event list | Date, time and subject | Content |
+| [Related articles](../assets/own/bean-journal.html) | Article list | Distinct subjects and thumbnails | Content |
+| [One service](../assets/own/brew-counter.html) | Service split | A useful picture and serving time | Content |
+
+[Reference pages and width changes](layouts.md)

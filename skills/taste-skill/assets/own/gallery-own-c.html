@@ -8,7 +8,6 @@
     <meta name="page-type" content="software" />
     <meta name="site-kind" content="software" />
     <link rel="icon" href="data:," />
-    <script defer src="../motion/parts/accordion/part.js"></script>
     <link rel="stylesheet" href="../system.css" />
     <style id="own-css">
       :root {
@@ -901,13 +900,13 @@
       .gallery-index {
         padding-block: var(--s-7);
       }
-      .gallery-index nav {
+      .gallery-index .gallery-groups {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--s-5);
         margin-top: var(--s-6);
       }
-      .gallery-index h2 {
+      .gallery-groups strong {
         font-size: var(--t-h3);
         margin-bottom: var(--s-3);
       }
@@ -918,32 +917,52 @@
         padding-block: var(--s-2);
       }
       @media (max-width: 700px) {
-        .gallery-index nav {
+        .gallery-index .gallery-groups {
           grid-template-columns: 1fr 1fr;
         }
       }
       @media (max-width: 440px) {
-        .gallery-index nav {
+        .gallery-index .gallery-groups {
           grid-template-columns: 1fr;
         }
       }
+
+      .gallery-index { padding-top: calc(var(--nav-h, 72px) + var(--s-7)); }
+      .nav__bar { justify-content: space-between; }
+      .gallery-groups strong { display: block; }
+      #examples > .layout-work > .wrap { max-width: var(--container); }
+      #examples > [data-width="narrow"] > .wrap > * { max-width: min(100%, 72ch); }
+      #examples .layout-work h2 { font-size: var(--t-h2); }
+      #examples .layout-work .big { font-size: var(--t-h2); }
+      #run-waterfall .btn { margin-bottom: var(--s-5); }
+      #brew-counter .btn { margin-top: var(--s-5); }
+      .job-track { display: block; width: 100%; }
+      .job-track i { display: block; }
+      .runner-chip { max-width: 290px; margin-block: var(--s-4); }
+      .reading-column { max-width: min(100%, 72ch); }
+      .layout-work .gate-sketch { max-width: 220px; }
+      .layout-work .roast-sample { width: min(100%, 44rem); height: clamp(12rem, 24vw, 20rem); object-fit: cover; }
+      .written-answers summary { font-weight: 600; cursor: pointer; min-height: 44px; padding-block: var(--s-3); }
+      .written-answers details { border-top: 1px solid var(--line); }
+      .written-answers p { margin-block: var(--s-2) var(--s-4); }
     </style>
   </head>
   <body>
-    <header class="gallery-index">
+    <header><div class="nav"><div class="wrap nav__bar"><a class="skip-link" href="#run-waterfall">Skip to examples</a><a class="nav__logo" href="index.html">Section library</a><div class="nav__actions"><a class="btn btn--primary" href="../pages/software.html">View a reference page</a></div></div></div>
+    <div class="gallery-index">
       <div class="wrap">
-        <h1>Worked sections</h1>
-        <nav aria-label="Section index">
+        <h1>20 worked sections</h1>
+        <div class="gallery-groups">
           <div>
-            <h2>Trestle</h2>
-            <a href="#run-waterfall">See what held up a build</a
+            <strong>Trestle</strong>
+            <a href="#run-waterfall">What held up the 4-minute build?</a
             ><a href="#build-distribution">What a typical run takes</a
             ><a href="#failure-excerpt">The first failed assertion</a
             ><a href="#runner-plans">Choose the size of your runner</a
             ><a href="#run-questions">Before your first run</a>
           </div>
           <div>
-            <h2>Footnote</h2>
+            <strong>Footnote</strong>
             <a href="#ridge-notebook">The walk to Quarry Ridge</a
             ><a href="#field-observations">Notes from the ridge</a
             ><a href="#trail-editions">Three walks for a change of season</a
@@ -951,7 +970,7 @@
             ><a href="#walk-extract">A note worth finding again</a>
           </div>
           <div>
-            <h2>Stillmeter</h2>
+            <strong>Stillmeter</strong>
             <a href="#meter-portrait">A reading in the palm of your hand</a
             ><a href="#exposure-pairs">One reading, four exposures</a
             ><a href="#meter-sequence">Measure before you compose</a
@@ -959,17 +978,18 @@
             ><a href="#light-studies">Two ways to read a room</a>
           </div>
           <div>
-            <h2>Birchroom</h2>
+            <strong>Birchroom</strong>
             <a href="#coffee-service">Coffee at the counter</a
             ><a href="#roast-notes">Why we roast for filter</a
             ><a href="#counter-calendar">Saturday at the brew bar</a
             ><a href="#bean-journal">From the roastery</a
             ><a href="#brew-counter">The morning pour</a>
           </div>
-        </nav>
+        </div>
       </div>
+    </div>
     </header>
-    <main>
+    <main id="examples" tabindex="-1">
       <section
         class="section own layout-work"
         id="run-waterfall"
@@ -979,12 +999,12 @@
         aria-labelledby="run-waterfall-title"
       >
         <div class="wrap">
-          <h2 id="run-waterfall-title">See what held up a build</h2>
+          <h2 id="run-waterfall-title">What held up the 4-minute build?</h2>
           <p class="intro">
-            Trestle lays every job against the same clock. In this run, the
-            browser tests finish last.
+            Trestle shows all five jobs on one clock. The browser tests finish last in this 4-minute, 12-second run.
           </p>
-          <figure class="run-stage">
+          <a class="btn btn--primary" href="../pages/software.html#run-waterfall">View the run on its page</a>
+          <figure class="run-stage mock">
             <header>
               <strong>Example run · Orchard</strong><span>4 min 12 s</span>
             </header>
@@ -993,21 +1013,34 @@
               ><span>3:09</span><span>4:12</span>
             </div>
             <div class="job">
-              <span>Prepare</span><i style="--left: 0%; --duration: 14%"></i>
+              <span>Prepare</span
+              ><span class="job-track"
+                ><i style="--left: 0%; --duration: 14%"></i
+              ></span>
             </div>
             <div class="job">
-              <span>Compile</span><i style="--left: 14%; --duration: 31%"></i>
+              <span>Compile</span
+              ><span class="job-track"
+                ><i style="--left: 14%; --duration: 31%"></i
+              ></span>
             </div>
             <div class="job">
               <span>Unit tests</span
-              ><i style="--left: 45%; --duration: 22%"></i>
+              ><span class="job-track"
+                ><i style="--left: 45%; --duration: 22%"></i
+              ></span>
             </div>
             <div class="job">
               <span>Browser tests</span
-              ><i style="--left: 45%; --duration: 55%"></i>
+              ><span class="job-track"
+                ><i style="--left: 45%; --duration: 55%"></i
+              ></span>
             </div>
             <div class="job">
-              <span>Package</span><i style="--left: 67%; --duration: 16%"></i>
+              <span>Package</span
+              ><span class="job-track"
+                ><i style="--left: 67%; --duration: 16%"></i
+              ></span>
             </div>
           </figure>
         </div>
@@ -1026,9 +1059,14 @@
             A single slow run can distort the average. Trestle keeps the middle
             and the tail together.
           </p>
-          <figure class="stage">
+          <figure class="stage build-view" data-ui>
             <strong>Example · 30 builds, duration in minutes</strong>
-            <div class="bins" aria-label="Builds per time interval">
+            <div
+              class="bins"
+              data-chart="histogram"
+              role="img"
+              aria-label="Builds in successive minute intervals from two through eight minutes: 2, 5, 10, 7, 4 and 2."
+            >
               <div>
                 <span>2</span><i style="height: 16px"></i><small>2–3m</small>
               </div>
@@ -1114,6 +1152,53 @@ at delivery.spec.ts:48</code></pre>
               <hr />
               <p>2 cores · 4 GB memory</p>
               <p>Unit tests and small builds</p>
+              <svg
+                viewBox="0 0 290 80"
+                class="runner-chip"
+                role="img"
+                aria-label="2 processor cores"
+              >
+                <rect
+                  x="16"
+                  y="9"
+                  width="116"
+                  height="60"
+                  rx="4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path d="M22 4v5m0 60v5" stroke="currentColor" />
+                <path d="M31 4v5m0 60v5" stroke="currentColor" />
+                <path d="M40 4v5m0 60v5" stroke="currentColor" />
+                <path d="M49 4v5m0 60v5" stroke="currentColor" />
+                <path d="M58 4v5m0 60v5" stroke="currentColor" />
+                <path d="M67 4v5m0 60v5" stroke="currentColor" />
+                <path d="M76 4v5m0 60v5" stroke="currentColor" />
+                <path d="M85 4v5m0 60v5" stroke="currentColor" />
+                <path d="M94 4v5m0 60v5" stroke="currentColor" />
+                <path d="M103 4v5m0 60v5" stroke="currentColor" />
+                <path d="M112 4v5m0 60v5" stroke="currentColor" />
+                <path d="M121 4v5m0 60v5" stroke="currentColor" />
+                <rect
+                  x="27"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <text x="150" y="44" font-size="17" fill="currentColor">
+                  2 CPU cores
+                </text></svg
+              ><a href="mailto:runners@trestle.example?subject=Small%20runner"
+                >Request a small runner</a
+              >
             </article>
             <article class="line">
               <h3>Large</h3>
@@ -1121,6 +1206,95 @@ at delivery.spec.ts:48</code></pre>
               <hr />
               <p>8 cores · 16 GB memory</p>
               <p>Browser suites and parallel builds</p>
+              <svg
+                viewBox="0 0 290 80"
+                class="runner-chip"
+                role="img"
+                aria-label="8 processor cores"
+              >
+                <rect
+                  x="16"
+                  y="9"
+                  width="116"
+                  height="60"
+                  rx="4"
+                  fill="none"
+                  stroke="currentColor"
+                />
+                <path d="M22 4v5m0 60v5" stroke="currentColor" />
+                <path d="M31 4v5m0 60v5" stroke="currentColor" />
+                <path d="M40 4v5m0 60v5" stroke="currentColor" />
+                <path d="M49 4v5m0 60v5" stroke="currentColor" />
+                <path d="M58 4v5m0 60v5" stroke="currentColor" />
+                <path d="M67 4v5m0 60v5" stroke="currentColor" />
+                <path d="M76 4v5m0 60v5" stroke="currentColor" />
+                <path d="M85 4v5m0 60v5" stroke="currentColor" />
+                <path d="M94 4v5m0 60v5" stroke="currentColor" />
+                <path d="M103 4v5m0 60v5" stroke="currentColor" />
+                <path d="M112 4v5m0 60v5" stroke="currentColor" />
+                <path d="M121 4v5m0 60v5" stroke="currentColor" />
+                <rect
+                  x="27"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="75"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="99"
+                  y="16"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="27"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="51"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="75"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <rect
+                  x="99"
+                  y="39"
+                  width="19"
+                  height="18"
+                  fill="var(--accent)"
+                />
+                <text x="150" y="44" font-size="17" fill="currentColor">
+                  8 CPU cores
+                </text></svg
+              ><a href="mailto:runners@trestle.example?subject=Large%20runner"
+                >Request a large runner</a
+              >
             </article>
           </div>
         </div>
@@ -1134,44 +1308,19 @@ at delivery.spec.ts:48</code></pre>
         aria-labelledby="run-questions-title"
       >
         <div class="wrap">
-          <h2 id="run-questions-title">Before your first run</h2>
-          <p class="intro">
-            How Trestle reads a repository, stores logs and handles a stopped
-            build.
-          </p>
-          <div class="answers" data-part="accordion">
-            <div class="fold">
-              <h3>Which repositories can I connect?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Connect one repository with read access to its source and
-                    write access to its build status.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="fold">
-              <h3>What happens when I cancel?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Queued jobs leave the queue immediately. Running jobs stop
-                    at the next process check.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="fold">
-              <h3>Can I take my logs with me?</h3>
-              <div class="fold-body">
-                <div>
-                  <p>
-                    Download the plain-text log from the run while it is within
-                    the 30-day retention period.
-                  </p>
-                </div>
-              </div>
+          <div class="reading-column">
+            <h2 id="run-questions-title">Before your first run</h2>
+            <p class="intro">
+              How Trestle reads a repository, stores logs and handles a stopped
+              build.
+            </p>
+            <div class="written-answers">
+              <details open><summary>Which repositories can I connect?</summary><p>Connect one repository with read access to its source and
+                  write access to its build status.</p></details>
+              <details><summary>What happens when I cancel?</summary><p>Queued jobs leave the queue immediately. Running jobs stop at
+                  the next process check.</p></details>
+              <details><summary>Can I take my logs with me?</summary><p>Download the plain-text log from the run while it is within
+                  the 30-day retention period.</p></details>
             </div>
           </div>
         </div>
@@ -1225,7 +1374,7 @@ at delivery.spec.ts:48</code></pre>
                 stroke-width="2"
               />
             </svg>
-            <figcaption>Old quarry entrance to the ridge path</figcaption>
+            <figcaption class="fact-line">Old quarry entrance to the ridge path</figcaption>
           </figure>
           <dl class="trio">
             <div class="line">
@@ -1303,7 +1452,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption><strong>First frost</strong> · 4.1 km</figcaption>
+              <figcaption class="fact-line"><strong>First frost</strong> · 4.1 km</figcaption>
             </figure>
             <figure>
               <img
@@ -1312,7 +1461,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption><strong>Beech hollow</strong> · 6.4 km</figcaption>
+              <figcaption class="fact-line"><strong>Beech hollow</strong> · 6.4 km</figcaption>
             </figure>
             <figure>
               <img
@@ -1321,7 +1470,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption><strong>High pass</strong> · 8.2 km</figcaption>
+              <figcaption class="fact-line"><strong>High pass</strong> · 8.2 km</figcaption>
             </figure>
           </div>
         </div>
@@ -1427,13 +1576,28 @@ at delivery.spec.ts:48</code></pre>
         aria-labelledby="walk-extract-title"
       >
         <div class="wrap">
-          <h2 id="walk-extract-title">A note worth finding again</h2>
-          <p class="intro">From the example notebook for Quarry Ridge.</p>
-          <blockquote class="walk-quote">
-            “At the fork above the quarry, take the grass path. The gravel track
-            ends at a locked gate.”
-            <footer>Upper path · 10:18</footer>
-          </blockquote>
+          <div class="reading-column">
+            <svg
+              class="gate-sketch"
+              viewBox="0 0 220 75"
+              role="img"
+              aria-label="Field sketch of the closed quarry gate"
+            >
+              <g fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M9 62h198M28 63V14h5v49m143 0V12h5v51M35 25l138-5v29L35 54zm4 3 126 18m-61-22v26M36 43l56-17"
+                />
+                <path d="M158 35h10v10h-10z M160 35v-4a3 3 0 0 1 6 0v4" />
+              </g>
+            </svg>
+            <h2 id="walk-extract-title">A note worth finding again</h2>
+            <p class="intro">From the example notebook for Quarry Ridge.</p>
+            <blockquote class="walk-quote">
+              “At the fork above the quarry, take the grass path. The gravel
+              track ends at a locked gate.”
+              <footer>Upper path · 10:18</footer>
+            </blockquote>
+          </div>
         </div>
       </section>
       <section
@@ -1588,7 +1752,7 @@ at delivery.spec.ts:48</code></pre>
                 <path d="M469 300h-20l-43-74" />
               </g>
             </svg>
-            <figcaption>Stillmeter S1 · incident light meter</figcaption>
+            <figcaption class="fact-line">Stillmeter S1 · incident light meter</figcaption>
           </figure>
         </div>
       </section>
@@ -2118,7 +2282,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption>
+              <figcaption class="fact-line">
                 <strong>Light at the table</strong> · Example · f/5.6 at 1/125 s
               </figcaption>
             </figure>
@@ -2129,7 +2293,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption>
+              <figcaption class="fact-line">
                 <strong>Light on the stair</strong> · Example · f/8 at 1/125 s
               </figcaption>
             </figure>
@@ -2157,7 +2321,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption>
+              <figcaption class="fact-line">
                 <strong>Flat white</strong><span>€3.80</span>
               </figcaption>
             </figure>
@@ -2168,7 +2332,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption>
+              <figcaption class="fact-line">
                 <strong>Hand filter</strong><span>€4.50</span>
               </figcaption>
             </figure>
@@ -2179,7 +2343,7 @@ at delivery.spec.ts:48</code></pre>
                 width="960"
                 height="640"
               />
-              <figcaption>
+              <figcaption class="fact-line">
                 <strong>Cappuccino</strong><span>€3.60</span>
               </figcaption>
             </figure>
@@ -2195,19 +2359,27 @@ at delivery.spec.ts:48</code></pre>
         aria-labelledby="roast-notes-title"
       >
         <div class="wrap">
-          <h2 id="roast-notes-title">Why we roast for filter</h2>
-          <p class="intro">
-            Our house filter, brewed at the counter each morning.
-          </p>
-          <div class="roast-letter">
-            <p>
-              We stop this roast while the acidity is still clear. In the cup it
-              tastes of plum as it cools, with a little cocoa at the end.
+          <div class="reading-column">
+            <img
+              class="roast-sample"
+              src="../layout/img/photo-beans-hand.jpg"
+              alt="A handful of beans on the roastery sample table"
+              loading="eager"
+            />
+            <h2 id="roast-notes-title">Why we roast for filter</h2>
+            <p class="intro">
+              Our house filter, brewed at the counter each morning.
             </p>
-            <p>
-              At home, start with 16 grams of coffee and 250 grams of water.
-              Grind a little finer if the cup tastes thin.
-            </p>
+            <div class="roast-letter">
+              <p>
+                We stop this roast while the acidity is still clear. In the cup
+                it tastes of plum as it cools, with a little cocoa at the end.
+              </p>
+              <p>
+                At home, start with 16 grams of coffee and 250 grams of water.
+                Grind a little finer if the cup tastes thin.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -2338,8 +2510,9 @@ at delivery.spec.ts:48</code></pre>
               width="960"
               height="640"
             />
-            <figcaption>Hand filter · served until 14:00</figcaption>
+            <figcaption class="fact-line">Hand filter · served until 14:00</figcaption>
           </figure>
+          <p class="counter-link"><a class="btn btn--primary" href="../pages/place.html#brew-counter">Visit the coffee counter page</a></p>
         </div>
       </section>
     </main>

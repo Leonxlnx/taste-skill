@@ -14,7 +14,9 @@ const galleries = {
 };
 const read = file => readFileSync(file, 'utf8').replaceAll('\r\n', '\n');
 
-const entries = readdirSync(own).filter(name => name.endsWith('.html') && !Object.hasOwn(galleries, name));
+// The fourth gallery has its own complete documents and maintained shell.
+const standalone = new Set(['gallery-own-c.html', ...[...read(join(skill,'references','layouts.md')).matchAll(/\(\.\.\/assets\/own\/([\w-]+\.html)\)/g)].map(m => m[1])]);
+const entries = readdirSync(own).filter(name => name.endsWith('.html') && !standalone.has(name) && !Object.hasOwn(galleries, name));
 const assigned = Object.values(galleries).flatMap(ids => ids.split(' ').map(id => id === 'index' ? 'index.fragment.html' : id + '.html'));
 if (entries.length !== assigned.length || entries.some(name => !assigned.includes(name))) {
   throw Error('Assign each worked fragment to exactly one gallery.');
@@ -52,7 +54,7 @@ const begin = '<!-- recipe index -->', end = '<!-- end recipe index -->';
 const original = read(library);
 const headings = [...original.matchAll(/^# ([^\n]+)$/gm)].slice(1);
 const link = title => '[' + title + '](#' + title.toLowerCase().replace(/[^a-z0-9 -]/g, '').replaceAll(' ', '-') + ')';
-const links = headings.map(m => link(m[1])).join(' · ');
+const links = [...headings.map(m => link(m[1])), '[Worked families](#worked-families)'].join(' · ');
 const block = begin + '\n' + links + '\n' + end;
 const firstRecipe = '## What every recipe assumes';
 const updated = original.includes(begin)

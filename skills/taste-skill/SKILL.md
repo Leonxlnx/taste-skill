@@ -27,10 +27,8 @@ figma.com and x.ai are the bar (in words: `layout-v4.md`).
 
 `<skill>` is this folder. Run its commands from the page project. It needs Node 22+ and Chrome, Edge or Chromium (ffmpeg optional).
 
-**How it works.** The skill deals the frame, you compose the content, the kit holds the floor.
-
 - **The frame is dealt**, so two pages never come out alike and none falls back on a model's
-  habits: palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density (step 4). Build the frame as dealt.
+  habits: palette, type pairing, hero, entrance, nav, footer, close, buttons, mark and density (step 4).
 - **The content is yours.** Every section takes the form its content asks for: a timeline for a
   timeline product, a booking bar for a stay, a price beside the offer, a comparison as two bars,
   the product's own screen built large. A dealt photo composition is only for content that is
@@ -89,7 +87,7 @@ the door. "Tech" below means site-kind software, gaming or tech; "other" is ever
 
 What each kind leads with (the full plans: `sections.md` section 3):
 
-- **Software:** its own UI as live HTML showing what it works on, the central view built large, real tool icons, a chart
+- **Software:** its own UI as live HTML showing what it works on, the central view built large (a schedule aligns every room to the same clock), real tool icons, a chart
   where the copy holds a figure. Never a generic dashboard.
 - **Gaming:** the game's name and its world. With the client's art, that art everywhere; without
   it, the world drawn in one style (`subskills/illustrate`), never a stock coastline in its place.
@@ -149,11 +147,12 @@ world within the limits of `expressive.md`, each naming its source.
 
    Sign-up, free plan, app, download, store purchase or booking through a named service uses a link button. Without its address, use a reserved URL such as `https://app.brand.example/signup` with `data-needs="sign-up address"`. List the missing address first under “Client must supply” in the notes and handoff. Enquiries, slot bookings, pre-orders, demo requests and newsletters use short forms. Repeat the action label on submit. Without a receiving address, open an email draft and put one sentence below the button, such as “Opens your email with the order filled in.”
 
-3. **Plan the page from its content** (`compose.md`, `sections.md` section 1). Start the working plan with the kind.
+3. **Plan the page from its content** (`layouts.md`, `compose.md`, `sections.md` section 1). Start the working plan with the kind.
    Name what the visitor needs to know before acting and the fact in the brief that answers it.
    Give that answer its own section high on the page in the form the fact takes.
    Merge a heading, one sentence and a picture with a neighbour.
-   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its ground and `shows  <subject> | <source>`. Save only the section rows to .taste-skill/sections.txt. Keep the kind and introductory notes in the working plan.
+   Then one line per section in spine order with its id, beat, visitor’s question, worked form and change to the thread, its ground, family, optional width and subject. End each row like `| family wide-product-view | width wide | shows room schedule | client brief`. Save only the section rows to .taste-skill/sections.txt. Keep the kind and introductory notes in the working plan.
+   Use the sequence for your kind in `layouts.md`, dropping unsupported subjects. Use `split` for either orientation. Set `data-family` on each section to match its row. Change content width twice, include a wide view, use four families from seven sections, and stop after two consecutive splits. A longer page needs more client material such as another product view, integrations, a table, a real quote or questions people ask. Omit invented proof and filler. List missing material under “Client must supply”.
    Mark the sections that are your own design. Count the sections, and note what the page really
    carries: a sentence worth a statement, a list the brief names, photographs that show a claim,
    steps, figures. Pass actual counts with `--has ui,names:5,pictures:3,series:4`.
@@ -248,6 +247,7 @@ Before the first page, in full: `compose.md`, `sections.md`, `layout-v4.md`, `sy
 
 | For | Read | Kit |
 |---|---|---|
+| Study the page of your kind for its rhythm before composing. Never copy its content or exact sections. | [layouts.md](references/layouts.md) | [Developer tool](assets/pages/software.html), [consumer app](assets/pages/app.html), [hardware](assets/pages/product.html), [place](assets/pages/place.html) |
 | Composing a section from its content, the idea seeds, the worked examples | `compose.md` | `assets/own`, `library/ideas.json` |
 | The page as a story: shapes, spine, handover devices | `story.md` | `library/stories.json` |
 | The plan by kind, the deal, compositions and recipes | `sections.md`, `sections-library.md` | `assets/starter.html` |
@@ -281,7 +281,7 @@ For your eyes first, then the gate (its check ids in brackets):
 
 - **First screen:** identify the offer, show its subject at phone width and keep the action with its terms [subject-first, small-terms, hero-screen, fold-action, fold-cut].
 - **Each ask lands at its named element** [brief-ask, ask-outcome]. Keep build notes in the handoff [builder-words].
-- **Sections from their content:** two own sections from six sections up, one below six [own-count]; no section holds a few
+- **Sections from their content:** two own sections from six sections up, one below six [own-count]. Check the family sequence [split-run, one-family]; no section holds a few
   words in an empty band; no content cut or hidden to fit [section-height, empty-area,
   still-wrong].
 - **Air and grounds:** one ground is sufficient. Check the air at section boundaries [section-air, empty-band].

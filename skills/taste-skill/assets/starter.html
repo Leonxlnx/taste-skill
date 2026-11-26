@@ -353,11 +353,20 @@
         </div>
         <nav class="span-8 footer__routes" aria-label="Footer">
           <a class="footer-contact" href="#[contact form id]">[Contact or support route]</a>
-          <!-- Add the real return links here. Use a column heading only for three or more related links. -->
+          <!-- Product and software: move one group out of this template for each set of three or more real destinations.
+               Group page sections, product parts and supplied company or legal routes. Keep smaller sets in the row. -->
+          <template id="footer-route-group">
+            <div class="footer__group">
+              <h3>[Visitor task]</h3>
+              <a href="#[section id]">[Section name]</a>
+              <a href="#[product part id]">[Product part]</a>
+              <a href="#[related section id]">[Related section]</a>
+            </div>
+          </template>
         </nav>
       </div>
       <div class="footer__legal">
-        <span>&copy; 2026 [Company] &nbsp; <a href="privacy.html">Privacy</a> &nbsp; <a href="terms.html">Terms</a></span>
+        <span>&copy; 2026 [Company] &nbsp; <!-- Include only legal lines and destinations supplied in the brief. --></span>
         <!-- For a dealt large wordmark, add data-wordmark="large" to the footer and use .footer__mark on its name. -->
         <div class="socials"><!-- empty unless the brief gives the client's accounts: node <skill>/scripts/icons.mjs
              get si:x si:instagram --mono --out assets/icons prints one <span class="icon-mono"> per mark;

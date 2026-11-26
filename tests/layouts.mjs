@@ -194,6 +194,31 @@ try {
     }
     console.log("Checked " + file);
   }
+  const previousLoads = loads;
+  await send("Page.navigate", {url:"about:blank"});
+  for (let i=0; i<600 && loads === previousLoads; i++) await sleep(100);
+  assert(loads > previousLoads, "Rhythm fixture did not load");
+  await evaluate(rules + "\ntrue");
+  // Exercise the public page check against real side-by-side geometry and declared families.
+  for (const labelled of [false,true]) {
+    for (const [forms, expected] of [
+      [['hero','split','split','split'], []],
+      [['hero','split','split','split','reading'], ['split-run']],
+      [Array(5).fill('reading'), []],
+      [Array(6).fill('reading'), ['one-family']],
+      [['hero','split','split','reading','split','split'], []],
+    ]) {
+      const html = forms.map((family,i) => {
+        const body = family === 'split' ? '<div style="display:flex"><p>Room schedule</p><p>Therapist schedule</p></div>'
+          : family === 'hero' ? '<h1>Schedule</h1>' : '<p>Appointment</p>';
+        return '<section id="s'+i+'"'+(labelled?' data-family="'+family+'"':'')+'>'+body+'</section>';
+      }).join('');
+      await evaluate('document.body.innerHTML = ' + JSON.stringify('<main>'+html+'</main>'));
+      const findings = await evaluate('window.lyRules.page().filter(f => ["split-run","one-family"].includes(f.rule))');
+      assert.deepEqual(findings.map(f => f.rule),expected,forms.join(', ')+' labelled='+labelled);
+      assert(findings.every(f => f.sev === 'WARN'));
+    }
+  }
   assert.equal(errors.length, 0, JSON.stringify(errors));
   assert.equal(failures.length, 0, failures.join("\n"));
 } finally {

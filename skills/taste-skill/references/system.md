@@ -116,7 +116,7 @@ The centred proof and close deal uses `.section-head--center` on the heading or 
 
 `footer.closing` is the page's last section (`layout-v4.md`): row 1 the dealt close, row 2 the
 directory on one ground (link columns, the legal row). Types: `footer-columns`, `footer--dark` (columns on a darker ground), `footer--statement` (the lit ground; tech),
-`footer--visit` (directions and opening hours). Use a column heading only over three or more links. For fewer destinations use one row beside the name and contact line. Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
+For product and software pages, group supplied page sections, product parts and company routes by visitor task. `footer--visit` (directions and opening hours). Use a column heading only over three or more links. For fewer destinations use one row beside the name and contact line. Start with the next job: contact or support, then only the distinct routes that exist. Repeat hours, directions, downloads and delivery or return terms where useful. Keep legal and credits separate:
 the brand, the current year, Privacy, Terms (Imprint only with the company's own details from the
 brief) and the one credits link (`<a class="credits" href="credits.html">`, `photos.md`). `.socials` stays empty
 unless the brief gives the accounts.

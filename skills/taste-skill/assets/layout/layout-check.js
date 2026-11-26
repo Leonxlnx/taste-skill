@@ -200,12 +200,48 @@ window.lyRules = (() => {
     const picture = factOwner(line);
     return Boolean(picture && [...frame.querySelectorAll('.fact-line')].filter(x=>factOwner(x)===picture).length===1 && t && [...t].length <= 60 && !explaining.test(t) && !/^(?:illustration|drawing|render|image|photograph)[.!]?$/i.test(t));
   }
+  // Measure the outer composition. A pair of columns inside a table or a product screen is one subject.
+  function familyOf(section) {
+    const declared = section.dataset.family?.trim().toLowerCase();
+    if (declared) return declared.replace(/^split-.+$/, 'split');
+    if (section.matches('footer,.closing')) return 'closing-action';
+    if (section.querySelector('h1')) return 'hero';
+    const wrap = section.querySelector(':scope > .wrap,:scope > .container') || section;
+    if (section.matches('[class*="split-"],.split') || wrap.querySelector(':scope > [class*="split-"],:scope > .split')) return 'split';
+    const surface = [...wrap.children].find(e => e.matches('.grid,[class*="split"],[class*="columns"]') || ['grid','flex','inline-grid','inline-flex'].includes(getComputedStyle(e).display)) || wrap;
+    const items = [...surface.children].filter(e => e.getBoundingClientRect().height && e.getBoundingClientRect().width);
+    if (items.length >= 2 && items.every(e => e.matches('article,li,.card,[class*="card--"]'))) {
+      if (items.every(e => e.querySelector('[itemprop=price],.price,.plan-price'))) return 'pricing';
+      return 'feature-grid';
+    }
+    const tracks = items.map(e => e.getBoundingClientRect());
+    if (tracks.length === 2 && (tracks[0].right <= tracks[1].left + 2 || tracks[1].right <= tracks[0].left + 2) &&
+        Math.min(tracks[0].bottom,tracks[1].bottom) > Math.max(tracks[0].top,tracks[1].top)) return 'split';
+    for (const [selector,family] of [['table,[role=table]','comparison'],['details','questions'],['figure:has(img) + figure:has(img)','photo-gallery'],['.logo-row,[data-part=logo-row]','logo-wall'],['.work-board,[data-chart]','wide-product-view'],['[role=tablist]','tabs'],['blockquote','single-quote'],['ol','steps'],['.app-frame,[data-ui],video','wide-product-view']]) {
+      if (wrap.querySelector(selector)) return family;
+    }
+    if (tracks.length >= 3 && Math.abs(tracks[0].top-tracks[2].top)<3) return 'feature-grid';
+    return 'editorial-statement';
+  }
+  function checkFamilies(secs, add) {
+    const subjects = secs.filter(sec => !sec.matches('footer') || sec.querySelector('.closing__cta,h2'));
+    if (subjects.length > 4) {
+      const families = subjects.map(familyOf);
+      for (let i=2; i<families.length; i++) {
+        if (families.slice(i-2,i+1).every(f => f==='split') && families[i-3]!=='split')
+          add('split-run',subjects[i].id || 'section '+(i+1),'Three consecutive split layouts.', 'WARN');
+      }
+      if (families.length >= 6 && new Set(families).size < 3)
+        add('one-family','page',families.length+' sections use fewer than three layout families.', 'WARN');
+    }
+  }
   function page(kindOverride='') {
     const secs = [...document.querySelectorAll('main > section,main > .section,footer.closing')].filter(e => e.getBoundingClientRect().height);
     const out = [], ownSections = secs.filter(s => s.matches(own));
     const add = (rule, where, detail, sev = 'FAIL') => out.push({rule, where, detail, sev});
     if (secs.length && ownSections.length < (secs.length >= 6 ? 2 : 1)) add('own-count','page',secs.length + ' sections include ' + ownSections.length + ' own sections','WARN');
     const kind = kindOverride || document.documentElement.dataset.type || document.querySelector('meta[name="page-type"],meta[name="page-kind"]')?.content;
+    checkFamilies(secs, add);
     const photosIn = section => [...section.querySelectorAll('img')].filter(img => {
       const r = img.getBoundingClientRect(), src = img.currentSrc || img.src;
       return !/[.]svg(?:[?#]|$)|^data:image[/]svg/i.test(src) && r.width >= 80 && r.height >= 64 && img.checkVisibility();

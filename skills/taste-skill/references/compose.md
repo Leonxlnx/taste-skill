@@ -2,7 +2,7 @@
 
 Write `shows  <subject> | <source>` on each section line, or `shows  nothing` for a text-only section. Show what a heading describes beside or below it. Use `illustrate` for a drawing or `data-picture` for supplied numbers. Keep text-only sections to one quarter of a quiet plan and picture-free desktop screens to one in four.
 
-Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. If a selector changes only a word, print the options in one line, with their marks when available. Show an install command only when the brief supplies it. One price or one threshold reads as text. Carry a real selection into its form with `data-choice`.
+Print the answer first. Add a control when changing an input gives a materially different result supported by the brief. If a selector changes only a word, print the options in one line, with their marks when available. Show an install command only when the brief supplies it. One price or one threshold reads as text. Name the billing unit in the heading and print the rate once beside it. Carry a real selection into its form with `data-choice`.
 
 ## The method
 
@@ -61,7 +61,7 @@ A section about goods, dishes or rooms shows them. Spend the available photograp
 ## The section
 
 ```html
-<section class="section own" id="process" data-own="process-rail">
+<section class="section own" id="process" data-family="steps" data-own="process-rail">
   <div class="wrap"><h2>How installation works</h2><!-- steps in order --></div>
 </section>
 ```
@@ -248,3 +248,32 @@ Read the indicated `sub` files.
 | image-direction | Crops, scale and placement | Six or more photographs | `subskills/image-direction/SKILL.md` |
 | brand-mark | Mark and favicon | No logo. Dealt mark remains available | `subskills/brand-mark/SKILL.md` |
 | mascot | A recurring character | One in three eligible software, gaming or consumer product deals. Quiet trades by request | `subskills/mascot/SKILL.md` |
+
+## Worked families
+
+[Browse the twenty sections together](../assets/own/gallery-own-c.html) or open a single example below.
+
+| Content and worked example | Layout family | What it needs | Width |
+|---|---|---|---|
+| [Parallel jobs](../assets/own/run-waterfall.html) | Job waterfall | Start, duration, common clock | Wide |
+| [Spread of results](../assets/own/build-distribution.html) | Distribution and figures | Intervals, counts and units | Content |
+| [Failed assertion](../assets/own/failure-excerpt.html) | Code panel | Source, expected and observed value | Reading |
+| [Price choices](../assets/own/runner-plans.html) | Pricing columns | Comparable unit and capacity | Content |
+| [Practical questions](../assets/own/run-questions.html) | Question list | Short independent answers | Reading |
+| [A route](../assets/own/ridge-notebook.html) | Map and facts | Named turns, scale or distance | Wide |
+| [Timed entries](../assets/own/field-observations.html) | Timeline | Time and change at each stop | Reading |
+| [Related walks](../assets/own/trail-editions.html) | Gallery | Distinct pictures and route lengths | Content |
+| [Output formats](../assets/own/walk-export.html) | Feature grid | Example output and its use | Content |
+| [One source excerpt](../assets/own/walk-extract.html) | Single quote | Exact passage and attribution | Reading |
+| [Physical controls](../assets/own/meter-portrait.html) | Annotated object | A whole-object view | Wide |
+| [Equivalent choices](../assets/own/exposure-pairs.html) | Comparison table | Shared conditions and units | Reading |
+| [Physical steps](../assets/own/meter-sequence.html) | Steps | The part touched at each step | Content |
+| [An inventory](../assets/own/meter-contents.html) | Inventory | Part, size or material | Reading |
+| [Two cases](../assets/own/light-studies.html) | Paired cases | Evidence from each case | Content |
+| [Items for sale](../assets/own/coffee-service.html) | Product shelf | Picture, name and price | Content |
+| [A house position](../assets/own/roast-notes.html) | Editorial statement | A specific reason and consequence | Reading |
+| [Upcoming events](../assets/own/counter-calendar.html) | Event list | Date, time and subject | Content |
+| [Related articles](../assets/own/bean-journal.html) | Article list | Distinct subjects and thumbnails | Content |
+| [One service](../assets/own/brew-counter.html) | Service split | A useful picture and serving time | Content |
+
+[Reference pages and width changes](layouts.md)

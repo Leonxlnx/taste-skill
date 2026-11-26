@@ -34,7 +34,7 @@
       [--tone warm|editorial|product|tech|playful] [--axis] [--story <id>] [--history .taste-skill/history.json]
       Deal the frame, four prompts for the content and one story shape (library/stories.json: one that lists the kind,
       weighted by --carry, --action and --has, away from the folder's last three; --story <id> chooses it). On quiet pages, one ground or a single band is usual.
-      A requested story or eight sections also permits a two-ground chapter run. Sections include the hero and close (default 7).
+      A requested story or eight sections also permits a two-ground chapter run. Sections include the hero and close (default: mapped row count, otherwise the kind’s suggested sequence).
       Quiet plans have no moment or scene unless --motion ask is set; eligible pages get one moment. --carry names what the
       copy notes hold. With no flag only place, product and service assume photos. --has names actual
       assets, including product for a photograph of the client's own product, archive for a large set,
@@ -59,6 +59,7 @@
   linked after the :root block.
 */
 import fs from 'node:fs';
+import { dealRhythm } from './page-rhythm.mjs';
 import { mascotRequest } from './heading-copy.mjs';
 import { suppliedStreet } from './place-address.mjs';
 import path from 'node:path';
@@ -547,7 +548,7 @@ const STORY_FAVOURS = {
   has: { ui: { 'work-path': 1.5, 'problem-turn': 1.3 }, object: { chapters: 1.5, sequel: 1.2 }, product: { chapters: 1.3 },
     setting: { 'day-with-it': 1.5 }, art: { 'day-with-it': 1.3, chapters: 1.2 }, photo: { 'day-with-it': 1.3 }, archive: { 'catalogue-argued': 1.5 } },
 };
-function dealStory(h, { carry, action: act, assets, rand, forced }) {
+function dealStory(h, { carry, action: act, assets, rand, forced, mappedCount }) {
   const all = lib('stories.json');
   h.stories = Array.isArray(h.stories) ? h.stories : [];
   let story;
@@ -555,7 +556,9 @@ function dealStory(h, { carry, action: act, assets, rand, forced }) {
     story = all.find(s => s.id === forced);
     if (!story) throw new Error('--story needs one of ' + all.map(s => s.id).join(', '));
   } else {
-    const fits = all.filter(s => s.kinds.includes(page));
+    const eligible = all.filter(s => s.kinds.includes(page));
+    const withinRows = eligible.filter(s => s.beats.filter(b => b.required).length <= mappedCount);
+    const fits = withinRows.length ? withinRows : eligible;
     const recent = h.stories.slice(-Math.min(3, fits.length - 1));
     const fresh = fits.filter(s => !recent.includes(s.id));
     const pool = fresh.length ? fresh : fits;
@@ -783,24 +786,28 @@ if (cmd === 'deal') {
   const frameHistory = readHistory(histFile);
   const forcedStory = opt('story');
   if (forcedStory === true) throw new Error('--story needs a shape id from library/stories.json');
-  const story = dealStory(frameHistory, { carry: [...carry], action, assets: [...assets], rand: rng(seed + ':story'), forced: forcedStory });
+  const defaultSections = path.join(dir,'sections.txt');
+  const sectionPlan = opt('section-plan', fs.existsSync(defaultSections) ? defaultSections : undefined);
+  if (sectionPlan !== undefined && typeof sectionPlan !== 'string') throw new Error('--section-plan needs a text file with one line per section');
+  const rows = sectionPlan === undefined ? [] : fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
+  if (!opt('sections')) sections = sectionPlan === undefined ? dealRhythm(page).sequence.length : rows.length;
+  const story = dealStory(frameHistory, { carry: [...carry], action, assets: [...assets], rand: rng(seed + ':story'), forced: forcedStory, mappedCount: rows.length });
   const minimum = story.beats.filter(b => b.required).length;
   if (sections < minimum) {
     console.log('Raised --sections from ' + sections + ' to ' + minimum + ' for the required beats of ' + story.id + '.');
     sections = minimum;
   }
-  const defaultSections = path.join(dir,'sections.txt');
-  const sectionPlan = opt('section-plan', fs.existsSync(defaultSections) ? defaultSections : undefined);
-  let rows = [], shows, reactionSection;
+  let shows, reactionSection;
   if (sectionPlan !== undefined) {
-    if (typeof sectionPlan !== 'string') throw new Error('--section-plan needs a text file with one line per section');
-    rows = fs.readFileSync(sectionPlan,'utf8').trim().split(/\r?\n/).filter(row => row.trim());
     shows = rows.map(row => row.match(/\bshows\s+([^|]+?)(?:\s*\||$)/i)?.[1].trim());
     if (rows.length !== sections || shows.some(subject => !subject)) throw new Error('Each of the '+sections+' section lines needs shows followed by its subject.');
     const reaction = rows.findIndex((row,i) => i > 0 && i < rows.length-1 && !/^nothing\.?$/i.test(shows[i]));
     if (reaction >= 0) reactionSection = rows[reaction].split('|')[0].trim() + ' showing ' + shows[reaction];
     if (!expressive && shows.filter(subject => /^nothing[.]?$/i.test(subject)).length * 4 > sections) throw new Error('More than a quarter of the section plan shows nothing. Show the subject or merge a section.');
   }
+  const rhythm = dealRhythm(page, rows, shows);
+  if (rhythm.families.includes(null)) throw new Error('Each section row needs | family <layout-family>.');
+  if (rhythm.families.some((f,i,a) => f === 'split' && a[i-1] === f && a[i-2] === f)) throw new Error('Three consecutive splits. Choose another family for one subject.');
   const artPalette = expressive && (assets.has('art') || page === 'gaming');
   const { palette, type, layout } = dealFrame(frameHistory, artPalette);
   if (!palette || !type) throw new Error('no palette or pairing fits the requested flags');
@@ -899,6 +906,7 @@ if (cmd === 'deal') {
   if (hero.id === 'place' && (form === 'split' || form === 'bleed' && acrossRoll < .5)) headline = 'split';
   if (split && opt('view') !== 'wide' && (expressive || acrossRoll >= stackChance)) headline = 'split';
   const plan = {
+    rhythm,
     actionColour, footerWordmark, headline, ...(requestedMascot ? {mascot: placements} : {}), ...(shows ? {shows} : {}),
     version: '2.5.4', kind: page, pageType, trade: trade || null, temper, temperWhy, sections, palette: artPalette ? "art" : palette.id, type: type.id,
     hero: hero.id, ...(variant ? {heroVariant:variant} : {}), ...(form ? { heroForm: form } : {}), heroPeek: peek, heroBook: book, entrance: entrance.id, reveals, nav: layout.nav, footer: layout.footer,
@@ -914,6 +922,9 @@ if (cmd === 'deal') {
   console.log('\n==== PLAN (build the frame as dealt: palette, type, hero, entrance, nav, footer, close, buttons, mark, density. Use the dealt grounds. Section forms come from the content.) ====');
   const line = (name, value) => console.log('  ' + name.padEnd(13) + value);
   line('kind', page + ' · page type ' + pageType + (trade ? ' · trade ' + trade : '') + ' · ' + sections + ' sections · ' + FIT[page].tones.join('/') + ' · ' + (techPage ? 'WebGL available' : 'no WebGL'));
+  line('rhythm', rhythm.usualSections + ' ± 2 sections when supported: ' + rhythm.sequence.map((family,i) => family + ' (' + rhythm.widths[i] + ')').join(' → '));
+  line('widths', rhythm.rules);
+  if (rows.length) line('mapped', rhythm.mapped.map(({subject,family,width}) => subject + ' (' + family + ', ' + width + ')').join(' → '));
   line('temper', temper + ': ' + temperWhy + (expressive
     ? '. Set data-temper="' + temper + '" on <html> and enable the expressive.css line in starter.html. Every expressive move names its source in the game or brand on the plan comment ("torn edge: the game\'s menus are paper"); no source, no move. Permissions, limits and the never list: ' + ref + '/references/expressive.md'
     : '. Every style rule holds as written (references/expressive.md only for a lively or loud page: --temper)'));
@@ -942,7 +953,7 @@ if (cmd === 'deal') {
   if (shows) shows.forEach((subject,i) => line('section ' + (i+1), 'shows  ' + subject));
   line('nav', plan.nav + ': link directly. A panel groups several real destinations.' + (page === 'software' ? ' Put supplied sign-in, docs, status or store routes here and in the footer. Otherwise link the setup section as Quickstart in both.' : ''));
   line('close', closeTaken ? 'none: ' + closeTaken + ' is the close. Keep only the footer links row.' : close + (close === 'close-form' ? ' (the full form in the footer, starter.html close-form template)' : ' (use only if the final section has no form or booking panel)'));
-  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': name, contact and return links in one row. A column heading needs at least three links. Repeat useful hours, directions or purchase terms.');
+  line('footer', plan.footer + (footerWordmark ? ' with data-wordmark="large"' : '') + ': group supplied product parts, page sections, company routes and legal links by task. Use a row for sparse destinations. A column heading needs at least three links. Repeat useful hours, directions or purchase terms.');
   line('buttons', 'data-buttons="' + plan.buttons + '" on <html>' + (expressive ? ' (an expressive family, expressive.css; name its source, else take solid)' : '') + (plan.buttons === 'arrow' ? ' (keep the main button text-only)' : '') + ' · mark data-mark="' + plan.mark + '" (or the client\'s logo)');
   line('grounds', groundLine(plan.grounds) + (techPage ? ' Use data-ground="' + ['sand', 'sky', 'sage'][Math.floor(Math.random() * 3)] + '" on <html>.' : ''));
   line('density', 'data-density="' + plan.density + '" on <html>');
