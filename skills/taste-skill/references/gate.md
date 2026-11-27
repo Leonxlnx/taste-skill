@@ -15,7 +15,9 @@ node <skill>/scripts/gate.mjs --start index.html --kind <kind> --category "<what
   with the server running when the gate runs) or its built page (`--start dist/index.html --root dist`).
   A built page is checked as built: rebuild before every gate run, or the round is spent on the old build.
   The gate opens only a local page: a file, or a URL on `localhost`, `127.0.0.1`, `[::1]`, `*.localhost`
-  or `*.test`.
+  or `*.test`. That restriction applies to the page URL. While rendering the page, Chrome can still
+  load remote resources it references, such as stylesheets, scripts, fonts and images. This also
+  applies when the gate runs automatically as a Stop hook.
 - `--start` on a build whose rounds are still open does not reset them: it only updates the page, URL,
   root, kind, category and primary it checks. `--start --new` begins a new build. `--rounds N` (3 by
   default) is set only when a build begins.
