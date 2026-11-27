@@ -619,10 +619,10 @@ const LAYOUTS = {
       edges: E,
       program(Pr) {
         const n = eS.length, k = eD.length;
-        const shots = Math.min(Math.max(n, 3), 4);
+        const shots = Math.max(Math.min(Math.max(n, 3), 4), Math.ceil(k / 2));
         for (let i = 0; i < shots; i++) {
           Pr.step([eS[(i * (n > 3 ? 2 : 1) + (n > 3 && i >= Math.ceil(shots / 2) ? 1 : 0)) % n]], 0, 0.06);
-          const a = (i * 2) % k, b = (i * 2 + 1 + Math.floor(k / 2)) % k;
+          const a = (i * 2) % k, b = (i * 2 + 1) % k;
           Pr.step((a === b ? [eD[a]] : [eD[a], eD[b]]).map(e => [e, 1, m.nodes.get(E[e].to).done ? { mark: true } : null]), 0.14, 0.4);
         }
       },
@@ -1411,7 +1411,7 @@ class Diagram {
     const mo = sp.motion || {};
     const cycle = clamp(+mo.cycle || 3.2, 2.5, 4);
     const rest = clamp(mo.rest ?? cycle * 0.28, 0.5, 1.2);
-    const k = clamp((cycle - rest) / end0, 0.25, 1.6);
+    const k = clamp((cycle - rest) / end0, L === 'bowtie' ? 0 : 0.25, 1.6);
     this.F.forEach(f => { f.t0 *= k; f.dur *= k; f.hitT *= k; });
     this.T = clamp(end0 * k + rest, 2.5, 4);
     this.byEdge = this.E.map(() => []);
