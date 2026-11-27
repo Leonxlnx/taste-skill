@@ -75,6 +75,7 @@
   the library holds nothing of (the Lake District) deals no land, never another place's.
 */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -811,11 +812,21 @@ const FFMPEG = (() => { try { return spawnSync('ffmpeg', ['-version'], { stdio: 
 // into what its words leave, so its crop is 4:5 (a 4:3 one shown that tall is blown up 1.7x)
 const HERO_CROP = { w: 780, h: 975, media: '(max-width: 639px)' }; // PH-28: the phone's crop at twice its width
 const kb = (f) => Math.round(fs.statSync(f).size / 1024);
-// a JPEG as WebP (smaller at the same look) when ffmpeg is on the path
-function toWebp(buf) {
+// a JPEG as WebP (smaller at the same look) when ffmpeg is on the path. ffmpeg writes to a file, not to pipe:1: on a
+// pipe it cannot seek back to fill in the RIFF size, so any WebP over its 32 KB write buffer came out with a size of 0
+// and 4 stray bytes, which Chrome and Pillow refuse to decode (#224)
+export function toWebp(buf) {
   if (!FFMPEG) return null;
-  const r = spawnSync('ffmpeg', ['-loglevel', 'error', '-i', 'pipe:0', '-c:v', 'libwebp', '-quality', '78', '-compression_level', '6', '-f', 'webp', 'pipe:1'], { input: buf, maxBuffer: 1 << 28 });
-  return r.status === 0 && r.stdout.length > 1000 && r.stdout.length < buf.length ? r.stdout : null;
+  let tmp;
+  try { tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'taste-skill-webp-')); } catch { return null; } // no temp folder: keep the JPEG
+  try {
+    const file = path.join(tmp, 'out.webp');
+    const r = spawnSync('ffmpeg', ['-loglevel', 'error', '-i', 'pipe:0', '-c:v', 'libwebp', '-quality', '78', '-compression_level', '6', '-f', 'webp', file], { input: buf });
+    const out = r.status === 0 && fs.existsSync(file) ? fs.readFileSync(file) : null;
+    return out && out.length > 1000 && out.length < buf.length ? out : null;
+  } finally {
+    try { fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 3 }); } catch { /* a leftover temp folder, not a lost photograph */ }
+  }
 }
 // the phone crop of a hero: cover-cropped to 780x975 around the photograph's focus, from the first file at least that tall
 function cropFile(from, to, focus) {
@@ -1017,9 +1028,14 @@ function creditsCmd() {
   if (unused.length) console.log('not on the page, so not credited (delete their files): ' + unused.join(', '));
 }
 
-if (cmd === 'pick') pick();
-else if (cmd === 'list') list();
-else if (cmd === 'fetch') await fetchCmd();
-else if (cmd === 'search') await searchCmd();
-else if (cmd === 'credits') creditsCmd();
-else { console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\n?/, '')); process.exitCode = cmd ? 1 : 0; }
+// the commands run only when this file is the script (as in moments.mjs), so tests/photos-webp.mjs can import toWebp
+const realOf = (p) => { try { return fs.realpathSync(p).toLowerCase(); } catch { return path.resolve(p).toLowerCase(); } };
+const isMain = process.argv[1] && realOf(process.argv[1]) === realOf(fileURLToPath(import.meta.url));
+if (isMain) {
+  if (cmd === 'pick') pick();
+  else if (cmd === 'list') list();
+  else if (cmd === 'fetch') await fetchCmd();
+  else if (cmd === 'search') await searchCmd();
+  else if (cmd === 'credits') creditsCmd();
+  else { console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\n?/, '')); process.exitCode = cmd ? 1 : 0; }
+}
