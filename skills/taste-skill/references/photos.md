@@ -215,6 +215,9 @@ node <skill>/scripts/photos.mjs credits --out . --write     # the footer line an
   so a place hero's photograph grows on a phone into what its words leave (`layout-v4.md`, the place hero). A hero
   photograph of your own gets it only when its phone source covers 4:5 at 390 (else it stays 4:3: shown taller, a 4:3
   file is blown up and FAILs `photo-upscale`).
+  At phone widths, `photo-crop` warns when an image with `object-fit: cover` shows less than 60% of
+  its source area. Check that the subject still reads in the crop. Adjust the frame or give the
+  image a phone-specific source if needed.
   Every other picture is `loading="lazy"` and `decoding="async"`, `width` and `height` set, `sizes` set to the shown
   width. `--big id` adds the largest file to a full-bleed band only when it is within the 250 KB cap; `--lqip` puts the
   picture's 24px colours behind it.

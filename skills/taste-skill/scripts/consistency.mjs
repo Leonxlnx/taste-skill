@@ -6435,7 +6435,7 @@ function lib() {
     }
   }
 
-  // photographs: upscaled ones (photo-upscale), library sources (photo-credit) and the ones to grade (photo-set)
+  // photographs: resolution, phone crops, library credits and grading
   const LIBRARY = /wikimedia|wikipedia|unsplash|pexels|pixabay|picsum|flickr|shutterstock|istockphoto|gettyimages|stocksnap|burst\.shopify|placehold|loremflickr|placekitten/i;
   function collectPhotos(view, first, out, vw, vh) {
     for (const [el, r] of view) {
@@ -6444,10 +6444,17 @@ function lib() {
       const src = el.currentSrc || el.src || ''; if (/\.svg(\?|#|$)/i.test(src) || /^data:image\/svg/i.test(src)) continue;
       const nw = el.tagName === 'IMG' ? el.naturalWidth : el.videoWidth, nh = el.tagName === 'IMG' ? el.naturalHeight : el.videoHeight;
       if (!nw || !nh || r.width < 120 || r.height < 80) continue;
-      const fit = CS(el).objectFit;
+      const style = CS(el), fit = style.objectFit;
       const k = fit === 'contain' || fit === 'scale-down' ? Math.min(r.width / nw, r.height / nh) : Math.max(r.width / nw, r.height / nh);
       const name = decodeURIComponent(src.split(/[?#]/)[0].split('/').pop() || '').slice(0, 60);
       if (k * (devicePixelRatio || 1) > 1 / 0.75) add(out, 'photo-upscale', 'FAIL', el, `${name}: ${nw}x${nh} shown at ${Math.round(r.width)}x${Math.round(r.height)}, blown up ${k.toFixed(2)}x`, [r]);
+      if (vw < 700 && fit === 'cover' && el.tagName === 'IMG') {
+        const sx = (el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)) / nw;
+        const sy = (el.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)) / nh;
+        // Cover fills one dimension completely and clips the other.
+        const visible = Math.min(sx, sy) / Math.max(sx, sy);
+        if (visible > 0 && visible < 0.6) add(out, 'photo-crop', 'WARN', el, `${name}: the phone frame shows about ${Math.floor(visible * 100)}% of the source image`, [r]);
+      }
       if (LIBRARY.test(src)) out.credits.push({ id: idOf(el), sel: sel(el), name, host: (src.match(LIBRARY) || [''])[0] });
       const v = clipRect(el, r);
       if (v.width * v.height >= 0.7 * r.width * r.height && v.top >= 0 && v.bottom <= vh && el.tagName === 'IMG') out.photos.push({ id: idOf(el), sel: sel(el), name, rect: R(v) });
@@ -9262,6 +9269,7 @@ const FIX = {
   forms: 'give the form an action that sends the request (an endpoint, or a mailto) and confirm it on the page',
   'photo-set': 'grade the photographs to one look (light, colour, warmth), or replace the odd one out',
   'photo-upscale': 'use a source at least as wide as the picture is shown (twice that for sharp screens)',
+  'photo-crop': 'check the subject at this width and use a phone-specific crop or adjust the frame if needed',
   'photo-credit': 'confirm the library photograph shows the client\'s own product, place or people; otherwise replace it',
   'ui-fit': 'give the fragment the width it needs (its meta.json size), or use a smaller fragment',
   'ui-centre': 'centre the fragment (equal side gaps), or anchor it at a corner and cut it by the panel\'s edge',
@@ -10189,7 +10197,7 @@ function groupSame(F) {
   }
   for (const g of firsts.values()) if (g.more.length) g.f.msg += ` (and ${g.more.length} more like it: ${g.more.slice(0, 4).map((x) => (x.text ? `"${x.text.slice(0, 24)}"` : x.sel.split(' > ').pop())).join(', ')}${g.more.length > 4 ? ', ...' : ''})`;
 }
-const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object', 'font-load'];
+const ORDER = ['assets', 'shader-lint', 'gl-fallback', 'empty-visual', 'hero-fill', 'flush', 'placeholder', 'sample-label', 'caption', 'credit-wall', 'nav', 'nav-covers', 'spill', 'off-viewport', 'fold-card', 'hover-spill', 'overlap-text', 'row-gap', 'cut-text', 'fold-cut', 'marquee', 'scroll-linked', 'scroll-reveal', 'pinned', 'loop-pause', 'reduced-motion', 'webgl', 'no-visual', 'text-only', 'card-visual', 'hidden-visual', 'card-family', 'card-layout', 'nesting', 'effect-repeat', 'ui-fit', 'ui-centre', 'dark-ground', 'button-styles', 'button-shape', 'same-action', 'button-picture', 'cta', 'pricing-tiers', 'copy-headline', 'copy-fact', 'copy-headings', 'copy-buttons', 'copy-actions', 'heading-scale', 'stagger', 'top-stagger', 'off-grid', 'col-edge', 'right-edge', 'centre-axis', 'tilt', 'contrast', 'text-contrast', 'body-size', 'busy-ground', 'section-gaps', 'proximity', 'hole', 'links', 'forms', 'photo-upscale', 'photo-crop', 'photo-set', 'photo-credit', 'nav-family', 'nav-labels', 'link-styles', 'heading-align', 'label-centre', 'fake-button', 'stranded-action', 'orphan', 'unit-break', 'tab-wrap', 'effects-fit', 'fade-cut', 'photo-weight', 'copy-length', 'nav-current', 'progress-bar', 'photo-repeat', 'button-contrast', 'photo-print', 'grounds', 'split-align', 'fact-agree', 'fold-action', 'action-count', 'one-screen', 'hover', 'product-shown', 'same-object', 'font-load'];
 ORDER.splice(ORDER.indexOf('reduced-motion') + 1, 0, 'hidden-content');
 ORDER.splice(ORDER.indexOf('hover') + 1, 0, 'hover-move');
 ORDER.splice(ORDER.indexOf('overlap-text') + 1, 0, 'collide', 'tap-size');
