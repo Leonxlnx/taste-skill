@@ -19,6 +19,8 @@ jobs:
           node tests/frontmatter.mjs
       - name: Text files are clean UTF-8 (no double encoding)
         run: node tests/text-encoding.mjs
+      - name: Marketplace plugin entries stay syncable on claude.ai
+        run: node tests/marketplace.mjs
       - name: Scripts parse
         run: |
           node -e '

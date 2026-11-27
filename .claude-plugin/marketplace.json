@@ -11,6 +11,7 @@
       "description": "tasteskill 2.5.1: professional company websites at the figma.com and x.ai level, with one section per screen, real photographs, real product UI, effects kept for tech and gaming pages, and a real-browser checker and finish gate.",
       "version": "2.5.1",
       "source": "./",
+      "strict": false,
       "skills": ["./skills/taste-skill"],
       "author": {
         "name": "leonxlnx",
