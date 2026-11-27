@@ -402,7 +402,7 @@ function copyChecks(P, kind, html, rendered) {
   // a word or a phrase is one finding per hit, named by the word and its sentence, so a waiver covers that one hit and
   // never a word added later; a device used as a tic is one finding whose where carries its count and its hits, and a
   // waiver must give that whole where (a new hit changes it, and the waiver no longer matches)
-  const PER_HIT = /^copy-(slop-word|stock-phrase|residue|unread)$/;
+  const PER_HIT = /^copy-(slop-word|stock-phrase|residue|unread|arabic-slop-calque)$/;
   const q = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 3) + '...' : s; };
   for (const f of rep.files[0].findings || []) {
     if (f.sev !== 'FAIL' && f.sev !== 'WARN') continue;

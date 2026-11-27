@@ -143,7 +143,7 @@ function readHtml(raw) {
 // brand or wordmark) and the title before its first ":", "|" or dash; one to five words each
 function brandsOf(raw, title) {
   const out = new Set();
-  const keep = (s) => { s = squash(tidy(decode(String(s || '').replace(/<[^>]+>/g, ' ')))).replace(/^[\s"'.,:;|·–—-]+|[\s"'.,:;|·–—-]+$/g, ''); const n = wc(s); if (n >= 1 && n <= 5 && /[a-z]/i.test(s)) out.add(s); };
+  const keep = (s) => { s = squash(tidy(decode(String(s || '').replace(/<[^>]+>/g, ' ')))).replace(/^[\s"'.,:;|·–—-]+|[\s"'.,:;|·–—-]+$/g, ''); const n = wc(s); if (n >= 1 && n <= 5 && /[\p{L}]/u.test(s)) out.add(s); };
   for (const m of raw.matchAll(/<meta\b[^>]*>/gi)) if (/(property|name)\s*=\s*["']?(og:site_name|application-name)["'\s>]/i.test(m[0])) keep(attrOf(m[0].slice(5), 'content'));
   const body = raw.replace(/<head\b[\s\S]*?<\/head>/i, ' ').replace(/<(script|style|svg|template)\b[\s\S]*?<\/\1>/gi, ' ');
   for (const m of body.matchAll(/<(a|div|span|p|strong|b|h1)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
@@ -245,16 +245,26 @@ const REVEAL = [/\b(the result|the best part|the catch|the secret|the difference
 const ABBR = /\b(St|Ste|Dr|Mt|Mr|Mrs|Ms|Co|No|Nos|Nr|Ave|Rd|Ln|Ltd|Inc|Jr|Sr|Ft|Pt|Prof|Rev|Capt|Sgt|Lt|vs|approx|est|incl|excl|dept|tel|fig|vol|ca|cf|e\.g|i\.e|a\.m|p\.m)\./gi;
 const unabbr = (s) => s.replace(ABBR, (m) => m.replace(/\./g, '․'));
 
+const ARABIC_SLOP_AND_CALQUES = [
+  /(?:يكسر|تكسر|ينكسر|كسر)\s+(?:ال)?(?:عمل|وكيل|نظام|أداء|دقة|تكامل|توافقية|كود|خادم|منصة|قواعد|حواجز)/u,
+  /في عالم يتسارع/u,
+  /أطلق العنان/u,
+  /نقلة نوعية/u,
+  /حلول متكاملة/u,
+  /ليس مجرد [^\n.؟!]{1,40} بل/u,
+  /ارتقِ?\s+ب(?:ـ|\S)/u,
+  /بوابتك نحو/u,
+];
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const wordRe = (w) => new RegExp(`\\b${esc(w).replace(/ /g, '\\s')}\\b`, 'gi');
-const sentencesOf = (text) => unabbr(text).split(/(?<=[.!?])\s+(?=[A-Z"'(])/).map((s) => s.trim().replace(/․/g, '.')).filter((s) => /[a-z]/i.test(s));
+const sentencesOf = (text) => unabbr(text).split(/(?<=[.!?؟])\s+(?=[A-Z\u0600-\u06FF"'(«])/u).map((s) => s.trim().replace(/․/g, '.')).filter((s) => /[\p{L}]/u.test(s));
 const clip = (s, n = 110) => (s.length > n ? s.slice(0, n - 3) + '...' : s);
 const wc = (s) => s.split(/\s+/).filter(Boolean).length;
 // the sentence of a block that holds the character at i
 function sentenceAt(b, i) {
   const t = unabbr(b);
-  let s = 0; for (const m of t.matchAll(/[.!?](?=\s+[A-Z"'(])/g)) { if (m.index >= i) break; s = m.index + 1; }
-  const e = t.slice(i).search(/[.!?](\s+[A-Z"'(]|\s*$)/);
+  let s = 0; for (const m of t.matchAll(/[.!?؟](?=\s+[A-Z\u0600-\u06FF"'(«])/gu)) { if (m.index >= i) break; s = m.index + 1; }
+  const e = t.slice(i).search(/[.!?؟](\s+[A-Z\u0600-\u06FF"'(«]|\s*$)/u);
   return b.slice(s, e < 0 ? b.length : i + e + 1).trim();
 }
 
@@ -307,6 +317,8 @@ function lintRead(R, isHtml) {
   if (branded.length) add('WARN', 'copy-brand-word', branded, `the brand name holds a listed word (${[...new Set(branded.map((s) => s.m))].join(', ')}): read as the name, not counted`, 'keep it when the brief gives this name and say so in the report; a name you coined gets another (copy.md, names.json)');
   const stock = STOCK.flatMap((re) => hitsIn(re, withMeta));
   if (stock.length) add('FAIL', 'copy-stock-phrase', stock, 'stock phrases that fit any business', 'say what this business does, for whom, with one fact from the brief');
+  const arSlop = ARABIC_SLOP_AND_CALQUES.flatMap((re) => hitsIn(re, withMeta));
+  if (arSlop.length) add('FAIL', 'copy-arabic-slop-calque', arSlop, 'Arabic AI slop phrases or literal English calques (e.g. يكسر عمل الوكيل, في عالم يتسارع, أطلق العنان)', 'use fluent Arabic technical terminology (يُعطّل / يُخلّ بـ) and concrete facts from the brief');
   // words in a part the lint skips (a UI mock, a hidden or aria-hidden part): a product's own screen may hold them,
   // but copy moved into such a part to get past the lint is still copy
   const unread = R.unread || [];
@@ -416,7 +428,7 @@ function lintRead(R, isHtml) {
 // ---------------------------------------------------------------- across files
 function crossFile(results) {
   if (results.length < 2) return { heroes: [], shared: [] };
-  const shape = (h) => h.toLowerCase().replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)\b/g, '#').replace(/[^a-z# ]/g, '').trim();
+  const shape = (h) => h.toLowerCase().replace(/\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\d+)\b/g, '#').replace(/[^\p{L}# ]/gu, '').trim();
   // each file by its path below the folder all of them share (pages/x and pages/mobile/x are two files)
   const dirs = results.map((r) => path.resolve(path.dirname(r.file)).split(path.sep));
   let k = 0; while (dirs.every((d) => k < d.length && d[k] === dirs[0][k])) k++;
