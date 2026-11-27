@@ -220,13 +220,19 @@ function openNow() {
       if (!days?.has(DAYS[day])) continue;
       const dd = dt.nextElementSibling;
       const m = dd && dd.tagName === 'DD' && dd.textContent.match(/(\d{1,2})(?:[:.](\d{2}))?\s*(?:to|-|–|until)\s*(\d{1,2})(?:[:.](\d{2}))?/);
-      return m ? { open: +m[1] * 60 + (+m[2] || 0), close: +m[3] * 60 + (+m[4] || 0), from: m[1] + (m[2] ? ':' + m[2] : ''), to: m[3] + (m[4] ? ':' + m[4] : ':00') } : { closed: true };
+      if (!m) return { closed: true };
+      const open = +m[1] * 60 + (+m[2] || 0);
+      let close = +m[3] * 60 + (+m[4] || 0);
+      if (close <= open) close += 1440; // runs past midnight (18 to 2)
+      return { open, close, from: m[1] + (m[2] ? ':' + m[2] : ''), to: m[3] + (m[4] ? ':' + m[4] : ':00') };
     }
     return null;
   };
-  const t = span(today);
+  // yesterday's hours that run past midnight are still open in the small hours of today
+  const t = span(today), y = span((today + 6) % 7);
   let text = null;
   if (t && !t.closed && nowMin >= t.open && nowMin < t.close) text = `Open now, until ${t.to}`;
+  else if (y && !y.closed && nowMin < y.close - 1440) text = `Open now, until ${y.to}`;
   else {
     for (let k = 0; k < 8 && !text; k++) {
       const d = (today + k) % 7, s2 = span(d);
