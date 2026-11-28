@@ -27,7 +27,38 @@ jobs:
               const p = path.join(d, e.name);
               return e.isDirectory() ? walk(p) : /\.(mjs|js)$/i.test(e.name) ? [p] : [];
             });
-            for (const f of [...walk("skills/taste-skill/scripts"), ...walk("skills/taste-skill/assets")]) {
+            for (const f of [...walk("skills/taste-skill/scripts"), ...walk("skills/taste-skill/assets"), ...walk("tests")]) {
               execFileSync(process.execPath, ["--check", f], { stdio: "inherit" });
             }
           '
+
+  installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: install.sh passes shellcheck
+        run: |
+          bash -n install.sh
+          sudo apt-get update -q
+          sudo apt-get install -y -q shellcheck
+          shellcheck install.sh
+      - name: install.sh round-trip (install, list, uninstall)
+        run: |
+          export HOME="$RUNNER_TEMP/fakehome"
+          mkdir -p "$HOME"
+          ./install.sh --list
+          ./install.sh
+          link="$HOME/.claude/skills/design-taste-frontend"
+          if ! test -L "$link"; then echo "not a symlink: $link"; exit 1; fi
+          target="$(readlink -f "$link")"
+          case "$target" in */skills/taste-skill) ;; *) echo "unexpected target: $target"; exit 1 ;; esac
+          if ! test -f "$link/SKILL.md"; then echo "the link does not reach the skill: $link"; exit 1; fi
+          # a second install re-links instead of skipping quietly
+          ./install.sh
+          ./install.sh --uninstall
+          if test -e "$link"; then echo "uninstall left the link behind: $link"; exit 1; fi
+          # uninstall on a clean home is quiet and successful
+          ./install.sh --uninstall
