@@ -1,0 +1,64 @@
+name: Bug report
+description: Report a problem with the skill, its scripts or its pages. Needs the version, the agent, the OS and the exact output.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Fill in the version and paste the exact command and its full output — most reports cannot be reproduced without them. The version is the number in the skill's description or the newest heading in [CHANGELOG.md](../blob/main/CHANGELOG.md).
+  - type: input
+    id: version
+    attributes:
+      label: tasteskill version
+      description: "e.g. 2.5.1 (SKILL.md description, CHANGELOG.md, or the plugin manifest)"
+    validations:
+      required: true
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      description: Where the skill ran.
+      options:
+        - Claude Code
+        - Codex
+        - Antigravity
+        - Another agent (say which below)
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      description: "e.g. macOS 15.1, Ubuntu 24.04, Windows 11 (Git Bash)"
+    validations:
+      required: true
+  - type: textarea
+    id: what-ran
+    attributes:
+      label: Exact command or page
+      description: The script command with its flags, the brief, or the page the problem appears on.
+      placeholder: node <skill>/scripts/photos.mjs fetch 326 --out .
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Full output
+      description: The complete output (stdout and stderr), not a summary. Longer is fine.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What should have happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Screenshots, the page's HTML, a minimal repro folder. Optional.
+    validations:
+      required: false
