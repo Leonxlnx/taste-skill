@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/Leonxlnx/taste-skill/discussions
+    description: Ask how the skill works or propose a change before filing a bug.
