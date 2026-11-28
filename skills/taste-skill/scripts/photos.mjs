@@ -858,7 +858,9 @@ async function fetchCmd() {
   const lqip = !!opt('lqip');
   const rel = String(opt('dir', 'assets/img')).replace(/\\/g, '/').replace(/\/$/, '');
   const dir = path.join(out, rel);
-  fs.mkdirSync(dir, { recursive: true });
+  // the folder is made when the first file lands, so a fetch that saves nothing leaves no empty assets/img behind
+  let dirMade = false;
+  const ensureDir = () => { if (!dirMade) { fs.mkdirSync(dir, { recursive: true }); dirMade = true; } };
   const credFile = path.join(dir, 'credits.json');
   let cred = { note: 'Credits for the photographs in this folder: photos.mjs credits prints the footer block for the ones the pages use.', photos: [] };
   try { cred = JSON.parse(fs.readFileSync(credFile, 'utf8')); } catch { /* new */ }
@@ -880,6 +882,7 @@ async function fetchCmd() {
         if (!use.length) use = [have[0]];
         if (bigger.has(id) && !isHero) use = [...use, have.at(-1)];
         use = [...new Map(use.map((f) => [f.w, f])).values()].sort((x, y) => x.w - y.w);
+        ensureDir();
         for (const f of use) {
           const name = 'photo-' + id + '-' + f.w + path.extname(f.file);
           fs.copyFileSync(path.join(LIB_DIR, f.file), path.join(dir, name));
@@ -888,6 +891,7 @@ async function fetchCmd() {
       } else {
         const big = Math.min(isHero ? 1920 : 1280, p.width || 1920);
         const sizes = [...STEPS.filter((w) => w < big), big];
+        ensureDir();
         for (const w of sizes) {
           let buf = await download(fileUrl(p, w));
           const webp = toWebp(buf); // WebP when ffmpeg is on the path (PH-27), else the JPEG as served
@@ -935,20 +939,23 @@ async function fetchCmd() {
     if (p.standIn) console.log('  a live search result: a STAND-IN for the client\'s own photograph; list it in the build report, write its alt text new');
     saved.push(id);
   }
-  fs.writeFileSync(credFile, JSON.stringify(cred, null, 1) + '\n');
-  // the shared recent file: the next build on this machine puts these frames behind the fresh ones
-  const recentLog = readRecent();
-  if (recentLog && saved.length) { recentLog.fetched = [...(Array.isArray(recentLog.fetched) ? recentLog.fetched.filter((x) => !saved.includes(x)) : []), ...saved].slice(-120); writeRecent(recentLog); }
-  console.log('\nwrote to ' + slash(dir) + '/ (' + rel + '/ in the site folder ' + slash(out) + '; a page in that folder loads them as ' + rel + '/<file>)');
-  const wt = pageWeight(dir, cred.photos), total = wt.reduce((a, r) => a + r.kb, 0), n = (v) => v.toLocaleString('en');
-  if (wt.length) {
-    const verdict = total > PAGE_KIB.fail ? 'FAIL: perf.mjs fails a page whose images pass ' + n(PAGE_KIB.fail) + ' KiB; drop a photograph or its largest file'
-      : total > PAGE_KIB.warn ? 'WARN: perf.mjs warns above ' + n(PAGE_KIB.warn) + ' KiB (it fails above ' + n(PAGE_KIB.fail) + ')' : 'PASS';
-    console.log('\npage images at 1440 (the file each of the ' + wt.length + ' photograph' + (wt.length === 1 ? '' : 's') + ' in this folder loads, the hero at 2x): about ' + n(total) + ' KiB of ' + n(PAGE_KIB.fail) + ' - ' + verdict);
-    if (total > PAGE_KIB.warn) console.log('  heaviest: ' + [...wt].sort((a, b) => b.kb - a.kb).slice(0, 3).map((r) => r.n + ' ' + r.kb + ' KiB').join(', '));
+  // nothing saved: no credits.json (an old one keeps its contents), no banner -- just the failures below
+  if (saved.length) {
+    fs.writeFileSync(credFile, JSON.stringify(cred, null, 1) + '\n');
+    // the shared recent file: the next build on this machine puts these frames behind the fresh ones
+    const recentLog = readRecent();
+    if (recentLog) { recentLog.fetched = [...(Array.isArray(recentLog.fetched) ? recentLog.fetched.filter((x) => !saved.includes(x)) : []), ...saved].slice(-120); writeRecent(recentLog); }
+    console.log('\nwrote to ' + slash(dir) + '/ (' + rel + '/ in the site folder ' + slash(out) + '; a page in that folder loads them as ' + rel + '/<file>)');
+    const wt = pageWeight(dir, cred.photos), total = wt.reduce((a, r) => a + r.kb, 0), n = (v) => v.toLocaleString('en');
+    if (wt.length) {
+      const verdict = total > PAGE_KIB.fail ? 'FAIL: perf.mjs fails a page whose images pass ' + n(PAGE_KIB.fail) + ' KiB; drop a photograph or its largest file'
+        : total > PAGE_KIB.warn ? 'WARN: perf.mjs warns above ' + n(PAGE_KIB.warn) + ' KiB (it fails above ' + n(PAGE_KIB.fail) + ')' : 'PASS';
+      console.log('\npage images at 1440 (the file each of the ' + wt.length + ' photograph' + (wt.length === 1 ? '' : 's') + ' in this folder loads, the hero at 2x): about ' + n(total) + ' KiB of ' + n(PAGE_KIB.fail) + ' - ' + verdict);
+      if (total > PAGE_KIB.warn) console.log('  heaviest: ' + [...wt].sort((a, b) => b.kb - a.kb).slice(0, 3).map((r) => r.n + ' ' + r.kb + ' KiB').join(', '));
+    }
+    if (tags.length) console.log('\nthe <img> for each (the hero is sized 100vw, as Recipe 3 shows it full width, with a 780x975 phone crop in a <picture>; keep data-phone-fill on the hero picture or img; any other picture is sized for a half-width or full-width frame: set sizes to the shown width; the hero eager, the rest lazy, none hidden or faded in; a photograph in a nav menu, a tab, a carousel or a sideways-scrolling row drops loading="lazy", which may never fire there; data-source and data-subject stay on every picture):\n' + tags.join('\n'));
+    console.log('\n' + slash(credFile) + '\nonce the page\'s markup uses these files (credits reads the page for them, so not before): node ' + cmdPath(path.join(HERE, 'photos.mjs')) + ' credits --out ' + cmdPath(out) + (rel !== 'assets/img' ? ' --dir ' + rel : '') + ' prints the footer credits for the photographs it uses');
   }
-  if (tags.length) console.log('\nthe <img> for each (the hero is sized 100vw, as Recipe 3 shows it full width, with a 780x975 phone crop in a <picture>; keep data-phone-fill on the hero picture or img; any other picture is sized for a half-width or full-width frame: set sizes to the shown width; the hero eager, the rest lazy, none hidden or faded in; a photograph in a nav menu, a tab, a carousel or a sideways-scrolling row drops loading="lazy", which may never fire there; data-source and data-subject stay on every picture):\n' + tags.join('\n'));
-  console.log('\n' + slash(credFile) + '\nonce the page\'s markup uses these files (credits reads the page for them, so not before): node ' + cmdPath(path.join(HERE, 'photos.mjs')) + ' credits --out ' + cmdPath(out) + (rel !== 'assets/img' ? ' --dir ' + rel : '') + ' prints the footer credits for the photographs it uses');
   if (failed.length) { console.log('\nnot saved:\n' + failed.join('\n')); process.exitCode = 1; }
 }
 // the footer holds ONE line that links the credits page; the list of photographers, licences and source pages is a block of its own
